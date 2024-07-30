@@ -1,0 +1,92 @@
+body {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 15px;
+    line-height: 1.4;
+    color: white;
+    background-color: #000000;
+    padding: 74px;
+    margin: 0 auto;
+    -webkit-font-smoothing: antialiased;
+    max-width: 550px;
+    transition: cursor 0.1s ease;
+}
+
+.name {
+    font-size: 45px;
+    font-weight: 400;
+    margin: 0 0 17px 0;
+    text-align: left;
+}
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 0;
+}
+
+li {
+    margin-bottom: 10px;
+    padding-left: 20px;
+    position: relative;
+}
+
+li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    font-size: 14px;
+    color: white;
+}
+
+li ul {
+    margin-top: 5px;
+    padding-left: 20px;
+}
+
+li ul li {
+    margin-top: 5px;
+}
+
+li ul li:before {
+    color: #858585;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid #b1b1b1;
+}
+
+a:hover {
+    border-bottom: 1px solid #555;
+}
+
+.custom-cursor {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: gray;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.hover-line {
+    position: fixed;
+    width: 3px;
+    background-color: #3572EF;
+    transition: opacity 0.2s ease, top 0.1s ease, height 0.1s ease;
+    pointer-events: none;
+    border-radius: 10px;
+    opacity: 1;
+}
+
+.hover-target {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+}
+
+.highlight {
+    color: #858585;
+}
