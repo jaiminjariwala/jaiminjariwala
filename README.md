@@ -1,1 +1,1 @@
-Clean and Simple Portfolio Website of mine :)
+Clean and Minimalist Portfolio Website of mine :)
