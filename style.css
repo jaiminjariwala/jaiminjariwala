@@ -1,21 +1,87 @@
 body {
-    font-family: "IBM Plex Mono", monospace;
-    font-size: 15px;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 18px;
     line-height: 1.4;
     color: white;
     background-color: #000000;
-    padding: 74px;
-    margin: 0 auto;
+    margin: 0;
+    padding: 0;
     -webkit-font-smoothing: antialiased;
-    max-width: 550px;
-    transition: cursor 0.1s ease;
+}
+
+nav {
+    background-color: #2a2a2a;
+    padding: 5px;
+    border-radius: 25px;
+    display: inline-block;
+    position: fixed;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+
+nav a {
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 16px;
+    padding: 8px 16px;
+    background-color: transparent;
+    display: inline-block;
+    margin: 0 2px;
+    border-radius: 20px;
+    transition: none;
+    outline: none;
+    border: none;
+}
+
+nav a.active {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+nav a.active:hover{
+    background-color: white;
+    color: black;
+}
+
+nav a:not(.active) {
+    background-color: #2a2a2a;
+}
+
+nav a:not(.active):hover {
+    /* background-color: #2b2b2b; */
+    outline: none;
+    border: none;
+}
+
+nav a:hover {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-radius: 20px;
+}
+
+main {
+    padding-top: 120px;
+    max-width: 608px; 
+    margin: 0 auto;
+}
+
+section {
+    display: none;
+}
+
+section.active {
+    display: block;
 }
 
 .name {
-    font-size: 45px;
-    font-weight: 400;
-    margin: 0 0 17px 0;
-    text-align: left;
+    font-size: 54px; /* Increased font size */
+    font-weight: 500;
+    margin: 0 0 30px 0;
+    text-align: center; /* Ensures alignment with content below */
 }
 
 ul {
@@ -25,68 +91,166 @@ ul {
 }
 
 li {
-    margin-bottom: 10px;
-    padding-left: 20px;
+    margin-bottom: 15px;
+    padding-left: 25px;
     position: relative;
+    font-size: 18px; /* Increased font size */
 }
 
 li:before {
     content: "•";
     position: absolute;
     left: 0;
-    font-size: 14px;
+    font-size: 18px;
     color: white;
 }
 
-li ul {
-    margin-top: 5px;
-    padding-left: 20px;
-}
-
-li ul li {
-    margin-top: 5px;
-}
-
-li ul li:before {
+.highlight {
     color: #858585;
 }
 
-a {
+.number {
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 8px;
+    padding: 1px 8px;
+    font-size: 14px;
+}
+
+#about p a {
+    border-bottom: 1px solid #b1b1b1;
+}
+#about p a:hover {
+    border-bottom: 1px solid #555;
+}
+
+.about-content, .home-content, .achievements-content, .skills-content {
+    padding-left: 50px;
+}
+
+.skill-sub-content {
+    margin-bottom: 4px;
+}
+/* a {
     color: inherit;
     text-decoration: none;
     border-bottom: 1px solid #b1b1b1;
+} */
+ 
+/* Remove underline from all links in the entire document */
+a {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+/* Specific styles for links in the .connect section */
+.connect a {
+    border-bottom: 1px solid #b1b1b1;
+    padding: 0 3px;
+}
+
+.connect a:hover {
+    border-bottom: 1px solid #555;
 }
 
 a:hover {
     border-bottom: 1px solid #555;
 }
 
-.custom-cursor {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: gray;
-    position: fixed;
-    pointer-events: none;
-    z-index: 9999;
+.connect {
+    margin-top: 30px;
 }
 
-.hover-line {
+.connect h3 {
+    font-size: 22px;
+}
+
+#projects {
+    text-align: center;
+}
+
+#projects a {
+    border-bottom: 1px solid #b1b1b1;
+}
+
+#projects a:hover {
+    border-bottom: 1px solid #555;
+}
+
+/* New styles for resume overlay */
+.hidden {
+    display: none !important;
+}
+
+#resume-overlay {
     position: fixed;
-    width: 3px;
-    background-color: #3572EF;
-    transition: opacity 0.2s ease, top 0.1s ease, height 0.1s ease;
-    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+#resume-container {
+    background-color: black;
+    padding: 20px;
+    border-radius: 5px;
+    position: relative;
+    width: 60%;
+    height: 90%;
+}
+
+#close-resume {
+    position: absolute;
+    top: 27px;
+    right: 30px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    padding: 10px 15px;
     border-radius: 10px;
-    opacity: 1;
+    cursor: pointer;
+    font-size: 15px;
 }
 
-.hover-target {
-    display: inline-block;
-    width: auto;
-    max-width: 100%;
+#resume-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
-.highlight {
-    color: #858585;
+/* Text selection style */
+::selection {
+    background-color: white;
+    color: black;
+}
+
+@media (max-width: 700px) {
+    nav {
+        padding: 10px 20px;
+    }
+
+    nav a {
+        font-size: 16px;
+        margin: 0 10px;
+    }
+
+    main {
+        padding-top: 100px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    h1 {
+        font-size: 42px;
+    }
+
+    body, li, .connect a {
+        font-size: 16px;
+    }
 }
