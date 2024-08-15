@@ -194,8 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to automatically scroll images
     const startAutoScroll = () => {
         scrollInterval = setInterval(() => {
-            container.scrollLeft += 1; // Adjust this value to change the speed
-        }, 10); // Adjust this value to change the frequency
+            container.scrollLeft += 0.5; // Adjust this value to change the speed
+        }, 14); // Adjust this value to change the frequency
     };
 
     // Stop the automatic scrolling

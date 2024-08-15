@@ -17,12 +17,24 @@ body {
 }
 
 .outer-body-div {
-    border: 10px solid #000000;
     min-height: 100vh;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    background-color: rgb(255, 255, 255);
+    
+    border: 8px solid #000000;
+    border-radius: 0px;
+    background: #000000; 
+}
+
+.inner-body-div {
+    flex: 1;
+    box-sizing: border-box;
+    overflow: auto;
+
+    border-radius: calc(20px - 4px);
+    background: #fff;
+    margin: 0;
 }
 
 nav {
@@ -79,7 +91,7 @@ nav a:hover {
 
 main {
     flex: 1;
-    padding-top: 150px;
+    padding-top: 130px;
     max-width: 550px; 
     margin: 0 auto;
 }
@@ -275,9 +287,9 @@ a:hover {
 
 .image-caption {
     color: #333; 
-    text-align: center;
+    text-align: left;
     white-space: normal; 
-    padding: 0px 10px;
+    padding: 0px 10px 0px 4px;
 }
 
 @media (max-width: 700px) {
