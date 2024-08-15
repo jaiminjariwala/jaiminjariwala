@@ -75,8 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sections = document.querySelectorAll('section');
     const resumeLink = document.getElementById('resume-link');
     const resumeOverlay = document.getElementById('resume-overlay');
-    const closeResume = document.getElementById('close-resume');
-    
+
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
@@ -102,14 +101,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Resume overlay functionality
-    if (resumeLink && resumeOverlay && closeResume) {
+    if (resumeLink && resumeOverlay) {
         resumeLink.addEventListener('click', function(e) {
             e.preventDefault();
             resumeOverlay.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         });
-
-        closeResume.addEventListener('click', closeResumeOverlay);
 
         // Close overlay when clicking on the background
         resumeOverlay.addEventListener('click', function(e) {
@@ -124,3 +121,147 @@ document.addEventListener('DOMContentLoaded', function() {
         resumeOverlay.classList.add('hidden');
     }
 });
+
+// Image container dragging functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Your existing DOMContentLoaded code
+
+    const imageContainer = document.querySelector('.image-container');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+
+    // Disable dragging for images within the container
+    imageContainer.querySelectorAll('img').forEach(img => {
+        img.addEventListener('dragstart', (e) => e.preventDefault());
+    });
+
+    imageContainer.addEventListener('mousedown', (e) => {
+        isDown = true;
+        imageContainer.classList.add('active');
+        startX = e.pageX - imageContainer.offsetLeft;
+        scrollLeft = imageContainer.scrollLeft;
+    });
+
+    imageContainer.addEventListener('mouseleave', () => {
+        isDown = false;
+        imageContainer.classList.remove('active');
+    });
+
+    imageContainer.addEventListener('mouseup', () => {
+        isDown = false;
+        imageContainer.classList.remove('active');
+    });
+
+    imageContainer.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        e.preventDefault();
+        const x = e.pageX - imageContainer.offsetLeft;
+        const walk = (x - startX) * 2;
+        imageContainer.scrollLeft = scrollLeft - walk;
+    });
+});
+
+// Image container: On clicking Travel section, Auto Scrolling from right to left will start, Stops when Click or Drag event is occured and again starts when coming back from other section to Travel Section.
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.querySelector('.image-container');
+    const travelSection = document.querySelector('#travel');
+    let isDragging = false;
+    let startX, scrollLeft;
+    let scrollInterval;
+
+    // Preload images
+    const preloadImages = (urls) => {
+        urls.forEach((url) => {
+            const img = new Image();
+            img.src = url;
+        });
+    };
+
+    preloadImages([
+        'travelling_photos/GOA_1.jpg',
+        'travelling_photos/GOA_4.jpg',
+        'travelling_photos/GOA_2.jpg',
+        'travelling_photos/GOA_6.JPG',
+        'travelling_photos/KASHMIR_1.jpg',
+        'travelling_photos/KASHMIR_2.jpg',
+        'travelling_photos/KERALA_5.JPG',
+        'travelling_photos/KERALA_1.JPG',
+        'travelling_photos/KERALA_6.JPG',
+        'travelling_photos/DUBAI_1.jpg'
+    ]);
+
+    // Function to automatically scroll images
+    const startAutoScroll = () => {
+        scrollInterval = setInterval(() => {
+            container.scrollLeft += 1; // Adjust this value to change the speed
+        }, 10); // Adjust this value to change the frequency
+    };
+
+    // Stop the automatic scrolling
+    const stopAutoScroll = () => {
+        clearInterval(scrollInterval);
+    };
+
+    // Handle dragging
+    const handleMouseDown = (e) => {
+        isDragging = true;
+        startX = e.pageX - container.offsetLeft;
+        scrollLeft = container.scrollLeft;
+        container.classList.add('dragging');
+        stopAutoScroll(); // Stop auto-scrolling when the user starts dragging
+    };
+
+    const handleMouseLeave = () => {
+        isDragging = false;
+        container.classList.remove('dragging');
+    };
+
+    const handleMouseUp = () => {
+        isDragging = false;
+        container.classList.remove('dragging');
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const x = e.pageX - container.offsetLeft;
+        const walk = (x - startX) * 2; // Adjust multiplier for sensitivity
+        container.scrollLeft = scrollLeft - walk;
+    };
+
+    // Start automatic scrolling when clicking on the "Travel" section
+    const startTravelSection = () => {
+        startAutoScroll();
+    };
+
+    // Stop automatic scrolling and enable manual dragging on container click or drag
+    container.addEventListener('mousedown', handleMouseDown);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    container.addEventListener('mouseup', handleMouseUp);
+    container.addEventListener('mousemove', handleMouseMove);
+    container.addEventListener('click', stopAutoScroll); // Stop on any click inside the container
+
+    // Observe when the travel section becomes visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startTravelSection();
+            } else {
+                stopAutoScroll();
+            }
+        });
+    });
+
+    observer.observe(travelSection);
+});
+
+
+
+
+
+
+
+
+
+

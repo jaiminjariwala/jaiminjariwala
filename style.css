@@ -1,40 +1,54 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --highlight-color: #7a7a7a;
+    --nav-bg-color: #2a2a2a;
+    --nav-text-color: #ffffff;
+}
+
 body {
-    font-family: sans-serif;
+    font-family: "Mukta", sans-serif;
     font-size: 18px;
     line-height: 1.4;
-    color: white;
-    background-color: #000000;
+    color: var(--text-color);
+    background-color: var(--bg-color);
     margin: 0;
     padding: 0;
-    -webkit-font-smoothing: antialiased;
+}
+
+.outer-body-div {
+    border: 10px solid #000000;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(255, 255, 255);
 }
 
 nav {
-    background-color: #2a2a2a;
+    background-color: var(--nav-bg-color);
     padding: 5px;
     border-radius: 25px;
     display: inline-block;
     position: fixed;
-    top: 30px;
+    top: 50px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
     overflow: hidden;
 }
 
-
 nav a {
     text-decoration: none;
-    color: #ffffff;
+    color: var(--nav-text-color);
     font-size: 16px;
-    padding: 8px 16px;
+    padding: 6px 18px;
     background-color: transparent;
     display: inline-block;
-    margin: 0 2px;
+    margin: 0 0px;
     border-radius: 20px;
     transition: none;
     outline: none;
-    border: none;
 }
 
 nav a.active {
@@ -45,6 +59,7 @@ nav a.active {
 nav a.active:hover{
     background-color: white;
     color: black;
+    border: none;
 }
 
 nav a:not(.active) {
@@ -52,25 +67,27 @@ nav a:not(.active) {
 }
 
 nav a:not(.active):hover {
-    /* background-color: #2b2b2b; */
     outline: none;
     border: none;
+    color:#b1b1b1;
 }
 
 nav a:hover {
     background-color: #2a2a2a;
     color: #ffffff;
-    border-radius: 20px;
 }
 
 main {
-    padding-top: 120px;
-    max-width: 608px; 
+    flex: 1;
+    padding-top: 150px;
+    max-width: 550px; 
     margin: 0 auto;
 }
 
 section {
     display: none;
+    border-radius: 2px;
+    border-color: #000000;
 }
 
 section.active {
@@ -78,43 +95,23 @@ section.active {
 }
 
 .name {
-    font-size: 54px; 
+    font-size: 54px;
     font-weight: 500;
     margin: 0 0 30px 0;
-    text-align: center; 
-}
-
-ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin-top: 0;
-}
-
-li {
-    margin-bottom: 15px;
-    padding-left: 25px;
-    position: relative;
-    font-size: 18px; 
-}
-
-li:before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    font-size: 18px;
-    color: white;
+    text-align: left;
 }
 
 .highlight {
-    color: #858585;
+    color: var(--highlight-color);
 }
 
 .number {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: #000000;
+    color: #ffffff;
     border-radius: 8px;
-    padding: 1px 8px;
-    font-size: 14px;
+    padding: 0px 12px;
+    margin: 0px 5px;
+    font-size: 15px;
 }
 
 #about p a {
@@ -125,17 +122,12 @@ li:before {
 }
 
 .about-content, .home-content, .achievements-content, .skills-content {
-    padding-left: 50px;
+    padding-left: 0px;
 }
 
 .skill-sub-content {
     margin-bottom: 4px;
 }
-/* a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid #b1b1b1;
-} */
 
 a {
     color: inherit;
@@ -143,37 +135,50 @@ a {
     border-bottom: none;
 }
 
-.connect a {
-    border-bottom: 1px solid #b1b1b1;
-    padding: 0 3px;
+.connect {
+    margin-top: 30px;
+    line-height: 1;
 }
 
-.connect a:hover {
-    border-bottom: 1px solid #555;
+.connect a,
+.certificate a,
+#projects a{
+    border-bottom: 2px solid #000000;
+    margin: 0 3px;
+    font-weight: 500;
+    padding-bottom: 1px;
+    display: inline-block;
+}
+
+.connect a:hover,
+.certificate a:hover,
+#projects a:hover {
+    border-bottom: 2px solid #a6a6a6;
+    color: #a6a6a6;
+    transition: border-bottom 0.3s, color 0.3s;
+}
+
+.certificate ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.certificate li {
+    margin-bottom: 4px;
+}
+
+.certificate a {
+    display: inline-block;
 }
 
 a:hover {
     border-bottom: 1px solid #555;
 }
 
-.connect {
-    margin-top: 30px;
-}
-
-.connect h3 {
-    font-size: 22px;
-}
-
 #projects {
     text-align: center;
-}
-
-#projects a {
-    border-bottom: 1px solid #b1b1b1;
-}
-
-#projects a:hover {
-    border-bottom: 1px solid #555;
+    line-height: 1;
 }
 
 .hidden {
@@ -186,7 +191,7 @@ a:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 1);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -194,25 +199,11 @@ a:hover {
 }
 
 #resume-container {
-    background-color: black;
-    padding: 20px;
+    padding: 0px;
     border-radius: 5px;
     position: relative;
     width: 60%;
     height: 90%;
-}
-
-#close-resume {
-    position: absolute;
-    top: 27px;
-    right: 30px;
-    background-color: #000000;
-    color: #ffffff;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 15px;
 }
 
 #resume-frame {
@@ -222,8 +213,71 @@ a:hover {
 }
 
 ::selection {
-    background-color: white;
-    color: black;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+}
+
+
+.gallery-item {
+    display: inline-block;
+    text-align: center; 
+    margin: 10px; 
+}
+
+.gallery-item img {
+    object-fit:cover;
+    border-radius: 10px;
+    cursor: pointer;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.outer-image-container {
+    margin: 20px 0px 200px;
+}
+
+.image-container {
+    display: flex;
+    white-space: nowrap;
+    scrollbar-width: none; 
+    -ms-overflow-style: none;  
+    cursor: grab;
+    user-select: none;
+    overflow: hidden;
+    overflow-x: auto;
+    transition: transform 1s ease;
+}
+
+.image-container::-webkit-scrollbar {
+    display: none; /* Hide scrollbar in Chrome, Safari, and Opera */
+}
+
+.image-container img {
+    flex-shrink: 0;
+    width: 220px; 
+    height: 250px; 
+    margin-right: 2px;
+    border: 2px solid black; 
+    cursor: grab; 
+}
+
+.image-container img:active {
+    cursor: grabbing; 
+}
+
+.image-container.active {
+    cursor: grabbing;
+}
+
+.image-container.dragging {
+    transition: none;
+}
+
+.image-caption {
+    color: #333; 
+    text-align: center;
+    white-space: normal; 
+    padding: 0px 10px;
 }
 
 @media (max-width: 700px) {
