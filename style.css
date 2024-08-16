@@ -54,11 +54,11 @@ nav a {
     text-decoration: none;
     color: var(--nav-text-color);
     font-size: 16px;
-    padding: 6px 18px;
+    padding: 5px 18px;
     background-color: transparent;
     display: inline-block;
-    margin: 0 0px;
-    border-radius: 20px;
+    margin: -1px -1px;
+    border-radius: 25px;
     transition: none;
     outline: none;
 }
@@ -245,7 +245,7 @@ a:hover {
 }
 
 .outer-image-container {
-    margin: 20px 0px 200px;
+    margin: 50px 0px 100px;
 }
 
 .image-container {
@@ -267,7 +267,7 @@ a:hover {
 .image-container img {
     flex-shrink: 0;
     width: 220px; 
-    height: 250px; 
+    height: 270px; 
     margin-right: 2px;
     border: 2px solid black; 
     cursor: grab; 
@@ -287,7 +287,7 @@ a:hover {
 
 .image-caption {
     color: #333; 
-    text-align: left;
+    text-align: center;
     white-space: normal; 
     padding: 0px 10px 0px 4px;
 }
