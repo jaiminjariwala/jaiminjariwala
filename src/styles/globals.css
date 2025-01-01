@@ -1,0 +1,17 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Helvetica', sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  margin: 0 auto;
+}
+
+/* Add any other global styles you need */

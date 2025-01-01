@@ -1,0 +1,47 @@
+.contact {
+  padding: 1.5rem 1rem;
+}
+
+.contact h2 {
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-links a {
+  color: inherit;
+}
+
+.social-links a:hover {
+  color: #666;
+}
+
+.social-links svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+
+.time-widget {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  background-color: #bafac0;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+.date {
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.time {
+  font-size: 1.25rem;
+  margin-top: 0.5rem;
+}

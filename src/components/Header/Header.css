@@ -1,0 +1,52 @@
+:root {
+  --line-height-factor: 1.2;
+}
+
+.header-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  font-family: "Helvetica", sans-serif;
+  font-size: 23px;
+  font-weight: 400;
+  -webkit-text-stroke: 1.2px black;
+  /* text-shadow: 0 0 0.1px rgba(0, 0, 0, 0.5);    */
+  padding: 0.7rem 2rem;
+  background-color: white;
+
+  position: sticky;
+  top: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.logo {
+    background-color: black;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.nav-list {
+  display: flex;
+  gap: 2.57rem;
+  list-style: none;
+}
+
+.nav-list li {
+  cursor: pointer;
+}
+
+.nav-list li:hover {
+  color: #666;
+}
+
+/* Mobile Breakpoint */
+@media screen and (max-width: 768px) {
+  .header-nav {
+    display: none;
+  }
+}
+
+/* Tablet Breakpoint */

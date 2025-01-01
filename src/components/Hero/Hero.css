@@ -1,0 +1,52 @@
+.hero {
+  min-height: 100vh;
+  padding: 4vh 2vw;
+  font-family: "Helvetica", sans-serif;
+  position: relative;
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* background-color: gray; */
+}
+
+.hero h1 {
+  /* Clamp for fluid typography scaling! */
+  font-size: clamp(2.5rem, 14vw, 12rem);
+  font-weight: bold;
+  letter-spacing: clamp(-3px, -0.5vw, -9px);
+  line-height: 0.89;
+  -webkit-text-stroke: clamp(2px, 0.4vw, 5px) black;
+  color: black; 
+
+  margin-bottom: 4vh;
+}
+
+.hero p {
+  font-size: clamp(1rem, 2.8vw, 2.4rem);
+  line-height: 1.04;
+  letter-spacing: -0.3px;
+  /* -webkit-text-stroke: 2px black; */
+  font-weight: bold;
+
+  margin-bottom: 3vh;
+  max-width: 90ch;
+}
+
+
+/* Mobile Breakpoint */
+@media screen and (max-width: 768px) {
+  .hero {
+    padding: 4vh 4vw;
+  }
+
+  .hero h1 {
+    font-size: clamp(3.5rem, 14vw, 8rem);
+    letter-spacing: -2px;
+    -webkit-text-stroke: 2px black;
+  }
+
+  .hero p {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+}

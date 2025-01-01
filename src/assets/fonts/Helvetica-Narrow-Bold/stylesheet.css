@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Helvetica-Narrow';
+    src: url('Helvetica-NarrowBold.eot');
+    src: url('Helvetica-NarrowBold.eot?#iefix') format('embedded-opentype'),
+        url('Helvetica-NarrowBold.woff2') format('woff2'),
+        url('Helvetica-NarrowBold.woff') format('woff'),
+        url('Helvetica-NarrowBold.ttf') format('truetype'),
+        url('Helvetica-NarrowBold.svg#Helvetica-NarrowBold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
