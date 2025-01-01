@@ -1,6 +1,6 @@
 import './About.css';
-import bwImage from '../../assets/images/Black and white photo.png';
-import colorImage from '../../assets/images/Color photo.png';
+import bwImage from '../../assets/images/Jaimin-Grayscale-Photo.png';
+import colorImage from '../../assets/images/Jaimin-Color-Photo.png';
 import { useState } from 'react';
 
 const About = () => {
