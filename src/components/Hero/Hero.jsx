@@ -1,7 +1,7 @@
 import './Hero.css';
 
 const Hero = () => (
-    <div className="hero">
+    <div className="hero" id="hero">
         <h1>JAIMIN<br />JARIWALA</h1>
         <p>
             Deeply interested in Web Development & UI / UX.<br />

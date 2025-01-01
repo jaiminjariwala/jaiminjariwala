@@ -7,7 +7,7 @@ const About = () => {
     const [isHovering, setIsHovering] = useState(false);
 
     return (
-        <div className="about">
+        <div className="about" id="about">
             <div className="content">
                 <p>Born and Brought up in Surat, Gujarat.</p>
                 <p>

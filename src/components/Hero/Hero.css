@@ -1,6 +1,6 @@
 .hero {
   min-height: 100vh;
-  padding: 4vh 2vw;
+  padding: 20vh 2vw 2vh 2vw;
   font-family: "Helvetica", sans-serif;
   position: relative;
   z-index: 90;
@@ -37,16 +37,16 @@
 /* Mobile Breakpoint */
 @media screen and (max-width: 768px) {
   .hero {
-    padding: 4vh 4vw;
+    padding: 18vh 4vw 4vh 4vw;
   }
 
   .hero h1 {
-    font-size: clamp(3.5rem, 14vw, 8rem);
+    font-size: clamp(3.5rem, 18vw, 8rem);
     letter-spacing: -2px;
     -webkit-text-stroke: 2px black;
   }
 
   .hero p {
-    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-size: clamp(1.55rem, 2vw, 2rem);
   }
 }

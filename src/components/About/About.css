@@ -62,7 +62,7 @@
 @media screen and (max-width: 768px) {
   .about {
     flex-direction: column-reverse; /* Showing image first */
-    padding: 4vh 4vw;
+    padding: 12vh 4vw 4vh 4vw;
     align-items: start;
     justify-content: left;
   }
@@ -72,7 +72,7 @@
   }
 
   .content p {
-    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
     letter-spacing: -0.5px;
   }
 
