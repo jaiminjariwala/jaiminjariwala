@@ -1,47 +1,156 @@
+/* Contact.css */
 .contact {
-  padding: 1.5rem 1rem;
+  min-height: 100vh;
+  padding: 15vh 2vw 2vh 2vw;
+  font-family: "Helvetica", sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 5vh;
 }
 
-.contact h2 {
-  font-size: 2.25rem;
+.contact h1 {
+  font-size: clamp(5rem, 9vw, 12rem);
   font-weight: bold;
+  letter-spacing: -4px;
+  line-height: 0.85;
+  -webkit-text-stroke: 3px black;
+  color: black;
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1vh;
+  line-height: 1.1;
+}
+
+.contact-item {
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+  letter-spacing: -1px;
+  transition: color 0.3s ease;
+  display: inline-block;
+  position: relative;
+  width: fit-content; /* ensures the link only takes up as much space as the text */
+}
+
+/* Create the animated underline */
+.contact-item::after {
+  content: '';
+  position: absolute;
+  bottom: 2.5px;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background-color: black;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+/* Animate the underline on hover */
+.contact-item:hover::after {
+  transform: scaleX(1);
+}
+
+
+.datetime-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  /* margin-top: auto; */
+}
+
+.date-card {
+  background-color: #479e47;
+  width: clamp(15rem, 14vw, 20rem);
+  border: 5px solid black;
+  aspect-ratio: 1.5;
+  position: relative;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.holes {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
   margin-bottom: 1rem;
 }
 
-.social-links {
+.hole {
+  width: 1.8rem;
+  height: 1.8rem;
+  background-color: white;
+  border-radius: 50%;
+  border: 5px solid black;
+  padding: 0.5rem;
+}
+
+.date-content {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  row-gap: 0.5rem;
+  flex-grow: 1;
 }
 
-.social-links a {
-  color: inherit;
+.day {
+  font-size: clamp(6rem, 4vw, 8rem);
+  font-weight: bold;
+  -webkit-text-stroke: 2px black;
+  line-height: 0.7;
+  color: black;
 }
 
-.social-links a:hover {
-  color: #666;
-}
-
-.social-links svg {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-
-.time-widget {
-  position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  background-color: #bafac0;
-  padding: 1rem;
-  border-radius: 0.25rem;
-}
-
-.date {
-  font-size: 1.5rem;
-  line-height: 1.2;
+.month {
+  font-size: clamp(6rem, 3vw, 8rem);
+  -webkit-text-stroke: 2px black;
+  font-weight: bold;
+  line-height: 0.75;
+  color: black;
 }
 
 .time {
-  font-size: 1.25rem;
-  margin-top: 0.5rem;
+  font-size: clamp(3rem, 8vw, 8rem);
+  font-weight: bold;
+  -webkit-text-stroke: 2px black;
+  color: black;
+  letter-spacing: -5px;
+  line-height: 0.8;
+}
+
+/* Tablet Breakpoint */
+@media screen and (max-width: 768px) {
+  .contact h1 {
+    letter-spacing: -2px;
+  }
+  .time {
+    letter-spacing: -2px;
+  }
+}
+
+/* Mobile Breakpoint */
+@media screen and (max-width: 425px) {
+  .contact {
+    padding: 10vh 4vw 1vh 4vw;
+  }
+
+  .contact h1 {
+    letter-spacing: -2px;
+  }
+
+  .datetime-container {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    /* gap: 0.6rem; */
+  }
+
+  .time {
+    font-size: clamp(5rem, 6vw, 4rem);
+  }
 }
