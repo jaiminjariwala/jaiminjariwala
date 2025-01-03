@@ -4,14 +4,17 @@
   padding: 0;
   box-sizing: border-box;
 }
-
-body {
-  font-family: 'Helvetica', sans-serif;
-  line-height: 1.6;
+main {
+  display: flex;
+  flex-direction: column;
 }
-
+body, main {
+  font-family: 'Helvetica', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 .container {
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
-
-/* Add any other global styles you need */
