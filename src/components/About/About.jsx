@@ -10,27 +10,32 @@ const About = () => {
 
     return (
         <div className="about" id="about">
-            <div ref={textRef} className="content reveal-text-container">
-                <p>Born and Brought up in Surat, Gujarat.</p>
-                <p>
-                    Cleared schooling with 85%<br />
-                    Pursued Bachelors in Computer Science<br />
-                    from Parul University (Vadodara, Gujarat)<br />
-                    between 2020 & 2024 receiving 8.57 CGPA.
-                </p>
-                <p>
-                    Tried building Self—Checkout Technology<br />
-                    Startup in India.<br />
-                    Later joined Logicwind Company as an AI<br />
-                    and Machine Learning Intern.
-                </p>
+            
+            <h1>About—Me</h1>
+
+            <div className='content-and-image'>
+                <div ref={textRef} className="content reveal-text-container">
+                    <p>Born and Brought up in Surat, Gujarat.</p>
+                    <p>
+                        Cleared schooling with 85%<br />
+                        Pursued Bachelors in Computer Science<br />
+                        from Parul University (Vadodara, Gujarat)<br />
+                        between 2020 & 2024 receiving 8.57 CGPA.
+                    </p>
+                    <p>
+                        Tried building Self—Checkout Technology<br />
+                        Startup in India.<br />
+                        Later joined Logicwind Company as an AI<br />
+                        and Machine Learning Intern.
+                    </p>
+                </div>
+                <img src={isHovering ? colorImage : bwImage}
+                    alt="Profile Picture"
+                    onMouseEnter={() => { setIsHovering(true) }}
+                    onMouseLeave={() => { setIsHovering(false) }}
+                    style={{ willChange: 'filter' }}
+                />
             </div>
-            <img src={isHovering ? colorImage : bwImage}
-                alt="Profile Picture"
-                onMouseEnter={() => {setIsHovering(true)}}
-                onMouseLeave={() => {setIsHovering(false)}}
-                style={{willChange : 'filter'}}
-            />
         </div>
     );
 };

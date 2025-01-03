@@ -39,9 +39,9 @@ const Contact = () => {
             <h1>Get in touch</h1>
 
             <div ref={textRef} className="contact-links reveal-text-container">
-                <a href="jaiminjariwala5@gmail.com" className="contact-item">MAIL</a>
-                <a href="jaiminjariwala5@gmail.com" className="contact-item">LINKEDIN</a>
-                <a href="jaiminjariwala5@gmail.com" className="contact-item">TWITTER</a>
+                <a href="mailto:jaiminjariwala5@gmail.com" className="contact-item">MAIL</a>
+                <a href="https://www.linkedin.com/in/jaiminjariwala/" className="contact-item">LINKEDIN</a>
+                <a href="https://x.com/jaiminjariwala_" className="contact-item">TWITTER</a>
             </div>
 
             <div className="datetime-container">

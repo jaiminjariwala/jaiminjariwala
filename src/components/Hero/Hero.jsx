@@ -6,7 +6,7 @@ const Hero = () => {
     const textRef = useScrollReveal();
 
     return (
-        <div className="hero" id="hero">
+        <div className="hero" id="hero" aria-label="Hero section">
             <h1 ref={headingRef} className="reveal-text-container">
                 JAIMIN<br />JARIWALA
             </h1>

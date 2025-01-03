@@ -1,7 +1,6 @@
-/* Contact.css */
 .contact {
   min-height: 88vh;
-  padding: 4vh 2vw 4vh 2vw;
+  padding: 4vh 2vw;
   font-family: "Helvetica", sans-serif;
   display: flex;
   flex-direction: column;
@@ -33,12 +32,11 @@
   transition: color 0.3s ease;
   display: inline-block;
   position: relative;
-  width: fit-content; /* ensures the link only takes up as much space as the text */
+  width: fit-content;
 }
 
-/* Create the animated underline */
 .contact-item::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: 4px;
   left: 0;
@@ -50,11 +48,9 @@
   transition: transform 0.3s ease;
 }
 
-/* Animate the underline on hover */
 .contact-item:hover::after {
   transform: scaleX(1);
 }
-
 
 .datetime-container {
   display: flex;
@@ -95,7 +91,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  row-gap: 0.5rem;
+  gap: 0.5rem;
   flex-grow: 1;
 }
 
@@ -109,8 +105,8 @@
 
 .month {
   font-size: clamp(6rem, 3vw, 8rem);
-  -webkit-text-stroke: 2px black;
   font-weight: bold;
+  -webkit-text-stroke: 2px black;
   line-height: 0.75;
   color: black;
 }
@@ -124,101 +120,36 @@
   line-height: 0.8;
 }
 
-/* Tablet Breakpoint (IPad-Pro) */
+/* Tablet Breakpoint (768px - 1024px) */
 @media screen and (max-width: 1024px) {
   .contact {
-    min-height: 80vh;
-    padding: 0vh 4vw 2vh 4vw;
+    padding: 16vh 4vw 2vh;
     gap: 1vh;
   }
+
   .contact h1 {
     font-size: clamp(8rem, 16vw, 12rem);
     letter-spacing: -2px;
   }
+
   .contact-links {
     gap: 0.1rem;
   }
-  .contact-item {
-    font-size: clamp(4rem, 4vw, 5rem);
-  }
-  .date-card {
-    width: clamp(24rem, 14vw, 25rem);
-    height: clamp(20rem, 14vw, 25rem);
-    border: 7px solid black;
-    aspect-ratio: 1.5;
-  }
-  .holes {
-    place-items: center;
-    margin: 0.5rem 0;
-  }
-  .hole {
-    width: 2.4rem;
-    height: 2.4rem;
-    border-radius: 50%;
-    border: 7px solid black;
-    padding: 0.5rem;
-  }
-  .day, .month {
-    font-size: clamp(8rem, 4vw, 9rem);
-  }
-  .time {
-    font-size: clamp(7rem, 7vw, 8rem);
-    letter-spacing: -2px;
-    line-height: 1.1;
-  }
-}
-/* Tablet Breakpoint (IPad-Mini) */
-@media screen and (max-width: 768px) {
-  .contact {
-    padding: 16vh 4vw 2vh 4vw;
-    gap: 1vh;
-  }
-  .contact h1 {
-    font-size: clamp(8rem, 16vw, 12rem);
-    letter-spacing: -2px;
-  }
-  .contact-links {
-    gap: 0.1rem;
-  }
+
   .contact-item {
     font-size: clamp(3.8rem, 4vw, 4rem);
   }
+
   .time {
     font-size: clamp(6.5rem, 7vw, 6rem);
     letter-spacing: -2px;
   }
 }
 
-/* Tablet Breakpoint (IPad-Air) */
-@media screen and (max-width: 820px) {
+/* Mobile Breakpoint (431px - 767px) */
+@media screen and (max-width: 767px) {
   .contact {
-    padding: 16vh 4vw 2vh 4vw;
-    gap: 5vh;
-  }
-  .contact h1 {
-    font-size: clamp(8rem, 16vw, 12rem);
-    letter-spacing: -2px;
-  }
-  .contact-links {
-    gap: 0.1rem;
-  }
-  .contact-item {
-    font-size: clamp(3.8rem, 4vw, 4rem);
-  }
-  .datetime-container {
-    flex-direction: column-reverse;
-    align-items: flex-start;
-  }
-  .time {
-    font-size: clamp(6.8rem, 7vw, 8rem);
-    letter-spacing: -2px;
-  }
-}
-
-/* Mobile Breakpoint (Iphone XR, 12 Pro, 14 Pro Max, Pixel7, Samsung Galaxy S20 Ultra, Galaxy Z Fold 5, Galaxy A31/51/71) */
-@media screen and (max-width: 430px) {
-  .contact {
-    padding: 6vh 4vw 1vh 4vw;
+    padding: 6vh 4vw 1vh;
   }
 
   .contact h1 {
@@ -240,24 +171,18 @@
   }
 }
 
-/* Mobile Breakpoint (Iphone SE, Galaxy S8+) */
+/* Small Mobile Breakpoint (≤ 375px) */
 @media screen and (max-width: 375px) {
   .contact {
-    padding: 11vh 4vw 2vh 4vw;
+    padding: 11vh 4vw 2vh;
   }
 
   .contact h1 {
     font-size: clamp(4.5rem, 18vw, 8rem);
-    letter-spacing: -2px;
   }
 
   .contact-item {
     font-size: clamp(2.5rem, 4vw, 4rem);
-  }
-
-  .datetime-container {
-    flex-direction: column-reverse;
-    align-items: flex-start;
   }
 
   .time {
