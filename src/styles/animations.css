@@ -1,0 +1,33 @@
+.reveal-text-container {
+  opacity: 0;
+  transform: translateX(-90px);
+  transition: all 1.1s ease-out;
+}
+
+.reveal-text-container.reveal {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* typewriter effect */
+.typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-90px);
+}
+
+.typewriter.reveal {
+  opacity: 1;
+  transform: translateX(0);
+  animation: typing 4s steps(40, end);
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
