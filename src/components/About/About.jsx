@@ -1,14 +1,16 @@
 import './About.css';
 import bwImage from '../../assets/images/Jaimin-Grayscale-Photo.png';
 import colorImage from '../../assets/images/Jaimin-Color-Photo.png';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { useState } from 'react';
 
 const About = () => {
     const [isHovering, setIsHovering] = useState(false);
+    const textRef = useScrollReveal();
 
     return (
         <div className="about" id="about">
-            <div className="content">
+            <div ref={textRef} className="content reveal-text-container">
                 <p>Born and Brought up in Surat, Gujarat.</p>
                 <p>
                     Cleared schooling with 85%<br />

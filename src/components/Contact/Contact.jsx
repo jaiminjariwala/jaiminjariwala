@@ -1,40 +1,44 @@
 import { useState, useEffect } from "react";
 import './Contact.css';
+import { DateTime } from 'luxon';
+import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 const Contact = () => {
-    const [currentTime, setCurrentTime] = useState(new Date())
+    const [currentTime, setCurrentTime] = useState(
+        DateTime.now().setZone("Asia/Kolkata")  // set to Indian Time Zone
+    )
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentTime(new Date())
+            setCurrentTime(DateTime.now().setZone("Asia/Kolkata"))  // update time every second!
         }, 1000)
 
-        return clearInterval(timer)
+        return clearInterval(timer) // cleanup on component unmount
     }, [])
 
     const formatTime = (date) => {
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        })
+        return date.toFormat("hh:mm a"); // 05:58 PM
     }
 
     const formatDate = (date) => {
         return {
-            day: date.getDate().toString().padStart(2, '0'),
-            month: date.toLocaleString('en-US', { month: 'short' }),
-        }
+            day: date.toFormat("dd"), // 02
+            month: date.toFormat("MMM"), // Jan
+        };
     }
 
+    // extract day and month from currentTime
     const { day, month } = formatDate(currentTime)
     const time = formatTime(currentTime)
+
+    const headingRef = useScrollReveal();
+    const textRef = useScrollReveal();
 
     return (
         <div className="contact" id="contact">
             <h1>Get in touch</h1>
 
-            <div className="contact-links">
+            <div ref={textRef} className="contact-links reveal-text-container">
                 <a href="jaiminjariwala5@gmail.com" className="contact-item">MAIL</a>
                 <a href="jaiminjariwala5@gmail.com" className="contact-item">LINKEDIN</a>
                 <a href="jaiminjariwala5@gmail.com" className="contact-item">TWITTER</a>
