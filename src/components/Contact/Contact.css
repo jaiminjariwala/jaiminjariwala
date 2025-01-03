@@ -38,7 +38,7 @@
 
 /* Create the animated underline */
 .contact-item::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 4px;
   left: 0;
@@ -124,6 +124,49 @@
   line-height: 0.8;
 }
 
+/* Tablet Breakpoint (IPad-Pro) */
+@media screen and (max-width: 1024px) {
+  .contact {
+    min-height: 80vh;
+    padding: 0vh 4vw 2vh 4vw;
+    gap: 1vh;
+  }
+  .contact h1 {
+    font-size: clamp(8rem, 16vw, 12rem);
+    letter-spacing: -2px;
+  }
+  .contact-links {
+    gap: 0.1rem;
+  }
+  .contact-item {
+    font-size: clamp(4rem, 4vw, 5rem);
+  }
+  .date-card {
+    width: clamp(24rem, 14vw, 25rem);
+    height: clamp(20rem, 14vw, 25rem);
+    border: 7px solid black;
+    aspect-ratio: 1.5;
+  }
+  .holes {
+    place-items: center;
+    margin: 0.5rem 0;
+  }
+  .hole {
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    border: 7px solid black;
+    padding: 0.5rem;
+  }
+  .day, .month {
+    font-size: clamp(8rem, 4vw, 9rem);
+  }
+  .time {
+    font-size: clamp(7rem, 7vw, 8rem);
+    letter-spacing: -2px;
+    line-height: 1.1;
+  }
+}
 /* Tablet Breakpoint (IPad-Mini) */
 @media screen and (max-width: 768px) {
   .contact {
@@ -146,11 +189,11 @@
   }
 }
 
-/* Tablet Breakpoint (IPad-Mini) */
+/* Tablet Breakpoint (IPad-Air) */
 @media screen and (max-width: 820px) {
   .contact {
     padding: 16vh 4vw 2vh 4vw;
-    gap: 1vh;
+    gap: 5vh;
   }
   .contact h1 {
     font-size: clamp(8rem, 16vw, 12rem);
@@ -162,8 +205,12 @@
   .contact-item {
     font-size: clamp(3.8rem, 4vw, 4rem);
   }
+  .datetime-container {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
   .time {
-    font-size: clamp(6.5rem, 7vw, 6rem);
+    font-size: clamp(6.8rem, 7vw, 8rem);
     letter-spacing: -2px;
   }
 }
