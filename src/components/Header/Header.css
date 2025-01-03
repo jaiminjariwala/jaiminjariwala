@@ -54,10 +54,10 @@
 .nav-list li::after {
   content: "";
   position: absolute;
-  bottom: 4px;
+  bottom: 3px;
   left: 0;
   width: 100%;
-  height: 3px;
+  height: 2.5px;
   background-color: black;
   transform: scaleX(0);
   transform-origin: left;
