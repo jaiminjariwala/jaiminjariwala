@@ -8,11 +8,12 @@ const DELETING_SPEED = 200;
 const PAUSE_DURATION = 2500;
 
 const GREETINGS = [
+  "Namaste",
   "Hello",
   "Bonjour",
+  "Hola",
   "こんにちは",
   "你好",
-  "Hola"
 ];
 
 const Hero = () => {
@@ -73,8 +74,7 @@ const Hero = () => {
         </p>
         <p>
           Perhaps, Web Development & UI / UX has always been my field of interest. 
-          I am also inspired by Swiss Design, Neo—Brutalism, Typography and how 
-          Human Psychology interpret Websites.
+          I’m also inspired by Swiss Design, Neo—Brutalism, Typography & how Human Psychology interpret Websites.
         </p>
       </div>
     </div>

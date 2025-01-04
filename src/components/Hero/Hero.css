@@ -36,13 +36,12 @@
 }
 
 .hero p {
-  font-size: clamp(1.9rem, 2vw, 3rem);
+  font-size: clamp(1rem, 2.8vw, 2.4rem);
   line-height: 0.97;
   letter-spacing: -0.8px;
-  -webkit-text-stroke: 0.1px white;
   font-weight: bold;
   margin-bottom: 3vh;
-  max-width: 75vw;
+  max-width: 80vw;
 }
 
 .hero p:last-child {
