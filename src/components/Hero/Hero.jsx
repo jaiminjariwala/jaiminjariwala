@@ -8,7 +8,7 @@ const Hero = () => {
     const [displayText, setDisplayText] = useState("");
     const [isTyping, setIsTyping] = useState(true);
 
-    const words = ["Hello", "こんにちは", "你好", "Hola"];  // English, Japanese, Chinese, Spanish
+    const words = ["Hello", "Bonjour", "こんにちは", "你好", "Hola"];  // English, Japanese, Chinese, Spanish
 
     useEffect(() => {
         let currentWordIndex = 0;
@@ -25,7 +25,7 @@ const Hero = () => {
 
                 if (currentLetterIndex === currentWord.length) {
                     isDeleting = true;
-                    setTimeout(typeWriter, 2500); // Wait before starting to delete
+                    setTimeout(typeWriter, 2500);
                     return;
                 }
             } else {
@@ -39,7 +39,7 @@ const Hero = () => {
                 }
             }
 
-            const speed = isDeleting ? 200 : 300; // Adjust typing speed here
+            const speed = isDeleting ? 200 : 300; // typing speed
             setTimeout(typeWriter, speed);
         };
 

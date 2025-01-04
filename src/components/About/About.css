@@ -12,12 +12,13 @@
 .about h1 {
   font-size: clamp(5rem, 9vw, 12rem);
   font-weight: bold;
-  letter-spacing: -4px;
+  letter-spacing: -5px;
   line-height: 0.85;
-  -webkit-text-stroke: 3px black;
+  /* -webkit-text-stroke: 3px black; */
+  font-weight: bold;
   color: black;
   order: -1; /* Ensures heading always appears first */
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 
 .content-and-image {
@@ -70,10 +71,10 @@
     margin-bottom: 1.2rem;
   }
 
-  .about img {
+  /* .about img {
     width: clamp(240px, 92vw, 380px);
     margin-bottom: 2rem;
-  }
+  } */
 }
 
 /* Mobile devices */
@@ -86,7 +87,7 @@
     font-size: clamp(2.12rem, 2vw, 3rem);
   }
 
-  .about img {
+  /* .about img {
     width: clamp(270px, 100vw, 340px);
-  }
+  } */
 }
