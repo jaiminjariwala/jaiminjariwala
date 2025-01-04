@@ -5,7 +5,7 @@ import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { useState } from 'react';
 
 const About = () => {
-    const [isHovering, setIsHovering] = useState(false);
+    // const [isHovering, setIsHovering] = useState(false);
     const textRef = useScrollReveal();
 
     return (
@@ -15,26 +15,24 @@ const About = () => {
 
             <div className='content-and-image'>
                 <div ref={textRef} className="content reveal-text-container">
-                    <p>Born and Brought up in Surat, Gujarat.</p>
+                    <p>I was born and brought up in Surat, Gujarat.</p>
                     <p>
-                        Cleared schooling with 85%<br />
-                        Pursued Bachelors in Computer Science<br />
-                        from Parul University (Vadodara, Gujarat)<br />
+                        I cleared schooling with 85%,<br />
+                        pursued Bachelors in Computer Science
+                        from Parul University (Vadodara, Gujarat)
                         between 2020 & 2024 receiving 8.57 CGPA.
                     </p>
                     <p>
-                        Tried building Self—Checkout Technology<br />
-                        Startup in India.<br />
-                        Later joined Logicwind Company as an AI<br />
-                        and Machine Learning Intern.
+                        Tried building Self—Checkout Technology Startup in India.
+                        Later joined Logicwind Company as an AI / Machine Learning Intern.
                     </p>
                 </div>
-                <img src={isHovering ? colorImage : bwImage}
+                {/* <img src={isHovering ? colorImage : bwImage}
                     alt="Profile Picture"
                     onMouseEnter={() => { setIsHovering(true) }}
                     onMouseLeave={() => { setIsHovering(false) }}
                     style={{ willChange: 'filter' }}
-                />
+                /> */}
             </div>
         </div>
     );

@@ -31,13 +31,10 @@ const Header = () => {
             </button>
 
             {/* Navigation Menu */}
-
             <div className={`nav-container ${isMenuOpen ? 'open' : ''}`}>
                 <ul className="nav-list">
                     <li onClick={() => scrollToSection('hero')}>Home</li>
                     <li onClick={() => scrollToSection('about')}>About—Me</li>
-                    <li onClick={() => scrollToSection('work')}>Work</li>
-                    <li onClick={() => scrollToSection('holidays')}>Holidays</li>
                     <li onClick={() => scrollToSection('contact')}>Contact</li>
                 </ul>
             </div>
