@@ -39,8 +39,8 @@
 }
 
 .hero .dynamic-text {
-  color: #479e47;
-  letter-spacing: clamp(-8px, -0.5vw, -9px);;
+  /* color: #479e47; */
+  letter-spacing: clamp(-5px, -0.5vw, -9px);;
   /* font-weight: bold; */
 }
 
