@@ -36,13 +36,13 @@
 
 .content p {
   font-size: clamp(1rem, 2.8vw, 2.4rem);
-  line-height: 1.04;
-  letter-spacing: -0.3px;
-  -webkit-text-stroke: 0.4px black;
+  line-height: 0.97;
+  letter-spacing: -0.8px;
+  /* -webkit-text-stroke: 0.4px black; */
   font-weight: bold;
   max-width: 84vw;
 
-  letter-spacing: -1px;
+  /* letter-spacing: -1px; */
   margin: 0 0 3vh 0;
 }
 
