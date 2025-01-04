@@ -45,7 +45,7 @@ const Contact = () => {
                 </div>
                 <div className="contact-column">
                     <a href="https://github.com/jaiminjariwala" className="contact-item">GITHUB</a>
-                    <a href="https://www.kaggle.com/jaiminjariwala" className="contact-item">KAGGLE</a>
+                    <a href="https://www.kaggle.com/jaiminmukeshjariwala/code" className="contact-item">KAGGLE</a>
                 </div>
             </div>
 
