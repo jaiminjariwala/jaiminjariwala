@@ -24,14 +24,25 @@
   -webkit-text-stroke: 0;
 }
 
+.hero h2 {
+  font-size: clamp(3rem, 5vw, 5rem);
+  -webkit-text-stroke: 0.8px black;
+  max-width: 84vw;
+  font-weight: normal;
+  letter-spacing: clamp(-2px, -0.5vw, -9px);
+  line-height: 0.89;
+  color: black;
+  margin-bottom: 14vh;
+}
+
 .hero p {
-  font-size: clamp(1rem, 2.8vw, 2.4rem);
-  line-height: 1.04;
-  letter-spacing: -0.3px;
-  -webkit-text-stroke: 0.4px black;
+  font-size: clamp(1.9rem, 2vw, 3rem);
+  line-height: 0.97;
+  letter-spacing: -0.8px;
+  -webkit-text-stroke: 0.1px white;
   font-weight: bold;
   margin-bottom: 3vh;
-  max-width: 84vw;
+  max-width: 75vw;
 }
 
 .hero p:last-child {
@@ -56,6 +67,17 @@
     -webkit-text-stroke: 2px black;
   }
 
+  .hero h2 {
+    font-size: clamp(3rem, 5vw, 5rem);
+    -webkit-text-stroke: 0.8px black;
+    max-width: 84vw;
+    font-weight: normal;
+    letter-spacing: clamp(-2px, -0.5vw, -9px);
+    line-height: 0.89;
+    color: black;
+    margin-bottom: 14vh;
+  }
+
   .hero p {
     font-size: clamp(2.8rem, 3vw, 3.2rem);
   }
@@ -71,6 +93,18 @@
     font-size: clamp(8rem, 18vw, 9rem);
     letter-spacing: -2px;
     -webkit-text-stroke: 2px black;
+    margin-bottom: 2vh;
+  }
+
+  .hero h2 {
+    font-size: clamp(5rem, 5vw, 5rem);
+    -webkit-text-stroke: 0.8px black;
+    max-width: 84vw;
+    font-weight: normal;
+    letter-spacing: clamp(-2px, -0.5vw, -9px);
+    line-height: 0.89;
+    color: black;
+    margin-bottom: 14vh;
   }
 
   .hero p {
@@ -90,6 +124,16 @@
     -webkit-text-stroke: 2px black;
   }
 
+  .hero h2 {
+    font-size: clamp(4rem, 5vw, 5rem);
+    -webkit-text-stroke: 0.8px black;
+    font-weight: normal;
+    letter-spacing: clamp(-2px, -0.5vw, -9px);
+    line-height: 0.89;
+    color: black;
+    margin-bottom: 14vh;
+  }
+
   .hero p {
     font-size: clamp(2.5rem, 3vw, 2.8rem);
   }
@@ -103,6 +147,7 @@
 
   .hero h1 {
     font-size: clamp(6rem, 16vw, 7rem);
+    margin-bottom: 1.4vh;
   }
 
   .hero p {
@@ -118,6 +163,7 @@
 
   .hero h1 {
     font-size: clamp(5rem, 14vw, 6rem);
+    margin-bottom: 7vh;
   }
 
   .hero p {
@@ -133,10 +179,22 @@
 
   .hero h1 {
     font-size: clamp(3.5rem, 18vw, 5rem);
+    margin-bottom: 1.2vh;
   }
 
   .hero p {
-    font-size: clamp(1.8rem, 2vw, 2rem);
+    font-size: clamp(1.9rem, 2vw, 2rem);
+    max-width: 91vw;
+  }
+  .hero h2 {
+    font-size: clamp(3.2rem, 5vw, 5rem);
+    -webkit-text-stroke: 0.8px black;
+    max-width: 84vw;
+    font-weight: normal;
+    letter-spacing: clamp(-2px, -0.5vw, -9px);
+    line-height: 0.89;
+    color: black;
+    margin-bottom: 14vh;
   }
 }
 

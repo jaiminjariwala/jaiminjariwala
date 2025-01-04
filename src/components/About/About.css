@@ -18,7 +18,7 @@
   font-weight: bold;
   color: black;
   order: -1; /* Ensures heading always appears first */
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .content-and-image {
@@ -83,6 +83,9 @@
     padding: 10vh 4vw 5vh;
   }
 
+  .about h1 {
+    margin-bottom: 0.5vh;
+  }
   .content p {
     font-size: clamp(2.12rem, 2vw, 3rem);
   }

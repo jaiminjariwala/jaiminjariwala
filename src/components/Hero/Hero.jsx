@@ -1,75 +1,84 @@
+// Hero.jsx
 import './Hero.css';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
+
+const TYPING_SPEED = 300;
+const DELETING_SPEED = 200;
+const PAUSE_DURATION = 2500;
+
+const GREETINGS = [
+  "Hello",
+  "Bonjour",
+  "こんにちは",
+  "你好",
+  "Hola"
+];
 
 const Hero = () => {
-    const headingRef = useScrollReveal();
-    const textRef = useScrollReveal();
-    const [displayText, setDisplayText] = useState("");
-    const [isTyping, setIsTyping] = useState(true);
+  const headingRef = useScrollReveal();
+  const textRef = useScrollReveal();
+  const [displayText, setDisplayText] = useState("");
 
-    const words = ["Hello", "Bonjour", "こんにちは", "你好", "Hola"];  // English, Japanese, Chinese, Spanish
+  const typeWriter = useCallback(() => {
+    let currentWordIndex = 0;
+    let currentLetterIndex = 0;
+    let isDeleting = false;
 
-    useEffect(() => {
-        let currentWordIndex = 0;
-        let currentLetterIndex = 0;
-        let isDeleting = false;
+    const animate = () => {
+      const currentWord = GREETINGS[currentWordIndex];
 
-        const typeWriter = () => {
-            const currentWord = words[currentWordIndex];
+      if (!isDeleting) {
+        setDisplayText(currentWord.substring(0, currentLetterIndex + 1));
+        currentLetterIndex++;
 
-            if (!isDeleting) {
-                // Typing
-                setDisplayText(currentWord.substring(0, currentLetterIndex + 1));
-                currentLetterIndex++;
+        if (currentLetterIndex === currentWord.length) {
+          isDeleting = true;
+          setTimeout(animate, PAUSE_DURATION);
+          return;
+        }
+      } else {
+        setDisplayText(currentWord.substring(0, currentLetterIndex - 1));
+        currentLetterIndex--;
 
-                if (currentLetterIndex === currentWord.length) {
-                    isDeleting = true;
-                    setTimeout(typeWriter, 2500);
-                    return;
-                }
-            } else {
-                // Deleting
-                setDisplayText(currentWord.substring(0, currentLetterIndex - 1));
-                currentLetterIndex--;
+        if (currentLetterIndex === 0) {
+          isDeleting = false;
+          currentWordIndex = (currentWordIndex + 1) % GREETINGS.length;
+        }
+      }
 
-                if (currentLetterIndex === 0) {
-                    isDeleting = false;
-                    currentWordIndex = (currentWordIndex + 1) % words.length;
-                }
-            }
+      setTimeout(animate, isDeleting ? DELETING_SPEED : TYPING_SPEED);
+    };
 
-            const speed = isDeleting ? 200 : 300; // typing speed
-            setTimeout(typeWriter, speed);
-        };
+    animate();
+  }, []);
 
-        typeWriter();
+  useEffect(() => {
+    typeWriter();
+    return () => setDisplayText("");
+  }, [typeWriter]);
 
-        return () => {
-            setDisplayText("");
-        };
-    }, []);
-
-    return (
-        <div className="hero" id="hero" aria-label="Hero section">
-            <h1 ref={headingRef} className="reveal-text-container">
-                <div className="typewriter-container">
-                    <span className="dynamic-text typewriter">{displayText}</span>
-                    <span className="static-text"> I’m</span>
-                </div>
-                <div>JAIMIN JARIWALA</div>
-            </h1>
-            <div ref={textRef} className="reveal-text-container">
-                <p>
-                    I am deeply interested in Computer Vision, Reinforcement Learning & Robotics, especially Training Robots in Simulation.
-                </p>
-                <p>
-                    Perhaps, Web Development & UI / UX has always been my field of interest. I am also inspired by Swiss Design, Neo—Brutalism, Typography and how Human Psychology interpret Websites.
-                </p>
-            </div>
-
+  return (
+    <div className="hero" id="hero" aria-label="Hero section">
+      <h1 ref={headingRef} className="reveal-text-container">
+        <div className="typewriter-container">
+          <span className="dynamic-text typewriter">{displayText}</span>
         </div>
-    )
+      </h1>
+      <h2>I’m Jaimin.</h2>
+      <div ref={textRef} className="reveal-text-container">
+        <p>
+          I am deeply interested in Computer Vision, Reinforcement Learning & 
+          Robotics, especially Training Robots in Simulation.
+        </p>
+        <p>
+          Perhaps, Web Development & UI / UX has always been my field of interest. 
+          I am also inspired by Swiss Design, Neo—Brutalism, Typography and how 
+          Human Psychology interpret Websites.
+        </p>
+      </div>
+    </div>
+  );
 };
 
 export default Hero;
