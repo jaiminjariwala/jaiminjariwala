@@ -1,6 +1,6 @@
 .about {
   min-height: 100vh;
-  padding: 14vh 2vw;
+  padding: 20vh 2vw 0vh 2vw;
   font-family: "Helvetica", sans-serif;
   display: flex;
   flex-direction: column;
@@ -15,7 +15,6 @@
   letter-spacing: -5px;
   line-height: 0.85;
   /* -webkit-text-stroke: 3px black; */
-  font-weight: bold;
   color: black;
   order: -1; /* Ensures heading always appears first */
   margin-bottom: 1rem;

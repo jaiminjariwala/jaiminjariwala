@@ -69,12 +69,11 @@ const Hero = () => {
       <h2>I’m Jaimin.</h2>
       <div ref={textRef} className="reveal-text-container">
         <p>
-          I am deeply interested in Computer Vision, Reinforcement Learning & 
-          Robotics, especially Training Robots in Simulation.
+        I’m deeply interested in Computer Vision & training Robots in simulation using Reinforcement Learning.
         </p>
         <p>
           Perhaps, Web Development & UI / UX has always been my field of interest. 
-          I’m also inspired by Swiss Design, Neo—Brutalism, Typography & how Human Psychology interpret Websites.
+          I’m inspired by Swiss Design, Neo—Brutalism, Typography & how Human Psychology interpret Websites.
         </p>
       </div>
     </div>

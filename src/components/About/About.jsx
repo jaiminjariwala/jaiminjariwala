@@ -15,12 +15,8 @@ const About = () => {
 
             <div className='content-and-image'>
                 <div ref={textRef} className="content reveal-text-container">
-                    <p>I was born and brought up in Surat, Gujarat.</p>
                     <p>
-                        I cleared schooling with 85%,<br />
-                        pursued Bachelors in Computer Science
-                        from Parul University (Vadodara, Gujarat)
-                        between 2020 & 2024 receiving 8.57 CGPA.
+                    Completed my schooling with 85%<br />and earned a Bachelor's degree in Computer Science between 2020 and 2024, achieving a CGPA of 8.57.
                     </p>
                     <p>
                         Tried building Self—Checkout Technology Startup in India.
