@@ -8,27 +8,34 @@ import { useEffect } from 'react';
 
 function App() {
 	useEffect(() => {
-		// lenis for smooth scrolling
-		const lenis = new Lenis({
-			duration: 1.8, // longer duration for extended momentum
-			easing: (t) => 1 - Math.pow(1 - t, 4), // custom easing for smooth inertia
-			smoothWheel: true, // wheel smoothness
-			smoothTouch: false, // disabling for touch
-			wheelMultiplier: 1.3, // slightly more sensitive
-			lerp: 0.08, // linear interpolation for inertia effect
-		});
-
-		function raf(time) {
-			lenis.raf(time);
-			requestAnimationFrame(raf);
-		}
-
-		requestAnimationFrame(raf);
-
-		// Cleanup on component unmount
-		return () => {
-			lenis.destroy();
+		// Helper function to check if the device supports touch
+		const isTouchDevice = () => {
+			return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 		};
+
+		// Only initialize Lenis if it's not a touch device
+		if (!isTouchDevice()) {
+			const lenis = new Lenis({
+				duration: 1.8,
+				easing: (t) => 1 - Math.pow(1 - t, 4), // Smooth easing
+				smoothWheel: true,
+				smoothTouch: false,
+				wheelMultiplier: 1.3,
+				lerp: 0.08
+			});
+
+			function raf(time) {
+				lenis.raf(time);
+				requestAnimationFrame(raf);
+			}
+
+			requestAnimationFrame(raf);
+
+			// Cleanup
+			return () => {
+				lenis.destroy();
+			};
+		}
 	}, []);
 
 	return (
