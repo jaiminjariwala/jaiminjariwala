@@ -164,13 +164,11 @@
   }
 
   .contact-item {
-    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-size: clamp(2.4rem, 4vw, 4rem);
   }
 
   .contact-links {
-    /* grid-template-columns: 0; */
     gap: 1.6rem;
-    margin: 2vh 0 2vh 0;
   }
   
   .contact-column {

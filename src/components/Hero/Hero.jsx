@@ -61,13 +61,8 @@ const Hero = () => {
 
   return (
     <div className="hero" id="hero" aria-label="Hero section">
-      <h1 ref={headingRef} className="reveal-text-container">
-        <div className="typewriter-container">
-          <span className="dynamic-text typewriter">{displayText}</span>
-        </div>
-      </h1>
-      <h2>I’m Jaimin.</h2>
-      <div ref={textRef} className="reveal-text-container">
+      <h1>Good Morning,<br />I’m Jaimin.</h1>
+      <div ref={textRef} className="introduction reveal-text-container">
         <p>
         I’m deeply interested in Computer Vision & training Robots in simulation using Reinforcement Learning.
         </p>
