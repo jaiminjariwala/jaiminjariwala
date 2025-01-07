@@ -161,6 +161,7 @@
   .contact h1 {
     font-size: clamp(6rem, 18vw, 8rem);
     letter-spacing: -2px;
+    line-height: 0.78;
   }
 
   .contact-item {
