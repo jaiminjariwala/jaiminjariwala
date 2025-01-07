@@ -8,34 +8,27 @@ import { useEffect } from 'react';
 
 function App() {
 	useEffect(() => {
-		// Helper function to check if the device supports touch
-		const isTouchDevice = () => {
-			return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-		};
-
-		let lenis;
-		if (!isTouchDevice()) {
-			lenis = new Lenis({
-				duration: 0.5,
-				easing: (t) => 1 - Math.pow(1 - t, 4), // Smooth easing
-				smoothWheel: true,
-				smoothTouch: false,
-				wheelMultiplier: 1.15,
-			});
-
-			function raf(time) {
-				lenis.raf(time);
-				requestAnimationFrame(raf);
-			}
-
-			requestAnimationFrame(raf);
+		const lenis = new Lenis({
+		  duration: 0.5,
+		  easing: (t) => 1 - Math.pow(1 - t, 4), // Smooth easing
+		  smoothWheel: true,
+		  smoothTouch: true,  // Enable touch scrolling
+		  touchMultiplier: 2, // Adjust touch sensitivity
+		  wheelMultiplier: 1.15,
+		});
+	
+		function raf(time) {
+		  lenis.raf(time);
+		  requestAnimationFrame(raf);
 		}
-
+	
+		requestAnimationFrame(raf);
+	
 		// Cleanup
 		return () => {
-			if (lenis) lenis.destroy();
+		  lenis.destroy();
 		};
-	}, []);
+	  }, []);
 
 	return (
 		<div className="container">
