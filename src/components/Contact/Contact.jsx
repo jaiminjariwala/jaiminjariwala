@@ -61,7 +61,7 @@ const Contact = () => {
                         <span className="month">{month}</span>
                     </div>
                 </div>
-                <div className="time">{time}</div>
+                <div className="time">{time} IST</div>
             </div>
         </div>
     );
