@@ -21,7 +21,7 @@ const Hero = () => {
     } else if (currentHour >= 17 && currentHour < 22) {
       return "Good Evening";
     } else {
-      return "Hey There";
+      return "Hello";
     }
   };
 

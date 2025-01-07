@@ -13,15 +13,14 @@ function App() {
 			return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 		};
 
-		// Only initialize Lenis if it's not a touch device
+		let lenis;
 		if (!isTouchDevice()) {
-			const lenis = new Lenis({
-				duration: 1.8,
+			lenis = new Lenis({
+				duration: 0.5,
 				easing: (t) => 1 - Math.pow(1 - t, 4), // Smooth easing
 				smoothWheel: true,
 				smoothTouch: false,
-				wheelMultiplier: 1.3,
-				lerp: 0.08
+				wheelMultiplier: 1.15,
 			});
 
 			function raf(time) {
@@ -30,12 +29,12 @@ function App() {
 			}
 
 			requestAnimationFrame(raf);
-
-			// Cleanup
-			return () => {
-				lenis.destroy();
-			};
 		}
+
+		// Cleanup
+		return () => {
+			if (lenis) lenis.destroy();
+		};
 	}, []);
 
 	return (
