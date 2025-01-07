@@ -39,7 +39,7 @@
   letter-spacing: -0.8px;
   /* -webkit-text-stroke: 0.4px black; */
   font-weight: bold;
-  max-width: 84vw;
+  max-width: 80vw;
 
   /* letter-spacing: -1px; */
   margin: 0 0 3vh 0;
@@ -86,7 +86,7 @@
     margin-bottom: 0.5vh;
   }
   .content p {
-    font-size: clamp(2.12rem, 2vw, 3rem);
+    font-size: clamp(1.9rem, 2vw, 2rem);
   }
 
   /* .about img {

@@ -168,8 +168,8 @@
   }
 
   .contact-links {
-    grid-template-columns: 0;
-    gap: 1rem;
+    /* grid-template-columns: 0; */
+    gap: 1.6rem;
     margin: 2vh 0 2vh 0;
   }
   
@@ -197,8 +197,12 @@
     font-size: clamp(4.5rem, 18vw, 8rem);
   }
 
+  .contact-links {
+    gap: 2rem;
+  }
+  
   .contact-item {
-    font-size: clamp(2.5rem, 4vw, 4rem);
+    font-size: clamp(2rem, 4vw, 4rem);
   }
 
   .time {
