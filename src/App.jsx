@@ -3,7 +3,7 @@ import Contact from './components/Contact/Contact';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 import './styles/animations.css';
-import Lenis from '@studio-freight/lenis'
+import Lenis from '@studio-freight/lenis';
 import { useEffect } from 'react';
 
 function App() {
@@ -15,37 +15,33 @@ function App() {
 				(navigator.msMaxTouchPoints > 0));
 		};
 
-		// Only initialize Lenis for non-touch devices
-		if (!isTouchDevice()) {
-			const lenis = new Lenis({
-				duration: 0.5,
-				easing: (t) => 1 - Math.pow(1 - t, 4),
-				smoothWheel: true,
-				wheelMultiplier: 1.15,
-			});
+		// Initialize Lenis for smooth scrolling on both touch and non-touch devices
+		const lenis = new Lenis({
+			duration: 0.5,
+			easing: (t) => 1 - Math.pow(1 - t, 4),
+			smoothWheel: true,
+			wheelMultiplier: 1.3,
+			smoothTouch: isTouchDevice() // Enable smooth scrolling for touch devices
+		});
 
-			function raf(time) {
-				lenis.raf(time);
-				requestAnimationFrame(raf);
-			}
-
+		// Animation frame for Lenis
+		function raf(time) {
+			lenis.raf(time);
 			requestAnimationFrame(raf);
-
-			// Cleanup
-			return () => {
-				lenis.destroy();
-			};
 		}
+
+		requestAnimationFrame(raf);
+
+		// Cleanup
+		return () => {
+			lenis.destroy();
+		};
 	}, []);
 
 	return (
-		<div className="container" style={{ height: '100%' }}>
+		<div className="container">
 			<Header />
-			<main style={{
-				minHeight: '100vh',
-				overflowY: 'auto',
-				WebkitOverflowScrolling: 'touch' // Enable momentum scrolling on iOS
-			}}>
+			<main>
 				<Hero />
 				<About />
 				<Contact />
