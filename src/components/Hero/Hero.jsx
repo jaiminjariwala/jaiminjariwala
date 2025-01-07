@@ -3,65 +3,36 @@ import './Hero.css';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 import { useEffect, useState, useCallback } from 'react';
 
-const TYPING_SPEED = 300;
-const DELETING_SPEED = 200;
-const PAUSE_DURATION = 2500;
-
-const GREETINGS = [
-  "Namaste",
-  "Hello",
-  "Bonjour",
-  "Hola",
-  "こんにちは",
-  "你好",
-];
 
 const Hero = () => {
-  const headingRef = useScrollReveal();
   const textRef = useScrollReveal();
   const [displayText, setDisplayText] = useState("");
+  const [dynamicGreeting, setDynamicGreeting] = useState("Good day");
 
-  const typeWriter = useCallback(() => {
-    let currentWordIndex = 0;
-    let currentLetterIndex = 0;
-    let isDeleting = false;
+  const getDynamicGreeting = () => {
+    const currentHour = new Date().getHours();
 
-    const animate = () => {
-      const currentWord = GREETINGS[currentWordIndex];
-
-      if (!isDeleting) {
-        setDisplayText(currentWord.substring(0, currentLetterIndex + 1));
-        currentLetterIndex++;
-
-        if (currentLetterIndex === currentWord.length) {
-          isDeleting = true;
-          setTimeout(animate, PAUSE_DURATION);
-          return;
-        }
-      } else {
-        setDisplayText(currentWord.substring(0, currentLetterIndex - 1));
-        currentLetterIndex--;
-
-        if (currentLetterIndex === 0) {
-          isDeleting = false;
-          currentWordIndex = (currentWordIndex + 1) % GREETINGS.length;
-        }
-      }
-
-      setTimeout(animate, isDeleting ? DELETING_SPEED : TYPING_SPEED);
-    };
-
-    animate();
-  }, []);
+    if (currentHour >= 4 && currentHour < 12) {
+      return "Good Morning";
+    } else if (currentHour === 12) {
+      return "Good Noon";
+    } else if (currentHour > 12 && currentHour < 17) {
+      return "Good Afternoon";
+    } else if (currentHour >= 17 && currentHour < 22) {
+      return "Good Evening";
+    } else {
+      return "Hey There";
+    }
+  };
 
   useEffect(() => {
-    typeWriter();
+    setDynamicGreeting(getDynamicGreeting());
     return () => setDisplayText("");
-  }, [typeWriter]);
+  })
 
   return (
     <div className="hero" id="hero" aria-label="Hero section">
-      <h1>Good Morning,<br />I’m Jaimin.</h1>
+      <h1>{dynamicGreeting},<br />I’m Jaimin.</h1>
       <div ref={textRef} className="introduction reveal-text-container">
         <p>
         I’m deeply interested in Computer Vision & training Robots in simulation using Reinforcement Learning.
