@@ -8,32 +8,44 @@ import { useEffect } from 'react';
 
 function App() {
 	useEffect(() => {
-		const lenis = new Lenis({
-		  duration: 0.5,
-		  easing: (t) => 1 - Math.pow(1 - t, 4), // Smooth easing
-		  smoothWheel: true,
-		  smoothTouch: true,  // Enable touch scrolling
-		  touchMultiplier: 2, // Adjust touch sensitivity
-		  wheelMultiplier: 1.15,
-		});
-	
-		function raf(time) {
-		  lenis.raf(time);
-		  requestAnimationFrame(raf);
-		}
-	
-		requestAnimationFrame(raf);
-	
-		// Cleanup
-		return () => {
-		  lenis.destroy();
+		// Helper function to check if the device supports touch
+		const isTouchDevice = () => {
+			return (('ontouchstart' in window) ||
+				(navigator.maxTouchPoints > 0) ||
+				(navigator.msMaxTouchPoints > 0));
 		};
-	  }, []);
+
+		// Only initialize Lenis for non-touch devices
+		if (!isTouchDevice()) {
+			const lenis = new Lenis({
+				duration: 0.5,
+				easing: (t) => 1 - Math.pow(1 - t, 4),
+				smoothWheel: true,
+				wheelMultiplier: 1.15,
+			});
+
+			function raf(time) {
+				lenis.raf(time);
+				requestAnimationFrame(raf);
+			}
+
+			requestAnimationFrame(raf);
+
+			// Cleanup
+			return () => {
+				lenis.destroy();
+			};
+		}
+	}, []);
 
 	return (
-		<div className="container">
+		<div className="container" style={{ height: '100%' }}>
 			<Header />
-			<main>
+			<main style={{
+				minHeight: '100vh',
+				overflowY: 'auto',
+				WebkitOverflowScrolling: 'touch' // Enable momentum scrolling on iOS
+			}}>
 				<Hero />
 				<About />
 				<Contact />
