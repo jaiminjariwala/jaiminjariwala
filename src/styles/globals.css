@@ -19,7 +19,7 @@ body, main {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Ensure no horizontal scrolling */
+  overflow-x: hidden; /* Ensures no horizontal scrolling */
   position: relative;
   scroll-behavior: smooth;
   overscroll-behavior: none; /* Prevent scrolling past the content */
