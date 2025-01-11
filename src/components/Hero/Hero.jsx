@@ -33,11 +33,11 @@ const Hero = () => {
   return (
     <div className="hero" id="hero" aria-label="Hero section">
       <h1>{dynamicGreeting},<br />I’m Jaimin.</h1>
-      <div ref={textRef} className="introduction reveal-text-container">
-        <p>
+      <div ref={textRef} className="introduction">
+        <p className='reveal-text-container'>
         I’m deeply interested in Computer Vision & training Robots in simulation using Reinforcement Learning.
         </p>
-        <p>
+        <p className='reveal-text-container'>
           Perhaps, Web Development & UI / UX has always been my field of interest. 
           I’m inspired by Swiss Design, Neo—Brutalism, Typography & how Human Psychology interpret Websites.
         </p>

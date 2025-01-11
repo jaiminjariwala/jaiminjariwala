@@ -37,15 +37,28 @@ const Contact = () => {
         <div className="contact" id="contact">
             <h1>Get in touch</h1>
 
-            <div ref={textRef} className="contact-links reveal-text-container">
+            <div ref={textRef} className="contact-links">
                 <div className="contact-column">
-                    <a href="mailto:jaiminjariwala5@gmail.com" className="contact-item">MAIL</a>
-                    <a href="https://www.linkedin.com/in/jaiminjariwala/" className="contact-item">LINKEDIN</a>
-                    <a href="https://x.com/jaiminjariwala_" className="contact-item">TWITTER</a>
+                    <a href="mailto:jaiminjariwala5@gmail.com"
+                        className="contact-item reveal-text-container">
+                        MAIL
+                    </a>
+                    <a href="https://www.linkedin.com/in/jaiminjariwala/" className="contact-item reveal-text-container">
+                        LINKEDIN
+                    </a>
+                    <a href="https://x.com/jaiminjariwala_"
+                        className="contact-item reveal-text-container">
+                        TWITTER
+                    </a>
                 </div>
                 <div className="contact-column">
-                    <a href="https://github.com/jaiminjariwala" className="contact-item">GITHUB</a>
-                    <a href="https://www.kaggle.com/jaiminmukeshjariwala/code" className="contact-item">KAGGLE</a>
+                    <a href="https://github.com/jaiminjariwala"
+                        className="contact-item reveal-text-container">
+                        GITHUB
+                    </a>
+                    <a href="https://www.kaggle.com/jaiminmukeshjariwala/code" className="contact-item reveal-text-container">
+                        KAGGLE
+                    </a>
                 </div>
             </div>
 

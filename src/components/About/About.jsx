@@ -14,11 +14,11 @@ const About = () => {
             <h1>About—Me</h1>
 
             <div className='content-and-image'>
-                <div ref={textRef} className="content reveal-text-container">
-                    <p>
+                <div ref={textRef} className="content">
+                    <p className='reveal-text-container'>
                     Completed my schooling with 85%<br />and earned a Bachelor's degree in Computer Science between 2020 and 2024, achieving a CGPA of 8.57.
                     </p>
-                    <p>
+                    <p className='reveal-text-container'>
                         Tried building Self—Checkout Technology Startup in India.
                         Later joined Logicwind Company as an AI / Machine Learning Intern.
                     </p>
