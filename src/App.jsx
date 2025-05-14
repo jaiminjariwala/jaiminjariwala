@@ -5,6 +5,7 @@ import Hero from './components/Hero/Hero';
 import './styles/animations.css';
 import Lenis from '@studio-freight/lenis';
 import { useEffect } from 'react';
+import History from './components/History/History';
 
 function App() {
 	useEffect(() => {
@@ -44,6 +45,7 @@ function App() {
 			<main>
 				<Hero />
 				<About />
+				<History />
 				<Contact />
 			</main>
 		</div>

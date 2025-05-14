@@ -1,12 +1,11 @@
 // Hero.jsx
 import './Hero.css';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
-import { useEffect, useState, useCallback } from 'react';
-
+import { useEffect, useState } from 'react';
 
 const Hero = () => {
   const textRef = useScrollReveal();
-  const [displayText, setDisplayText] = useState("");
+  const [, setDisplayText] = useState("");
   const [dynamicGreeting, setDynamicGreeting] = useState("Good day");
 
   const getDynamicGreeting = () => {
@@ -28,18 +27,14 @@ const Hero = () => {
   useEffect(() => {
     setDynamicGreeting(getDynamicGreeting());
     return () => setDisplayText("");
-  })
+  }, []);
 
   return (
     <div className="hero" id="hero" aria-label="Hero section">
       <h1>{dynamicGreeting},<br />I’m Jaimin.</h1>
       <div ref={textRef} className="introduction">
-        <p className='reveal-text-container'>
-        I’m deeply interested in Computer Vision & training Robots in simulation using Reinforcement Learning.
-        </p>
-        <p className='reveal-text-container'>
-          Perhaps, Web Development & UI / UX has always been my field of interest. 
-          I’m inspired by Swiss Design, Neo—Brutalism, Typography & how Human Psychology interpret Websites.
+        <p className="reveal-text-container">
+          On a mission to build intelligent robots that perceive, move, and adapt — from factory floors to planetary surfaces.
         </p>
       </div>
     </div>

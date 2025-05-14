@@ -30,7 +30,6 @@ const Contact = () => {
     const { day, month } = formatDate(currentTime);
     const time = formatTime(currentTime);
 
-    const headingRef = useScrollReveal();
     const textRef = useScrollReveal();
 
     return (

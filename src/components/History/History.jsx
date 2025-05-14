@@ -1,22 +1,23 @@
-import './About.css';
+import './History.css';
 import { useScrollReveal } from '../../hooks/useScrollReveal';
 
-const About = () => {
+const History = () => {
     // const [isHovering, setIsHovering] = useState(false);
     const textRef = useScrollReveal();
 
     return (
-        <div className="about" id="about">
+        <div className="history" id="history">
             
-            <h1>About—Me</h1>
+            <h1>History</h1>
 
             <div className='content-and-image'>
                 <div ref={textRef} className="content">
                     <p className='reveal-text-container'>
-                        I’m passionate about enabling robotic autonomy for both humanoid and space exploration robots — from SLAM and Computer Vision to Reinforcement and Imitation Learning in simulated environments.
+                    Completed my schooling with 85%<br />and earned a Bachelor&apos;s degree in Computer Science between 2020 and 2024, achieving a CGPA of 8.57.
                     </p>
                     <p className='reveal-text-container'>
-                        Currently exploring <strong>ROS2</strong>, <strong>Isaac Sim</strong>, <strong>MuJoCo</strong>, <strong>PyBullet</strong>, <strong>Gazebo</strong> & <strong>Deep RL</strong> to shape the next generation of robotic intelligence.
+                        Tried building Self—Checkout Technology Startup in India.
+                        Later joined Logicwind Company as an AI / Machine Learning Intern.
                     </p>
                 </div>
                 {/* <img src={isHovering ? colorImage : bwImage}
@@ -30,4 +31,4 @@ const About = () => {
     );
 };
 
-export default About;
+export default History;
