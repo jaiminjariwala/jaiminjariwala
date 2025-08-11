@@ -16,7 +16,7 @@ const About = () => {
                         I’m passionate about enabling robotic autonomy for both humanoid and space exploration robots — from SLAM and Computer Vision to Reinforcement and Imitation Learning in simulated environments.
                     </p>
                     <p className='reveal-text-container'>
-                        Currently exploring <strong>ROS2</strong>, <strong>Isaac Sim</strong>, <strong>MuJoCo</strong>, <strong>PyBullet</strong>, <strong>Gazebo</strong> & <strong>Deep RL</strong> to shape the next generation of robotic intelligence.
+                        Furthermore, I like analyzing data, carrying out insights from it and building Machine Learning models using Pytorch.
                     </p>
                 </div>
                 {/* <img src={isHovering ? colorImage : bwImage}
