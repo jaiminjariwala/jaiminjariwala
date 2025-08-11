@@ -5,12 +5,12 @@ import { useScrollReveal } from '../../hooks/useScrollReveal';
 
 const Contact = () => {
     const [currentTime, setCurrentTime] = useState(
-        DateTime.now().setZone("Asia/Kolkata")
+        DateTime.now().setZone("America/New_York")
     );
 
     useEffect(() => {
         const timer = setInterval(() => {
-            setCurrentTime(DateTime.now().setZone("Asia/Kolkata"))
+            setCurrentTime(DateTime.now().setZone("America/New_York"))
         }, 1000);
 
         return () => clearInterval(timer);
@@ -38,24 +38,36 @@ const Contact = () => {
 
             <div ref={textRef} className="contact-links">
                 <div className="contact-column">
-                    <a href="mailto:jaiminjariwala5@gmail.com"
-                        className="contact-item reveal-text-container">
+                    <a href="mailto:jaiminjariwala5@icloud.com"
+                        className="contact-item reveal-text-container"
+                        target="_blank"
+                        rel="noopener noreferrer">
                         MAIL
                     </a>
-                    <a href="https://www.linkedin.com/in/jaiminjariwala/" className="contact-item reveal-text-container">
+                    <a href="https://www.linkedin.com/in/jaimin-jariwala-296b02378/" 
+                        className="contact-item reveal-text-container"
+                        target="_blank"
+                        rel="noopener noreferrer">
                         LINKEDIN
                     </a>
                     <a href="https://x.com/jaiminjariwala_"
-                        className="contact-item reveal-text-container">
+                        className="contact-item reveal-text-container"
+                        target="_blank"
+                        rel="noopener noreferrer">
                         TWITTER
                     </a>
                 </div>
                 <div className="contact-column">
                     <a href="https://github.com/jaiminjariwala"
-                        className="contact-item reveal-text-container">
+                        className="contact-item reveal-text-container"
+                        target="_blank"
+                        rel="noopener noreferrer">
                         GITHUB
                     </a>
-                    <a href="https://www.kaggle.com/jaiminmukeshjariwala/code" className="contact-item reveal-text-container">
+                    <a href="https://www.kaggle.com/jaiminmukeshjariwala/code" 
+                        className="contact-item reveal-text-container"
+                        target="_blank"
+                        rel="noopener noreferrer">
                         KAGGLE
                     </a>
                 </div>
@@ -73,7 +85,7 @@ const Contact = () => {
                         <span className="month">{month}</span>
                     </div>
                 </div>
-                <div className="time">{time} IST</div>
+                <div className="time">{time} EST</div>
             </div>
         </div>
     );

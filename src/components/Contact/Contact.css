@@ -115,6 +115,7 @@
   -webkit-text-stroke: 2px black;
   line-height: 0.75;
   color: black;
+  padding-bottom: 0.8rem;
 }
 
 .time {
