@@ -70,6 +70,12 @@ const Contact = () => {
                         rel="noopener noreferrer">
                         KAGGLE
                     </a>
+                    <a href="https://leetcode.com/u/jaiminjariwala5/"
+                        className="contact-item reveal-text-container"
+                        target="_blank"
+                        rel="noopener noreferrer">
+                        LEETCODE
+                    </a>
                 </div>
             </div>
 
