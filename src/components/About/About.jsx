@@ -13,10 +13,10 @@ const About = () => {
             <div className='content-and-image'>
                 <div ref={textRef} className="content">
                     <p className='reveal-text-container'>
-                        I’m passionate about enabling robotic autonomy for both humanoid and space exploration robots — through SLAM, Computer Vision, Reinforcement & Imitation Learning in simulated environments.
+                        I’m passionate about building intelligent systems that empower devices to see, understand, and interact with the world as humans do. My goal is to design AI models that run efficiently on-device — enabling real-time perception, learning, and adaptation while keeping user experience and privacy at the core.
                     </p>
                     <p className='reveal-text-container'>
-                        Furthermore, I like analyzing data, carrying out insights from it and building Machine Learning models using Pytorch.
+                        My interests lie at the intersection of Deep Learning, Computer Vision and on-device AI, where intelligence enhances everyday experiences without compromising user trust.
                     </p>
                 </div>
                 {/* <img src={isHovering ? colorImage : bwImage}
