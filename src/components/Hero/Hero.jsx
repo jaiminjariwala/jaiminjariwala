@@ -34,7 +34,7 @@ const Hero = () => {
       <h1>{dynamicGreeting},<br />I’m Jaimin.</h1>
       <div ref={textRef} className="introduction">
         <p className="reveal-text-container">
-          On a mission to build intelligent robots that perceive, move, and adapt — from factory floors to planetary surfaces.
+          Currently learning Computer Vision, Reinforcement Learning and solving problems on Leetcode.
         </p>
       </div>
     </div>

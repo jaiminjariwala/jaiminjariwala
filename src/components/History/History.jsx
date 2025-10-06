@@ -16,7 +16,10 @@ const History = () => {
                     Earned a Bachelor&apos;s degree in Computer Science between 2020 and 2024, achieving a CGPA of 8.57.
                     </p>
                     <p className='reveal-text-container'>
-                        Later joined Logicwind Company as an AI / Machine Learning Intern.
+                        Later joined Logicwind Company as an AI / Machine Learning Intern from May 2024 to December 2024.
+                    </p>
+                    <p className='reveal-text-container'>
+                        Currently pursing a Master&apos;s degree in Computer Science at The George Washington University, Washington D.C, with an expected graduation date in Spring 2027.
                     </p>
                 </div>
                 {/* <img src={isHovering ? colorImage : bwImage}
