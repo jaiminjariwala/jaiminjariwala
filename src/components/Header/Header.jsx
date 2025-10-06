@@ -18,7 +18,12 @@ const Header = () => {
 
     return (
         <nav className="header-nav">
-            <div className='logo'></div>
+            <div
+                className="logo"
+                onClick={() => scrollToSection('hero')}
+                style={{ cursor: 'pointer' }}
+                aria-label="Go to home section">
+            </div>
 
             {/* Hamburger Menu Button */}
             <button className={`hamburger ${isMenuOpen ? 'open' : ''}`}
