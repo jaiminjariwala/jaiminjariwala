@@ -41,23 +41,6 @@
   width: fit-content;
 }
 
-.contact-item::after {
-  content: '';
-  position: absolute;
-  bottom: 3.2px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background-color: black;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.contact-item:hover::after {
-  transform: scaleX(1);
-}
-
 .datetime-container {
   display: flex;
   align-items: flex-end;
