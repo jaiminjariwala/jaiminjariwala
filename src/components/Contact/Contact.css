@@ -19,7 +19,7 @@
 
 .contact-links {
   display: grid;
-  grid-template-columns: 1fr 3.4fr;
+  grid-template-columns: 1fr 4fr;
   gap: 0 1rem;
   line-height: 1.1;
 }
@@ -102,7 +102,7 @@
 }
 
 .time {
-  font-size: clamp(5rem, 8vw, 8rem);
+  font-size: clamp(5rem, 5vw, 8rem);
   font-weight: bold;
   -webkit-text-stroke: 2px black;
   color: black;
@@ -131,7 +131,7 @@
   }
 
   .time {
-    font-size: clamp(6.5rem, 7vw, 6rem);
+    font-size: clamp(6.5rem, 5vw, 6rem);
     letter-spacing: -2px;
   }
 }
@@ -166,7 +166,7 @@
   }
 
   .time {
-    font-size: clamp(3.8rem, 6vw, 4rem);
+    font-size: clamp(3.8rem, 5vw, 4rem);
   }
 }
 
@@ -189,6 +189,6 @@
   }
 
   .time {
-    font-size: clamp(3.2rem, 6vw, 4rem);
+    font-size: clamp(3.2rem, 5vw, 4rem);
   }
 }

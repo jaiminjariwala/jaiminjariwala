@@ -1,4 +1,4 @@
-import About from './components/About/About';
+// import About from './components/About/About';
 import Contact from './components/Contact/Contact';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
@@ -44,7 +44,7 @@ function App() {
 			<Header />
 			<main>
 				<Hero />
-				<About />
+				{/* <About /> */}
 				<History />
 				<Contact />
 			</main>

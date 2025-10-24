@@ -8,18 +8,18 @@ const History = () => {
     return (
         <div className="history" id="history">
             
-            <h1>History</h1>
+            <h1 className='reveal-text-container'>Background</h1>
 
             <div className='content-and-image'>
                 <div ref={textRef} className="content">
                     <p className='reveal-text-container'>
-                    Earned a Bachelor&apos;s degree in Computer Science between 2020 and 2024, achieving a CGPA of 8.57.
+                    Bachelor&apos;s in Computer Science 2020—24<br></br>(3.5 GPA)
                     </p>
                     <p className='reveal-text-container'>
-                        Later joined Logicwind Company as an AI / Machine Learning Intern from May 2024 to December 2024.
+                        AI / Machine Learning Intern, Logicwind<br></br>May—December 2024.
                     </p>
                     <p className='reveal-text-container'>
-                        Currently pursing a Master&apos;s degree in Computer Science at The George Washington University, Washington D.C, with an expected graduation date in Spring 2027.
+                        Currently pursing a Master&apos;s in Computer Science from The George Washington University, Washington D.C.
                     </p>
                 </div>
                 {/* <img src={isHovering ? colorImage : bwImage}

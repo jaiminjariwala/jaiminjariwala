@@ -4,6 +4,7 @@
   --hamburger-width: 36px;
   --hamburger-height: 24px;
   --line-height: 3.8px;
+  --total-fade-height: 140px; /* Total height of blur+fade zone */
 }
 
 .header-nav {
@@ -15,7 +16,6 @@
   font-size: clamp(20px, 3vw, 24px);
   font-weight: 400;
   -webkit-text-stroke: 1.2px black;
-  /* text-shadow: 0 0 1.5px rgba(0, 0, 0, 0.5);    */
   padding: 0.7rem 2rem;
 
   position: fixed;
@@ -27,9 +27,59 @@
   height: var(--header-height);
   box-sizing: border-box;
 
-  backdrop-filter: blur(5px); /* applying blur effect */
-  background-color: rgba(255, 255, 255, 0.7);
-  /* box-shadow: 0 4px 30px rgba(255, 255, 255, 100); */
+  /* No background, no border - completely invisible except for blur effect */
+  background-color: transparent;
+}
+
+/* Single unified blur-to-fade zone */
+.header-nav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--total-fade-height);
+  
+  /* Strong blur at top, fades out toward bottom */
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(85px);
+  
+  /* White overlay - transparent at top (just blur), solid white at bottom (fade) */
+  /* background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.3) 40%,
+    rgba(255, 255, 255, 0.5) 55%,
+    rgba(255, 255, 255, 0.7) 70%,
+    rgba(255, 255, 255, 0.85) 85%,
+    rgba(255, 255, 255, 1) 100%
+  ); */
+  
+  /* Control blur intensity - full blur at top, no blur at bottom */
+  mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.9) 25%,
+    rgba(0, 0, 0, 0.7) 45%,
+    rgba(0, 0, 0, 0.5) 60%,
+    rgba(0, 0, 0, 0.3) 75%,
+    rgba(0, 0, 0, 0.1) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.9) 25%,
+    rgba(0, 0, 0, 0.7) 45%,
+    rgba(0, 0, 0, 0.5) 60%,
+    rgba(0, 0, 0, 0.3) 75%,
+    rgba(0, 0, 0, 0.1) 90%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  
+  pointer-events: none;
+  z-index: -1;
 }
 
 .logo {
@@ -168,6 +218,5 @@
 
   .nav-list li {
     font-size: 40px;
-    /* -webkit-text-stroke: 2px black; */
   }
 }
