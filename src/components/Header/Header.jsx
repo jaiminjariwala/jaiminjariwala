@@ -23,7 +23,6 @@ const Header = () => {
                 onClick={() => scrollToSection('hero')}
                 style={{ cursor: 'pointer' }}
                 aria-label="Go to home section">
-                    ☃️
             </div>
 
             {/* Hamburger Menu Button */}
