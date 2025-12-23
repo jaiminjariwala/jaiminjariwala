@@ -39,7 +39,6 @@ const Header = () => {
             <div className={`nav-container ${isMenuOpen ? 'open' : ''}`}>
                 <ul className="nav-list">
                     <li onClick={() => scrollToSection('hero')}>Home</li>
-                    {/* <li onClick={() => scrollToSection('about')}>About</li> */}
                     <li onClick={() => scrollToSection('history')}>Background</li>
                     <li onClick={() => scrollToSection('contact')}>Contact</li>
                 </ul>

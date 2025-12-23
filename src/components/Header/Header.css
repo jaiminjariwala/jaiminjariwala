@@ -4,7 +4,6 @@
   --hamburger-width: 36px;
   --hamburger-height: 24px;
   --line-height: 3.8px;
-  --total-fade-height: 140px; /* Total height of blur+fade zone */
 }
 
 .header-nav {
@@ -17,6 +16,13 @@
   font-weight: 400;
   -webkit-text-stroke: 1.2px black;
   padding: 0.7rem 2rem;
+  
+  /* Apple-style frosted glass effect */
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 
   position: fixed;
   top: 0;
@@ -26,60 +32,6 @@
   z-index: 100;
   height: var(--header-height);
   box-sizing: border-box;
-
-  /* No background, no border - completely invisible except for blur effect */
-  background-color: transparent;
-}
-
-/* Single unified blur-to-fade zone */
-.header-nav::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--total-fade-height);
-
-  /* Strong blur at top, fades out toward bottom */
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(85px);
-
-  /* White overlay - transparent at top (just blur), solid white at bottom (fade) */
-  /* background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.1) 20%,
-    rgba(255, 255, 255, 0.3) 40%,
-    rgba(255, 255, 255, 0.5) 55%,
-    rgba(255, 255, 255, 0.7) 70%,
-    rgba(255, 255, 255, 0.85) 85%,
-    rgba(255, 255, 255, 1) 100%
-  ); */
-
-  /* Control blur intensity - full blur at top, no blur at bottom */
-  mask-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.9) 25%,
-    rgba(0, 0, 0, 0.7) 45%,
-    rgba(0, 0, 0, 0.5) 60%,
-    rgba(0, 0, 0, 0.3) 75%,
-    rgba(0, 0, 0, 0.1) 90%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 1) 0%,
-    rgba(0, 0, 0, 0.9) 25%,
-    rgba(0, 0, 0, 0.7) 45%,
-    rgba(0, 0, 0, 0.5) 60%,
-    rgba(0, 0, 0, 0.3) 75%,
-    rgba(0, 0, 0, 0.1) 90%,
-    rgba(0, 0, 0, 0) 100%
-  );
-
-  pointer-events: none;
-  z-index: -1;
 }
 
 .logo {
