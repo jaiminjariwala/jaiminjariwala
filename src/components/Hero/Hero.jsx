@@ -14,9 +14,9 @@ const Hero = () => {
       <h1 className='reveal-text-container'>Hi.<br />I’m Jaimin.</h1>
       <div ref={textRef} className="introduction">
         <p className="reveal-text-container">
-          Designing and Building Websites.<br></br>
-          Obsessed with UI, inspired by Swiss Design.<br></br>
-          Exploring GSAP and Three.js 
+          Love solving problems & building scalable web applications.<br></br>
+          Inspired by Swiss Design, Glassmorphism & Neobrutalism.<br></br>
+          Exploring GSAP animations and Three.js.
         </p>
       </div>
     </div>

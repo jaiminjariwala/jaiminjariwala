@@ -44,7 +44,7 @@
 .datetime-container {
   display: flex;
   align-items: flex-end;
-  gap: 1rem;
+  gap: 1.5rem;
   margin: 0;
   height: auto;
 }
@@ -53,6 +53,7 @@
   background-color: #479e47;
   width: clamp(15rem, 14vw, 20rem);
   border: 5px solid black;
+  border-radius: 20px;
   aspect-ratio: 1.5;
   position: relative;
   padding: 0.6rem;
@@ -80,7 +81,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.5rem;
+  align-items: left;
+  gap: 0;
   flex-grow: 1;
 }
 
@@ -88,26 +90,43 @@
   font-size: clamp(6rem, 4vw, 8rem);
   font-weight: bold;
   -webkit-text-stroke: 2px black;
-  line-height: 0.7;
+  line-height: 0.75;
   color: black;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
 
 .month {
   font-size: clamp(6rem, 3vw, 8rem);
   font-weight: bold;
   -webkit-text-stroke: 2px black;
-  line-height: 0.75;
+  line-height: 0.9;
   color: black;
-  padding-bottom: 0.8rem;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
 
-.time {
-  font-size: clamp(5rem, 5vw, 8rem);
-  font-weight: bold;
-  -webkit-text-stroke: 2px black;
-  color: black;
-  letter-spacing: -5px;
-  line-height: 0.8;
+/* Clock wrapper with iOS-style background */
+.clock-wrapper {
+  /* background: linear-gradient(135deg, #e7e7e7 0%, #c7c7c7 100%); */
+  /* background-color: #85bd85; */
+  border-radius: 20px;
+  /* border: 5px solid black; */
+  outline-offset: 0;
+  /* padding: 0.3rem; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(15rem, 14vw, 20rem);
+  height: clamp(15rem, 14vw, 20rem);
+  box-sizing: border-box;
+}
+
+.clock {
+  width: 320px;
+  height: 320px;
 }
 
 /* Tablet Breakpoint (768px - 1024px) */
@@ -130,9 +149,9 @@
     font-size: clamp(3.8rem, 4vw, 4rem);
   }
 
-  .time {
-    font-size: clamp(6.5rem, 5vw, 6rem);
-    letter-spacing: -2px;
+  .clock-wrapper {
+    width: clamp(13rem, 18vw, 18rem);
+    height: clamp(13rem, 18vw, 18rem);
   }
 }
 
@@ -162,12 +181,15 @@
   }
 
   .datetime-container {
-    flex-direction: column-reverse;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 1.5rem;
+    flex-wrap: wrap;
   }
 
-  .time {
-    font-size: clamp(3.5rem, 5vw, 4rem);
+  .clock-wrapper {
+    width: clamp(12rem, 35vw, 15rem);
+    height: clamp(12rem, 35vw, 15rem);
   }
 }
 
@@ -190,7 +212,12 @@
     letter-spacing: -0.5px;
   }
 
-  .time {
-    font-size: clamp(3rem, 4.5vw, 3.8rem);
+  .datetime-container {
+    gap: 1rem;
+  }
+
+  .clock-wrapper {
+    width: clamp(10rem, 40vw, 13rem);
+    height: clamp(10rem, 40vw, 13rem);
   }
 }
