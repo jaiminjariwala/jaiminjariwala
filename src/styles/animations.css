@@ -17,3 +17,9 @@
 .reveal-text-container:nth-child(2) { transition-delay: 0.2s; }
 .reveal-text-container:nth-child(3) { transition-delay: 0.3s; }
 .reveal-text-container:nth-child(4) { transition-delay: 0.4s; }
+
+/* Ensure the h1 in hero is always visible */
+.hero h1 {
+  opacity: 1 !important;
+  transform: none !important;
+}

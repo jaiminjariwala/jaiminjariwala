@@ -1,11 +1,12 @@
 // import About from './components/About/About';
-import Contact from './components/Contact/Contact';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
 import './styles/animations.css';
 import Lenis from '@studio-freight/lenis';
 import { useEffect } from 'react';
 import History from './components/History/History';
+import Philosophy from './components/Philosophy/Philosophy';
+import TwitterFeed from './components/TwitterFeed/TwitterFeed';
 
 function App() {
 	useEffect(() => {
@@ -40,13 +41,14 @@ function App() {
 	}, []);
 
 	return (
-		<div className="container">
+		<div className="container" style={{background: 'white'}}>
 			<Header />
 			<main>
 				<Hero />
 				{/* <About /> */}
 				<History />
-				<Contact />
+				<Philosophy />
+				<TwitterFeed />
 			</main>
 		</div>
 	);

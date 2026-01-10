@@ -12,40 +12,67 @@ const Header = () => {
         const element = document.getElementById(sectionId)
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' })
-            setIsMenuOpen(false)    // close menu after clicking
         }
     }
 
     return (
-        <nav className="header-nav">
-            <div
-                className="logo"
-                onClick={() => scrollToSection('hero')}
-                style={{ cursor: 'pointer' }}
-                aria-label="Go to home section">
+        <>
+            <nav className="header-nav">
+                <div
+                    className="logo"
+                    onClick={() => scrollToSection('hero')}
+                    style={{ cursor: 'pointer' }}
+                    aria-label="Go to home section">
+                </div>
+
+                {/* Menu text */}
+                <div className="menu-text" onClick={toggleMenu}>
+                    Menu
+                </div>
+            </nav>
+
+            {/* Full-page black overlay menu */}
+            <div className={`menu-overlay ${isMenuOpen ? 'open' : ''}`}>
+                <button className="close-menu" onClick={toggleMenu}>✕</button>
+                
+                <div className="menu-contacts">
+                    <h2>Contacts</h2>
+                    <div className="menu-links">
+                        <a href="mailto:jaiminjariwala5@icloud.com"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            Mail
+                        </a>
+                        <a href="https://www.linkedin.com/in/jaiminjariwala/" 
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            LinkedIn
+                        </a>
+                        <a href="https://x.com/jaiminjariwala_"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            Twitter
+                        </a>
+                        <a href="https://github.com/jaiminjariwala"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            GitHub
+                        </a>
+                        <a href="https://www.kaggle.com/jaiminmukeshjariwala/code" 
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            Kaggle
+                        </a>
+                        <a href="https://leetcode.com/u/jaiminjariwala/"
+                            target="_blank"
+                            rel="noopener noreferrer">
+                            LeetCode
+                        </a>
+                    </div>
+                </div>
             </div>
-
-            {/* Hamburger Menu Button */}
-            <button className={`hamburger ${isMenuOpen ? 'open' : ''}`}
-                onClick={toggleMenu}
-                aria-label='Toggle menu'
-            >
-                <span className='line'></span>
-                <span className='line'></span>
-
-            </button>
-
-            {/* Navigation Menu */}
-            <div className={`nav-container ${isMenuOpen ? 'open' : ''}`}>
-                <ul className="nav-list">
-                    <li onClick={() => scrollToSection('hero')}>Home</li>
-                    <li onClick={() => scrollToSection('history')}>Background</li>
-                    <li onClick={() => scrollToSection('contact')}>Contact</li>
-                </ul>
-            </div>
-        </nav>
+        </>
     )
-
 };
 
 export default Header;
