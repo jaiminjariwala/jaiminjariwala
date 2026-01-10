@@ -6,7 +6,6 @@ import Lenis from '@studio-freight/lenis';
 import { useEffect } from 'react';
 import History from './components/History/History';
 import Philosophy from './components/Philosophy/Philosophy';
-import TwitterFeed from './components/TwitterFeed/TwitterFeed';
 
 function App() {
 	useEffect(() => {
@@ -48,7 +47,6 @@ function App() {
 				{/* <About /> */}
 				<History />
 				<Philosophy />
-				<TwitterFeed />
 			</main>
 		</div>
 	);
