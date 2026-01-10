@@ -173,11 +173,23 @@
     letter-spacing: 0.02em;
   }
 
+  .menu-links {
+    gap: 2rem; /* Increased spacing between links */
+  }
+
   .menu-links a {
-    font-size: clamp(1.2rem, 4vw, 2rem);
+    font-size: 2rem; /* Made bigger - was clamp(1.2rem, 4vw, 2rem) */
+    -webkit-text-stroke: 0.5px white; /* Slightly thicker stroke */
   }
 
   .close-menu {
     font-size: 36px;
+  }
+}
+
+/* Extra small mobile devices */
+@media screen and (max-width: 480px) {
+  .menu-links a {
+    font-size: 1.8rem; /* Still bigger than before */
   }
 }
