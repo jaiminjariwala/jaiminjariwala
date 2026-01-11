@@ -112,7 +112,7 @@
   }
 
   .hero h1 {
-    font-size: clamp(3.5rem, 12vw, 5rem);
+    font-size: clamp(4.5rem, 15vw, 6rem);
     margin-bottom: 7vh;
   }
 
@@ -129,7 +129,7 @@
   }
 
   .hero h1 {
-    font-size: clamp(2.8rem, 15vw, 4rem);
+    font-size: clamp(3.8rem, 18vw, 5rem);
     margin-bottom: 2vh;
   }
 
@@ -147,7 +147,7 @@
   }
 
   .hero h1 {
-    font-size: clamp(2.5rem, 14vw, 3rem);
+    font-size: clamp(3.5rem, 17vw, 4rem);
   }
 
   .hero p {
