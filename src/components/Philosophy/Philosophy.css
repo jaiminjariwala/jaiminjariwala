@@ -14,7 +14,7 @@
   font-weight: normal;
   letter-spacing: clamp(-5px, -0.5vw, -9px);
   line-height: 0.89;
-  -webkit-text-stroke: 3px black;
+  /* -webkit-text-stroke: 1px black; */
   color: black;
   text-align: left;
   margin: 0;

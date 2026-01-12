@@ -17,7 +17,7 @@
     src: url('/src/assets/fonts/Helvetica-Bold/Helvetica-Bold.woff2') format('woff2'),
          url('/src/assets/fonts/Helvetica-Bold/Helvetica-Bold.woff') format('woff'),
          url('/src/assets/fonts/Helvetica-Bold/Helvetica-Bold.ttf') format('truetype');
-    font-weight: 700;
+    font-weight: bold;
     font-style: normal;
     font-display: swap;
 }

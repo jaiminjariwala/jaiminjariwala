@@ -40,7 +40,7 @@ function App() {
 	}, []);
 
 	return (
-		<div className="container" style={{background: 'white'}}>
+		<div className="container">
 			<Header />
 			<main>
 				<Hero />
