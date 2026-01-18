@@ -13,6 +13,7 @@
     "@cloudinary/react": "^1.14.3",
     "@cloudinary/url-gen": "^1.22.0",
     "@studio-freight/lenis": "^1.0.42",
+    "gsap": "^3.14.2",
     "lenis": "^1.1.18",
     "luxon": "^3.5.0",
     "react": "^18.3.1",
