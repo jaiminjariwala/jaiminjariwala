@@ -16,6 +16,7 @@
 .accordion-container {
   max-width: 100%;
   margin: 0 auto;
+  width: 100%;
 }
 
 .accordion-section {
@@ -47,7 +48,6 @@
   letter-spacing: -3px;
   margin: 0;
   font-family: "Helvetica", sans-serif;
-  /* text-transform: uppercase; */
 }
 
 .expand-btn {
@@ -101,17 +101,28 @@
 }
 
 .accordion-content.expanded {
-  max-height: 600px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 0.5vh 2vw 0.5vh 1vw;
-  /* Hide scrollbar for Chrome, Safari and Opera */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  max-height: 700px;
+  padding: 0.5vh 0vw;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.accordion-content.expanded::-webkit-scrollbar {
+.photos-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: 0 1vw;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.photos-wrapper:active {
+  cursor: grabbing;
+}
+
+.photos-wrapper::-webkit-scrollbar {
   display: none;
 }
 
@@ -119,16 +130,11 @@
   display: flex;
   gap: 1.5vw;
   width: max-content;
-  padding-bottom: 2vh;
-  /* Prevent vertical scroll when scrolling horizontally */
   touch-action: pan-x;
-}
-
-/* Prevent vertical scroll when horizontal scrolling */
-.accordion-content.expanded {
-  overscroll-behavior-x: contain;
-  overscroll-behavior-y: none;
-  -webkit-overflow-scrolling: touch;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .photo-item {
@@ -137,8 +143,11 @@
   border-radius: 16px;
   overflow: hidden;
   transition: transform 0.3s ease;
-  /* Prevent drag/select on images */
-  pointer-events: auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .photo-item:hover {
@@ -152,6 +161,52 @@
   object-fit: contain;
   pointer-events: none;
   user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Carousel Arrows */
+.carousel-arrows {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-start;
+  margin-top: 5px;
+  padding: 0 1vw;
+}
+
+.arrow-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: white;
+  border: none;
+  color: black;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.arrow-btn svg {
+  width: 28px;
+  height: 28px;
+  stroke-width: 0.2;
+}
+
+.arrow-btn:hover {
+  transform: scale(1.1);
+  background: #f5f5f5;
+}
+
+.arrow-btn.active {
+  background: #f5f5f5;
+}
+
+.arrow-btn:active {
+  transform: scale(0.95);
 }
 
 /* Tablet styles */
@@ -174,8 +229,7 @@
   }
 
   .accordion-content.expanded {
-    max-height: 500px;
-    padding: 3vh 3vw 2vh 3vw;
+    max-height: 600px;
   }
 
   .photos-container {
@@ -184,6 +238,16 @@
 
   .photo-item {
     height: clamp(350px, 38vw, 420px);
+  }
+
+  .arrow-btn {
+    width: 45px;
+    height: 45px;
+  }
+
+  .arrow-btn svg {
+    width: 26px;
+    height: 26px;
   }
 }
 
@@ -202,7 +266,8 @@
   }
 
   .location-title {
-    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    letter-spacing: -1px;
   }
 
   .expand-btn {
@@ -211,8 +276,11 @@
   }
 
   .accordion-content.expanded {
-    max-height: 450px;
-    padding: 3vh 4vw 2vh 4vw;
+    max-height: 500px;
+  }
+
+  .photos-wrapper {
+    padding: 0 4vw;
   }
 
   .photos-container {
@@ -222,6 +290,20 @@
   .photo-item {
     height: 380px;
   }
+
+  .arrow-btn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .arrow-btn svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .carousel-arrows {
+    padding: 0 4vw;
+  }
 }
 
 @media screen and (max-width: 540px) {
@@ -230,7 +312,7 @@
   }
 
   .accordion-content.expanded {
-    max-height: 400px;
+    max-height: 450px;
   }
 }
 
@@ -240,11 +322,22 @@
   }
 
   .location-title {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
+    letter-spacing: 0px;
   }
 
   .expand-btn {
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .arrow-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .arrow-btn svg {
+    width: 22px;
+    height: 22px;
   }
 }
