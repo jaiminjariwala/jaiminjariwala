@@ -19,8 +19,8 @@
   
   /* Apple-style frosted glass effect with more blur */
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px) saturate(10%);
-  -webkit-backdrop-filter: blur(8px) saturate(10%);
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 0.1px 4px rgba(0, 0, 0, 0.1);
 
@@ -144,25 +144,18 @@
   letter-spacing: -1px;
   line-height: 1.04;
   -webkit-text-stroke: 0.3px white;
-  transition: color 0.3s ease;
   position: relative;
   display: inline-block;
   text-align: left;
+  transition: text-decoration-color 0.4s ease;
 }
 
-.menu-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: white;
-  transition: width 0.4s ease;
-}
-
-.menu-links a:hover::after {
-  width: 100%;
+.menu-links a:hover {
+  text-decoration: underline;
+  text-decoration-color: white;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  text-decoration-skip-ink: auto;
 }
 
 /* Mobile adjustments */
