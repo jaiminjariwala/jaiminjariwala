@@ -5,26 +5,48 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: align-items 0.5s ease, justify-content 0.5s ease;
+  overflow: hidden;
 }
 
-.photo-stacks.has-expanded {
-  align-items: flex-start;
-  justify-content: flex-start;
+.photo-stacks-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4vw;
+  width: 100%;
+  align-items: center;
+  overflow: hidden;
+}
+
+.gallery-title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  /* padding: 0 2vw; */
+}
+
+.gallery-title {
+  font-size: clamp(2.5rem, 11vw, 12rem);
+  font-weight: normal;
+  letter-spacing: clamp(-9px, -0.9vw, -13px);
+  line-height: 0.89;
+  color: black;
+  margin: 0;
+  font-family: "Helvetica", sans-serif;
 }
 
 .accordion-container {
   max-width: 100%;
-  margin: 0 auto;
-  width: 100%;
+  position: relative;
+  z-index: 10;
 }
 
 .accordion-section {
-  margin-bottom: 0;
+  margin-bottom: 0vh;
 }
 
 .accordion-header {
-  padding: 0.2vh 0vw;
+  padding: 0;
   user-select: none;
   letter-spacing: clamp(-9px, -0.9vw, -13px);
 }
@@ -32,10 +54,10 @@
 .header-left {
   display: inline-flex;
   align-items: center;
-  gap: 2vw;
+  gap: 0.5vw;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  padding: 0.5vh 1vw;
+  padding: 0.1vh 0.1vw;
 }
 
 .header-left:hover {
@@ -43,9 +65,11 @@
 }
 
 .location-title {
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-size: clamp(1.5rem, 3.5vw, 3rem);
   font-weight: normal;
-  letter-spacing: -3px;
+  letter-spacing: -0.3px;
+  line-height: 1.14;
+  -webkit-text-stroke: 1.2px black;
   margin: 0;
   font-family: "Helvetica", sans-serif;
 }
@@ -60,8 +84,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(3rem, 6vw, 4rem);
-  height: clamp(3rem, 6vw, 4rem);
+  width: clamp(1.5rem, 3.5vw, 3rem);
+  height: clamp(1.5rem, 3.5vw, 3rem);
   position: relative;
   flex-shrink: 0;
 }
@@ -95,14 +119,13 @@
 }
 
 .accordion-content {
-  max-height: 0;
+  height: 0;
   overflow: hidden;
-  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .accordion-content.expanded {
-  max-height: 700px;
-  padding: 0.5vh 0vw;
+  padding: 0.2vh 0vw;
 }
 
 .photos-wrapper {
@@ -111,11 +134,17 @@
   cursor: grab;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding: 0 1vw;
+  padding: 0 0vw;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  margin-left: calc(-50vw + 50%);
+  width: 100vw;
+  background-color: white;
+  overscroll-behavior-x: none;
 }
 
 .photos-wrapper:active {
@@ -128,30 +157,45 @@
 
 .photos-container {
   display: flex;
-  gap: 1.5vw;
+  gap: 1vw;
   width: max-content;
   touch-action: pan-x;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  padding-left: 2vw;
+  padding-right:36vw;
 }
 
 .photo-item {
   flex-shrink: 0;
   height: clamp(380px, 34vw, 460px);
-  border-radius: 16px;
+  border-radius: 4px;
   overflow: hidden;
-  transition: transform 0.3s ease;
+  transition: transform 0.15s ease-out;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .photo-item:hover {
-  transform: scale(1.025);
+  transform: scale(1.025) translateZ(0);
+}
+
+/* Scale only the specific photo being dragged */
+.photo-item.dragging {
+  transform: scale(0.98) translateZ(0);
+}
+
+.photo-item.dragging:hover {
+  transform: scale(0.98) translateZ(0);
 }
 
 .photo-item img {
@@ -170,19 +214,19 @@
 /* Carousel Arrows */
 .carousel-arrows {
   display: flex;
-  gap: 5px;
+  gap: 10px;
   justify-content: flex-start;
   margin-top: 5px;
-  padding: 0 1vw;
+  /* padding: 0 1vw; */
 }
 
 .arrow-btn {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: white;
+  background: black;
   border: none;
-  color: black;
+  color: white;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -191,100 +235,103 @@
 }
 
 .arrow-btn svg {
-  width: 28px;
-  height: 28px;
-  stroke-width: 0.2;
-}
-
-.arrow-btn:hover {
-  transform: scale(1.1);
-  background: #f5f5f5;
+  padding: 0 3px;
+  width: 40px;
+  height: 40px;
 }
 
 .arrow-btn.active {
-  background: #f5f5f5;
+  background: black;
 }
 
 .arrow-btn:active {
-  transform: scale(0.95);
+  transform: scale(1.1);
 }
 
-/* Tablet styles */
-@media screen and (max-width: 1024px) {
-  .accordion-header {
-    padding: 0.2vh 3vw;
-  }
-
-  .header-left {
-    gap: 3vw;
+/* Nest Hub (1024x600) */
+@media screen and (max-width: 1024px) and (max-height: 600px) {
+  .gallery-title {
+    font-size: clamp(8rem, 16vw, 10rem);
+    letter-spacing: -2px;
   }
 
   .location-title {
-    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-size: clamp(3.2rem, 3.8vw, 3.8rem);
   }
 
   .expand-btn {
-    width: clamp(2rem, 5vw, 3.5rem);
-    height: clamp(2rem, 5vw, 3.5rem);
-  }
-
-  .accordion-content.expanded {
-    max-height: 600px;
-  }
-
-  .photos-container {
-    gap: 3vw;
-  }
-
-  .photo-item {
-    height: clamp(350px, 38vw, 420px);
-  }
-
-  .arrow-btn {
-    width: 45px;
-    height: 45px;
-  }
-
-  .arrow-btn svg {
-    width: 26px;
-    height: 26px;
+    width: clamp(3.2rem, 3.8vw, 3.8rem);
+    height: clamp(3.2rem, 3.8vw, 3.8rem);
   }
 }
 
-/* Mobile styles */
+/* Surface Pro 7 (912x1368) */
+@media screen and (max-width: 912px) {
+  .gallery-title {
+    font-size: clamp(8rem, 18vw, 9rem);
+    letter-spacing: -2px;
+  }
+
+  .location-title {
+    font-size: clamp(3.2rem, 4vw, 3.8rem);
+  }
+
+  .expand-btn {
+    width: clamp(3.2rem, 4vw, 3.8rem);
+    height: clamp(3.2rem, 4vw, 3.8rem);
+  }
+}
+
+/* iPad Air (820x1180) */
+@media screen and (max-width: 820px) {
+  .gallery-title {
+    font-size: clamp(7rem, 16vw, 8rem);
+    letter-spacing: -2px;
+  }
+
+  .location-title {
+    font-size: clamp(2.8rem, 3.5vw, 3.2rem);
+  }
+
+  .expand-btn {
+    width: clamp(2.8rem, 3.5vw, 3.2rem);
+    height: clamp(2.8rem, 3.5vw, 3.2rem);
+  }
+}
+
+/* iPad Mini and smaller tablets */
 @media screen and (max-width: 768px) {
-  .photo-stacks {
-    padding: 8vh 0;
+  .photo-stacks-layout {
+    grid-template-columns: 1fr;
+    gap: 6vh;
   }
 
-  .accordion-header {
-    padding: 0.2vh 4vw;
+  .gallery-title-container {
+    padding: 0 4vw;
+    min-height: auto;
   }
 
-  .header-left {
-    gap: 4vw;
+  .gallery-title {
+    font-size: clamp(6rem, 16vw, 7rem);
   }
 
   .location-title {
-    font-size: clamp(2.2rem, 7vw, 3.2rem);
-    letter-spacing: -1px;
+    font-size: clamp(2.6rem, 3.2vw, 2.8rem);
   }
 
   .expand-btn {
-    width: clamp(1.8rem, 6vw, 2.8rem);
-    height: clamp(1.8rem, 6vw, 2.8rem);
-  }
-
-  .accordion-content.expanded {
-    max-height: 500px;
+    width: clamp(2.6rem, 3.2vw, 2.8rem);
+    height: clamp(2.6rem, 3.2vw, 2.8rem);
   }
 
   .photos-wrapper {
     padding: 0 4vw;
+    margin-left: calc(-50vw + 50%);
   }
 
   .photos-container {
     gap: 4vw;
+    padding-left: 4vw;
   }
 
   .photo-item {
@@ -306,29 +353,71 @@
   }
 }
 
+/* Large Phones */
 @media screen and (max-width: 540px) {
+  .photo-stacks {
+    padding: 8vh 0;
+  }
+
+  .accordion-header {
+    padding: 0 4vw;
+  }
+
+  .header-left {
+    gap: 4vw;
+  }
+
+  .gallery-title {
+    font-size: clamp(4.5rem, 15vw, 6rem);
+  }
+
+  .location-title {
+    font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+  }
+
+  .expand-btn {
+    width: clamp(1.8rem, 2.6vw, 2.3rem);
+    height: clamp(1.8rem, 2.6vw, 2.3rem);
+  }
+
   .photo-item {
     height: 350px;
   }
+}
 
-  .accordion-content.expanded {
-    max-height: 450px;
+/* Medium Phones */
+@media screen and (max-width: 430px) {
+  .gallery-title {
+    font-size: clamp(3.8rem, 18vw, 5rem);
+  }
+
+  .location-title {
+    font-size: clamp(1.7rem, 2.2vw, 2rem);
+  }
+
+  .expand-btn {
+    width: clamp(1.7rem, 2.2vw, 2rem);
+    height: clamp(1.7rem, 2.2vw, 2rem);
   }
 }
 
+/* Small Phones */
 @media screen and (max-width: 375px) {
   .photo-item {
     height: 320px;
   }
 
+  .gallery-title {
+    font-size: clamp(3.5rem, 17vw, 4rem);
+  }
+
   .location-title {
-    font-size: 1.8rem;
-    letter-spacing: 0px;
+    font-size: clamp(1.6rem, 2vw, 1.8rem);
   }
 
   .expand-btn {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: clamp(1.6rem, 2vw, 1.8rem);
+    height: clamp(1.6rem, 2vw, 1.8rem);
   }
 
   .arrow-btn {

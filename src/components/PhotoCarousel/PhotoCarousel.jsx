@@ -22,7 +22,7 @@ const PhotoCarousel = () => {
         'IMG_0108_b9eoi4', 'IMG_0109_cmfh3m', 'IMG_0364_ydrfby', 'IMG_0439_dq2tzj',
         'IMG_0440_zpxkjf', 'IMG_0543_iitiuc', 'IMG_0547_bvcr6g', 'IMG_0765_pu9nb1',
         'IMG_0779_qh1nrc', 'IMG_0894_cec1lu', 'IMG_0901_ubkfyj', 'IMG_0905_ly5aqw',
-        'IMG_0908_ixrt0l', 'IMG_0927_ijjsx3', 'IMG_0969_yxomra', 'IMG_0983_rat8bq',
+        'IMG_0908_ixrt0l',
         'IMG_1015_gueu52', 'IMG_1107_reijzd'
       ]
     },
@@ -37,9 +37,8 @@ const PhotoCarousel = () => {
     {
       title: 'Baltimore',
       photos: [
-        'FullSizeR_lamwpt', 'FullSizeR_kawt6z', 'FullSizeR_pkuvcu', 'IMG_0608_sr0ixr',
-        'IMG_0576_gytzeo', 'FullSizeR_yeb66c', 'FullSizeR_wwzqrj', 'FullSizeR_fnx6qd',
-        'IMG_1219_nzkgwm'
+        'FullSizeR_kawt6z', 'IMG_0608_sr0ixr',
+        'FullSizeR_yeb66c', 'FullSizeR_wwzqrj', 'FullSizeR_fnx6qd',
       ]
     }
   ];
