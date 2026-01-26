@@ -321,7 +321,7 @@
   }
 
   .location-title {
-    font-size: clamp(3rem, 7vw, 4rem);
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
   }
 
   .expand-btn {
@@ -336,7 +336,6 @@
 
   .photos-container {
     gap: 4vw;
-    /* padding-left: 4vw; */
   }
 
   .photo-item {
@@ -382,7 +381,7 @@
   }
 
   .location-title {
-    font-size: clamp(2.8rem, 6.5vw, 3.5rem);
+    font-size: clamp(2rem, 5vw, 2.8rem);
   }
 
   .expand-btn {
@@ -402,7 +401,7 @@
   }
 
   .location-title {
-    font-size: clamp(2.5rem, 6vw, 3rem);
+    font-size: clamp(1.8rem, 4.5vw, 2.5rem);
   }
 
   .expand-btn {
@@ -422,7 +421,7 @@
   }
 
   .location-title {
-    font-size: clamp(2.2rem, 5.5vw, 2.8rem);
+    font-size: clamp(1.7rem, 4.2vw, 2.2rem);
   }
 
   .expand-btn {
