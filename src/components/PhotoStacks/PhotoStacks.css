@@ -163,7 +163,7 @@
   display: flex;
   gap: 1vw;
   width: max-content;
-  touch-action: pan-x;
+  touch-action: pan-y pan-x;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
