@@ -224,9 +224,17 @@
   /* padding: 0 1vw; */
 }
 
+.arrow-btn.right {
+  /* Removed transition - now controlled by GSAP */
+}
+
+.arrow-btn.right.menu-open {
+  /* Removed transform - now controlled by GSAP */
+}
+
 .arrow-btn {
-  width: 32px;
-  height: 32px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: black;
   border: none;
@@ -240,8 +248,8 @@
 
 .arrow-btn svg {
   padding: 0 3px;
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
 }
 
 .arrow-btn.active {
@@ -250,6 +258,113 @@
 
 .arrow-btn:active {
   transform: scale(1.1);
+}
+
+.speed-btn {
+  min-width: 60px;
+  height: 40px;
+  border-radius: 4px;
+  background: black;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  z-index: 1002;
+  padding: 0 14px;
+}
+
+.speed-btn.menu-open {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.speed-btn:hover {
+  background: black;
+  transform: scale(1.05);
+}
+
+.speed-btn.active {
+  background: black;
+  color: white;
+  /* Removed pulse animation */
+}
+
+.speed-btn.active:hover {
+  background: black;
+}
+
+.speed-text {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  letter-spacing: -0.5px;
+}
+
+/* Speed Control Container */
+.speed-control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 1001;
+}
+
+/* Speed Menu - Horizontal Accordion (Expands to Right) */
+.speed-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  border-radius: 4px;
+  overflow: visible;
+  z-index: 1003;
+  /* Animation now controlled by GSAP */
+}
+
+.speed-option {
+  min-width: auto;
+  width: auto;
+  height: 40px;
+  background: black;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  padding: 0 14px;
+  white-space: nowrap;
+  /* Removed CSS animations - now controlled by GSAP */
+}
+
+.speed-option:hover {
+  background: rgb(32, 32, 32);
+}
+
+.speed-option.selected {
+  background: black;
+  color: white;
+}
+
+.speed-option.selected:hover {
+  background: rgb(31, 31, 31);
+}
+
+/* Pulse animation for active auto-scroll */
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
 }
 
 /* Nest Hub (1024x600) */
@@ -355,6 +470,18 @@
   .carousel-arrows {
     padding: 0 4vw;
   }
+
+  .speed-btn {
+    width: 45px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .speed-option {
+    width: 45px;
+    height: 30px;
+    font-size: 13px;
+  }
 }
 
 /* Large Phones */
@@ -408,6 +535,18 @@
     width: clamp(1.7rem, 2.2vw, 2rem);
     height: clamp(1.7rem, 2.2vw, 2rem);
   }
+
+  .speed-btn {
+    width: 40px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .speed-option {
+    width: 40px;
+    height: 28px;
+    font-size: 12px;
+  }
 }
 
 /* Small Phones */
@@ -437,5 +576,17 @@
   .arrow-btn svg {
     width: 22px;
     height: 22px;
+  }
+
+  .speed-btn {
+    width: 36px;
+    height: 26px;
+    font-size: 11px;
+  }
+
+  .speed-option {
+    width: 36px;
+    height: 26px;
+    font-size: 11px;
   }
 }
