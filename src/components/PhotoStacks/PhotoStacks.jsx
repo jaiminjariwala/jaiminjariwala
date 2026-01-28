@@ -15,13 +15,12 @@ const PhotoStacks = () => {
   const [currentX, setCurrentX] = useState(0);
   const [isAtEnd, setIsAtEnd] = useState(false);
   const [draggedPhotoIndex, setDraggedPhotoIndex] = useState(null);
-  const [autoScrollSpeed, setAutoScrollSpeed] = useState(1);
+  const [autoScrollSpeed, setAutoScrollSpeed] = useState(0.25);
   const [isAutoScrolling, setIsAutoScrolling] = useState(false);
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
   const [isClosingSpeedMenu, setIsClosingSpeedMenu] = useState(false);
   const speedMenuRef = useRef(null);
   const speedButtonRefs = useRef([]);
-  const rightArrowRef = useRef(null);
   const menuAnimationTween = useRef(null);
   const scrollContainerRef = useRef(null);
   const gsapTween = useRef(null);
@@ -126,16 +125,20 @@ const PhotoStacks = () => {
       return;
     }
     
-    // Calculate duration based on speed (base duration is 20 seconds for 1x speed)
-    const baseDuration = 20;
-    const duration = baseDuration / speed;
+    // Calculate duration based on distance and speed
+    // Use pixels per second for consistent speed across all galleries
+    // Base: 200px per second at 1x speed (slower = lower number)
+    const basePixelsPerSecond = 200;
+    const pixelsPerSecond = basePixelsPerSecond * speed;
+    const remainingDistance = maxScroll - scrollLeft;
+    const duration = remainingDistance / pixelsPerSecond;
     
     setIsAutoScrolling(true);
     
     // Animate from current position to end
     autoScrollTween.current = gsap.to(container, {
       scrollLeft: maxScroll,
-      duration: duration * ((maxScroll - scrollLeft) / maxScroll), // Adjust based on remaining distance
+      duration: duration,
       ease: "none",
       onUpdate: checkScrollPosition,
       onComplete: () => {
@@ -162,119 +165,14 @@ const PhotoStacks = () => {
     e.stopPropagation();
     
     if (showSpeedMenu) {
-      // Closing animation with GSAP
-      setIsClosingSpeedMenu(true);
-      
-      // Kill any ongoing animation
-      if (menuAnimationTween.current) {
-        menuAnimationTween.current.kill();
-      }
-      
-      const timeline = gsap.timeline({
-        onComplete: () => {
-          setShowSpeedMenu(false);
-          setIsClosingSpeedMenu(false);
-        }
-      });
-      
-      // Animate right arrow back
-      timeline.to(rightArrowRef.current, {
-        x: 0,
-        duration: 0.5,
-        ease: "power3.inOut"
-      }, 0);
-      
-      // Animate all buttons shrinking and merging back
-      speedButtonRefs.current.forEach((btn) => {
-        if (btn) {
-          timeline.to(btn, {
-            scale: 0,
-            width: 0,
-            opacity: 0,
-            borderRadius: "50%",
-            duration: 0.45,
-            ease: "power3.inOut"
-          }, 0);
-        }
-      });
-      
-      menuAnimationTween.current = timeline;
-      
+      // Close the menu
+      setShowSpeedMenu(false);
     } else {
-      // Opening animation with GSAP
+      // Open the menu
       if (!isAutoScrolling) {
         startAutoScroll();
       }
       setShowSpeedMenu(true);
-      
-      // Wait for DOM to update
-      setTimeout(() => {
-        if (!speedMenuRef.current || speedButtonRefs.current.length === 0) return;
-        
-        // Kill any ongoing animation
-        if (menuAnimationTween.current) {
-          menuAnimationTween.current.kill();
-        }
-        
-        const timeline = gsap.timeline();
-        
-        // First, temporarily make buttons visible but off-screen to measure their natural widths
-        const naturalWidths = [];
-        speedButtonRefs.current.forEach((btn) => {
-          if (btn) {
-            gsap.set(btn, {
-              position: 'absolute',
-              visibility: 'hidden',
-              display: 'flex',
-              width: 'auto',
-              scale: 1,
-              opacity: 1
-            });
-            naturalWidths.push(btn.offsetWidth);
-          }
-        });
-        
-        // Now set initial states for all buttons (hidden at center)
-        speedButtonRefs.current.forEach((btn) => {
-          if (btn) {
-            gsap.set(btn, {
-              position: 'relative',
-              visibility: 'visible',
-              scale: 0,
-              width: 0,
-              opacity: 0,
-              borderRadius: "50%"
-            });
-          }
-        });
-        
-        // Animate right arrow moving right
-        // Calculate total width: sum of all button widths + gaps between them
-        const totalWidth = naturalWidths.reduce((sum, width) => sum + width, 0) + (naturalWidths.length - 1) * 4 + 10; // 4px gaps, 10px final gap
-        
-        timeline.to(rightArrowRef.current, {
-          x: totalWidth,
-          duration: 0.65,
-          ease: "power3.out"
-        }, 0);
-        
-        // Animate all buttons growing and separating
-        speedButtonRefs.current.forEach((btn, index) => {
-          if (btn) {
-            timeline.to(btn, {
-              scale: 1,
-              width: naturalWidths[index],
-              opacity: 1,
-              borderRadius: "4px",
-              duration: 0.6,
-              ease: "power3.out",
-              delay: index * 0.06 // Smooth stagger
-            }, 0.1);
-          }
-        });
-        
-        menuAnimationTween.current = timeline;
-      }, 10);
     }
   };
 
@@ -797,35 +695,8 @@ const PhotoStacks = () => {
                       </svg>
                     </button>
                     
-                    {/* Speed Control Button */}
-                    <div className="speed-control">
-                      <button 
-                        className={`speed-btn ${isAutoScrolling ? 'active' : ''} ${showSpeedMenu ? 'menu-open' : ''}`}
-                        onClick={toggleSpeedMenu}
-                        aria-label={`Auto-scroll speed: ${autoScrollSpeed}x`}
-                      >
-                        <span className="speed-text">{autoScrollSpeed}x</span>
-                      </button>
-                      
-                      {showSpeedMenu && (
-                        <div ref={speedMenuRef} className={`speed-menu ${isClosingSpeedMenu ? 'closing' : ''}`}>
-                          {[0.5, 1, 2].map((speed, index) => (
-                            <button
-                              key={speed}
-                              ref={(el) => (speedButtonRefs.current[index] = el)}
-                              className={`speed-option ${speed === autoScrollSpeed ? 'selected' : ''}`}
-                              onClick={(e) => selectSpeed(speed, e)}
-                            >
-                              {speed}x
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    
                     <button
-                      ref={rightArrowRef}
-                      className={`arrow-btn right ${!isAtEnd ? 'active' : ''} ${showSpeedMenu ? 'menu-open' : ''}`}
+                      className={`arrow-btn right ${!isAtEnd ? 'active' : ''}`}
                       onMouseDown={(e) => handleArrowMouseDown(e, 'right')}
                       onMouseUp={handleArrowMouseUp}
                       onMouseLeave={stopContinuousScroll}

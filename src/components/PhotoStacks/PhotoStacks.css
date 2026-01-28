@@ -218,18 +218,11 @@
 /* Carousel Arrows */
 .carousel-arrows {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: flex-start;
+  align-items: center;
   margin-top: 5px;
   /* padding: 0 1vw; */
-}
-
-.arrow-btn.right {
-  /* Removed transition - now controlled by GSAP */
-}
-
-.arrow-btn.right.menu-open {
-  /* Removed transform - now controlled by GSAP */
 }
 
 .arrow-btn {
@@ -248,8 +241,8 @@
 
 .arrow-btn svg {
   padding: 0 3px;
-  width: 48px;
-  height: 48px;
+  width: 38px;
+  height: 38px;
 }
 
 .arrow-btn.active {
@@ -272,15 +265,10 @@
   justify-content: center;
   transition: all 0.3s ease;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 18px;
   color: white;
   z-index: 1002;
   padding: 0 14px;
-}
-
-.speed-btn.menu-open {
-  opacity: 0;
-  pointer-events: none;
 }
 
 .speed-btn:hover {
@@ -308,53 +296,85 @@
   position: relative;
   display: flex;
   align-items: center;
+  height: 44px;
   z-index: 1001;
 }
 
-/* Speed Menu - Horizontal Accordion (Expands to Right) */
-.speed-menu {
+/* Speed Menu Expanded - Shows all options */
+.speed-menu-expanded {
   position: absolute;
-  top: 0;
+  bottom: 100%;
   left: 0;
   display: flex;
-  flex-direction: row;
-  gap: 4px;
+  flex-direction: column-reverse;
+  gap: 0;
+  background: black;
   border-radius: 4px;
-  overflow: visible;
+  overflow: hidden;
   z-index: 1003;
-  /* Animation now controlled by GSAP */
+  padding: 0;
+  margin-bottom: 5px;
+  transform-origin: bottom;
+  animation: expandUpward 0.2s ease-out;
+}
+
+@keyframes expandUpward {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+.speed-menu-expanded.closing {
+  animation: collapseDownward 0.15s ease-in;
+}
+
+@keyframes collapseDownward {
+  from {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  to {
+    opacity: 0;
+    transform: scaleY(0);
+  }
 }
 
 .speed-option {
-  min-width: auto;
-  width: auto;
+  min-width: 60px;
+  width: 60px;
   height: 40px;
-  background: black;
+  background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: 0;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 16px;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 18px;
   color: white;
-  padding: 0 14px;
+  padding: 0;
   white-space: nowrap;
-  /* Removed CSS animations - now controlled by GSAP */
+  transition: background-color 0.2s ease;
+  position: relative;
+}
+
+.speed-option.current {
+  font-weight: 600;
+}
+
+.speed-indicator {
+  font-size: 12px;
 }
 
 .speed-option:hover {
-  background: rgb(32, 32, 32);
-}
-
-.speed-option.selected {
-  background: black;
-  color: white;
-}
-
-.speed-option.selected:hover {
-  background: rgb(31, 31, 31);
+  background: rgba(159, 159, 159, 0.1);
 }
 
 /* Pulse animation for active auto-scroll */
