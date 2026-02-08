@@ -1,12 +1,13 @@
 // import About from './components/About/About';
 import Header from './components/Header/Header';
 import Hero from './components/Hero/Hero';
+import CustomCursor from './components/CustomCursor';
 import './styles/animations.css';
 import Lenis from '@studio-freight/lenis';
 import { useEffect } from 'react';
-import History from './components/History/History';
+// import History from './components/History/History';
 import Philosophy from './components/Philosophy/Philosophy';
-import PhotoStacks from './components/PhotoStacks/PhotoStacks';
+// import PhotoStacks from './components/PhotoStacks/PhotoStacks';
 
 function App() {
 	useEffect(() => {
@@ -41,13 +42,14 @@ function App() {
 	}, []);
 
 	return (
-		<div className="container">
+		<div className="container" data-theme="dark">
+			<CustomCursor />
 			<Header />
 			<main>
 				<Hero />
 				{/* <About /> */}
-				<History />
-				<PhotoStacks />
+				{/* <History /> */}
+				{/* <PhotoStacks /> */}
 				<Philosophy />
 			</main>
 		</div>

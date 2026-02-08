@@ -33,8 +33,7 @@ const PhotoCarousel = () => {
         'IMG_1391_e34lou', 'IMG_1396_rzum4p', 'IMG_1398_xryzkz', 'IMG_1401_ibxtcp',
         'IMG_1402_qj6hkx', 'IMG_1403_oa6ghq', 'IMG_1498_b4pzgw',
         'IMG_1512_zzs3lo', 'IMG_1497_tzsfpu', 'IMG_1511_hazeln',
-        'IMG_1507_jgoyis', 'samples/people/boy-snow-hoodie', 'IMG_1494_f1rdit', 
-        'IMG_1481_t40t8q',
+        'IMG_1507_jgoyis', 'samples/people/boy-snow-hoodie', 'IMG_1494_f1rdit',
       ]
     },
     {

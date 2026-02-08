@@ -1,34 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Header.css';
 
 const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    // const [isResumeOpen, setIsResumeOpen] = useState(false);
+    const [isHeaderDark, setIsHeaderDark] = useState(false);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen)
     }
 
-    const scrollToSection = (sectionId) => {
-        const element = document.getElementById(sectionId)
-        if (element) {
-            element.scrollIntoView({ behavior: 'smooth' })
+    useEffect(() => {
+        const darkSections = document.querySelectorAll('[data-theme="dark"]');
+        if (!darkSections.length) {
+            setIsHeaderDark(false);
+            return;
         }
-    }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const anyDarkInView = entries.some((entry) => entry.isIntersecting);
+                setIsHeaderDark(anyDarkInView);
+            },
+            {
+                root: null,
+                threshold: 0.1,
+                rootMargin: '-20% 0px -70% 0px'
+            }
+        );
+
+        darkSections.forEach((section) => observer.observe(section));
+
+        return () => observer.disconnect();
+    }, []);
 
     return (
         <>
-            <nav className="header-nav">
-                <div
-                    className="logo"
-                    onClick={() => scrollToSection('hero')}
-                    style={{ cursor: 'pointer' }}
-                    aria-label="Go to home section">
-                </div>
-
-                {/* Menu text */}
-                <div className="menu-text" onClick={toggleMenu}>
+            <nav className={`header-nav ${isHeaderDark ? 'dark' : ''}`}>
+                {/* Menu text - now treated as a button */}
+                <button className="menu-text" onClick={toggleMenu}>
                     Menu
-                </div>
+                </button>
             </nav>
 
             {/* Full-page black overlay menu */}
@@ -68,9 +80,13 @@ const Header = () => {
                             rel="noopener noreferrer">
                             LeetCode
                         </a>
+                        {/* Resume removed */}
                     </div>
                 </div>
             </div>
+
+            {/* Resume popup */}
+            {false && null}
         </>
     )
 };

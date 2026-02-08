@@ -1,0 +1,82 @@
+/* Hide default cursor - AGGRESSIVE */
+* {
+  cursor: none !important;
+}
+
+*::before, *::after {
+  cursor: none !important;
+}
+
+html {
+  cursor: none !important;
+}
+
+body {
+  cursor: none !important;
+}
+
+img {
+  cursor: none !important;
+}
+
+a, button, input, textarea, select {
+  cursor: none !important;
+}
+
+/* Custom cursor */
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease;
+  opacity: 1;
+}
+
+/* Black select cursor - default */
+.custom-cursor.select-black {
+  background-image: url('/select-cursor-black.png');
+  width: 24px;
+  height: 24px;
+}
+
+/* White select cursor - for dark backgrounds */
+.custom-cursor.select-white {
+  background-image: url('/select-cursor-white.png');
+  width: 24px;
+  height: 24px;
+}
+
+/* Text cursor - bigger size */
+.custom-cursor.text {
+  background-image: url('/text-cursor.png');
+  width: 40px;
+  height: 40px;
+}
+
+/* White text cursor - for dark backgrounds */
+.custom-cursor.text-white {
+  background-image: url('/text-cursor-white.png');
+  width: 40px;
+  height: 40px;
+}
+/* Hand cursor - single unified hand cursor */
+.custom-cursor.hand {
+  background-image: url('/hand-cursor.png');
+  width: 40px;
+  height: 40px;
+}
+
+/* Disable on touch devices */
+@media (hover: none) and (pointer: coarse) {
+  *, *::before, *::after, html, body, img, a, button, input, textarea, select {
+    cursor: auto !important;
+  }
+  
+  .custom-cursor {
+    display: none;
+  }
+}

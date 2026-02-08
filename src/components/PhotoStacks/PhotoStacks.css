@@ -1,135 +1,11 @@
 .photo-stacks {
   min-height: 100vh;
-  padding: 10vh 2vw;
+  padding: 8vh 0;
   background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-}
-
-.photo-stacks-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4vw;
-  width: 100%;
-  align-items: center;
-  overflow: hidden;
-}
-
-.gallery-title-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 80vh;
-  /* padding: 0 2vw; */
-}
-
-.gallery-title {
-  font-size: clamp(2.5rem, 11vw, 12rem);
-  font-weight: normal;
-  letter-spacing: clamp(-9px, -0.9vw, -13px);
-  line-height: 0.89;
-  color: black;
-  margin: 0;
-  font-family: "Helvetica", sans-serif;
-}
-
-.accordion-container {
-  max-width: 100%;
-  position: relative;
-  z-index: 10;
-}
-
-.accordion-section {
-  margin-bottom: 0vh;
-}
-
-.accordion-section:last-child {
-  margin-bottom: 0;
-}
-
-.accordion-header {
-  padding: 0;
-  user-select: none;
-  letter-spacing: clamp(-9px, -0.9vw, -13px);
-}
-
-.header-left {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5vw;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  padding: 0.1vh 0.1vw;
-}
-
-.header-left:hover {
-  background-color: #f5f5f5;
-}
-
-.location-title {
-  font-size: clamp(1.5rem, 3.5vw, 3rem);
-  font-weight: normal;
-  letter-spacing: -0.3px;
-  line-height: 1.14;
-  -webkit-text-stroke: 1.2px black;
-  margin: 0;
-  font-family: "Helvetica", sans-serif;
-}
-
-.expand-btn {
-  background: none;
-  border: none;
-  color: black;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: clamp(1.5rem, 3.5vw, 3rem);
-  height: clamp(1.5rem, 3.5vw, 3rem);
-  position: relative;
-  flex-shrink: 0;
-}
-
-.expand-btn::before,
-.expand-btn::after {
-  content: '';
-  position: absolute;
-  background-color: black;
-  transition: transform 0.3s ease;
-}
-
-.expand-btn::before {
-  width: 100%;
-  height: 1px;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-}
-
-.expand-btn::after {
-  width: 1px;
-  height: 100%;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-}
-
-.expand-btn.expanded {
-  transform: rotate(45deg);
-}
-
-.accordion-content {
-  height: 0;
-  overflow: hidden;
-  position: relative;
-}
-
-.accordion-content.expanded {
-  padding: 0.2vh 0vw;
 }
 
 .photos-wrapper {
@@ -138,17 +14,16 @@
   cursor: grab;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding: 0 0vw;
+  padding: 0 2vw;
   user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
-  margin-left: calc(-50vw + 50%);
-  width: 100vw;
+  width: 100%;
   background-color: white;
-  overscroll-behavior-x: none;
+  overscroll-behavior-x: contain;
 }
 
 .photos-wrapper:active {
@@ -168,14 +43,15 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  padding-left: 2vw;
-  padding-right:36vw;
+  padding: 0;
 }
 
 .photo-item {
   flex-shrink: 0;
   height: clamp(380px, 34vw, 460px);
-  border-radius: 4px;
+  border-radius: 20px 20px 0 0px;
+  background: rgb(222, 222, 222);
+  padding-bottom: 12px;
   overflow: hidden;
   transition: transform 0.15s ease-out;
   pointer-events: none;
@@ -193,7 +69,6 @@
   transform: scale(1.025) translateZ(0);
 }
 
-/* Scale only the specific photo being dragged */
 .photo-item.dragging {
   transform: scale(0.98) translateZ(0);
 }
@@ -207,6 +82,7 @@
   height: 100%;
   display: block;
   object-fit: contain;
+  border-radius: inherit;
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
@@ -215,258 +91,9 @@
   -webkit-user-drag: none;
 }
 
-/* Carousel Arrows */
-.carousel-arrows {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-start;
-  align-items: center;
-  margin-top: 5px;
-  /* padding: 0 1vw; */
-}
-
-.arrow-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: black;
-  border: none;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.arrow-btn svg {
-  padding: 0 3px;
-  width: 38px;
-  height: 38px;
-}
-
-.arrow-btn.active {
-  background: black;
-}
-
-.arrow-btn:active {
-  transform: scale(1.1);
-}
-
-.speed-btn {
-  min-width: 60px;
-  height: 40px;
-  border-radius: 4px;
-  background: black;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  font-weight: 600;
-  font-size: 18px;
-  color: white;
-  z-index: 1002;
-  padding: 0 14px;
-}
-
-.speed-btn:hover {
-  background: black;
-  transform: scale(1.05);
-}
-
-.speed-btn.active {
-  background: black;
-  color: white;
-  /* Removed pulse animation */
-}
-
-.speed-btn.active:hover {
-  background: black;
-}
-
-.speed-text {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  letter-spacing: -0.5px;
-}
-
-/* Speed Control Container */
-.speed-control {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 44px;
-  z-index: 1001;
-}
-
-/* Speed Menu Expanded - Shows all options */
-.speed-menu-expanded {
-  position: absolute;
-  bottom: 100%;
-  left: 0;
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0;
-  background: black;
-  border-radius: 4px;
-  overflow: hidden;
-  z-index: 1003;
-  padding: 0;
-  margin-bottom: 5px;
-  transform-origin: bottom;
-  animation: expandUpward 0.2s ease-out;
-}
-
-@keyframes expandUpward {
-  from {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-  to {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-}
-
-.speed-menu-expanded.closing {
-  animation: collapseDownward 0.15s ease-in;
-}
-
-@keyframes collapseDownward {
-  from {
-    opacity: 1;
-    transform: scaleY(1);
-  }
-  to {
-    opacity: 0;
-    transform: scaleY(0);
-  }
-}
-
-.speed-option {
-  min-width: 60px;
-  width: 60px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  font-weight: 500;
-  font-size: 18px;
-  color: white;
-  padding: 0;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-  position: relative;
-}
-
-.speed-option.current {
-  font-weight: 600;
-}
-
-.speed-indicator {
-  font-size: 12px;
-}
-
-.speed-option:hover {
-  background: rgba(159, 159, 159, 0.1);
-}
-
-/* Pulse animation for active auto-scroll */
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
-  }
-  100% {
-    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
-  }
-}
-
-/* Nest Hub (1024x600) */
-@media screen and (max-width: 1024px) and (max-height: 600px) {
-  .gallery-title {
-    font-size: clamp(8rem, 16vw, 10rem);
-    letter-spacing: -2px;
-  }
-
-  .location-title {
-    font-size: clamp(3.2rem, 3.8vw, 3.8rem);
-  }
-
-  .expand-btn {
-    width: clamp(3.2rem, 3.8vw, 3.8rem);
-    height: clamp(3.2rem, 3.8vw, 3.8rem);
-  }
-}
-
-/* Surface Pro 7 (912x1368) */
-@media screen and (max-width: 912px) {
-  .gallery-title {
-    font-size: clamp(8rem, 18vw, 9rem);
-    letter-spacing: -2px;
-  }
-
-  .location-title {
-    font-size: clamp(3.2rem, 4vw, 3.8rem);
-  }
-
-  .expand-btn {
-    width: clamp(3.2rem, 4vw, 3.8rem);
-    height: clamp(3.2rem, 4vw, 3.8rem);
-  }
-}
-
-/* iPad Air (820x1180) */
-@media screen and (max-width: 820px) {
-  .gallery-title {
-    font-size: clamp(7rem, 16vw, 8rem);
-    letter-spacing: -2px;
-  }
-
-  .location-title {
-    font-size: clamp(2.8rem, 3.5vw, 3.2rem);
-  }
-
-  .expand-btn {
-    width: clamp(2.8rem, 3.5vw, 3.2rem);
-    height: clamp(2.8rem, 3.5vw, 3.2rem);
-  }
-}
-
-/* iPad Mini and smaller tablets */
 @media screen and (max-width: 768px) {
-  .photo-stacks-layout {
-    grid-template-columns: 1fr;
-    gap: 6vh;
-  }
-
-  .gallery-title-container {
-    padding: 0 4vw;
-    min-height: auto;
-    justify-content: flex-start;
-  }
-
-  .gallery-title {
-    font-size: clamp(6rem, 16vw, 7rem);
-  }
-
-  .location-title {
-    font-size: clamp(2.2rem, 5.5vw, 3rem);
-  }
-
-  .expand-btn {
-    width: clamp(2.6rem, 3.2vw, 2.8rem);
-    height: clamp(2.6rem, 3.2vw, 2.8rem);
-  }
-
   .photos-wrapper {
     padding: 0 4vw;
-    margin-left: calc(-50vw + 50%);
   }
 
   .photos-container {
@@ -476,64 +103,12 @@
   .photo-item {
     height: 380px;
   }
-
-  .arrow-btn {
-    width: 40px;
-    height: 40px;
-  }
-
-  .arrow-btn svg {
-    width: 24px;
-    height: 24px;
-  }
-
-  .carousel-arrows {
-    padding: 0 4vw;
-  }
-
-  .speed-btn {
-    width: 45px;
-    height: 30px;
-    font-size: 13px;
-  }
-
-  .speed-option {
-    width: 45px;
-    height: 30px;
-    font-size: 13px;
-  }
 }
 
-/* Large Phones */
 @media screen and (max-width: 540px) {
   .photo-stacks {
     padding: 8vh 0 10vh 0;
     min-height: auto;
-  }
-
-  .accordion-container {
-    padding-bottom: 5vh;
-  }
-
-  .accordion-header {
-    padding: 0 4vw;
-  }
-
-  .header-left {
-    gap: 4vw;
-  }
-
-  .gallery-title {
-    font-size: clamp(4.5rem, 15vw, 6rem);
-  }
-
-  .location-title {
-    font-size: clamp(2rem, 5vw, 2.8rem);
-  }
-
-  .expand-btn {
-    width: clamp(1.8rem, 2.6vw, 2.3rem);
-    height: clamp(1.8rem, 2.6vw, 2.3rem);
   }
 
   .photo-item {
@@ -541,72 +116,8 @@
   }
 }
 
-/* Medium Phones */
-@media screen and (max-width: 430px) {
-  .gallery-title {
-    font-size: clamp(3.8rem, 18vw, 5rem);
-  }
-
-  .location-title {
-    font-size: clamp(1.8rem, 4.5vw, 2.5rem);
-  }
-
-  .expand-btn {
-    width: clamp(1.7rem, 2.2vw, 2rem);
-    height: clamp(1.7rem, 2.2vw, 2rem);
-  }
-
-  .speed-btn {
-    width: 40px;
-    height: 28px;
-    font-size: 12px;
-  }
-
-  .speed-option {
-    width: 40px;
-    height: 28px;
-    font-size: 12px;
-  }
-}
-
-/* Small Phones */
 @media screen and (max-width: 375px) {
   .photo-item {
     height: 320px;
-  }
-
-  .gallery-title {
-    font-size: clamp(3.5rem, 17vw, 4rem);
-  }
-
-  .location-title {
-    font-size: clamp(1.7rem, 4.2vw, 2.2rem);
-  }
-
-  .expand-btn {
-    width: clamp(1.6rem, 2vw, 1.8rem);
-    height: clamp(1.6rem, 2vw, 1.8rem);
-  }
-
-  .arrow-btn {
-    width: 36px;
-    height: 36px;
-  }
-
-  .arrow-btn svg {
-    width: 22px;
-    height: 22px;
-  }
-
-  .speed-btn {
-    width: 36px;
-    height: 26px;
-    font-size: 11px;
-  }
-
-  .speed-option {
-    width: 36px;
-    height: 26px;
-    font-size: 11px;
   }
 }
