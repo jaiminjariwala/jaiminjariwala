@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Regular-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-RegularItalic-Trial.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Light-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-LightItalic-Trial.otf') format('opentype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Medium-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-MediumItalic-Trial.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Semibold-Trial.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-SemiboldItalic-Trial.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Bold-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Graphik';
+  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-BoldItalic-Trial.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  cursor: none !important;
+}
+
+*::before,
+*::after,
+html,
+body,
+img,
+a,
+button,
+input,
+textarea,
+select {
+  cursor: none !important;
+}
+
+body {
+  font-family: 'Graphik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: black;
+  color: white;
+  font-weight: 300;
+}
+
+a {
+  color: white;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-skip-ink: auto;
+}
+
+::selection {
+  background: rgb(125, 203, 250);
+  color: inherit;
+}
+
+::-moz-selection {
+  background: rgb(125, 203, 250);
+  color: inherit;
+}
+
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10005;
+  transform: translate(-50%, -50%);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: opacity 0.2s ease, width 0.2s ease, height 0.2s ease;
+  opacity: 1;
+}
+
+.custom-cursor.select-black {
+  background-image: url('/select-cursor-black.png');
+  width: 24px;
+  height: 24px;
+}
+
+.custom-cursor.select-white {
+  background-image: url('/select-cursor-white.png');
+  width: 24px;
+  height: 24px;
+}
+
+.custom-cursor.text {
+  background-image: url('/text-cursor.png');
+  width: 40px;
+  height: 40px;
+}
+
+.custom-cursor.text-white {
+  background-image: url('/text-cursor-white.png');
+  width: 40px;
+  height: 40px;
+}
+
+.custom-cursor.hand {
+  background-image: url('/hand-cursor.png');
+  width: 40px;
+  height: 40px;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  *, *::before, *::after, html, body, img, a, button, input, textarea, select {
+    cursor: auto !important;
+  }
+
+  .custom-cursor {
+    display: none;
+  }
+}
+
+.hero-link {
+  color: inherit;
+}
+
+.hero-arrow {
+  padding: 12px 16px;
+  margin: -12px -16px;
+  transition: opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+}
+
+.hero-arrow:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.hero-arrow-icon {
+  width: 44px;
+  height: 20px;
+  display: block;
+}
