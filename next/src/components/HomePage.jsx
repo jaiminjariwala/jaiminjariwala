@@ -15,7 +15,7 @@ const HomePage = () => {
 
         <div className="h-[150px]" aria-hidden="true" />
 
-        <div className="grid grid-cols-[1.2fr_1fr] items-center justify-between">
+        <div className="hero-layout grid items-center justify-between">
           <div className="w-full self-start">
             <h1
               className={`${shortStack.className} text-[56px] font-normal leading-[1.1] tracking-[-0.03em] [-webkit-text-stroke:2.8px_#000000]`}
@@ -32,7 +32,7 @@ const HomePage = () => {
           </div>
 
           {/* CROPPED IMAGE CONTAINER */}
-          <div className="relative flex justify-center">
+          <div className="hero-profile relative flex justify-center">
              <div className="overflow-hidden w-[280px] h-[360px] flex items-center justify-center">
                 <Image
                   src="/my-profile.svg"
