@@ -1,0 +1,63 @@
+import Image from "next/image";
+import { Short_Stack } from "next/font/google";
+import Navbar from "@/components/Navbar";
+
+const shortStack = Short_Stack({
+  subsets: ["latin"],
+  weight: "400",
+});
+
+const HomePage = () => {
+  return (
+    <section className="min-h-screen bg-white text-[#000000]">
+      <div className="mx-auto w-full max-w-[689px]">
+        <Navbar />
+
+        <div className="h-[150px]" aria-hidden="true" />
+
+        <div className="grid grid-cols-[1.2fr_1fr] items-center justify-between">
+          <div className="w-full self-start">
+            <h1
+              className={`${shortStack.className} text-[56px] font-normal leading-[1.1] tracking-[-0.03em] [-webkit-text-stroke:2.8px_#000000]`}
+            >
+              Jaimin
+              <br />
+              Jariwala
+            </h1>
+
+            <p className="mt-[58px] w-full pr-[58px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]">
+              I am a <span className="font-bold">creative web developer</span> who builds delightful web experiences.
+              I play around typography, colors, visuals, creative user interactions & illustrations.
+            </p>
+          </div>
+
+          {/* CROPPED IMAGE CONTAINER */}
+          <div className="relative flex justify-center">
+             <div className="overflow-hidden w-[280px] h-[360px] flex items-center justify-center">
+                <Image
+                  src="/my-profile.svg"
+                  alt="Jaimin profile illustration"
+                  width={360}
+                  height={360}
+                  priority
+                  className="w-full h-full object-cover scale-[1.15] origin-center" 
+                />
+             </div>
+          </div>
+        </div>
+
+        <p className="mt-[50px] max-w-[689px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]">
+          I am inspired by swiss design, apple&apos;s design principles, neubrutalism, glassmorphism, skeuomorphism, the way
+          user interprets websites, and how interactivity, ease of using, look and feel dramatically transforms the user
+          experience.
+        </p>
+
+        <div className="mt-[74px] flex justify-center">
+          <div className="h-[8px] w-[62%] min-w-[240px] max-w-[520px] rounded-full bg-[#73c951]" />
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HomePage;

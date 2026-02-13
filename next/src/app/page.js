@@ -1,11 +1,5 @@
-import Hero from "@/components/Hero";
-import Philosophy from "@/components/Philosophy";
+import HomePage from "@/components/HomePage";
 
 export default function Home() {
-  return (
-    <>
-      <Hero />
-      <Philosophy />
-    </>
-  );
+  return <HomePage />;
 }
