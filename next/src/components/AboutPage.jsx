@@ -19,42 +19,52 @@ const AboutPage = () => {
           <div className="absolute left-[14px] top-[-26px] bottom-[-26px] w-[6px] -translate-x-1/2 rounded-full bg-[#4da3ff]" />
 
           <div className="mt-[88px]">
-            <div className="relative pl-[68px]">
-              <span className="absolute left-[14px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#49be09]" />
-              <h2 style={{ margin: 0, padding: 0 }} className="m-0 p-0 text-[24px] font-medium leading-[0.92] text-[#73c951]">
+            <div className="relative pl-[48px] md:pl-[68px]">
+              <span className="absolute left-[14px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#73c951]" />
+              <h2 style={{ margin: 0, padding: 0, fontSize: 'clamp(21px, 3.5vw, 24px)' }} className="m-0 p-0 text-[24px] font-medium leading-[0.92] text-[#73c951]">
                 Present
               </h2>
-              <p className="m-0 -mt-[2px] text-[clamp(24px,1.65vw,24px)] leading-[1.35] tracking-[-0.01em]">
-                I am a grad student pursuing <strong>Master&rsquo;s in Computer Science at The George Washington University,</strong>{" "}
-                <strong>Washington D.C.,</strong> (majoring in Software Engineering).
+              <p className="m-0 -mt-[2px] leading-[1.35] tracking-[-0.01em]" style={{ fontSize: 'clamp(21px, 3.5vw, 24px)' }}>
+                I am a grad student pursuing Master&rsquo;s in Computer Science at The George Washington University,{" "}
+                Washington D.C., (majoring in Software Engineering).
               </p>
             </div>
 
-            <div className="relative mt-7 pl-[68px]">
-              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#49be09]" />
-              <p className="text-[clamp(24px,1.65vw,24px)] leading-[1.35] tracking-[-0.01em]">
+            <div className="relative mt-7 pl-[48px] md:pl-[68px]">
+              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#73c951]" />
+              <p className="leading-[1.35] tracking-[-0.01em]" style={{ fontSize: 'clamp(21px, 3.5vw, 24px)' }}>
                 Outside of work, I enjoy roller skating and playing spikeball, badminton, golf, table tennis, and always open to
                 learn and play other American sports. Moreover, I hit the gym almost daily and love traveling cities whenever I get
-                the chance. <strong>I prefer working out of home</strong> rather than from home, as I am an extrovert who enjoys
-                being outside and around people more than staying indoors.
+                the chance.
               </p>
             </div>
 
-            <div className="relative mt-7 pl-[68px]">
-              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#49be09]" />
-              <p className="text-[clamp(24px,1.65vw,24px)] leading-[1.35] tracking-[-0.01em]">
-                At present, <strong>I live in Arlington, Virginia.</strong>
+            <div className="relative mt-7 pl-[48px] md:pl-[68px]">
+              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#73c951]" />
+              <p className="leading-[1.35] tracking-[-0.01em]" style={{ fontSize: 'clamp(21px, 3.5vw, 24px)' }}>
+              <strong>I prefer working out of home</strong> rather than from home, as I am an extrovert who enjoys
+              being outside and around people more than staying indoors.
+              </p>
+            </div>
+
+            <div className="relative mt-7 pl-[48px] md:pl-[68px]">
+              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#73c951]" />
+              <p className="leading-[1.35] tracking-[-0.01em]" style={{ fontSize: 'clamp(21px, 3.5vw, 24px)' }}>
+                At present, I live in Arlington, Virginia.
               </p>
             </div>
           </div>
 
+
+
+
           <div className="mt-[88px]">
-            <div className="relative pl-[68px]">
-              <span className="absolute left-[14px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#49be09]" />
-              <h2 style={{ margin: 0, padding: 0 }} className="m-0 p-0 text-[24px] font-semibold leading-[0.92] text-[#73c951]">
+            <div className="relative pl-[48px] md:pl-[68px]">
+              <span className="absolute left-[14px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#73c951]" />
+              <h2 style={{ margin: 0, padding: 0, fontSize: 'clamp(21px, 3.5vw, 24px)' }} className="m-0 p-0 text-[24px] font-semibold leading-[0.92] text-[#73c951]">
                 Past
               </h2>
-              <p className="m-0 -mt-[2px] text-[clamp(24px,1.65vw,24px)] leading-[1.35] tracking-[-0.01em]">
+              <p className="m-0 -mt-[2px] leading-[1.35] tracking-[-0.01em]" style={{ fontSize: 'clamp(21px, 3.5vw, 24px)' }}>
                 I worked as an <strong>AI/ML intern</strong>{" "}
                 <a href="https://logicwind.com" target="_blank" rel="noreferrer" className="text-[#3896ff] hover:underline">
                   @Logicwind
@@ -63,10 +73,10 @@ const AboutPage = () => {
               </p>
             </div>
 
-            <div className="relative mt-7 pl-[68px]">
-              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#49be09]" />
-              <p className="text-[clamp(24px,1.65vw,24px)] leading-[1.35] tracking-[-0.01em]">
-                Did my <strong>Bachelor&rsquo;s in Computer Science and Engineering from India.</strong> My hometown is Surat,
+            <div className="relative mt-7 pl-[48px] md:pl-[68px]">
+              <span className="absolute left-[14px] top-[4px] h-[22px] w-[22px] -translate-x-1/2 rounded-full bg-[#73c951]" />
+              <p className="leading-[1.35] tracking-[-0.01em]" style={{ fontSize: 'clamp(21px, 3.5vw, 24px)' }}>
+                Did my Bachelor&rsquo;s in Computer Science and Engineering from India. My hometown is Surat,
                 Gujarat, India.
               </p>
             </div>
