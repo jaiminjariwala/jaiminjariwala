@@ -10,11 +10,8 @@ const shortStack = Short_Stack({
 const HomePage = () => {
   return (
     <section className="min-h-screen bg-white text-[#000000]">
-      <div className="mx-auto w-full max-w-[689px]">
-        <Navbar />
-
-        <div className="h-[150px]" aria-hidden="true" />
-
+      <Navbar />
+      <div className="mx-auto w-full max-w-[689px]" style={{ paddingLeft: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)', paddingRight: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)' }}>
         <div className="hero-layout grid items-center justify-between">
           <div className="w-full self-start">
             <h1
@@ -25,7 +22,7 @@ const HomePage = () => {
               Jariwala
             </h1>
 
-            <p className="mt-[58px] w-full pr-[58px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]">
+            <p className="mt-[48px] md:mt-[58px] w-full pr-[58px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]">
               I am a <span className="font-bold">creative web developer</span> who builds delightful web experiences.
               I play around typography, colors, visuals, creative user interactions & illustrations.
             </p>
@@ -52,7 +49,7 @@ const HomePage = () => {
           experience.
         </p>
 
-        <div className="mt-[74px] flex justify-center">
+        <div className="mt-[48px] mb-[48px] md:mt-[74px] flex justify-center">
           <div className="h-[8px] w-[62%] min-w-[240px] max-w-[520px] rounded-full bg-[#73c951]" />
         </div>
       </div>

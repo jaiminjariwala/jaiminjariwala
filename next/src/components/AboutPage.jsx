@@ -4,11 +4,8 @@ import Navbar from "@/components/Navbar";
 const AboutPage = () => {
   return (
     <section className="min-h-screen bg-white text-black">
-      <div className="mx-auto w-full max-w-[689px]">
-        <Navbar />
-
-        <div className="h-[150px]" aria-hidden="true" />
-
+      <Navbar />
+      <div className="mx-auto w-full max-w-[689px]" style={{ paddingLeft: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)', paddingRight: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)' }}>
         <Image
           src="/university-image.svg"
           alt="The George Washington University campus entrance"
