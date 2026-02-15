@@ -302,7 +302,7 @@ export default function HireMeLanyard() {
           willChange: "transform, left, top",
         }}
       >
-        <div className="hire-badge-card-inner">
+        <div className="hire-badge-card-inner tracking-[-0.09em]">
           <Image
             src="/my-profile.svg"
             alt="Jaimin Jariwala"

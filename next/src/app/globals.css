@@ -221,7 +221,7 @@ a {
   line-height: 0.92;
   text-align: center;
   color: #111111;
-  -webkit-text-stroke: 0.8px #111111;
+  -webkit-text-stroke: 1.5px #111111;
 }
 
 .hire-badge-role {
@@ -233,7 +233,7 @@ a {
   letter-spacing: 0;
   white-space: nowrap;
   text-align: center;
-  color: #676767;
+  color: #000000;
 }
 
 .hire-role-focus-text {
