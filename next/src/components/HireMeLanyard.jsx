@@ -19,10 +19,15 @@ extend({ MeshLineGeometry, MeshLineMaterial });
 const CARD_ASPECT = 1.37;
 const ROLE_TITLES = ["Software Developer", "Frontend Developer", "Web Developer", "Product Designer"];
 const BAND_VISUAL = {
-  lineWidth: 1.2,
-  tipSizePx: 42,
-  tipSizePxMobile: 54,
-  tipEmbedWorldMobile: 0.2,
+  lineWidthDesktop: 120,
+  lineWidthMobile: 100,
+  lineWidthLargeDesktop: 120,
+  clipTopDesktopPx: 9,
+  clipTopMobilePx: 9,
+  tipDockOverlapDesktopPx: 0,
+  tipDockOverlapMobilePx: 0,
+  tipFrontZOffset: 0.04,
+  tipControlLerp: 0.26,
 };
 const CARD_PHYSICS = {
   gravityScale: 0.72,
@@ -64,7 +69,7 @@ function RoleFocusText({ text }) {
   );
 }
 
-function Band({ cardRef, tipRef, cardSize }) {
+function Band({ cardRef, cardSize }) {
   const band = useRef();
   const fixed = useRef();
   const j1 = useRef();
@@ -77,31 +82,42 @@ function Band({ cardRef, tipRef, cardSize }) {
   const ang = useMemo(() => new THREE.Vector3(), []);
   const rot = useMemo(() => new THREE.Vector4(), []);
   const dir = useMemo(() => new THREE.Vector3(), []);
-  const screenVec = useMemo(() => new THREE.Vector3(), []);
-  const attachVec = useMemo(() => new THREE.Vector3(), []);
+  const tipControlVec = useMemo(() => new THREE.Vector3(), []);
   const attachScreenVec = useMemo(() => new THREE.Vector3(), []);
+  const attachVec = useMemo(() => new THREE.Vector3(), []);
   const quat = useMemo(() => new THREE.Quaternion(), []);
   const euler = useMemo(() => new THREE.Euler(), []);
   const lineResolution = useMemo(() => new THREE.Vector2(1, 1), []);
 
   const { size, camera } = useThree();
   const isMobile = size.width < 768;
+  const isLargeDesktop = size.width >= 1400;
   lineResolution.set(size.width, size.height);
 
-  const [curve] = useState(
-    () =>
-      new THREE.CatmullRomCurve3([
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-        new THREE.Vector3(),
-      ])
-  );
+  const [curve] = useState(() => {
+    const path = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+      new THREE.Vector3(),
+    ]);
+    path.curveType = "chordal";
+    return path;
+  });
   const [dragged, drag] = useState(false);
 
-  const cardWorldWidth = clamp(cardSize.width / 130, 1.95, 2.75);
-  const cardWorldHeight = cardWorldWidth * CARD_ASPECT;
-  const cardAttachY = cardWorldHeight / 2 - 0.36;
+  const cameraDistance = Math.abs(camera.position.z);
+  const viewportHeightWorld =
+    2 * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2) * cameraDistance;
+  const worldPerPixel = viewportHeightWorld / size.height;
+  const cardWorldWidth = cardSize.width * worldPerPixel;
+  const cardWorldHeight = cardSize.height * worldPerPixel;
+  const clipTopPx = isMobile ? BAND_VISUAL.clipTopMobilePx : BAND_VISUAL.clipTopDesktopPx;
+  const tipDockOverlapPx = isMobile
+    ? BAND_VISUAL.tipDockOverlapMobilePx
+    : BAND_VISUAL.tipDockOverlapDesktopPx;
+  const cardAttachY =
+    cardWorldHeight / 2 - (clipTopPx - tipDockOverlapPx) * worldPerPixel;
   const segmentLength = 0.9;
 
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], segmentLength]);
@@ -140,15 +156,21 @@ function Band({ cardRef, tipRef, cardSize }) {
     quat.set(rot.x, rot.y, rot.z, rot.w);
     euler.setFromQuaternion(quat, "XYZ");
 
-    const tipEmbedWorld = isMobile ? BAND_VISUAL.tipEmbedWorldMobile : 0;
-    attachVec.set(0, cardAttachY - tipEmbedWorld, 0).applyQuaternion(quat).add(
-      new THREE.Vector3(cardPos.x, cardPos.y, cardPos.z)
+    // Keep the band tip fixed to the card top-center in world space.
+    attachVec.set(
+      cardPos.x,
+      cardPos.y + cardAttachY,
+      cardPos.z + BAND_VISUAL.tipFrontZOffset
     );
 
-    curve.points[0].copy(attachVec);
-    curve.points[1].copy(j2.current.lerped);
-    curve.points[2].copy(j1.current.lerped);
-    curve.points[3].copy(fixed.current.translation());
+    // Hard lock the visible tip to card top-center back anchor.
+    tipControlVec.copy(attachVec).lerp(j2.current.lerped, BAND_VISUAL.tipControlLerp);
+
+    // Keep geometry shape, but make card anchor the end-cap so tip extends visibly on card front.
+    curve.points[0].copy(fixed.current.translation());
+    curve.points[1].copy(j1.current.lerped);
+    curve.points[2].copy(tipControlVec);
+    curve.points[3].copy(attachVec);
     if (band.current?.geometry) {
       band.current.geometry.setPoints(curve.getPoints(32));
     }
@@ -168,12 +190,13 @@ function Band({ cardRef, tipRef, cardSize }) {
       z: clamp(nextZ, -maxSpin, maxSpin),
     });
 
-    const cardScreen = toScreen(camera, size, cardPos, screenVec);
-    placeOverlay(cardRef.current, cardScreen.x, cardScreen.y, euler.z);
-
-    // Tip circle at the band-card join point (rendered behind the card layer)
-    const tipScreen = toScreen(camera, size, attachVec, attachScreenVec);
-    placeOverlay(tipRef.current, tipScreen.x, tipScreen.y, 0);
+    const attachScreen = toScreen(camera, size, attachVec, attachScreenVec);
+    const clipAnchorOffset = cardSize.height / 2 - (clipTopPx - tipDockOverlapPx);
+    const sinZ = Math.sin(euler.z);
+    const cosZ = Math.cos(euler.z);
+    const cardCenterX = attachScreen.x - sinZ * clipAnchorOffset;
+    const cardCenterY = attachScreen.y + cosZ * clipAnchorOffset;
+    placeOverlay(cardRef.current, cardCenterX, cardCenterY, euler.z);
   });
 
   return (
@@ -195,7 +218,7 @@ function Band({ cardRef, tipRef, cardSize }) {
 
         <RigidBody
           ref={card}
-          position={[0, -(segmentLength * 3 + cardWorldHeight * 0.5 + 0.62), 0]}
+          position={[0, -(segmentLength * 3 + cardAttachY), 0]}
           gravityScale={CARD_PHYSICS.gravityScale}
           angularDamping={CARD_PHYSICS.angularDamping}
           linearDamping={CARD_PHYSICS.linearDamping}
@@ -228,7 +251,14 @@ function Band({ cardRef, tipRef, cardSize }) {
           color="#000000"
           depthTest={false}
           resolution={lineResolution}
-          lineWidth={isMobile ? BAND_VISUAL.lineWidth * 0.82 : BAND_VISUAL.lineWidth}
+          sizeAttenuation={0}
+          lineWidth={
+            isMobile
+              ? BAND_VISUAL.lineWidthMobile
+              : isLargeDesktop
+                ? BAND_VISUAL.lineWidthLargeDesktop
+                : BAND_VISUAL.lineWidthDesktop
+          }
         />
       </mesh>
     </>
@@ -238,9 +268,7 @@ function Band({ cardRef, tipRef, cardSize }) {
 export default function HireMeLanyard() {
   const stageRef = useRef(null);
   const cardRef = useRef(null);
-  const tipRef = useRef(null);
   const [roleIndex, setRoleIndex] = useState(0);
-  const [isMobileViewport, setIsMobileViewport] = useState(false);
   const [cardSize, setCardSize] = useState({
     width: 290,
     height: Math.round(290 * CARD_ASPECT),
@@ -252,7 +280,6 @@ export default function HireMeLanyard() {
 
     const updateSize = () => {
       const width = clamp(stage.clientWidth * 0.26, 220, 320);
-      setIsMobileViewport(stage.clientWidth < 768);
       setCardSize({
         width,
         height: Math.round(width * CARD_ASPECT),
@@ -276,19 +303,9 @@ export default function HireMeLanyard() {
     <div ref={stageRef} className="hire-r3f-lanyard">
       <Canvas className="hire-r3f-lanyard-canvas" camera={{ position: [0, 0, 13], fov: 25 }} dpr={[1, 2]}>
         <Physics gravity={[0, -40, 0]} timeStep={1 / 60} interpolate>
-          <Band key={cardSize.width} cardRef={cardRef} tipRef={tipRef} cardSize={cardSize} />
+          <Band key={cardSize.width} cardRef={cardRef} cardSize={cardSize} />
         </Physics>
       </Canvas>
-
-      <div
-        ref={tipRef}
-        className="hire-lanyard-tip"
-        style={{
-          width: `${isMobileViewport ? BAND_VISUAL.tipSizePxMobile : BAND_VISUAL.tipSizePx}px`,
-          height: `${isMobileViewport ? BAND_VISUAL.tipSizePxMobile : BAND_VISUAL.tipSizePx}px`,
-          opacity: 0,
-        }}
-      />
 
       <article
         ref={cardRef}

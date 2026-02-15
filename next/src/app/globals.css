@@ -168,19 +168,6 @@ a {
   z-index: 10;
 }
 
-.hire-lanyard-tip {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100px;
-  height: 100px;
-  /* border-radius: 999px; */
-  background: #000000;
-  opacity: 0;
-  pointer-events: none;
-  z-index: 10;
-}
-
 .hire-badge-card {
   position: absolute;
   left: 0;
@@ -189,8 +176,9 @@ a {
   border-radius: 28px;
   background: #4a90e2;
   box-shadow: 0 24px 44px rgba(0, 0, 0, 0.12);
+  overflow: visible;
   pointer-events: none;
-  z-index: 11;
+  z-index: 14;
 }
 
 .hire-badge-card-inner {
