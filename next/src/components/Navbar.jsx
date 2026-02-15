@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const links = [
   { label: "home", href: "/", isHome: true },
@@ -13,19 +13,30 @@ const links = [
   { label: "gallery", href: "/gallery" },
 ];
 
+const DESKTOP_QUERY = "(min-width: 768px)";
+
+function subscribeDesktopChange(callback) {
+  const mq = window.matchMedia(DESKTOP_QUERY);
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+function getDesktopSnapshot() {
+  return window.matchMedia(DESKTOP_QUERY).matches;
+}
+
+function getDesktopServerSnapshot() {
+  return false;
+}
+
 const Navbar = () => {
-  const [isDesktop, setIsDesktop] = useState(() =>
-    typeof window !== "undefined" ? window.matchMedia("(min-width: 768px)").matches : false
+  const isDesktop = useSyncExternalStore(
+    subscribeDesktopChange,
+    getDesktopSnapshot,
+    getDesktopServerSnapshot
   );
   const [navHeight, setNavHeight] = useState(0);
   const navRef = useRef(null);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const handler = (e) => setIsDesktop(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
 
   useEffect(() => {
     if (!navRef.current) return;
@@ -72,8 +83,28 @@ const Navbar = () => {
           {links.map((item) => (
             <li key={item.label} style={{ margin: 0, padding: 0 }}>
               {item.isHome ? (
-                <Link href={item.href} aria-label="Home" className="inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center p-0">
-                  <Image src="/home-icon-svg.svg" alt="Home" width={30} height={30} priority />
+                <Link
+                  href={item.href}
+                  aria-label="Home"
+                  className="group relative inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center p-0"
+                >
+                  <Image
+                    src="/home-icon-svg.svg"
+                    alt="Home"
+                    width={30}
+                    height={30}
+                    priority
+                    className="absolute inset-0 transition-opacity duration-200 group-hover:opacity-0"
+                  />
+                  <Image
+                    src="/home-icon-svg-hover.svg"
+                    alt=""
+                    aria-hidden="true"
+                    width={30}
+                    height={30}
+                    priority
+                    className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                  />
                 </Link>
               ) : (
                 <Link
