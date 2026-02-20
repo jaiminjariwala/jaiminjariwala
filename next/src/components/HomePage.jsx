@@ -51,7 +51,10 @@ const HomePage = () => {
           </div>
         </div>
 
-        <p className="mt-[50px] max-w-[689px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]">
+        <p
+          className="max-w-[689px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
+          style={{ marginTop: "clamp(36px, calc((768px - 100vw) * 9999), 50px)" }}
+        >
           I am inspired by swiss design, apple&apos;s design principles, neubrutalism, glassmorphism, skeuomorphism, the way
           user interprets websites, and how interactivity, ease of using, look and feel dramatically transforms the user
           experience.
