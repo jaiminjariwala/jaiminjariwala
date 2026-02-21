@@ -321,7 +321,7 @@ export default function HireMeLanyard() {
       >
         <div className="hire-badge-card-inner tracking-[-0.09em]">
           <Image
-            src="/my-profile.svg"
+            src="/my-profile-1.png"
             alt="Jaimin Jariwala"
             width={480}
             height={480}

@@ -40,7 +40,7 @@ const HomePage = () => {
           <div className="hero-profile relative flex justify-center">
              <div className="overflow-hidden w-[280px] h-[360px] flex items-center justify-center">
                 <Image
-                  src="/my-profile.svg"
+                  src="/my-profile-2.png"
                   alt="Jaimin profile illustration"
                   width={360}
                   height={360}
@@ -52,7 +52,7 @@ const HomePage = () => {
         </div>
 
         <p
-          className="max-w-[689px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
+          className="max-w-[559px] text-[clamp(24px,1.65vw,24px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
           style={{ marginTop: "clamp(36px, calc((768px - 100vw) * 9999), 50px)" }}
         >
           I am inspired by swiss design, apple&apos;s design principles, neubrutalism, glassmorphism, skeuomorphism, the way
@@ -60,7 +60,7 @@ const HomePage = () => {
           experience.
         </p>
 
-        <div className="flex justify-center" style={{ marginTop: 'clamp(48px, calc((100vw - 768px) * 9999), 74px)', marginBottom: 'clamp(0px, calc((768px - 100vw) * 9999), 48px)' }}>
+        <div className="flex justify-center" style={{ marginTop: 'clamp(48px, calc((100vw - 768px) * 9999), 74px)', marginBottom: 'clamp(48px, calc((768px - 100vw) * 9999), 0px)' }}>
           <div className="h-[8px] w-[62%] min-w-[240px] max-w-[520px] rounded-full bg-[#73c951]" />
         </div>
       </div>
