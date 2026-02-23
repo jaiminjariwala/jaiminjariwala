@@ -14,6 +14,7 @@ export default function ContactPage() {
   const { message, setMessage, attachments, setAttachments } = useContactDraft();
   const [from, setFrom] = useState("");
   const [fromError, setFromError] = useState("");
+  const [messageError, setMessageError] = useState(false);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
@@ -29,6 +30,8 @@ export default function ContactPage() {
     pointerId: null,
   });
   const [isDraggingAttachments, setIsDraggingAttachments] = useState(false);
+  const fromIsInvalid = Boolean(fromError && from.trim());
+  const fromHasText = from.length > 0;
 
   const onFileChange = (event) => {
     const files = Array.from(event.target.files || []);
@@ -42,6 +45,7 @@ export default function ContactPage() {
     }));
 
     setAttachments((prev) => [...prev, ...next]);
+    if (messageError) setMessageError(false);
     event.target.value = "";
   };
 
@@ -79,21 +83,30 @@ export default function ContactPage() {
   };
 
   const onSend = async () => {
+    if (!from.trim()) {
+      setFromError("Please enter a valid email address.");
+      setError("From email is required.");
+      return;
+    }
+
     if (from.trim() && !EMAIL_RE.test(from.trim())) {
       setFromError("Please enter a valid email address.");
       return;
     }
     if (!message.trim() && attachments.length === 0) {
-      setError("Please write a message or attach a file.");
+      setMessageError(true);
+      setError("");
       return;
     }
 
+    setMessageError(false);
     setError("");
     setSending(true);
     setSent(false);
 
     try {
       const formData = new FormData();
+      formData.set("from", from.trim());
       formData.set("message", message.trim());
       attachments.forEach((att) => {
         formData.append("attachments", att.file);
@@ -125,6 +138,7 @@ export default function ContactPage() {
   const onCancel = () => {
     setFrom("");
     setFromError("");
+    setMessageError(false);
     setMessage("");
     clearAllAttachments();
     setError("");
@@ -194,11 +208,16 @@ export default function ContactPage() {
     <section className="min-h-screen bg-white text-black">
       {/* Desktop overrides — bypasses Tailwind JIT for guaranteed rendering */}
       <style>{`
+        .cp-from-input::placeholder,
+        .cp-textarea::placeholder {
+          -webkit-text-stroke: 0 transparent !important;
+        }
+
         @media (min-width: 768px) {
           .cp-from-row        { height: 44px !important; }
           .cp-from-label      { font-size: 20px !important; }
           .cp-from-input      { font-size: 20px !important; line-height: 44px !important; }
-          .cp-textarea        { font-size: 20px !important; min-height: 270px !important; height: auto !important; }
+          .cp-textarea        { font-size: 20px !important; min-height: 234px !important; height: auto !important; }
           .cp-att-btn         { width: 150px !important; height: 150px !important; top: -8px !important; right: 18px !important; }
           .cp-paperclip-wrap  { right: -46px !important; top: -36px !important; }
           .cp-paperclip-img   { height: 110px !important; }
@@ -226,7 +245,7 @@ export default function ContactPage() {
                 type="button"
                 onClick={onCancel}
                 disabled={sending}
-                className="h-[30px] rounded-[7px] border border-[#c9cfda] bg-[#f9f9f8] px-[10px] text-[18px] font-black leading-none tracking-[-0.01em] text-[#000000] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[9px] md:text-[22px] md:font-black md:shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)]"
+                className="h-auto rounded-[7px] border border-[#c9cfda] bg-[#f9f9f8] px-[10px] py-[8px] text-[18px] font-black leading-none tracking-[-0.01em] text-[#000000] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black md:shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)]"
               >
                 Cancel
               </button>
@@ -246,7 +265,7 @@ export default function ContactPage() {
                 type="button"
                 onClick={onSend}
                 disabled={sending}
-                className="h-[30px] rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[14px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
+                className="h-auto rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] py-[8px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
               >
                 {sending ? "..." : sent ? "Sent" : "Send"}
               </button>
@@ -255,9 +274,9 @@ export default function ContactPage() {
             <div className="h-[2px] bg-gradient-to-r from-[#f1c0c0] via-[#eb9a9a] to-[#f1c0c0]" />
 
             {/* ── From row ── */}
-            <div className="cp-from-row flex h-[32px] items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]">
+            <div className="cp-from-row flex h-[36px] items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]">
               <span
-                className={`cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] text-[16px] md:inline ${
+                className={`cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] text-[18px] [-webkit-text-stroke:0.3px_#000000] md:inline ${
                   from.length > 0 ? "hidden" : "inline"
                 }`}
               >
@@ -272,10 +291,10 @@ export default function ContactPage() {
                   fromError && !from.trim()
                     ? fromError
                     : from.length === 0
-                    ? "From: your@email.com"
+                    ? "your@email.com"
                     : "your@email.com"
                 }
-                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent text-[16px] leading-[32px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
+                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent text-[18px] leading-[36px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
                   fromError && !from.trim()
                     ? "placeholder:text-[#d53030]"
                     : "placeholder:text-[#a1a8b3]"
@@ -283,7 +302,12 @@ export default function ContactPage() {
                 style={{
                   border: "none",
                   boxShadow: "none",
-                  color: fromError && from.trim() ? "#d53030" : "#1f2329",
+                  color: fromIsInvalid ? "#d53030" : "#1f2329",
+                  WebkitTextStroke: fromHasText
+                    ? fromIsInvalid
+                      ? "0.3px #d53030"
+                      : "0.3px #000000"
+                    : "0px transparent",
                 }}
               />
             </div>
@@ -293,15 +317,21 @@ export default function ContactPage() {
               <textarea
                 ref={textareaRef}
                 value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                placeholder="Write your message..."
+                onChange={(event) => {
+                  setMessage(event.target.value);
+                  if (messageError && event.target.value.trim().length > 0) {
+                    setMessageError(false);
+                  }
+                }}
+                placeholder={messageError ? "Don't forget to add your message or files..." : "Write your message..."}
                 rows={6}
-                className={`cp-textarea ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} min-h-[117px] w-full resize-none appearance-none border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-0 pb-[1em] text-[16px] leading-[1.82] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 placeholder:text-[#a1a8b3] focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                className={`cp-textarea ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} min-h-[117px] w-full resize-none appearance-none border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-0 pb-[1em] text-[18px] leading-[1.82] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 ${messageError ? "placeholder:text-[#d53030]" : "placeholder:text-[#a1a8b3]"} focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                   attachments.length > 0 ? "pr-[116px]" : "pr-[12px] max-md:pr-[10px]"
                 }`}
                 style={{
                   border: "none",
                   boxShadow: "none",
+                  WebkitTextStroke: message.length > 0 ? "0.3px #000000" : "0px transparent",
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
                   backgroundImage:
@@ -379,9 +409,9 @@ export default function ContactPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="relative z-[1] inline-flex items-center gap-[6px] font-medium tracking-[-0.01em] text-[#606773] text-[18px] md:text-[26px]"
+                className="relative z-[1] inline-flex items-center gap-[6px] font-medium tracking-[-0.01em] text-[#616161] text-[18px] md:text-[26px] [-webkit-text-stroke:0.3px_#616161]"
               >
-                <span className="text-[18px] md:text-[24px]">Add file</span>
+                <span className="text-[18px] md:text-[24px] px-[8px] py-[6px]">Add file</span>
               </button>
               <input
                 ref={fileInputRef}
@@ -435,7 +465,13 @@ export default function ContactPage() {
                   className={`overflow-x-auto overflow-y-hidden select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                     isDraggingAttachments ? "cursor-grabbing" : "cursor-grab"
                   }`}
-                  style={{ scrollbarWidth: "none", msOverflowStyle: "none", touchAction: "pan-y" }}
+                  style={{
+                    scrollbarWidth: "none",
+                    msOverflowStyle: "none",
+                    touchAction: "pan-x",
+                    WebkitOverflowScrolling: "touch",
+                    overscrollBehaviorX: "contain",
+                  }}
                 >
                   <div className="flex w-max gap-[10px] pb-[4px]">
                     {attachments.map((att) => (
