@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useContactDraft } from "@/components/ContactDraftContext";
 
@@ -11,13 +11,14 @@ function getFileExt(name = "") {
 }
 
 export default function ContactPage() {
-  const { senderEmail, setSenderEmail, message, setMessage, attachments, setAttachments } = useContactDraft();
+  const { message, setMessage, attachments, setAttachments } = useContactDraft();
+  const [from, setFrom] = useState("");
+  const [fromError, setFromError] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const fileInputRef = useRef(null);
-  const messageTextareaRef = useRef(null);
   const attachmentsStripRef = useRef(null);
   const attachmentsDragRef = useRef({
     dragging: false,
@@ -26,7 +27,6 @@ export default function ContactPage() {
     pointerId: null,
   });
   const [isDraggingAttachments, setIsDraggingAttachments] = useState(false);
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const onFileChange = (event) => {
     const files = Array.from(event.target.files || []);
@@ -62,19 +62,25 @@ export default function ContactPage() {
     });
   };
 
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const onFromChange = (e) => {
+    const val = e.target.value;
+    setFrom(val);
+    if (fromError && EMAIL_RE.test(val.trim())) setFromError("");
+  };
+
+  const onFromBlur = () => {
+    if (from.trim() && !EMAIL_RE.test(from.trim())) {
+      setFromError("Please enter a valid email address.");
+    }
+  };
+
   const onSend = async () => {
-    const fromEmail = senderEmail.trim();
-
-    if (!fromEmail) {
-      setError("From email is required.");
+    if (from.trim() && !EMAIL_RE.test(from.trim())) {
+      setFromError("Please enter a valid email address.");
       return;
     }
-
-    if (!emailPattern.test(fromEmail)) {
-      setError("Please enter a valid email in From.");
-      return;
-    }
-
     if (!message.trim() && attachments.length === 0) {
       setError("Please write a message or attach a file.");
       return;
@@ -86,7 +92,6 @@ export default function ContactPage() {
 
     try {
       const formData = new FormData();
-      formData.set("from", fromEmail);
       formData.set("message", message.trim());
       attachments.forEach((att) => {
         formData.append("attachments", att.file);
@@ -116,7 +121,8 @@ export default function ContactPage() {
   };
 
   const onCancel = () => {
-    setSenderEmail("");
+    setFrom("");
+    setFromError("");
     setMessage("");
     clearAllAttachments();
     setError("");
@@ -163,17 +169,6 @@ export default function ContactPage() {
     strip.scrollLeft = attachmentsDragRef.current.startScrollLeft - deltaX;
   };
 
-  const resizeMessageInput = () => {
-    const textarea = messageTextareaRef.current;
-    if (!textarea) return;
-    textarea.style.height = "0px";
-    textarea.style.height = `${Math.max(200, textarea.scrollHeight)}px`;
-  };
-
-  useEffect(() => {
-    resizeMessageInput();
-  }, [message]);
-
   return (
     <section className="min-h-screen bg-white text-black">
       <Navbar />
@@ -217,63 +212,57 @@ export default function ContactPage() {
 
             <div className="h-[2px] bg-gradient-to-r from-[#f1c0c0] via-[#eb9a9a] to-[#f1c0c0]" />
 
-            <div className="relative overflow-visible">
-              <div
-                className="h-[240px] overflow-y-auto overflow-x-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-                style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-              >
-                <div
-                  className="min-h-full"
-                  style={{
-                    backgroundImage:
-                      "repeating-linear-gradient(to bottom, transparent 0, transparent 39px, rgba(188,195,207,0.44) 39px, rgba(188,195,207,0.44) 40px)",
-                    backgroundSize: "100% 40px",
-                    backgroundRepeat: "repeat-y",
-                  }}
-                >
-                  <div className="flex h-[40px] items-start px-[12px]">
-                    <label className="shrink-0 text-[22px] font-medium leading-[40px] tracking-[-0.01em] text-[#1f2329]">
-                      From:
-                    </label>
-                    <textarea
-                      value={senderEmail}
-                      onChange={(event) => setSenderEmail(event.target.value)}
-                      onKeyDown={(event) => {
-                        if (event.key === "Enter") event.preventDefault();
-                      }}
-                      rows={1}
-                      className={`h-[40px] min-w-0 flex-1 resize-none appearance-none border-0 bg-transparent pl-[10px] pt-0 text-[22px] leading-[40px] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 ${
-                        attachments.length > 0 ? "pr-[170px]" : "pr-0"
-                      } [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
-                      style={{ overflow: "hidden" }}
-                    />
-                  </div>
+            {/* ── From row — same height as one notebook line ── */}
+            <div className="flex h-[40px] items-center border-b border-[rgba(188,195,207,0.44)] px-[12px]">
+              <span className="shrink-0 pr-[6px] text-[22px] font-semibold tracking-[-0.01em] text-[#1f2329]">
+                From:
+              </span>
+              <input
+                type="email"
+                value={from}
+                onChange={onFromChange}
+                onBlur={onFromBlur}
+                placeholder={fromError && !from.trim() ? fromError : "your@email.com"}
+                className={`flex-1 appearance-none border-0 bg-transparent text-[22px] leading-[40px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
+                  fromError && !from.trim()
+                    ? "placeholder:text-[#d53030]"
+                    : "placeholder:text-[#a1a8b3]"
+                }`}
+                style={{
+                  border: "none",
+                  boxShadow: "none",
+                  color: fromError && from.trim() ? "#d53030" : "#1f2329",
+                }}
+              />
+            </div>
 
-                  <textarea
-                    ref={messageTextareaRef}
-                    value={message}
-                    onChange={(event) => {
-                      setMessage(event.target.value);
-                      resizeMessageInput();
-                    }}
-                    rows={6}
-                    className={`w-full resize-none appearance-none border-0 bg-transparent px-[12px] pt-0 text-[22px] leading-[40px] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 ${
-                      attachments.length > 0 ? "pr-[170px]" : "pr-[12px]"
-                    }`}
-                    style={{
-                      border: "none",
-                      boxShadow: "none",
-                      overflow: "hidden",
-                    }}
-                  />
-                </div>
-              </div>
+            <div className="relative overflow-visible">
+              <textarea
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
+                placeholder="Write your message..."
+                rows={6}
+                className={`h-[240px] w-full resize-none appearance-none border-0 bg-transparent px-[12px] py-0 text-[22px] leading-[1.82] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 placeholder:text-[#a1a8b3] focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 ${
+                  attachments.length > 0 ? "pr-[170px]" : "pr-[12px]"
+                } [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
+                style={{
+                  border: "none",
+                  boxShadow: "none",
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none",
+                  backgroundImage:
+                    "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.82em - 0.05em), rgba(188,195,207,0.44) calc(1.82em - 0.05em), rgba(188,195,207,0.44) 1.82em)",
+                  backgroundAttachment: "local",
+                  backgroundSize: "100% 1.82em",
+                  backgroundRepeat: "repeat-y",
+                }}
+              />
 
               {attachments.length > 0 && (
                 <button
                   type="button"
                   onClick={() => setIsDialogOpen(true)}
-                  className="absolute right-[18px] top-[20px] z-40 h-[132px] w-[132px] appearance-none overflow-visible border-0 bg-transparent p-0 shadow-none outline-none"
+                  className="absolute right-[18px] top-[-8px] z-40 h-[132px] w-[132px] appearance-none overflow-visible border-0 bg-transparent p-0 shadow-none outline-none"
                   aria-label="Open attachments"
                 >
                   <div className="relative h-full w-full overflow-visible">
