@@ -10,6 +10,187 @@ function getFileExt(name = "") {
   return parts.pop().toUpperCase();
 }
 
+function isPdfAttachment(file) {
+  const ext = getFileExt(file?.name || "").toLowerCase();
+  return file?.type === "application/pdf" || ext === "pdf";
+}
+
+function isWordAttachment(file) {
+  const ext = getFileExt(file?.name || "").toLowerCase();
+  return (
+    ext === "doc" ||
+    ext === "docx" ||
+    file?.type === "application/msword" ||
+    file?.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  );
+}
+
+function ensurePromiseWithResolversPolyfill() {
+  if (typeof Promise.withResolvers === "function") return;
+  Promise.withResolvers = function withResolvers() {
+    let resolve;
+    let reject;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
+function AttachmentPreview({ attachment }) {
+  const [pdfThumb, setPdfThumb] = useState("");
+  const [pdfError, setPdfError] = useState(false);
+  const [docHtml, setDocHtml] = useState("");
+  const [docError, setDocError] = useState(false);
+  const isPdf = isPdfAttachment(attachment.file);
+  const isWord = isWordAttachment(attachment.file);
+
+  useEffect(() => {
+    let active = true;
+
+    const renderPdfPreview = async () => {
+      if (!isPdf) {
+        setPdfThumb("");
+        setPdfError(false);
+        return;
+      }
+
+      try {
+        ensurePromiseWithResolversPolyfill();
+        let pdfjs;
+        try {
+          pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+        } catch {
+          pdfjs = await import("pdfjs-dist/build/pdf.mjs");
+        }
+
+        if (pdfjs?.GlobalWorkerOptions) {
+          pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        }
+
+        const buffer = await attachment.file.arrayBuffer();
+        const loadingTask = pdfjs.getDocument({ data: new Uint8Array(buffer) });
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+        const baseViewport = page.getViewport({ scale: 1 });
+        const targetWidth = 320;
+        const scale = targetWidth / baseViewport.width;
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        const context = canvas.getContext("2d", { alpha: false, willReadFrequently: false });
+        if (!context) throw new Error("Canvas context unavailable");
+
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: context, viewport, intent: "display" }).promise;
+
+        if (!active) return;
+        setPdfThumb(canvas.toDataURL("image/jpeg", 0.9));
+        setPdfError(false);
+      } catch {
+        if (!active) return;
+        setPdfError(true);
+      }
+    };
+
+    renderPdfPreview();
+    return () => {
+      active = false;
+    };
+  }, [attachment.file, attachment.id, isPdf]);
+
+  useEffect(() => {
+    let active = true;
+
+    const renderWordPreview = async () => {
+      if (!isWord) return;
+
+      try {
+        const mammoth = await import("mammoth/mammoth.browser.js");
+        const buffer = await attachment.file.arrayBuffer();
+        const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
+        if (!active) return;
+        const html = String(result.value || "").trim();
+        setDocHtml(html);
+        setDocError(false);
+      } catch {
+        if (!active) return;
+        setDocError(true);
+      }
+    };
+
+    renderWordPreview();
+    return () => {
+      active = false;
+    };
+  }, [attachment.file, attachment.id, isWord]);
+
+  if (attachment.isImage && attachment.previewUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return <img src={attachment.previewUrl} alt={attachment.file.name} className="h-full w-full object-cover" />;
+  }
+
+  if (isPdf && pdfThumb) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={pdfThumb} alt={attachment.file.name} className="h-full w-full object-contain bg-white" />
+    );
+  }
+
+  if (isPdf && !pdfError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isPdf && attachment.previewUrl) {
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-white">
+        <iframe
+          title={attachment.file.name}
+          src={`${attachment.previewUrl}#toolbar=0&navpanes=0&scrollbar=0&page=1&view=FitH`}
+          className="h-full w-full border-0 pointer-events-none"
+        />
+      </div>
+    );
+  }
+
+  if (isWord) {
+    if (docHtml && !docError) {
+      return (
+        <div className="h-full w-full overflow-hidden bg-white">
+          <div
+            className="doc-thumb-render origin-top-left w-[260%] scale-[0.385] text-[#1f2329]"
+            dangerouslySetInnerHTML={{ __html: docHtml }}
+          />
+        </div>
+      );
+    }
+
+    if (!docError) {
+      return (
+        <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
+          Loading...
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#f5f6f8] to-[#e0e4ea]">
+      <span className="rounded-[6px] bg-white px-[10px] py-[4px] text-[12px] font-semibold tracking-[0.04em] text-[#5d6470]">
+        {getFileExt(attachment.file.name)}
+      </span>
+    </div>
+  );
+}
+
 export default function ContactPage() {
   const { message, setMessage, attachments, setAttachments } = useContactDraft();
   const [from, setFrom] = useState("");
@@ -41,7 +222,7 @@ export default function ContactPage() {
       id: `${file.name}-${file.size}-${Date.now()}-${index}`,
       file,
       isImage: file.type.startsWith("image/"),
-      previewUrl: file.type.startsWith("image/") ? URL.createObjectURL(file) : null,
+      previewUrl: URL.createObjectURL(file),
     }));
 
     setAttachments((prev) => [...prev, ...next]);
@@ -213,6 +394,28 @@ export default function ContactPage() {
           -webkit-text-stroke: 0 transparent !important;
         }
 
+        .doc-thumb-render {
+          transform-origin: top left;
+          line-height: 1.25;
+        }
+
+        .doc-thumb-render p,
+        .doc-thumb-render li {
+          margin: 0 0 8px;
+          font-size: 14px;
+        }
+
+        .doc-thumb-render h1,
+        .doc-thumb-render h2,
+        .doc-thumb-render h3,
+        .doc-thumb-render h4,
+        .doc-thumb-render h5,
+        .doc-thumb-render h6 {
+          margin: 0 0 10px;
+          font-size: 18px;
+          line-height: 1.15;
+        }
+
         @media (min-width: 768px) {
           .cp-from-row        { height: 44px !important; }
           .cp-from-label      { font-size: 20px !important; }
@@ -358,22 +561,13 @@ export default function ContactPage() {
                       return (
                         <div
                           key={att.id}
-                          className="absolute inset-0 overflow-hidden rounded-[4px] bg-transparent shadow-[0_2px_6px_rgba(0,0,0,0.12)]"
+                          className="absolute inset-0 overflow-hidden rounded-[4px] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.12)]"
                           style={{
                             transform: `rotate(${rotate}deg) translate(${shift}px, ${-shift}px)`,
                             zIndex: 10 - index,
                           }}
                         >
-                          {att.isImage ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={att.previewUrl} alt={att.file.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#f5f6f8] to-[#e0e4ea]">
-                              <span className="rounded-[6px] bg-white px-[8px] py-[3px] text-[11px] font-semibold tracking-[0.04em] text-[#5d6470]">
-                                {getFileExt(att.file.name)}
-                              </span>
-                            </div>
-                          )}
+                          <AttachmentPreview attachment={att} />
                         </div>
                       );
                     })}
@@ -446,7 +640,7 @@ export default function ContactPage() {
                 <button
                   type="button"
                   onClick={() => setIsDialogOpen(false)}
-                  className="justify-self-end h-[30px] rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] text-[13px] font-black leading-none tracking-[-0.01em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] md:h-[40px] md:rounded-[9px] md:px-[14px] md:text-[18px]"
+                  className="justify-self-end h-auto rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] py-[8px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
                 >
                   Done
                 </button>
@@ -473,23 +667,14 @@ export default function ContactPage() {
                     overscrollBehaviorX: "contain",
                   }}
                 >
-                  <div className="flex w-max gap-[10px] pb-[4px]">
+                  <div className="flex w-max gap-[10px]">
                     {attachments.map((att) => (
                       <div
                         key={att.id}
                         className="w-[120px] shrink-0 rounded-[8px] border border-[#d2d8e1] bg-white p-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] md:w-[154px]"
                       >
-                        <div className="relative h-[74px] w-full overflow-hidden rounded-[5px] bg-[#eceff4] md:h-[94px]">
-                          {att.isImage ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img src={att.previewUrl} alt={att.file.name} className="h-full w-full object-cover" />
-                          ) : (
-                            <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#f5f6f8] to-[#e0e4ea]">
-                              <span className="rounded-[6px] bg-white px-[10px] py-[4px] text-[12px] font-semibold tracking-[0.04em] text-[#5d6470]">
-                                {getFileExt(att.file.name)}
-                              </span>
-                            </div>
-                          )}
+                        <div className="relative h-[74px] w-full overflow-hidden rounded-[5px] bg-white md:h-[94px]">
+                          <AttachmentPreview attachment={att} />
 
                           <button
                             type="button"
@@ -501,7 +686,7 @@ export default function ContactPage() {
                           </button>
                         </div>
 
-                        <p className="mt-[6px] truncate text-[12px] font-medium tracking-[-0.01em] text-[#2d333c]">
+                        <p className="mt-[6px] mb-0 truncate text-[12px] font-medium tracking-[-0.01em] text-[#2d333c]">
                           {att.file.name}
                         </p>
                       </div>
