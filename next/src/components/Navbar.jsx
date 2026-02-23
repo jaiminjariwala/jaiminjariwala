@@ -11,6 +11,7 @@ const links = [
   { label: "projects", href: "/projects" },
   { label: "blogs", href: "/blogs" },
   { label: "gallery", href: "/gallery" },
+  { label: "contact", href: "/contact" },
 ];
 
 const DESKTOP_QUERY = "(min-width: 768px)";
