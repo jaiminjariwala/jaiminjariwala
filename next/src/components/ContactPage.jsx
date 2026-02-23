@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useContactDraft } from "@/components/ContactDraftContext";
 
@@ -18,6 +18,8 @@ export default function ContactPage() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const textareaRef = useRef(null);
+  const sentinelRef = useRef(null);
   const fileInputRef = useRef(null);
   const attachmentsStripRef = useRef(null);
   const attachmentsDragRef = useRef({
@@ -161,6 +163,25 @@ export default function ContactPage() {
     setIsDraggingAttachments(true);
   };
 
+  // useLayoutEffect: fires synchronously after DOM mutations, before paint
+  // Keep the bottom typing line visible without manual page scroll.
+  useLayoutEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    // Reset then grow
+    el.style.height = "0px";
+    el.style.height = el.scrollHeight + "px";
+
+    // Scroll using the card sentinel (after Add file row) for accurate bottom visibility.
+    const target = sentinelRef.current || el;
+    const rect = target.getBoundingClientRect();
+    const safeBottom = window.innerHeight - 16;
+    const overflow = rect.bottom - safeBottom;
+    if (overflow > 0) {
+      window.scrollTo({ top: window.scrollY + overflow, behavior: "auto" });
+    }
+  }, [message]);
+
   const onAttachmentsPointerMove = (event) => {
     const strip = attachmentsStripRef.current;
     if (!strip || !attachmentsDragRef.current.dragging) return;
@@ -171,6 +192,20 @@ export default function ContactPage() {
 
   return (
     <section className="min-h-screen bg-white text-black">
+      {/* Desktop overrides — bypasses Tailwind JIT for guaranteed rendering */}
+      <style>{`
+        @media (min-width: 768px) {
+          .cp-from-row        { height: 44px !important; }
+          .cp-from-label      { font-size: 20px !important; }
+          .cp-from-input      { font-size: 20px !important; line-height: 44px !important; }
+          .cp-textarea        { font-size: 20px !important; min-height: 270px !important; height: auto !important; }
+          .cp-att-btn         { width: 150px !important; height: 150px !important; top: -8px !important; right: 18px !important; }
+          .cp-paperclip-wrap  { right: -46px !important; top: -36px !important; }
+          .cp-paperclip-img   { height: 110px !important; }
+          .cp-textarea-pr-att { padding-right: 178px !important; }
+        }
+      `}</style>
+
       <Navbar />
 
       <div
@@ -182,29 +217,36 @@ export default function ContactPage() {
       >
         <div className="mt-[34px] md:mt-[42px]">
           <div
-            className="overflow-visible rounded-[16px] border border-[#cfd4dd] bg-[#f9f9f8] shadow-[0_4px_10px_rgba(0,0,0,0.08)]"
+            className="overflow-visible rounded-[8px] border border-[#cfd4dd] bg-[#f9f9f8] shadow-[0_4px_10px_rgba(0,0,0,0.08)] md:rounded-[16px]"
             data-sr-skip="true"
           >
-            <div className="grid grid-cols-[102px_1fr_102px] items-center bg-transparent px-[10px] py-[10px]">
+            {/* ── Toolbar ── */}
+            <div className="grid grid-cols-[80px_1fr_80px] items-center bg-transparent px-[8px] py-[8px] md:grid-cols-[120px_1fr_120px] md:px-[12px] md:py-[12px]">
               <button
                 type="button"
                 onClick={onCancel}
                 disabled={sending}
-                className="h-[40px] rounded-[9px] border border-[#c9cfda] bg-[#f9f9f8] px-[14px] text-[18px] font-black leading-none tracking-[-0.01em] text-[#4c5564] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] disabled:opacity-60"
+                className="h-[30px] rounded-[7px] border border-[#c9cfda] bg-[#f9f9f8] px-[10px] text-[18px] font-black leading-none tracking-[-0.01em] text-[#000000] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[9px] md:text-[22px] md:font-black md:shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)]"
               >
                 Cancel
               </button>
+
               <div
-                className="text-center text-[22px] font-black tracking-[-0.02em] text-[#2b3139] [-webkit-text-stroke:0.6px_#2b3139]"
-                style={{ textShadow: "0 0 0 #2b3139" }}
+                className="text-center font-black tracking-[-0.02em]"
+                style={{
+                  fontSize: "clamp(18px, 6vw, 22px)",
+                  fontWeight: 900,
+                  color: "#000000",
+                }}
               >
                 Mail
               </div>
+
               <button
                 type="button"
                 onClick={onSend}
                 disabled={sending}
-                className="h-[40px] rounded-[9px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[14px] text-[18px] font-black leading-none tracking-[-0.01em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] disabled:opacity-60"
+                className="h-[30px] rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[14px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
               >
                 {sending ? "..." : sent ? "Sent" : "Send"}
               </button>
@@ -212,9 +254,13 @@ export default function ContactPage() {
 
             <div className="h-[2px] bg-gradient-to-r from-[#f1c0c0] via-[#eb9a9a] to-[#f1c0c0]" />
 
-            {/* ── From row — same height as one notebook line ── */}
-            <div className="flex h-[40px] items-center border-b border-[rgba(188,195,207,0.44)] px-[12px]">
-              <span className="shrink-0 pr-[6px] text-[22px] font-semibold tracking-[-0.01em] text-[#1f2329]">
+            {/* ── From row ── */}
+            <div className="cp-from-row flex h-[32px] items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]">
+              <span
+                className={`cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] text-[16px] md:inline ${
+                  from.length > 0 ? "hidden" : "inline"
+                }`}
+              >
                 From:
               </span>
               <input
@@ -222,8 +268,14 @@ export default function ContactPage() {
                 value={from}
                 onChange={onFromChange}
                 onBlur={onFromBlur}
-                placeholder={fromError && !from.trim() ? fromError : "your@email.com"}
-                className={`flex-1 appearance-none border-0 bg-transparent text-[22px] leading-[40px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
+                placeholder={
+                  fromError && !from.trim()
+                    ? fromError
+                    : from.length === 0
+                    ? "From: your@email.com"
+                    : "your@email.com"
+                }
+                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent text-[16px] leading-[32px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
                   fromError && !from.trim()
                     ? "placeholder:text-[#d53030]"
                     : "placeholder:text-[#a1a8b3]"
@@ -236,15 +288,17 @@ export default function ContactPage() {
               />
             </div>
 
-            <div className="relative overflow-visible">
+            {/* ── Message area ── */}
+            <div className="relative flex items-start overflow-visible">
               <textarea
+                ref={textareaRef}
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
                 placeholder="Write your message..."
                 rows={6}
-                className={`h-[240px] w-full resize-none appearance-none border-0 bg-transparent px-[12px] py-0 text-[22px] leading-[1.82] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 placeholder:text-[#a1a8b3] focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 ${
-                  attachments.length > 0 ? "pr-[170px]" : "pr-[12px]"
-                } [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden`}
+                className={`cp-textarea ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} min-h-[117px] w-full resize-none appearance-none border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-0 pb-[1em] text-[16px] leading-[1.82] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 placeholder:text-[#a1a8b3] focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                  attachments.length > 0 ? "pr-[116px]" : "pr-[12px] max-md:pr-[10px]"
+                }`}
                 style={{
                   border: "none",
                   boxShadow: "none",
@@ -254,6 +308,7 @@ export default function ContactPage() {
                     "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.82em - 0.05em), rgba(188,195,207,0.44) calc(1.82em - 0.05em), rgba(188,195,207,0.44) 1.82em)",
                   backgroundAttachment: "local",
                   backgroundSize: "100% 1.82em",
+                  backgroundPosition: "0 0",
                   backgroundRepeat: "repeat-y",
                 }}
               />
@@ -262,7 +317,7 @@ export default function ContactPage() {
                 <button
                   type="button"
                   onClick={() => setIsDialogOpen(true)}
-                  className="absolute right-[18px] top-[-8px] z-40 h-[132px] w-[132px] appearance-none overflow-visible border-0 bg-transparent p-0 shadow-none outline-none"
+                  className="cp-att-btn absolute top-[-4px] right-[10px] overflow-visible appearance-none border-0 bg-transparent p-0 shadow-none outline-none h-[96px] w-[96px]"
                   aria-label="Open attachments"
                 >
                   <div className="relative h-full w-full overflow-visible">
@@ -293,13 +348,13 @@ export default function ContactPage() {
                       );
                     })}
 
-                    <div className="pointer-events-none absolute -right-[42px] -top-[32px] z-50">
+                    <div className="cp-paperclip-wrap pointer-events-none absolute -right-[30px] -top-[22px] z-50">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src="/paper-clip.png"
                         alt=""
                         aria-hidden="true"
-                        className="h-[94px] w-auto object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.22)]"
+                        className="cp-paperclip-img h-[68px] w-auto object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.22)]"
                       />
                     </div>
                   </div>
@@ -307,8 +362,9 @@ export default function ContactPage() {
               )}
             </div>
 
+            {/* ── Add file bar ── */}
             <div
-              className="relative flex items-center justify-start bg-transparent px-[12px] py-[9px]"
+              className="relative flex items-center justify-start bg-transparent px-[10px] py-[7px] md:px-[12px] md:py-[9px]"
               style={{
                 boxShadow: "inset 0 1px 0 rgba(255,255,255,0.72)",
               }}
@@ -323,9 +379,9 @@ export default function ContactPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="relative z-[1] inline-flex items-center gap-[6px] text-[26px] font-medium tracking-[-0.01em] text-[#606773]"
+                className="relative z-[1] inline-flex items-center gap-[6px] font-medium tracking-[-0.01em] text-[#606773] text-[18px] md:text-[26px]"
               >
-                <span className="text-[24px]">Add file</span>
+                <span className="text-[18px] md:text-[24px]">Add file</span>
               </button>
               <input
                 ref={fileInputRef}
@@ -337,18 +393,21 @@ export default function ContactPage() {
               />
             </div>
           </div>
+          {/* Sentinel — placed after the full card including Add file bar */}
+          <div ref={sentinelRef} />
 
+          {/* ── Attachments dialog ── */}
           {isDialogOpen && attachments.length > 0 ? (
             <div className="mt-[10px] w-full overflow-hidden rounded-[14px] border border-[#cfd4dd] bg-[#f9f9f8] shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
-              <div className="grid grid-cols-[90px_1fr_90px] items-center px-[10px] py-[10px]">
+              <div className="grid grid-cols-[70px_1fr_70px] items-center px-[8px] py-[8px] md:grid-cols-[90px_1fr_90px] md:px-[10px] md:py-[10px]">
                 <div className="flex h-[40px] items-center justify-start">
-                  <span className="text-[18px] font-black leading-none tracking-[-0.01em] text-[#4c5564]">
+                  <span className="text-[14px] font-black leading-none tracking-[-0.01em] text-[#4c5564] md:text-[18px]">
                     {attachments.length}
                   </span>
                 </div>
 
                 <div
-                  className="text-center text-[22px] font-black tracking-[-0.02em] text-[#2b3139] [-webkit-text-stroke:0.6px_#2b3139]"
+                  className="text-center text-[16px] font-black tracking-[-0.02em] text-[#2b3139] [-webkit-text-stroke:0.6px_#2b3139] md:text-[22px]"
                   style={{ textShadow: "0 0 0 #2b3139" }}
                 >
                   Attachments
@@ -357,7 +416,7 @@ export default function ContactPage() {
                 <button
                   type="button"
                   onClick={() => setIsDialogOpen(false)}
-                  className="justify-self-end h-[40px] rounded-[9px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[14px] text-[18px] font-black leading-none tracking-[-0.01em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98]"
+                  className="justify-self-end h-[30px] rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] text-[13px] font-black leading-none tracking-[-0.01em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] md:h-[40px] md:rounded-[9px] md:px-[14px] md:text-[18px]"
                 >
                   Done
                 </button>
@@ -382,9 +441,9 @@ export default function ContactPage() {
                     {attachments.map((att) => (
                       <div
                         key={att.id}
-                        className="w-[154px] shrink-0 rounded-[8px] border border-[#d2d8e1] bg-white p-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                        className="w-[120px] shrink-0 rounded-[8px] border border-[#d2d8e1] bg-white p-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] md:w-[154px]"
                       >
-                        <div className="relative h-[94px] w-full overflow-hidden rounded-[5px] bg-[#eceff4]">
+                        <div className="relative h-[74px] w-full overflow-hidden rounded-[5px] bg-[#eceff4] md:h-[94px]">
                           {att.isImage ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={att.previewUrl} alt={att.file.name} className="h-full w-full object-cover" />
@@ -424,7 +483,6 @@ export default function ContactPage() {
           ) : null}
         </div>
       </div>
-
     </section>
   );
 }
