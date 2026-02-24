@@ -10,6 +10,12 @@ function getFileExt(name = "") {
   return parts.pop().toUpperCase();
 }
 
+// macOS Finder style: "IMG_090…4.jpeg"
+function finderName(name = "", startChars = 7, endChars = 6) {
+  if (name.length <= startChars + endChars + 1) return name;
+  return name.slice(0, startChars) + "\u2026" + name.slice(name.length - endChars);
+}
+
 function isPdfAttachment(file) {
   const ext = getFileExt(file?.name || "").toLowerCase();
   return file?.type === "application/pdf" || ext === "pdf";
@@ -130,14 +136,26 @@ function AttachmentPreview({ attachment }) {
   }, [attachment.file, attachment.id, isWord]);
 
   if (attachment.isImage && attachment.previewUrl) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={attachment.previewUrl} alt={attachment.file.name} className="h-full w-full object-cover" />;
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={attachment.previewUrl}
+        alt={attachment.file.name}
+        draggable={false}
+        className="h-full w-full object-cover"
+      />
+    );
   }
 
   if (isPdf && pdfThumb) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={pdfThumb} alt={attachment.file.name} className="h-full w-full object-contain bg-white" />
+      <img
+        src={pdfThumb}
+        alt={attachment.file.name}
+        draggable={false}
+        className="h-full w-full object-contain bg-white"
+      />
     );
   }
 
@@ -208,7 +226,6 @@ export default function ContactPage() {
     dragging: false,
     startX: 0,
     startScrollLeft: 0,
-    pointerId: null,
   });
   const [isDraggingAttachments, setIsDraggingAttachments] = useState(false);
   const fromIsInvalid = Boolean(fromError && from.trim());
@@ -234,11 +251,15 @@ export default function ContactPage() {
     setAttachments((prev) => {
       const toRemove = prev.find((att) => att.id === idToRemove);
       if (toRemove?.previewUrl) URL.revokeObjectURL(toRemove.previewUrl);
-      const filtered = prev.filter((att) => att.id !== idToRemove);
-      if (filtered.length === 0) setIsDialogOpen(false);
-      return filtered;
+      return prev.filter((att) => att.id !== idToRemove);
     });
   };
+
+  useEffect(() => {
+    if (attachments.length === 0 && isDialogOpen) {
+      setIsDialogOpen(false);
+    }
+  }, [attachments.length, isDialogOpen]);
 
   const clearAllAttachments = () => {
     setAttachments((prev) => {
@@ -266,12 +287,13 @@ export default function ContactPage() {
   const onSend = async () => {
     if (!from.trim()) {
       setFromError("Please enter a valid email address.");
-      setError("From email is required.");
+      setError("");
       return;
     }
 
     if (from.trim() && !EMAIL_RE.test(from.trim())) {
       setFromError("Please enter a valid email address.");
+      setError("");
       return;
     }
     if (!message.trim() && attachments.length === 0) {
@@ -300,7 +322,16 @@ export default function ContactPage() {
 
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) {
-        setError(payload.error || "Unable to send right now. Please try again.");
+        const backendError = String(payload.error || "");
+        if (
+          backendError === "From email is required." ||
+          backendError === "Please enter a valid email in From."
+        ) {
+          setFromError("Please enter a valid email address.");
+          setError("");
+          return;
+        }
+        setError(backendError || "Unable to send right now. Please try again.");
         return;
       }
 
@@ -327,22 +358,13 @@ export default function ContactPage() {
     setIsDialogOpen(false);
   };
 
-  const stopAttachmentsDrag = (event) => {
-    const strip = attachmentsStripRef.current;
-    if (!strip || !attachmentsDragRef.current.dragging) return;
-
-    if (attachmentsDragRef.current.pointerId !== null) {
-      try {
-        strip.releasePointerCapture?.(attachmentsDragRef.current.pointerId);
-      } catch {}
-    }
-
+  const stopAttachmentsDrag = () => {
+    if (!attachmentsDragRef.current.dragging) return;
     attachmentsDragRef.current.dragging = false;
-    attachmentsDragRef.current.pointerId = null;
     setIsDraggingAttachments(false);
   };
 
-  const onAttachmentsPointerDown = (event) => {
+  const onAttachmentsMouseDown = (event) => {
     if (event.button !== undefined && event.button !== 0) return;
     const target = event.target;
     if (target instanceof HTMLElement && target.closest("button")) return;
@@ -353,9 +375,8 @@ export default function ContactPage() {
     attachmentsDragRef.current.dragging = true;
     attachmentsDragRef.current.startX = event.clientX;
     attachmentsDragRef.current.startScrollLeft = strip.scrollLeft;
-    attachmentsDragRef.current.pointerId = event.pointerId;
-    strip.setPointerCapture?.(event.pointerId);
     setIsDraggingAttachments(true);
+    event.preventDefault();
   };
 
   // useLayoutEffect: fires synchronously after DOM mutations, before paint
@@ -377,13 +398,36 @@ export default function ContactPage() {
     }
   }, [message]);
 
-  const onAttachmentsPointerMove = (event) => {
-    const strip = attachmentsStripRef.current;
-    if (!strip || !attachmentsDragRef.current.dragging) return;
+  useEffect(() => {
+    const handleMouseMove = (event) => {
+      const strip = attachmentsStripRef.current;
+      if (!strip || !attachmentsDragRef.current.dragging) return;
 
-    const deltaX = event.clientX - attachmentsDragRef.current.startX;
-    strip.scrollLeft = attachmentsDragRef.current.startScrollLeft - deltaX;
-  };
+      const deltaX = event.clientX - attachmentsDragRef.current.startX;
+      strip.scrollLeft = attachmentsDragRef.current.startScrollLeft - deltaX;
+      event.preventDefault();
+    };
+
+    const handleMouseUp = () => {
+      stopAttachmentsDrag();
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: false });
+    window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("blur", handleMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("blur", handleMouseUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isDialogOpen) {
+      stopAttachmentsDrag();
+    }
+  }, [isDialogOpen]);
 
   return (
     <section className="min-h-screen bg-white text-black">
@@ -457,8 +501,8 @@ export default function ContactPage() {
                 className="text-center font-black tracking-[-0.02em]"
                 style={{
                   fontSize: "clamp(18px, 6vw, 22px)",
-                  fontWeight: 900,
-                  color: "#000000",
+                  fontWeight: 600,
+                  color: "#404040",
                 }}
               >
                 Mail
@@ -549,9 +593,9 @@ export default function ContactPage() {
               {attachments.length > 0 && (
                 <button
                   type="button"
-                  onClick={() => setIsDialogOpen(true)}
+                  onClick={() => setIsDialogOpen((prev) => !prev)}
                   className="cp-att-btn absolute top-[-4px] right-[10px] overflow-visible appearance-none border-0 bg-transparent p-0 shadow-none outline-none h-[96px] w-[96px]"
-                  aria-label="Open attachments"
+                  aria-label={isDialogOpen ? "Close attachments" : "Open attachments"}
                 >
                   <div className="relative h-full w-full overflow-visible">
                     {attachments.slice(-3).reverse().map((att, index) => {
@@ -622,41 +666,14 @@ export default function ContactPage() {
 
           {/* ── Attachments dialog ── */}
           {isDialogOpen && attachments.length > 0 ? (
-            <div className="mt-[10px] w-full overflow-hidden rounded-[14px] border border-[#cfd4dd] bg-[#f9f9f8] shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
-              <div className="grid grid-cols-[70px_1fr_70px] items-center px-[8px] py-[8px] md:grid-cols-[90px_1fr_90px] md:px-[10px] md:py-[10px]">
-                <div className="flex h-[40px] items-center justify-start">
-                  <span className="text-[14px] font-black leading-none tracking-[-0.01em] text-[#4c5564] md:text-[18px]">
-                    {attachments.length}
-                  </span>
-                </div>
+            <div className="mt-[10px] w-full overflow-visible rounded-[14px]">
 
-                <div
-                  className="text-center text-[16px] font-black tracking-[-0.02em] text-[#2b3139] [-webkit-text-stroke:0.6px_#2b3139] md:text-[22px]"
-                  style={{ textShadow: "0 0 0 #2b3139" }}
-                >
-                  Attachments
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setIsDialogOpen(false)}
-                  className="justify-self-end h-auto rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] py-[8px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
-                >
-                  Done
-                </button>
-              </div>
-
-              <div className="h-[2px] bg-gradient-to-r from-[#f1c0c0] via-[#eb9a9a] to-[#f1c0c0]" />
-
-              <div className="px-[12px] py-[12px]">
+              <div className="pb-[12px]">
                 <div
                   ref={attachmentsStripRef}
-                  onPointerDown={onAttachmentsPointerDown}
-                  onPointerMove={onAttachmentsPointerMove}
-                  onPointerUp={stopAttachmentsDrag}
-                  onPointerCancel={stopAttachmentsDrag}
-                  onPointerLeave={stopAttachmentsDrag}
-                  className={`overflow-x-auto overflow-y-hidden select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                  onMouseDown={onAttachmentsMouseDown}
+                  onDragStart={(event) => event.preventDefault()}
+                  className={`overflow-x-auto overflow-y-visible select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                     isDraggingAttachments ? "cursor-grabbing" : "cursor-grab"
                   }`}
                   style={{
@@ -667,28 +684,27 @@ export default function ContactPage() {
                     overscrollBehaviorX: "contain",
                   }}
                 >
-                  <div className="flex w-max gap-[10px]">
+                  <div className="flex w-max gap-[10px] pt-[12px]">
                     {attachments.map((att) => (
                       <div
                         key={att.id}
-                        className="w-[120px] shrink-0 rounded-[8px] border border-[#d2d8e1] bg-white p-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] md:w-[154px]"
+                        className="relative w-[130px] shrink-0 rounded-[8px] border border-[#d2d8e1] bg-white p-[8px] shadow-[0_1px_3px_rgba(0,0,0,0.08)] md:w-[178px]"
                       >
-                        <div className="relative h-[74px] w-full overflow-hidden rounded-[5px] bg-white md:h-[94px]">
+                        {/* × outside the image, on top-right edge of the card */}
+                        <button
+                          type="button"
+                          onClick={() => removeAttachment(att.id)}
+                          className="absolute -top-[9px] -right-[9px] z-10 flex h-[22px] w-[22px] items-center justify-center rounded-full border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] text-[14px] leading-none text-[#ffffff] shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] [-webkit-text-stroke:0.9px_#ffffff]"
+                          aria-label={`Remove ${att.file.name}`}
+                        >
+                          ×
+                        </button>
+                        <div className="h-[82px] w-full overflow-hidden rounded-[5px] bg-white md:h-[112px]">
                           <AttachmentPreview attachment={att} />
-
-                          <button
-                            type="button"
-                            onClick={() => removeAttachment(att.id)}
-                            className="absolute right-[6px] top-[6px] flex h-6 w-6 items-center justify-center rounded-full border border-[#d7dbe3] bg-white/95 text-[15px] leading-none text-[#d94f4f]"
-                            aria-label={`Remove ${att.file.name}`}
-                          >
-                            ×
-                          </button>
                         </div>
-
-                        <p className="mt-[6px] mb-0 truncate text-[12px] font-medium tracking-[-0.01em] text-[#2d333c]">
-                          {att.file.name}
-                        </p>
+                        <div className="mt-[6px] text-[12px] font-medium leading-none tracking-[-0.01em] text-[#2d333c]">
+                          {finderName(att.file.name)}
+                        </div>
                       </div>
                     ))}
                   </div>
