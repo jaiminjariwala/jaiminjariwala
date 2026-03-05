@@ -32,6 +32,8 @@ function GlassFolder({ title, count, images }) {
         onMouseLeave={() => setIsHovered(false)}
       >
         <div style={styles.backPlate} />
+        <div style={styles.backPlateInnerShadow} />
+        <div style={styles.paperStackShadow} />
 
         <div
           style={{
@@ -39,8 +41,8 @@ function GlassFolder({ title, count, images }) {
             ...styles.paperLeft,
             backgroundImage: `url(${images[0]})`,
             transform: isHovered
-              ? "translate(-50%, -48px) translateX(-52px) rotateY(26deg) rotateZ(-16deg)"
-              : "translate(-50%, 2px) translateX(-24px) rotateY(14deg) rotateZ(-7deg)",
+              ? "translate(-50%, -62px) translateX(-52px) rotateY(26deg) rotateZ(-22deg)"
+              : "translate(-50%, 2px) translateX(-24px) rotateY(14deg) rotateZ(-13deg)",
           }}
         />
 
@@ -50,8 +52,8 @@ function GlassFolder({ title, count, images }) {
             ...styles.paperMid,
             backgroundImage: `url(${images[1]})`,
             transform: isHovered
-              ? "translate(-50%, -44px) translateX(0px) rotateZ(3deg)"
-              : "translate(-50%, 10px) translateX(0px) rotateZ(1deg)",
+              ? "translate(-50%, -70px) translateX(0px) rotateZ(3deg)"
+              : "translate(-50%, 6px) translateX(0px) rotateZ(1deg)",
           }}
         />
 
@@ -61,8 +63,8 @@ function GlassFolder({ title, count, images }) {
             ...styles.paperRight,
             backgroundImage: `url(${images[2]})`,
             transform: isHovered
-              ? "translate(-50%, -40px) translateX(52px) rotateY(-26deg) rotateZ(16deg)"
-              : "translate(-50%, 14px) translateX(24px) rotateY(-14deg) rotateZ(7deg)",
+              ? "translate(-50%, -62px) translateX(52px) rotateY(-26deg) rotateZ(22deg)"
+              : "translate(-50%, 6px) translateX(24px) rotateY(-14deg) rotateZ(13deg)",
           }}
         />
 
@@ -72,9 +74,7 @@ function GlassFolder({ title, count, images }) {
               ...styles.glassShape,
               transform: isHovered ? "rotateX(-18deg)" : "rotateX(0deg)",
             }}
-          >
-            <div style={styles.glassTopLine} />
-          </div>
+          />
         </div>
 
         <div
@@ -109,13 +109,13 @@ const styles = {
     bottom: 0,
     width: "100%",
     height: "95%",
-    border: "1px solid #3a97c7",
-    background: "linear-gradient(180deg, #74cdf8 0%, #58bbea 58%, #44a9dc 100%)",
+    border: "none",
+    background: "linear-gradient(180deg, #78cff7 0%, #60c0ec 58%, #49afdf 100%)",
     overflow: "hidden",
     clipPath:
       'path("M 0 34 C 0 25 6 17 14 17 L 56 17 C 62 17 67 19 71 22 L 78 29 C 82 32 86 34 92 34 L 190 34 C 194 34 198 38 198 42 L 198 140 C 198 147 193 152 186 152 L 12 152 C 5 152 0 147 0 140 Z")',
     boxShadow:
-      "inset 0 1px 0 rgba(255,255,255,0.58), 0 8px 18px rgba(7,22,36,0.3)",
+      "inset 0 1px 0 rgba(255,255,255,0.56), 0 7px 14px rgba(12, 40, 63, 0.24)",
     zIndex: 1,
   },
   paper: {
@@ -130,11 +130,36 @@ const styles = {
     backgroundSize: "cover",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    zIndex: 2,
+    zIndex: 3,
   },
-  paperLeft: { width: "98px", height: "104px", zIndex: 2 },
-  paperMid: { width: "104px", height: "112px", zIndex: 3 },
-  paperRight: { width: "100px", height: "108px", zIndex: 4 },
+  paperLeft: { width: "98px", height: "104px", zIndex: 3 },
+  paperMid: { width: "104px", height: "112px", zIndex: 4 },
+  paperRight: { width: "100px", height: "108px", zIndex: 5 },
+  backPlateInnerShadow: {
+    position: "absolute",
+    top: "48px",
+    left: "0px",
+    right: "0px",
+    height: "65px",
+    borderRadius: "10px 10px 0 0",
+    background: "linear-gradient(to bottom, rgba(20,90,140,0.38) 0%, rgba(20,90,140,0.12) 55%, transparent 100%)",
+    filter: "blur(5px)",
+    zIndex: 2,
+    pointerEvents: "none",
+  },
+  paperStackShadow: {
+    position: "absolute",
+    top: "44px",
+    left: "18px",
+    right: "18px",
+    height: "28px",
+    borderRadius: "10px",
+    background:
+      "linear-gradient(to top, rgba(13, 43, 67, 0.32) 0%, rgba(13, 43, 67, 0.15) 45%, rgba(13, 43, 67, 0) 100%)",
+    filter: "blur(1.8px)",
+    zIndex: 2,
+    pointerEvents: "none",
+  },
   glassPerspectiveWrapper: {
     position: "absolute",
     bottom: "0px",
@@ -146,25 +171,16 @@ const styles = {
     width: "100%",
     height: "100%",
     position: "relative",
-    background: "linear-gradient(180deg, #79cff8 0%, #5cbde9 56%, #49addd 100%)",
-    border: "1.4px solid #3895c4",
-    borderRadius: "10px",
+    background: "linear-gradient(180deg, #76c8ef 0%, #60bbe7 56%, #4eaedd 100%)",
+    border: "none",
+    borderRadius: "12px",
     overflow: "hidden",
     transformOrigin: "bottom center",
     transformStyle: "preserve-3d",
     backfaceVisibility: "hidden",
     transition: "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
     boxShadow:
-      "inset 0 1px 0 rgba(255,255,255,0.56), 0 8px 26px rgba(0,0,0,0.14)",
-  },
-  glassTopLine: {
-    position: "absolute",
-    left: "8px",
-    right: "8px",
-    top: "7px",
-    height: "3px",
-    borderRadius: "999px",
-    background: "rgba(255,255,255,0.62)",
+      "inset 0 1px 0 rgba(255,255,255,0.42), 0 8px 18px rgba(12, 40, 63, 0.2)",
   },
   groundShadow: {
     position: "absolute",
@@ -181,26 +197,33 @@ const styles = {
 
 const GalleryPage = () => {
   return (
-    <section className="min-h-screen bg-white text-black">
+    <section className="min-h-screen bg-white text-black flex flex-col">
       <Navbar />
 
       <div
-        className="mx-auto w-full max-w-[689px] pb-[72px]"
+        className="flex-1 flex items-center"
         style={{
-          paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-          paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+          marginTop: "clamp(-95px, calc((768px - 100vw) * 9999), 0px)",
         }}
       >
-        <div className="mt-[26px] md:mt-[34px]">
-          <div className="flex flex-wrap items-start justify-between gap-x-[16px] md:gap-x-[47px] gap-y-[20px]">
-            {folders.map((folder) => (
-              <GlassFolder
-                key={folder.title}
-                title={folder.title}
-                count={folder.count}
-                images={folder.images}
-              />
-            ))}
+        <div
+          className="mx-auto w-full max-w-[689px]"
+          style={{
+            paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+            paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+          }}
+        >
+          <div>
+            <div className="flex flex-wrap items-start justify-between gap-x-[16px] md:gap-x-[47px] gap-y-[20px]">
+              {folders.map((folder) => (
+                <GlassFolder
+                  key={folder.title}
+                  title={folder.title}
+                  count={folder.count}
+                  images={folder.images}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
