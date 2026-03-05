@@ -1,32 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
+import Link from "next/link";
+import { Short_Stack } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import { folders } from "@/components/galleryData";
 
-const folders = [
-  {
-    title: "Washington D.C.",
-    count: "3 items",
-    images: ["/Washington-DC.jpg", "/my-profile-2.png", "/project-1.svg"],
-  },
-  {
-    title: "Arlington",
-    count: "5 items",
-    images: ["/my-profile-1.png", "/blog-1-image.svg", "/Washington-DC.jpg"],
-  },
-  {
-    title: "Virginia",
-    count: "4 items",
-    images: ["/project-1.svg", "/my-profile-2.png", "/my-profile-1.png"],
-  },
-];
+const shortStack = Short_Stack({
+  subsets: ["latin"],
+  weight: "400",
+});
 
-function GlassFolder({ title, count, images }) {
+function GlassFolder({ title, count, images, slug }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <article className="w-[198px]">
+    <Link
+      href={`/gallery/${slug}`}
+      className="gallery-folder-card block w-[198px] cursor-pointer"
+    >
       <div
+        className="gallery-folder-visual"
         style={styles.folderAnchor}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -38,33 +33,44 @@ function GlassFolder({ title, count, images }) {
         <div
           style={{
             ...styles.paper,
-            ...styles.paperLeft,
+            ...styles.paperFarLeft,
             backgroundImage: `url(${images[0]})`,
             transform: isHovered
-              ? "translate(-50%, -62px) translateX(-52px) rotateY(26deg) rotateZ(-22deg)"
-              : "translate(-50%, 2px) translateX(-24px) rotateY(14deg) rotateZ(-13deg)",
+              ? "translate(-50%, -62px) translateX(-20px) rotateZ(-40deg)"
+              : "translate(-50%, 16px) translateX(-18px) rotateZ(-8deg)",
           }}
         />
 
         <div
           style={{
             ...styles.paper,
-            ...styles.paperMid,
+            ...styles.paperInnerLeft,
             backgroundImage: `url(${images[1]})`,
             transform: isHovered
-              ? "translate(-50%, -70px) translateX(0px) rotateZ(3deg)"
-              : "translate(-50%, 6px) translateX(0px) rotateZ(1deg)",
+              ? "translate(-50%, -72px) translateX(-2px) rotateZ(-22deg)"
+              : "translate(-50%, 10px) translateX(-6px) rotateZ(-2deg)",
           }}
         />
 
         <div
           style={{
             ...styles.paper,
-            ...styles.paperRight,
+            ...styles.paperInnerRight,
             backgroundImage: `url(${images[2]})`,
             transform: isHovered
-              ? "translate(-50%, -62px) translateX(52px) rotateY(-26deg) rotateZ(22deg)"
-              : "translate(-50%, 6px) translateX(24px) rotateY(-14deg) rotateZ(13deg)",
+              ? "translate(-50%, -72px) translateX(2px) rotateZ(22deg)"
+              : "translate(-50%, 10px) translateX(6px) rotateZ(2deg)",
+          }}
+        />
+
+        <div
+          style={{
+            ...styles.paper,
+            ...styles.paperFarRight,
+            backgroundImage: `url(${images[3]})`,
+            transform: isHovered
+              ? "translate(-50%, -62px) translateX(20px) rotateZ(40deg)"
+              : "translate(-50%, 16px) translateX(18px) rotateZ(8deg)",
           }}
         />
 
@@ -86,13 +92,16 @@ function GlassFolder({ title, count, images }) {
         />
       </div>
 
-      <p className="mt-[25px] text-center text-[21px] font-normal leading-none tracking-[-0.02em] text-[#2b2f35]" style={{ marginBottom: 5 }}>
+      <p
+        className="gallery-folder-title mt-[25px] text-center text-[21px] font-normal leading-none tracking-[-0.02em] text-[#2b2f35]"
+        style={{ marginBottom: 5 }}
+      >
         {title}
       </p>
       <p className="mt-[-2px] mb-0 text-center text-[18px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]">
         {count}
       </p>
-    </article>
+    </Link>
   );
 }
 
@@ -110,7 +119,8 @@ const styles = {
     width: "100%",
     height: "95%",
     border: "none",
-    background: "linear-gradient(180deg, #78cff7 0%, #60c0ec 58%, #49afdf 100%)",
+    background:
+      "linear-gradient(180deg, #78cff7 0%, #60c0ec 58%, #49afdf 100%)",
     overflow: "hidden",
     clipPath:
       'path("M 0 34 C 0 25 6 17 14 17 L 56 17 C 62 17 67 19 71 22 L 78 29 C 82 32 86 34 92 34 L 190 34 C 194 34 198 38 198 42 L 198 140 C 198 147 193 152 186 152 L 12 152 C 5 152 0 147 0 140 Z")',
@@ -122,9 +132,16 @@ const styles = {
     position: "absolute",
     left: "50%",
     top: "34px",
-    borderRadius: "10px",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.16)",
+    borderRadius: "3px",
+    backgroundColor: "#f7f5ea",
+    borderStyle: "solid",
+    borderWidth: "6px 6px 20px 6px",
+    borderColor: "#ffffff",
+    backgroundOrigin: "content-box",
+    backgroundClip: "content-box",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.16)",
     transition: "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
+    transformOrigin: "bottom center",
     transformStyle: "preserve-3d",
     overflow: "hidden",
     backgroundSize: "cover",
@@ -132,9 +149,10 @@ const styles = {
     backgroundRepeat: "no-repeat",
     zIndex: 3,
   },
-  paperLeft: { width: "98px", height: "104px", zIndex: 3 },
-  paperMid: { width: "104px", height: "112px", zIndex: 4 },
-  paperRight: { width: "100px", height: "108px", zIndex: 5 },
+  paperFarLeft: { width: "95px", height: "102px", zIndex: 3 },
+  paperInnerLeft: { width: "100px", height: "108px", zIndex: 4 },
+  paperInnerRight: { width: "100px", height: "108px", zIndex: 5 },
+  paperFarRight: { width: "95px", height: "102px", zIndex: 6 },
   backPlateInnerShadow: {
     position: "absolute",
     top: "48px",
@@ -142,7 +160,8 @@ const styles = {
     right: "0px",
     height: "65px",
     borderRadius: "10px 10px 0 0",
-    background: "linear-gradient(to bottom, rgba(20,90,140,0.38) 0%, rgba(20,90,140,0.12) 55%, transparent 100%)",
+    background:
+      "linear-gradient(to bottom, rgba(20,90,140,0.38) 0%, rgba(20,90,140,0.12) 55%, transparent 100%)",
     filter: "blur(5px)",
     zIndex: 2,
     pointerEvents: "none",
@@ -171,7 +190,8 @@ const styles = {
     width: "100%",
     height: "100%",
     position: "relative",
-    background: "linear-gradient(180deg, #76c8ef 0%, #60bbe7 56%, #4eaedd 100%)",
+    background:
+      "linear-gradient(180deg, #76c8ef 0%, #60bbe7 56%, #4eaedd 100%)",
     border: "none",
     borderRadius: "12px",
     overflow: "hidden",
@@ -188,7 +208,8 @@ const styles = {
     left: "50%",
     width: "74%",
     height: "16px",
-    background: "radial-gradient(ellipse at center, rgba(0,0,0,0.42) 0%, transparent 70%)",
+    background:
+      "radial-gradient(ellipse at center, rgba(0,0,0,0.42) 0%, transparent 70%)",
     filter: "blur(8px)",
     transition: "all 0.6s ease",
     zIndex: 0,
@@ -197,36 +218,103 @@ const styles = {
 
 const GalleryPage = () => {
   return (
-    <section className="min-h-screen bg-white text-black flex flex-col">
+    <section className="relative min-h-screen bg-white text-black flex flex-col">
+      <style jsx global>{`
+        @keyframes gallery-sun-spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @media (max-width: 767px) {
+          .gallery-sun-wrapper {
+            display: none !important;
+          }
+
+          .gallery-heading {
+            margin-bottom: 44px !important;
+          }
+
+          .gallery-folder-grid {
+            justify-content: center !important;
+            column-gap: 22px !important;
+            row-gap: 16px !important;
+          }
+
+          .gallery-folder-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .gallery-folder-visual {
+            transform: scale(0.86);
+            transform-origin: top center;
+            margin-bottom: -22px;
+          }
+
+          .gallery-folder-title {
+            margin-top: 8px !important;
+          }
+        }
+      `}</style>
+
       <Navbar />
 
+      <div className="gallery-sun-wrapper group absolute left-[80px] top-[60px] z-[60] cursor-pointer md:left-[12px] md:top-[12px]">
+        <Image
+          src="/sun_exact_4k.svg"
+          alt="Sun illustration"
+          width={560}
+          height={560}
+          priority
+          className="block h-auto w-[250px] md:w-[390px]"
+          style={{
+            animation: "gallery-sun-spin 24s linear infinite",
+            transformOrigin: "50% 50%",
+            willChange: "transform",
+          }}
+        />
+        <div className="pointer-events-none absolute left-[6%] top-full mt-[8px] w-[218px] rounded-[4px] bg-white/95 px-3 py-2 text-[16px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:w-[320px] md:text-[15px]">
+          Missing sunshine a lot in DC.
+        </div>
+      </div>
+
       <div
-        className="flex-1 flex items-center"
+        className="mx-auto w-full max-w-[689px]"
         style={{
-          marginTop: "clamp(-95px, calc((768px - 100vw) * 9999), 0px)",
+          paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+          paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
         }}
       >
-        <div
-          className="mx-auto w-full max-w-[689px]"
-          style={{
-            paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-            paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-          }}
-        >
-          <div>
-            <div className="flex flex-wrap items-start justify-between gap-x-[16px] md:gap-x-[47px] gap-y-[20px]">
-              {folders.map((folder) => (
-                <GlassFolder
-                  key={folder.title}
-                  title={folder.title}
-                  count={folder.count}
-                  images={folder.images}
-                />
-              ))}
-            </div>
+        <div className="mt-[38px]">
+          <p
+            className={`${shortStack.className} gallery-heading mb-[100px] inline-block text-[clamp(28px,4.3vw,38px)] leading-[1.08] tracking-[-0.02em] [-webkit-text-stroke:2.2px_#000000]`}
+          >
+            No Instagram, so I&apos;m sharing my{" "}
+            <span className="inline-block bg-[#81d653] pt-0 pb-[5px] leading-[0.9]">
+              photos
+            </span>{" "}
+            here ;)
+          </p>
+
+          <div className="gallery-folder-grid flex flex-wrap items-start justify-between gap-x-[16px] md:gap-x-[47px] gap-y-[20px]">
+            {folders.map((folder) => (
+              <GlassFolder
+                key={folder.title}
+                title={folder.title}
+                count={folder.count}
+                images={folder.images}
+                slug={folder.slug}
+              />
+            ))}
           </div>
         </div>
       </div>
+
     </section>
   );
 };
