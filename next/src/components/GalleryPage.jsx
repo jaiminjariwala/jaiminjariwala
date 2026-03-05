@@ -93,8 +93,8 @@ function GlassFolder({ title, count, images, slug }) {
       </div>
 
       <p
-        className="gallery-folder-title mt-[25px] text-center text-[21px] font-normal leading-none tracking-[-0.02em] text-[#2b2f35]"
-        style={{ marginBottom: 5 }}
+        className="gallery-folder-title mt-[25px] text-center font-normal leading-[1.35] tracking-[-0.01em] text-[#2b2f35] [-webkit-text-stroke:0.3px_#000000]"
+        style={{ fontSize: "clamp(21px, 3.5vw, 24px)", marginBottom: 5 }}
       >
         {title}
       </p>
@@ -278,8 +278,8 @@ const GalleryPage = () => {
             willChange: "transform",
           }}
         />
-        <div className="pointer-events-none absolute left-[6%] top-full mt-[8px] w-[218px] rounded-[4px] bg-white/95 px-3 py-2 text-[16px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:w-[320px] md:text-[15px]">
-          Missing sunshine a lot in DC.
+        <div className="pointer-events-none absolute left-[6%] top-full mt-[8px] w-max max-w-[calc(100vw-24px)] whitespace-nowrap rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:text-[15px]">
+          Missing sunshine a lot.
         </div>
       </div>
 
@@ -292,9 +292,9 @@ const GalleryPage = () => {
       >
         <div className="mt-[38px]">
           <p
-            className={`${shortStack.className} gallery-heading mb-[100px] inline-block text-[clamp(28px,4.3vw,38px)] leading-[1.08] tracking-[-0.02em] [-webkit-text-stroke:2.2px_#000000]`}
+            className={`${shortStack.className} gallery-heading mb-[100px] inline-block text-[clamp(24px,4.3vw,34px)] leading-[1.08] tracking-[-0.02em] [-webkit-text-stroke:2.2px_#000000]`}
           >
-            No Instagram, so I&apos;m sharing my{" "}
+            Sharing my travel{" "}
             <span className="inline-block bg-[#81d653] pt-0 pb-[5px] leading-[0.9]">
               photos
             </span>{" "}
