@@ -25,9 +25,6 @@ export const photoSections = [
       "IMG_0901_ubkfyj",
       "IMG_0905_ly5aqw",
       "IMG_0908_ixrt0l",
-      "IMG_0927_ijjsx3",
-      "IMG_0969_yxomra",
-      "IMG_0983_rat8bq",
       "IMG_1015_gueu52",
       "IMG_1107_reijzd",
     ],
@@ -53,13 +50,10 @@ export const photoSections = [
     photos: [
       "FullSizeR_lamwpt",
       "FullSizeR_kawt6z",
-      "FullSizeR_pkuvcu",
       "IMG_0608_sr0ixr",
-      "IMG_0576_gytzeo",
       "FullSizeR_yeb66c",
       "FullSizeR_wwzqrj",
       "FullSizeR_fnx6qd",
-      "IMG_1219_nzkgwm",
     ],
   },
 ];

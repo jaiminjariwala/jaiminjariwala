@@ -1,4 +1,8 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
@@ -15,24 +19,56 @@ const randomBetween = (seed, min, max) => min + (seed / 4294967295) * (max - min
 const BASE_DROP = 26;
 
 export default function GalleryFolderPhotosPage({ section }) {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.defaultPrevented) return;
+
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          target.tagName === "INPUT" ||
+          target.tagName === "TEXTAREA" ||
+          target.tagName === "SELECT")
+      ) {
+        return;
+      }
+
+      if (event.key === "Backspace" || event.key === "Delete") {
+        event.preventDefault();
+        router.push("/gallery");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [router]);
+
   return (
     <section className="min-h-screen bg-white text-black">
       <Navbar />
 
-      <div className="mx-auto w-full max-w-[689px] px-5 pt-2 md:pt-6">
-        <Link
-          href="/gallery"
-          className="inline-flex cursor-pointer text-[16px] leading-none tracking-[-0.01em] text-[#0b65d8] [-webkit-text-stroke:0.2px_#0b65d8]"
-        >
-          Back to gallery
-        </Link>
+      <div className="mx-auto w-full max-w-[689px] pt-2 md:pt-6" style={{ paddingLeft: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)', paddingRight: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)' }}>
+        <div className="inline-flex items-center">
+          <Link
+            href="/gallery"
+            className="inline-flex cursor-pointer text-[18px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]"
+          >
+            Back to gallery
+          </Link>
+          <span className="ml-[8px] hidden text-[18px] font-normal leading-none tracking-[-0.02em] text-[#5f6673] md:inline">
+            (press Delete or Backspace)
+          </span>
+        </div>
         <h1 className="mt-[12px] text-[32px] leading-none tracking-[-0.02em] [-webkit-text-stroke:0.5px_#000000]">
           {section.title}
         </h1>
       </div>
 
       <div className="relative left-1/2 mt-8 w-screen -translate-x-1/2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:mt-10">
-        <div className="flex min-h-[620px] w-max items-start px-8 pb-12 pt-24 md:min-h-[980px] md:px-12 md:pb-16 md:pt-36">
+        <div className="flex min-h-[380px] w-max items-start px-5 pb-8 pt-16 md:min-h-[980px] md:px-12 md:pb-16 md:pt-36">
           {section.photos.map((publicId, index) => {
             const angleSeed = hashText(`${publicId}-angle`);
             const liftSeed = hashText(`${publicId}-lift`);
@@ -60,7 +96,7 @@ export default function GalleryFolderPhotosPage({ section }) {
                 <img
                   src={getCloudinaryUrl(publicId, 1400)}
                   alt={`${section.title} photo ${index + 1}`}
-                  className="block h-[332px] w-[278px] object-cover md:h-[500px] md:w-[418px]"
+                  className="block h-[220px] w-[185px] object-cover md:h-[500px] md:w-[418px]"
                   draggable="false"
                 />
               </article>

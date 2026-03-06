@@ -18,7 +18,7 @@ function GlassFolder({ title, count, images, slug }) {
   return (
     <Link
       href={`/gallery/${slug}`}
-      className="gallery-folder-card block w-[198px] cursor-pointer"
+      className="gallery-folder-card block w-[185px] cursor-pointer"
     >
       <div
         className="gallery-folder-visual"
@@ -108,8 +108,8 @@ function GlassFolder({ title, count, images, slug }) {
 const styles = {
   folderAnchor: {
     position: "relative",
-    width: "198px",
-    height: "170px",
+    width: "185px",
+    height: "159px",
     perspective: "1500px",
     cursor: "pointer",
   },
@@ -123,7 +123,7 @@ const styles = {
       "linear-gradient(180deg, #78cff7 0%, #60c0ec 58%, #49afdf 100%)",
     overflow: "hidden",
     clipPath:
-      'path("M 0 34 C 0 25 6 17 14 17 L 56 17 C 62 17 67 19 71 22 L 78 29 C 82 32 86 34 92 34 L 190 34 C 194 34 198 38 198 42 L 198 140 C 198 147 193 152 186 152 L 12 152 C 5 152 0 147 0 140 Z")',
+      'path("M 0 31 C 0 23 5 16 13 16 L 52 16 C 57 16 62 18 66 21 L 73 27 C 76 30 80 31 86 31 L 177 31 C 182 31 185 35 185 39 L 185 130 C 185 137 180 142 173 142 L 12 142 C 5 142 0 137 0 130 Z")',
     boxShadow:
       "inset 0 1px 0 rgba(255,255,255,0.56), 0 7px 14px rgba(12, 40, 63, 0.24)",
     zIndex: 1,
@@ -131,7 +131,7 @@ const styles = {
   paper: {
     position: "absolute",
     left: "50%",
-    top: "34px",
+    top: "29px",
     borderRadius: "3px",
     backgroundColor: "#f7f5ea",
     borderStyle: "solid",
@@ -149,16 +149,16 @@ const styles = {
     backgroundRepeat: "no-repeat",
     zIndex: 3,
   },
-  paperFarLeft: { width: "95px", height: "102px", zIndex: 3 },
-  paperInnerLeft: { width: "100px", height: "108px", zIndex: 4 },
-  paperInnerRight: { width: "100px", height: "108px", zIndex: 5 },
-  paperFarRight: { width: "95px", height: "102px", zIndex: 6 },
+  paperFarLeft: { width: "82px", height: "96px", zIndex: 3 },
+  paperInnerLeft: { width: "86px", height: "102px", zIndex: 4 },
+  paperInnerRight: { width: "86px", height: "102px", zIndex: 5 },
+  paperFarRight: { width: "82px", height: "96px", zIndex: 6 },
   backPlateInnerShadow: {
     position: "absolute",
-    top: "48px",
+    top: "41px",
     left: "0px",
     right: "0px",
-    height: "65px",
+    height: "56px",
     borderRadius: "10px 10px 0 0",
     background:
       "linear-gradient(to bottom, rgba(20,90,140,0.38) 0%, rgba(20,90,140,0.12) 55%, transparent 100%)",
@@ -168,10 +168,10 @@ const styles = {
   },
   paperStackShadow: {
     position: "absolute",
-    top: "44px",
-    left: "18px",
-    right: "18px",
-    height: "28px",
+    top: "38px",
+    left: "15px",
+    right: "15px",
+    height: "24px",
     borderRadius: "10px",
     background:
       "linear-gradient(to top, rgba(13, 43, 67, 0.32) 0%, rgba(13, 43, 67, 0.15) 45%, rgba(13, 43, 67, 0) 100%)",
@@ -218,53 +218,10 @@ const styles = {
 
 const GalleryPage = () => {
   return (
-    <section className="relative min-h-screen bg-white text-black flex flex-col">
-      <style jsx global>{`
-        @keyframes gallery-sun-spin {
-          from {
-            transform: rotate(0deg);
-          }
-          to {
-            transform: rotate(360deg);
-          }
-        }
-
-        @media (max-width: 767px) {
-          .gallery-sun-wrapper {
-            display: none !important;
-          }
-
-          .gallery-heading {
-            margin-bottom: 44px !important;
-          }
-
-          .gallery-folder-grid {
-            justify-content: center !important;
-            column-gap: 22px !important;
-            row-gap: 16px !important;
-          }
-
-          .gallery-folder-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-          }
-
-          .gallery-folder-visual {
-            transform: scale(0.86);
-            transform-origin: top center;
-            margin-bottom: -22px;
-          }
-
-          .gallery-folder-title {
-            margin-top: 8px !important;
-          }
-        }
-      `}</style>
-
+    <section className="relative h-screen bg-white text-black flex flex-col overflow-hidden">
       <Navbar />
 
-      <div className="gallery-sun-wrapper group absolute left-[80px] top-[60px] z-[60] cursor-pointer md:left-[12px] md:top-[12px]">
+      <div className="gallery-sun-wrapper group absolute left-[20px] top-[20px] z-[60] cursor-pointer md:left-[12px] md:top-[12px]">
         <Image
           src="/sun_exact_4k.svg"
           alt="Sun illustration"
@@ -283,15 +240,30 @@ const GalleryPage = () => {
         </div>
       </div>
 
-      <div
-        className="mx-auto w-full max-w-[689px]"
-        style={{
-          paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-          paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-        }}
-      >
-        <div className="mt-[38px]">
-          <p
+      <div className="gallery-airplane-wrapper group fixed bottom-[20px] right-[20px] z-[60] cursor-pointer">
+        <Image
+          src="/airplane_4k_transparent.svg"
+          alt="Airplane illustration"
+          width={560}
+          height={560}
+          className="block h-auto w-[250px] md:w-[390px]"
+          priority={false}
+        />
+        <div className="pointer-events-none absolute bottom-full right-[6%] mb-[8px] w-max max-w-[calc(100vw-24px)] whitespace-nowrap rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:text-[15px]">
+          Wanna fly to California!
+        </div>
+      </div>
+
+      <div className="flex flex-1 items-center justify-center">
+        <div
+          className="w-full max-w-[689px]"
+          style={{
+            marginTop: "-75px",
+            paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+            paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+          }}
+        >
+          {/* <p
             className={`${shortStack.className} gallery-heading mb-[100px] inline-block text-[clamp(24px,4.3vw,34px)] leading-[1.08] tracking-[-0.02em] [-webkit-text-stroke:2.2px_#000000]`}
           >
             Sharing my travel{" "}
@@ -299,9 +271,9 @@ const GalleryPage = () => {
               photos
             </span>{" "}
             here ;)
-          </p>
+          </p> */}
 
-          <div className="gallery-folder-grid flex flex-wrap items-start justify-between gap-x-[16px] md:gap-x-[47px] gap-y-[20px]">
+          <div className="gallery-folder-grid flex flex-wrap items-start justify-between gap-y-[20px]">
             {folders.map((folder) => (
               <GlassFolder
                 key={folder.title}
