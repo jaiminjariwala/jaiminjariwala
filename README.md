@@ -1,13 +1,11 @@
 ### Under total re-development.
 ### Changes made so far:
 1. Migration from React Vite + Vanilla CSS to NextJS + Tailwind + App Router.
-2. Entirely changed the UI.
-3. Developed Home, about-me, hire-me, blogs, projects, contact pages.
-4. MacOS finder like folder design for the gallery under development.
+2. Changed the UI entirely.
+3. Developed Home, about, hire-me, blogs, projects, gallery and contact pages.
 
 ### Upcoming tasks:
-More UI enhancement.
-
+More UI enhancements will slowly unroll.
 
 Checkout here: https://jaiminjariwala.netlify.app
 

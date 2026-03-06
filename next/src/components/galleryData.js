@@ -42,6 +42,11 @@ export const photoSections = [
       "IMG_1401_ibxtcp",
       "IMG_1402_qj6hkx",
       "IMG_1403_oa6ghq",
+      "IMG_1498_b4pzgw",
+      "IMG_1511_hazeln",
+      "IMG_1507_jgoyis",
+      "IMG_1494_f1rdit",
+      "samples/people/boy-snow-hoodie",
     ],
   },
   {
