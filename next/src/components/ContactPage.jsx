@@ -235,6 +235,18 @@ export default function ContactPage() {
     startScrollLeft: 0,
   });
   const [isDraggingAttachments, setIsDraggingAttachments] = useState(false);
+  const MIN_LINES = 7;
+  const [lineCount, setLineCount_] = useState(MIN_LINES);
+  const [allMessageSelected, setAllMessageSelected] = useState(false);
+  const lineCountRef = useRef(7);
+  const lineRefs = useRef([]);
+  const linesContainerRef = useRef(null);
+  const allMessageSelectedRef = useRef(false);
+  const setLineCount = (n) => {
+    const val = typeof n === "function" ? n(lineCountRef.current) : n;
+    lineCountRef.current = val;
+    setLineCount_(val);
+  };
   const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const fromIsInvalid = Boolean(fromError && from.trim());
   const fromHasText = from.length > 0;
@@ -247,6 +259,229 @@ export default function ContactPage() {
     { label: "Leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
     { label: "Twitter",  href: "https://x.com/jaiminjariwala_" },
   ];
+
+  // ── Line editor helpers ──
+  const getCaretOffset = (el) => {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0) return 0;
+    const range = sel.getRangeAt(0);
+    const pre = range.cloneRange();
+    pre.selectNodeContents(el);
+    pre.setEnd(range.startContainer, range.startOffset);
+    return pre.toString().length;
+  };
+
+  const setCaretOffset = (el, offset) => {
+    if (!el) return;
+    el.focus();
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let remaining = offset;
+    let node;
+    while ((node = walker.nextNode())) {
+      const len = node.textContent?.length ?? 0;
+      if (remaining <= len) {
+        const range = document.createRange();
+        range.setStart(node, remaining);
+        range.collapse(true);
+        const s = window.getSelection();
+        s?.removeAllRanges();
+        s?.addRange(range);
+        return;
+      }
+      remaining -= len;
+    }
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    window.getSelection()?.removeAllRanges();
+    window.getSelection()?.addRange(range);
+  };
+
+  const updateMessageFromDOM = () => {
+    const parts = [];
+    for (let j = 0; j < lineCountRef.current; j++) {
+      parts.push(lineRefs.current[j]?.innerText ?? "");
+    }
+    const msg = parts.join("\n");
+    setMessage(msg);
+    return msg;
+  };
+
+  const setWholeMessageSelected = (value) => {
+    allMessageSelectedRef.current = value;
+    setAllMessageSelected(value);
+  };
+
+  const selectAllMessageLines = () => {
+    setWholeMessageSelected(true);
+  };
+
+  const scrollLineIntoView = (lineEl) => {
+    const container = linesContainerRef.current;
+    if (!container || !lineEl) return;
+    const row = lineEl.closest(".cp-line-row") ?? lineEl;
+    const rowRect = row.getBoundingClientRect();
+    const contRect = container.getBoundingClientRect();
+    if (rowRect.bottom > contRect.bottom) {
+      container.scrollTop += rowRect.bottom - contRect.bottom + 2;
+    } else if (rowRect.top < contRect.top) {
+      container.scrollTop -= contRect.top - rowRect.top + 2;
+    }
+  };
+
+  const clearEditor = () => {
+    for (let j = 0; j < lineCountRef.current; j++) {
+      if (lineRefs.current[j]) lineRefs.current[j].innerText = "";
+    }
+    setLineCount(MIN_LINES);
+    setMessage("");
+    setWholeMessageSelected(false);
+  };
+
+  const splitOverflowLine = (i, el) => {
+    if (el.scrollWidth <= el.offsetWidth) return;
+    const fullText = el.innerText ?? "";
+    // binary search for the last char that fits
+    let lo = 0, hi = fullText.length;
+    while (lo < hi - 1) {
+      const mid = Math.floor((lo + hi) / 2);
+      el.innerText = fullText.slice(0, mid);
+      if (el.scrollWidth > el.offsetWidth) hi = mid;
+      else lo = mid;
+    }
+    // try to break at last word boundary
+    const breakAt = fullText.lastIndexOf(" ", lo);
+    const splitAt = breakAt > 0 ? breakAt + 1 : lo;
+    const before = fullText.slice(0, splitAt).trimEnd();
+    const after = fullText.slice(splitAt);
+    el.innerText = before;
+    const n = lineCountRef.current;
+    const savedAfter = [];
+    for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+    const newCount = Math.max(n + 1, MIN_LINES, i + 2);
+    setLineCount(newCount);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (lineRefs.current[i + 1]) {
+        lineRefs.current[i + 1].innerText = after + (savedAfter[0] ? " " + savedAfter[0] : "");
+      }
+      savedAfter.slice(1).forEach((t, idx) => {
+        if (lineRefs.current[i + 2 + idx]) lineRefs.current[i + 2 + idx].innerText = t;
+      });
+      if (lineRefs.current[i + 1]) {
+        setCaretOffset(lineRefs.current[i + 1], after.length);
+        scrollLineIntoView(lineRefs.current[i + 1]);
+        // recurse in case new line also overflows
+        if (lineRefs.current[i + 1].scrollWidth > lineRefs.current[i + 1].offsetWidth) {
+          splitOverflowLine(i + 1, lineRefs.current[i + 1]);
+        }
+      }
+      updateMessageFromDOM();
+    }));
+  };
+
+  const handleLineInput = (i, e) => {
+    setWholeMessageSelected(false);
+    const el = e.currentTarget;
+    const rawText = el.innerText ?? "";
+    if (rawText.includes("\n")) {
+      const parts = rawText.split("\n");
+      el.innerText = parts[0];
+      const extraLines = parts.slice(1);
+      const n = lineCountRef.current;
+      const savedAfter = [];
+      for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+      setLineCount(Math.max(n + extraLines.length, MIN_LINES, i + 1 + extraLines.length));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        extraLines.forEach((part, idx) => {
+          if (lineRefs.current[i + 1 + idx]) lineRefs.current[i + 1 + idx].innerText = part;
+        });
+        savedAfter.forEach((t, idx) => {
+          if (lineRefs.current[i + 1 + extraLines.length + idx]) lineRefs.current[i + 1 + extraLines.length + idx].innerText = t;
+        });
+        const lastEl = lineRefs.current[i + extraLines.length];
+        if (lastEl) { setCaretOffset(lastEl, (extraLines[extraLines.length - 1] ?? "").length); scrollLineIntoView(lastEl); }
+        const msg = updateMessageFromDOM();
+        if (messageError && msg.replace(/\n/g, "").trim()) setMessageError(false);
+      }));
+      return;
+    }
+    // check overflow and auto-wrap
+    if (el.scrollWidth > el.offsetWidth) {
+      splitOverflowLine(i, el);
+      return;
+    }
+    const msg = updateMessageFromDOM();
+    if (messageError && msg.replace(/\n/g, "").trim()) setMessageError(false);
+  };
+
+  const handleLineKeyDown = (i, e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "a") {
+      e.preventDefault();
+      selectAllMessageLines();
+      return;
+    }
+
+    if (allMessageSelectedRef.current && (e.key === "Backspace" || e.key === "Delete")) {
+      e.preventDefault();
+      clearEditor();
+      requestAnimationFrame(() => {
+        lineRefs.current[0]?.focus();
+      });
+      return;
+    }
+
+    if (!e.metaKey && !e.ctrlKey && !e.altKey && e.key !== "Shift") {
+      setWholeMessageSelected(false);
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const el = lineRefs.current[i];
+      if (!el) return;
+      const offset = getCaretOffset(el);
+      const text = el.innerText ?? "";
+      const before = text.slice(0, offset);
+      const after = text.slice(offset);
+      const n = lineCountRef.current;
+      el.innerText = before;
+      const savedAfter = [];
+      for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+      // only add 1 new line, never jump by more
+      const newN = Math.max(n, i + 2);
+      setLineCount(newN);
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        if (lineRefs.current[i + 1]) lineRefs.current[i + 1].innerText = after;
+        savedAfter.forEach((t, idx) => { if (lineRefs.current[i + 2 + idx]) lineRefs.current[i + 2 + idx].innerText = t; });
+        if (lineRefs.current[i + 1]) { setCaretOffset(lineRefs.current[i + 1], 0); scrollLineIntoView(lineRefs.current[i + 1]); }
+        updateMessageFromDOM();
+      }));
+      return;
+    }
+    if (e.key === "Backspace") {
+      const el = lineRefs.current[i];
+      if (!el) return;
+      const offset = getCaretOffset(el);
+      if (offset === 0 && i > 0) {
+        e.preventDefault();
+        const prevEl = lineRefs.current[i - 1];
+        const prevText = prevEl?.innerText ?? "";
+        const currText = el.innerText ?? "";
+        const merged = prevText + currText;
+        const n = lineCountRef.current;
+        const savedAfter = [];
+        for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+        setLineCount(n - 1);
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          if (prevEl) { prevEl.innerText = merged; setCaretOffset(prevEl, prevText.length); scrollLineIntoView(prevEl); }
+          savedAfter.forEach((t, idx) => { if (lineRefs.current[i + idx]) lineRefs.current[i + idx].innerText = t; });
+          updateMessageFromDOM();
+        }));
+        return;
+      }
+    }
+    if (e.key === "ArrowUp" && i > 0) { e.preventDefault(); lineRefs.current[i - 1]?.focus(); }
+    if (e.key === "ArrowDown" && i < lineCountRef.current - 1) { e.preventDefault(); lineRefs.current[i + 1]?.focus(); }
+  };
 
   const onFileChange = (event) => {
     const files = Array.from(event.target.files || []);
@@ -350,8 +585,7 @@ export default function ContactPage() {
         return;
       }
 
-      setMessage("");
-      if (editableRef.current) editableRef.current.innerText = "";
+      clearEditor();
       clearAllAttachments();
       setIsDialogOpen(false);
       setSent(true);
@@ -367,8 +601,7 @@ export default function ContactPage() {
     setFrom("");
     setFromError("");
     setMessageError(false);
-    setMessage("");
-    if (editableRef.current) editableRef.current.innerText = "";
+    clearEditor();
     clearAllAttachments();
     setError("");
     setSent(false);
@@ -464,15 +697,13 @@ export default function ContactPage() {
         }
 
         .cp-from-input::selection,
-        .cp-textarea::selection,
-        .cp-editable::selection {
+        .cp-line-inner::selection {
           background: #73c951 !important;
           color: #000000 !important;
         }
 
         .cp-from-input::-moz-selection,
-        .cp-textarea::-moz-selection,
-        .cp-editable::-moz-selection {
+        .cp-line-inner::-moz-selection {
           background: #73c951 !important;
           color: #000000 !important;
         }
@@ -500,10 +731,13 @@ export default function ContactPage() {
         }
 
         @media (min-width: 768px) {
-          .cp-from-row        { height: 30px !important; }
+          .cp-from-row        { padding-top: 5px !important; padding-bottom: 6px !important; }
           .cp-from-label      { font-size: 24px !important; }
-          .cp-from-input      { font-size: 24px !important; line-height: 30px !important; }
-          .cp-textarea        { font-size: 24px !important; line-height: 1.25em !important; height: 180px !important; min-height: unset !important; overflow-y: auto !important; }
+          .cp-from-input      { font-size: 24px !important; line-height: 1.12em !important; }
+          .cp-lines-container { height: 198px !important; overflow-y: auto !important; }
+          .cp-line-inner      { font-size: 24px !important; line-height: 1.12em !important; min-height: 1.12em !important; overflow: visible !important; }
+          .cp-line-row        { padding-left: 12px !important; }
+          .cp-line-row-att    { padding-right: 178px !important; }
           .cp-att-btn         { width: 150px !important; height: 150px !important; top: -8px !important; right: 18px !important; }
           .cp-paperclip-wrap  { right: -46px !important; top: -36px !important; }
           .cp-paperclip-img   { height: 110px !important; }
@@ -562,11 +796,11 @@ export default function ContactPage() {
             {/* ── From row ── */}
             <div
               className="cp-from-row flex items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]"
-              style={{ height: "calc(1.25 * clamp(21px, 3.5vw, 24px))" }}
+              style={{ paddingTop: "5px", paddingBottom: "6px" }}
             >
               <span
                 className="cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] [-webkit-text-stroke:0.3px_#000000]"
-                style={{ fontSize: "clamp(21px, 3.5vw, 24px)" }}
+                style={{ fontSize: "clamp(21px, 3.5vw, 24px)", lineHeight: "1.12em" }}
               >
                 From:
               </span>
@@ -580,7 +814,7 @@ export default function ContactPage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    editableRef.current?.focus();
+                    lineRefs.current[0]?.focus();
                   }
                 }}
                 placeholder={
@@ -597,7 +831,7 @@ export default function ContactPage() {
                   border: "none",
                   boxShadow: "none",
                   fontSize: "clamp(21px, 3.5vw, 24px)",
-                  lineHeight: "calc(1.25 * clamp(21px, 3.5vw, 24px))",
+                  lineHeight: "1.12em",
                   color: fromIsInvalidFormat ? "#C00707" : "#1f2329",
                   WebkitTextStroke: fromIsInvalidFormat ? "0.3px #C00707" : fromHasText ? "0.3px #000000" : "0px transparent",
                 }}
@@ -605,88 +839,70 @@ export default function ContactPage() {
             </div>
 
             {/* ── Message area ── */}
-            <div className="relative flex items-start overflow-visible">
-              {/* Placeholder */}
-              {message.length === 0 && (
-                <span
-                  className="pointer-events-none absolute left-[12px] max-md:left-[10px] top-0 select-none tracking-[-0.01em]"
-                  style={{
-                    fontSize: "clamp(21px, 3.5vw, 24px)",
-                    lineHeight: "1.25em",
-                    color: messageError ? "#d53030" : "#a1a8b3",
-                  }}
-                >
-                  {messageError ? "Don't forget to add your message or files..." : "Write your message..."}
-                </span>
-              )}
+            <div className="relative overflow-visible">
               <div
-                ref={editableRef}
-                contentEditable
-                suppressContentEditableWarning
-                spellCheck={false}
-                autoCorrect="off"
-                autoCapitalize="off"
-                // @ts-ignore
-                writingsuggestions="false"
-                onInput={(e) => {
-                  const el = e.currentTarget;
-                  const text = el.innerText;
-                  setMessage(text);
-                  if (messageError && text.trim().length > 0) setMessageError(false);
-                  // Always keep cursor line visible inside the fixed-height box
-                  requestAnimationFrame(() => {
-                    const sel = window.getSelection();
-                    if (!sel || sel.rangeCount === 0) return;
-                    const range = sel.getRangeAt(0);
-                    const rect = range.getBoundingClientRect();
-                    const boxRect = el.getBoundingClientRect();
-                    if (rect.bottom > boxRect.bottom) {
-                      el.scrollTop += rect.bottom - boxRect.bottom + 4;
-                    } else if (rect.top < boxRect.top) {
-                      el.scrollTop -= boxRect.top - rect.top + 4;
-                    }
-                  });
+                ref={linesContainerRef}
+                className="cp-lines-container overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+                style={{ height: "170px", position: "relative" }}
+                onClick={(e) => {
+                  setWholeMessageSelected(false);
+                  if (e.target === e.currentTarget) lineRefs.current[lineCountRef.current - 1]?.focus();
                 }}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    document.execCommand("insertLineBreak");
-                    // Double rAF: first frame lets browser insert the BR,
-                    // second frame lets layout recalculate before we measure.
-                    requestAnimationFrame(() => requestAnimationFrame(() => {
-                      const el = editableRef.current;
-                      if (!el) return;
-                      const sel = window.getSelection();
-                      if (!sel || sel.rangeCount === 0) return;
-                      const range = sel.getRangeAt(0);
-                      const rect = range.getBoundingClientRect();
-                      const boxRect = el.getBoundingClientRect();
-                      if (rect.bottom > boxRect.bottom) {
-                        el.scrollTop += rect.bottom - boxRect.bottom + 2;
-                      }
-                    }));
-                  }
-                }}
-                className={`cp-textarea cp-editable ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} w-full border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-0 tracking-[-0.01em] text-[#1f2329] outline-none overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
-                  attachments.length > 0 ? "pr-[116px]" : "pr-[12px] max-md:pr-[10px]"
-                }`}
-                style={{
-                  border: "none",
-                  boxShadow: "none",
-                  fontSize: "clamp(21px, 3.5vw, 24px)",
-                  lineHeight: "1.25em",
-                  height: "158px",
-                  WebkitTextStroke: message.length > 0 ? "0.3px #000000" : "0px transparent",
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
-                  backgroundImage:
-                    "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.25em - 1px), rgba(188,195,207,0.44) calc(1.25em - 1px), rgba(188,195,207,0.44) 1.25em)",
-                  backgroundAttachment: "local",
-                  backgroundSize: "100% 1.25em",
-                  backgroundPosition: "0 0",
-                  backgroundRepeat: "repeat-y",
-                }}
-              />
+              >
+                {/* Placeholder */}
+                {!message.replace(/\n/g, "").trim() && (
+                  <span
+                    className="pointer-events-none absolute select-none tracking-[-0.01em]"
+                    style={{
+                      left: "10px",
+                      top: "4px",
+                      fontSize: "clamp(21px, 3.5vw, 24px)",
+                      lineHeight: "1.12em",
+                      color: messageError ? "#d53030" : "#a1a8b3",
+                    }}
+                  >
+                    {messageError ? "Don't forget to add your message or files..." : "Write your message..."}
+                  </span>
+                )}
+
+                {Array.from({ length: lineCount }, (_, i) => (
+                  <div
+                    key={i}
+                    className={`cp-line-row${attachments.length > 0 ? " cp-line-row-att" : ""}`}
+                    style={{
+                      borderBottom: "1px solid rgba(188,195,207,0.44)",
+                      paddingTop: "5px",
+                      paddingBottom: "6px",
+                      paddingLeft: "10px",
+                      paddingRight: attachments.length > 0 ? "116px" : "10px",
+                      backgroundColor: allMessageSelected && (message.split("\n")[i] ?? "").trim() ? "rgba(115, 201, 81, 0.32)" : "transparent",
+                    }}
+                  >
+                    <div
+                      ref={el => { lineRefs.current[i] = el; }}
+                      contentEditable
+                      suppressContentEditableWarning
+                      spellCheck={false}
+                      autoCorrect="off"
+                      autoCapitalize="off"
+                      // @ts-ignore
+                      writingsuggestions="false"
+                      className="cp-line-inner tracking-[-0.01em] text-[#1f2329] outline-none"
+                      style={{
+                        fontSize: "clamp(21px, 3.5vw, 24px)",
+                        lineHeight: "1.12em",
+                        WebkitTextStroke: "0.3px #000000",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        minHeight: "1.12em",
+                      }}
+                      onFocus={() => setWholeMessageSelected(false)}
+                      onInput={e => handleLineInput(i, e)}
+                      onKeyDown={e => handleLineKeyDown(i, e)}
+                    />
+                  </div>
+                ))}
+              </div>
 
               {attachments.length > 0 && (
                 <button
