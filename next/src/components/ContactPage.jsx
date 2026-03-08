@@ -1,8 +1,14 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Short_Stack } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { useContactDraft } from "@/components/ContactDraftContext";
+
+const shortStack = Short_Stack({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 function getFileExt(name = "") {
   const parts = name.split(".");
@@ -234,6 +240,13 @@ export default function ContactPage() {
   const fromHasText = from.length > 0;
   const fromIsValidFormat = fromHasText && EMAIL_RE.test(from.trim());
   const fromIsInvalidFormat = fromHasText && !EMAIL_RE.test(from.trim());
+  const socialLinks = [
+    { label: "Mail",     href: "mailto:jaiminjariwala5@icloud.com" },
+    { label: "Github",   href: "https://github.com/jaiminjariwala" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/jaiminjariwala/" },
+    { label: "Leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
+    { label: "Twitter",  href: "https://x.com/jaiminjariwala_" },
+  ];
 
   const onFileChange = (event) => {
     const files = Array.from(event.target.files || []);
@@ -427,9 +440,24 @@ export default function ContactPage() {
   }, [isDialogOpen]);
 
   return (
-    <section className="min-h-screen bg-white text-black">
+    <section className="flex h-screen flex-col overflow-hidden bg-white text-black">
       {/* Desktop overrides — bypasses Tailwind JIT for guaranteed rendering */}
       <style>{`
+        .cp-social-link {
+          color: #000000;
+          -webkit-text-fill-color: #000000;
+        }
+        .cp-social-link:hover {
+          background: linear-gradient(to bottom, #8FC0FF, #5C9CF4, #2F72E2);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          -webkit-text-stroke: 1.25px #5C9CF4;
+        }
+        @media (min-width: 768px) {
+          .cp-social-link:hover { -webkit-text-stroke: 1.45px #5C9CF4; }
+        }
+
         .cp-from-input::placeholder,
         .cp-textarea::placeholder {
           -webkit-text-stroke: 0 transparent !important;
@@ -472,10 +500,10 @@ export default function ContactPage() {
         }
 
         @media (min-width: 768px) {
-          .cp-from-row        { height: 44px !important; }
-          .cp-from-label      { font-size: 20px !important; }
-          .cp-from-input      { font-size: 20px !important; line-height: 44px !important; }
-          .cp-textarea        { font-size: 20px !important; line-height: 1.5em !important; height: 150px !important; min-height: unset !important; overflow-y: auto !important; }
+          .cp-from-row        { height: 30px !important; }
+          .cp-from-label      { font-size: 24px !important; }
+          .cp-from-input      { font-size: 24px !important; line-height: 30px !important; }
+          .cp-textarea        { font-size: 24px !important; line-height: 1.25em !important; height: 180px !important; min-height: unset !important; overflow-y: auto !important; }
           .cp-att-btn         { width: 150px !important; height: 150px !important; top: -8px !important; right: 18px !important; }
           .cp-paperclip-wrap  { right: -46px !important; top: -36px !important; }
           .cp-paperclip-img   { height: 110px !important; }
@@ -486,13 +514,13 @@ export default function ContactPage() {
       <Navbar />
 
       <div
-        className="mx-auto w-full max-w-[689px] pb-[80px]"
+        className="mx-auto flex min-h-0 w-full max-w-[689px] flex-1 flex-col pb-[14px] md:pb-[18px]"
         style={{
           paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
           paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
         }}
       >
-        <div className="mt-[34px] md:mt-[42px]">
+        <div className="mt-[24px] flex min-h-0 flex-1 flex-col md:mt-[28px]">
           <div
             className="overflow-visible rounded-[8px] border border-[#cfd4dd] bg-[#f9f9f8] shadow-[0_4px_10px_rgba(0,0,0,0.08)] md:rounded-[16px]"
             data-sr-skip="true"
@@ -533,10 +561,12 @@ export default function ContactPage() {
 
             {/* ── From row ── */}
             <div
-              className="cp-from-row flex h-[36px] items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]"
+              className="cp-from-row flex items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]"
+              style={{ height: "calc(1.25 * clamp(21px, 3.5vw, 24px))" }}
             >
               <span
-                className="cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] text-[18px] [-webkit-text-stroke:0.3px_#000000]"
+                className="cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] [-webkit-text-stroke:0.3px_#000000]"
+                style={{ fontSize: "clamp(21px, 3.5vw, 24px)" }}
               >
                 From:
               </span>
@@ -545,6 +575,8 @@ export default function ContactPage() {
                 value={from}
                 onChange={onFromChange}
                 onBlur={onFromBlur}
+                // @ts-ignore
+                writingsuggestions="false"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -556,7 +588,7 @@ export default function ContactPage() {
                     ? fromError
                     : "your@email.com"
                 }
-                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent text-[18px] leading-[36px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
+                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
                   fromError && !from.trim()
                     ? "placeholder:text-[#d53030]"
                     : "placeholder:text-[#a1a8b3]"
@@ -564,8 +596,10 @@ export default function ContactPage() {
                 style={{
                   border: "none",
                   boxShadow: "none",
-                  color: !fromHasText ? "#1f2329" : fromIsValidFormat ? "#44C200" : "#C00707",
-                  WebkitTextStroke: !fromHasText ? "0px transparent" : fromIsValidFormat ? "0.3px #44C200" : "0.3px #C00707",
+                  fontSize: "clamp(21px, 3.5vw, 24px)",
+                  lineHeight: "calc(1.25 * clamp(21px, 3.5vw, 24px))",
+                  color: fromIsInvalidFormat ? "#C00707" : "#1f2329",
+                  WebkitTextStroke: fromIsInvalidFormat ? "0.3px #C00707" : fromHasText ? "0.3px #000000" : "0px transparent",
                 }}
               />
             </div>
@@ -575,9 +609,10 @@ export default function ContactPage() {
               {/* Placeholder */}
               {message.length === 0 && (
                 <span
-                  className="pointer-events-none absolute left-[12px] max-md:left-[10px] top-[6px] select-none text-[20px] tracking-[-0.01em]"
+                  className="pointer-events-none absolute left-[12px] max-md:left-[10px] top-0 select-none tracking-[-0.01em]"
                   style={{
-                    lineHeight: "1.5em",
+                    fontSize: "clamp(21px, 3.5vw, 24px)",
+                    lineHeight: "1.25em",
                     color: messageError ? "#d53030" : "#a1a8b3",
                   }}
                 >
@@ -588,6 +623,11 @@ export default function ContactPage() {
                 ref={editableRef}
                 contentEditable
                 suppressContentEditableWarning
+                spellCheck={false}
+                autoCorrect="off"
+                autoCapitalize="off"
+                // @ts-ignore
+                writingsuggestions="false"
                 onInput={(e) => {
                   const el = e.currentTarget;
                   const text = el.innerText;
@@ -611,8 +651,9 @@ export default function ContactPage() {
                   if (e.key === "Enter") {
                     e.preventDefault();
                     document.execCommand("insertLineBreak");
-                    // Scroll new line into view immediately after insertion
-                    requestAnimationFrame(() => {
+                    // Double rAF: first frame lets browser insert the BR,
+                    // second frame lets layout recalculate before we measure.
+                    requestAnimationFrame(() => requestAnimationFrame(() => {
                       const el = editableRef.current;
                       if (!el) return;
                       const sel = window.getSelection();
@@ -621,27 +662,27 @@ export default function ContactPage() {
                       const rect = range.getBoundingClientRect();
                       const boxRect = el.getBoundingClientRect();
                       if (rect.bottom > boxRect.bottom) {
-                        el.scrollTop += rect.bottom - boxRect.bottom + 4;
+                        el.scrollTop += rect.bottom - boxRect.bottom + 2;
                       }
-                    });
+                    }));
                   }
                 }}
-                className={`cp-textarea cp-editable ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} w-full border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-[6px] text-[20px] tracking-[-0.01em] text-[#1f2329] outline-none overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                className={`cp-textarea cp-editable ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} w-full border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-0 tracking-[-0.01em] text-[#1f2329] outline-none overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                   attachments.length > 0 ? "pr-[116px]" : "pr-[12px] max-md:pr-[10px]"
                 }`}
                 style={{
                   border: "none",
                   boxShadow: "none",
-                  lineHeight: "1.5em",
-                  height: "150px",
+                  fontSize: "clamp(21px, 3.5vw, 24px)",
+                  lineHeight: "1.25em",
+                  height: "158px",
                   WebkitTextStroke: message.length > 0 ? "0.3px #000000" : "0px transparent",
                   whiteSpace: "pre-wrap",
                   wordBreak: "break-word",
-                  cursor: "text",
                   backgroundImage:
-                    "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.5em - 1px), rgba(188,195,207,0.44) calc(1.5em - 1px), rgba(188,195,207,0.44) 1.5em)",
+                    "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.25em - 1px), rgba(188,195,207,0.44) calc(1.25em - 1px), rgba(188,195,207,0.44) 1.25em)",
                   backgroundAttachment: "local",
-                  backgroundSize: "100% 1.5em",
+                  backgroundSize: "100% 1.25em",
                   backgroundPosition: "0 0",
                   backgroundRepeat: "repeat-y",
                 }}
@@ -770,6 +811,22 @@ export default function ContactPage() {
               </div>
             </div>
           ) : null}
+
+          <div className="mt-auto pb-[32px] pt-[10px] md:pb-[48px] md:pt-[12px]" data-sr-skip="true">
+            <div className="flex flex-wrap items-center justify-between gap-x-[18px] gap-y-[12px] md:gap-x-[24px]">
+              {socialLinks.map(({ label, href }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target={href.startsWith("mailto") ? undefined : "_blank"}
+                  rel={href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+                  className={`${shortStack.className} cp-social-link inline-block cursor-pointer text-[24px] leading-[0.92] tracking-[-0.02em] [-webkit-text-stroke:1.25px_#000000] md:text-[28px] md:[-webkit-text-stroke:1.45px_#000000]`}
+                >
+                  {label}
+                </a>
+              ))}
+            </div>
+          </div>
 
           {error ? (
             <p className="mt-[10px] text-[14px] leading-none tracking-[-0.01em] text-[#d53030]">
