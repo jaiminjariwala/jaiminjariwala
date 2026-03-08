@@ -219,6 +219,7 @@ export default function ContactPage() {
   const [error, setError] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const textareaRef = useRef(null);
+  const editableRef = useRef(null);
   const sentinelRef = useRef(null);
   const fileInputRef = useRef(null);
   const attachmentsStripRef = useRef(null);
@@ -228,8 +229,11 @@ export default function ContactPage() {
     startScrollLeft: 0,
   });
   const [isDraggingAttachments, setIsDraggingAttachments] = useState(false);
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const fromIsInvalid = Boolean(fromError && from.trim());
   const fromHasText = from.length > 0;
+  const fromIsValidFormat = fromHasText && EMAIL_RE.test(from.trim());
+  const fromIsInvalidFormat = fromHasText && !EMAIL_RE.test(from.trim());
 
   const onFileChange = (event) => {
     const files = Array.from(event.target.files || []);
@@ -269,8 +273,6 @@ export default function ContactPage() {
       return [];
     });
   };
-
-  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const onFromChange = (e) => {
     const val = e.target.value;
@@ -336,6 +338,7 @@ export default function ContactPage() {
       }
 
       setMessage("");
+      if (editableRef.current) editableRef.current.innerText = "";
       clearAllAttachments();
       setIsDialogOpen(false);
       setSent(true);
@@ -352,6 +355,7 @@ export default function ContactPage() {
     setFromError("");
     setMessageError(false);
     setMessage("");
+    if (editableRef.current) editableRef.current.innerText = "";
     clearAllAttachments();
     setError("");
     setSent(false);
@@ -379,17 +383,10 @@ export default function ContactPage() {
     event.preventDefault();
   };
 
-  // useLayoutEffect: fires synchronously after DOM mutations, before paint
   // Keep the bottom typing line visible without manual page scroll.
   useLayoutEffect(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    // Reset then grow
-    el.style.height = "0px";
-    el.style.height = el.scrollHeight + "px";
-
-    // Scroll using the card sentinel (after Add file row) for accurate bottom visibility.
-    const target = sentinelRef.current || el;
+    const target = sentinelRef.current;
+    if (!target) return;
     const rect = target.getBoundingClientRect();
     const safeBottom = window.innerHeight - 16;
     const overflow = rect.bottom - safeBottom;
@@ -438,6 +435,20 @@ export default function ContactPage() {
           -webkit-text-stroke: 0 transparent !important;
         }
 
+        .cp-from-input::selection,
+        .cp-textarea::selection,
+        .cp-editable::selection {
+          background: #73c951 !important;
+          color: #000000 !important;
+        }
+
+        .cp-from-input::-moz-selection,
+        .cp-textarea::-moz-selection,
+        .cp-editable::-moz-selection {
+          background: #73c951 !important;
+          color: #000000 !important;
+        }
+
         .doc-thumb-render {
           transform-origin: top left;
           line-height: 1.25;
@@ -464,7 +475,7 @@ export default function ContactPage() {
           .cp-from-row        { height: 44px !important; }
           .cp-from-label      { font-size: 20px !important; }
           .cp-from-input      { font-size: 20px !important; line-height: 44px !important; }
-          .cp-textarea        { font-size: 20px !important; min-height: 234px !important; height: auto !important; }
+          .cp-textarea        { font-size: 20px !important; line-height: 1.5em !important; height: 150px !important; min-height: unset !important; overflow-y: auto !important; }
           .cp-att-btn         { width: 150px !important; height: 150px !important; top: -8px !important; right: 18px !important; }
           .cp-paperclip-wrap  { right: -46px !important; top: -36px !important; }
           .cp-paperclip-img   { height: 110px !important; }
@@ -492,13 +503,13 @@ export default function ContactPage() {
                 type="button"
                 onClick={onCancel}
                 disabled={sending}
-                className="h-auto rounded-[7px] border border-[#c9cfda] bg-[#f9f9f8] px-[10px] py-[8px] text-[18px] font-black leading-none tracking-[-0.01em] text-[#000000] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black md:shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)]"
+                className="h-auto rounded-[7px] border border-[#c9cfda] bg-[#f9f9f8] px-[10px] py-[8px] text-[18px] font-black leading-none tracking-[-0.01em] text-[#000000] [-webkit-text-stroke:0.3px_#000000] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black md:shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)]"
               >
                 Cancel
               </button>
 
               <div
-                className="text-center font-black tracking-[-0.02em]"
+                className="text-center font-black tracking-[-0.02em] [-webkit-text-stroke:0.3px_#404040]"
                 style={{
                   fontSize: "clamp(18px, 6vw, 22px)",
                   fontWeight: 600,
@@ -521,11 +532,11 @@ export default function ContactPage() {
             <div className="h-[2px] bg-gradient-to-r from-[#f1c0c0] via-[#eb9a9a] to-[#f1c0c0]" />
 
             {/* ── From row ── */}
-            <div className="cp-from-row flex h-[36px] items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]">
+            <div
+              className="cp-from-row flex h-[36px] items-center border-b border-[rgba(188,195,207,0.44)] px-[10px] md:px-[12px]"
+            >
               <span
-                className={`cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] text-[18px] [-webkit-text-stroke:0.3px_#000000] md:inline ${
-                  from.length > 0 ? "hidden" : "inline"
-                }`}
+                className="cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] text-[18px] [-webkit-text-stroke:0.3px_#000000]"
               >
                 From:
               </span>
@@ -534,11 +545,15 @@ export default function ContactPage() {
                 value={from}
                 onChange={onFromChange}
                 onBlur={onFromBlur}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    editableRef.current?.focus();
+                  }
+                }}
                 placeholder={
                   fromError && !from.trim()
                     ? fromError
-                    : from.length === 0
-                    ? "your@email.com"
                     : "your@email.com"
                 }
                 className={`cp-from-input flex-1 appearance-none border-0 bg-transparent text-[18px] leading-[36px] tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
@@ -549,42 +564,84 @@ export default function ContactPage() {
                 style={{
                   border: "none",
                   boxShadow: "none",
-                  color: fromIsInvalid ? "#d53030" : "#1f2329",
-                  WebkitTextStroke: fromHasText
-                    ? fromIsInvalid
-                      ? "0.3px #d53030"
-                      : "0.3px #000000"
-                    : "0px transparent",
+                  color: !fromHasText ? "#1f2329" : fromIsValidFormat ? "#44C200" : "#C00707",
+                  WebkitTextStroke: !fromHasText ? "0px transparent" : fromIsValidFormat ? "0.3px #44C200" : "0.3px #C00707",
                 }}
               />
             </div>
 
             {/* ── Message area ── */}
             <div className="relative flex items-start overflow-visible">
-              <textarea
-                ref={textareaRef}
-                value={message}
-                onChange={(event) => {
-                  setMessage(event.target.value);
-                  if (messageError && event.target.value.trim().length > 0) {
-                    setMessageError(false);
+              {/* Placeholder */}
+              {message.length === 0 && (
+                <span
+                  className="pointer-events-none absolute left-[12px] max-md:left-[10px] top-[6px] select-none text-[20px] tracking-[-0.01em]"
+                  style={{
+                    lineHeight: "1.5em",
+                    color: messageError ? "#d53030" : "#a1a8b3",
+                  }}
+                >
+                  {messageError ? "Don't forget to add your message or files..." : "Write your message..."}
+                </span>
+              )}
+              <div
+                ref={editableRef}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e) => {
+                  const el = e.currentTarget;
+                  const text = el.innerText;
+                  setMessage(text);
+                  if (messageError && text.trim().length > 0) setMessageError(false);
+                  // Always keep cursor line visible inside the fixed-height box
+                  requestAnimationFrame(() => {
+                    const sel = window.getSelection();
+                    if (!sel || sel.rangeCount === 0) return;
+                    const range = sel.getRangeAt(0);
+                    const rect = range.getBoundingClientRect();
+                    const boxRect = el.getBoundingClientRect();
+                    if (rect.bottom > boxRect.bottom) {
+                      el.scrollTop += rect.bottom - boxRect.bottom + 4;
+                    } else if (rect.top < boxRect.top) {
+                      el.scrollTop -= boxRect.top - rect.top + 4;
+                    }
+                  });
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    document.execCommand("insertLineBreak");
+                    // Scroll new line into view immediately after insertion
+                    requestAnimationFrame(() => {
+                      const el = editableRef.current;
+                      if (!el) return;
+                      const sel = window.getSelection();
+                      if (!sel || sel.rangeCount === 0) return;
+                      const range = sel.getRangeAt(0);
+                      const rect = range.getBoundingClientRect();
+                      const boxRect = el.getBoundingClientRect();
+                      if (rect.bottom > boxRect.bottom) {
+                        el.scrollTop += rect.bottom - boxRect.bottom + 4;
+                      }
+                    });
                   }
                 }}
-                placeholder={messageError ? "Don't forget to add your message or files..." : "Write your message..."}
-                rows={6}
-                className={`cp-textarea ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} min-h-[117px] w-full resize-none appearance-none border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-0 pb-[1em] text-[18px] leading-[1.82] tracking-[-0.01em] text-[#1f2329] shadow-none outline-none ring-0 ${messageError ? "placeholder:text-[#d53030]" : "placeholder:text-[#a1a8b3]"} focus:border-0 focus:shadow-none focus:outline-none focus:ring-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                className={`cp-textarea cp-editable ${attachments.length > 0 ? "cp-textarea-pr-att" : ""} w-full border-0 bg-transparent pl-[12px] max-md:pl-[10px] pt-[6px] text-[20px] tracking-[-0.01em] text-[#1f2329] outline-none overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                   attachments.length > 0 ? "pr-[116px]" : "pr-[12px] max-md:pr-[10px]"
                 }`}
                 style={{
                   border: "none",
                   boxShadow: "none",
+                  lineHeight: "1.5em",
+                  height: "150px",
                   WebkitTextStroke: message.length > 0 ? "0.3px #000000" : "0px transparent",
-                  scrollbarWidth: "none",
-                  msOverflowStyle: "none",
+                  whiteSpace: "pre-wrap",
+                  wordBreak: "break-word",
+                  cursor: "text",
                   backgroundImage:
-                    "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.82em - 0.05em), rgba(188,195,207,0.44) calc(1.82em - 0.05em), rgba(188,195,207,0.44) 1.82em)",
+                    "repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.5em - 1px), rgba(188,195,207,0.44) calc(1.5em - 1px), rgba(188,195,207,0.44) 1.5em)",
                   backgroundAttachment: "local",
-                  backgroundSize: "100% 1.82em",
+                  backgroundSize: "100% 1.5em",
                   backgroundPosition: "0 0",
                   backgroundRepeat: "repeat-y",
                 }}
@@ -647,9 +704,10 @@ export default function ContactPage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="relative z-[1] inline-flex items-center gap-[6px] font-medium tracking-[-0.01em] text-[#616161] text-[18px] md:text-[26px] [-webkit-text-stroke:0.3px_#616161]"
+                className="relative z-[1] inline-flex items-center rounded-[7px] border border-[#c9cfda] bg-[#ebebeb] px-[12px] py-[7px] text-[18px] font-medium leading-none tracking-[-0.01em] text-[#3a3a3a] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] [-webkit-text-stroke:0.3px_#3a3a3a]"
+                style={{ WebkitAppearance: "none", appearance: "none" }}
               >
-                <span className="text-[18px] md:text-[24px] px-[8px] py-[6px]">Add file</span>
+                Add file
               </button>
               <input
                 ref={fileInputRef}
