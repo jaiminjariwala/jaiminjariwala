@@ -235,13 +235,15 @@ export default function ContactPage() {
     startScrollLeft: 0,
   });
   const [isDraggingAttachments, setIsDraggingAttachments] = useState(false);
-  const MIN_LINES = 7;
+  const MIN_LINES = 5;
   const [lineCount, setLineCount_] = useState(MIN_LINES);
   const [allMessageSelected, setAllMessageSelected] = useState(false);
-  const lineCountRef = useRef(7);
+  const lineCountRef = useRef(MIN_LINES);
   const lineRefs = useRef([]);
   const linesContainerRef = useRef(null);
   const allMessageSelectedRef = useRef(false);
+  const updateMessageFromDOMRef = useRef(null);
+  const reflowLinesForCurrentWidthRef = useRef(null);
   const setLineCount = (n) => {
     const val = typeof n === "function" ? n(lineCountRef.current) : n;
     lineCountRef.current = val;
@@ -379,6 +381,21 @@ export default function ContactPage() {
     }));
   };
 
+  const reflowLinesForCurrentWidth = () => {
+    for (let i = 0; i < lineCountRef.current; i += 1) {
+      const el = lineRefs.current[i];
+      if (!el) continue;
+      if (el.scrollWidth > el.offsetWidth) {
+        splitOverflowLine(i, el);
+        return true;
+      }
+    }
+    return false;
+  };
+
+  updateMessageFromDOMRef.current = updateMessageFromDOM;
+  reflowLinesForCurrentWidthRef.current = reflowLinesForCurrentWidth;
+
   const handleLineInput = (i, e) => {
     setWholeMessageSelected(false);
     const el = e.currentTarget;
@@ -470,7 +487,7 @@ export default function ContactPage() {
         const n = lineCountRef.current;
         const savedAfter = [];
         for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
-        setLineCount(n - 1);
+        setLineCount(Math.max(MIN_LINES, n - 1));
         requestAnimationFrame(() => requestAnimationFrame(() => {
           if (prevEl) { prevEl.innerText = merged; setCaretOffset(prevEl, prevText.length); scrollLineIntoView(prevEl); }
           savedAfter.forEach((t, idx) => { if (lineRefs.current[i + idx]) lineRefs.current[i + idx].innerText = t; });
@@ -512,6 +529,30 @@ export default function ContactPage() {
       setIsDialogOpen(false);
     }
   }, [attachments.length, isDialogOpen]);
+
+  useEffect(() => {
+    if (attachments.length === 0) return;
+
+    let cancelled = false;
+
+    const runReflow = () => {
+      if (cancelled) return;
+      const changed = reflowLinesForCurrentWidthRef.current?.();
+      if (changed) {
+        requestAnimationFrame(runReflow);
+      } else {
+        updateMessageFromDOMRef.current?.();
+      }
+    };
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(runReflow);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [attachments.length]);
 
   const clearAllAttachments = () => {
     setAttachments((prev) => {
