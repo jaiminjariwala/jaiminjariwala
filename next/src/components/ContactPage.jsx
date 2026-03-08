@@ -680,6 +680,12 @@ export default function ContactPage() {
           color: #000000;
           -webkit-text-fill-color: #000000;
         }
+        .cp-social-links {
+          justify-content: flex-start;
+          column-gap: 28px;
+          row-gap: 14px;
+          flex-wrap: wrap;
+        }
         .cp-social-link:hover {
           background: linear-gradient(to bottom, #8FC0FF, #5C9CF4, #2F72E2);
           -webkit-background-clip: text;
@@ -688,6 +694,12 @@ export default function ContactPage() {
           -webkit-text-stroke: 1.25px #5C9CF4;
         }
         @media (min-width: 768px) {
+          .cp-social-links {
+            justify-content: space-between !important;
+            column-gap: 0 !important;
+            row-gap: 0 !important;
+            flex-wrap: nowrap !important;
+          }
           .cp-social-link:hover { -webkit-text-stroke: 1.45px #5C9CF4; }
         }
 
@@ -908,7 +920,7 @@ export default function ContactPage() {
                 <button
                   type="button"
                   onClick={() => setIsDialogOpen((prev) => !prev)}
-                  className="cp-att-btn absolute top-[-4px] right-[10px] overflow-visible appearance-none border-0 bg-transparent p-0 shadow-none outline-none h-[96px] w-[96px]"
+                  className="cp-att-btn absolute top-[12px] right-[10px] overflow-visible appearance-none border-0 bg-transparent p-0 shadow-none outline-none h-[96px] w-[96px]"
                   aria-label={isDialogOpen ? "Close attachments" : "Open attachments"}
                 >
                   <div className="relative h-full w-full overflow-visible">
@@ -1029,7 +1041,7 @@ export default function ContactPage() {
           ) : null}
 
           <div className="mt-auto pb-[32px] pt-[10px] md:pb-[48px] md:pt-[12px]" data-sr-skip="true">
-            <div className="flex flex-wrap items-center justify-between gap-x-[18px] gap-y-[12px] md:gap-x-[24px]">
+            <div className="cp-social-links flex items-center">
               {socialLinks.map(({ label, href }) => (
                 <a
                   key={label}
