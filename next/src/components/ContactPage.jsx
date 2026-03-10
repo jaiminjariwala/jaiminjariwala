@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
 import { Short_Stack } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { useContactDraft } from "@/components/ContactDraftContext";
@@ -212,6 +212,83 @@ function AttachmentPreview({ attachment }) {
         {getFileExt(attachment.file.name)}
       </span>
     </div>
+  );
+}
+
+// ── Sending: 3 pulsing dots (grow+darken left→right) ──
+function SendingDots() {
+  return (
+    <span
+      aria-label="Sending"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "5px",
+        height: "1em",
+        verticalAlign: "middle",
+      }}
+    >
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          style={{
+            display: "inline-block",
+            width: "7px",
+            height: "7px",
+            borderRadius: "50%",
+            backgroundColor: "rgba(255,255,255,0.55)",
+            animation: `cp-dot-pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes cp-dot-pulse {
+          0%,100% { transform: scale(0.6);  background-color: rgba(255,255,255,0.45); }
+          50%      { transform: scale(1.35); background-color: rgba(255,255,255,1);    }
+        }
+      `}</style>
+    </span>
+  );
+}
+
+// ── Sent: text pops in from a tiny point via GSAP (with CSS fallback) ──
+function SentText() {
+  const elRef = useRef(null);
+
+  useEffect(() => {
+    const el = elRef.current;
+    if (!el) return;
+    let tween;
+
+    import("gsap")
+      .then(({ gsap }) => {
+        // GSAP is installed — use it
+        tween = gsap.fromTo(
+          el,
+          { scale: 0.05, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.42, ease: "back.out(2.2)", clearProps: "all" }
+        );
+      })
+      .catch(() => {
+        // GSAP not installed — fall back to CSS keyframe animation
+        el.style.animation = "cp-sent-pop 0.42s cubic-bezier(0.34,1.56,0.64,1) forwards";
+      });
+
+    return () => tween?.kill();
+  }, []);
+
+  return (
+    <>
+      <style>{`
+        @keyframes cp-sent-pop {
+          from { transform: scale(0.05); opacity: 0; }
+          to   { transform: scale(1);    opacity: 1; }
+        }
+      `}</style>
+      <span ref={elRef} style={{ display: "inline-block", opacity: 0 }}>
+        Sent
+      </span>
+    </>
   );
 }
 
@@ -500,20 +577,65 @@ export default function ContactPage() {
     if (e.key === "ArrowDown" && i < lineCountRef.current - 1) { e.preventDefault(); lineRefs.current[i + 1]?.focus(); }
   };
 
-  const onFileChange = (event) => {
+  const compressImage = (file) =>
+    new Promise((resolve) => {
+      const MAX_PX = 1920;
+      const QUALITY = 0.85;
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        const { naturalWidth: w, naturalHeight: h } = img;
+        // skip compression if already small enough
+        if (w <= MAX_PX && h <= MAX_PX && file.size < 1.5 * 1024 * 1024) {
+          resolve(file);
+          return;
+        }
+        const scale = Math.min(1, MAX_PX / Math.max(w, h));
+        const canvas = document.createElement("canvas");
+        canvas.width  = Math.round(w * scale);
+        canvas.height = Math.round(h * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) { resolve(file); return; }
+            // keep original filename, use jpeg mime
+            const compressed = new File(
+              [blob],
+              file.name.replace(/\.[^.]+$/, ".jpg"),
+              { type: "image/jpeg", lastModified: Date.now() }
+            );
+            resolve(compressed);
+          },
+          "image/jpeg",
+          QUALITY
+        );
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+
+  const onFileChange = async (event) => {
     const files = Array.from(event.target.files || []);
     if (!files.length) return;
-
-    const next = files.map((file, index) => ({
-      id: `${file.name}-${file.size}-${Date.now()}-${index}`,
-      file,
-      isImage: file.type.startsWith("image/"),
-      previewUrl: URL.createObjectURL(file),
-    }));
-
-    setAttachments((prev) => [...prev, ...next]);
-    if (messageError) setMessageError(false);
     event.target.value = "";
+
+    const processed = await Promise.all(
+      files.map(async (file, index) => {
+        const isImage = file.type.startsWith("image/");
+        const finalFile = isImage ? await compressImage(file) : file;
+        return {
+          id: `${file.name}-${file.size}-${Date.now()}-${index}`,
+          file: finalFile,
+          isImage,
+          previewUrl: URL.createObjectURL(finalFile),
+        };
+      })
+    );
+
+    setAttachments((prev) => [...prev, ...processed]);
+    if (messageError) setMessageError(false);
   };
 
   const removeAttachment = (idToRemove) => {
@@ -598,6 +720,10 @@ export default function ContactPage() {
     setSending(true);
     setSent(false);
 
+    // Abort the request after 60 s so the Send button never stays stuck forever.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60_000);
+
     try {
       const formData = new FormData();
       formData.set("from", from.trim());
@@ -609,6 +735,7 @@ export default function ContactPage() {
       const response = await fetch("/api/contact", {
         method: "POST",
         body: formData,
+        signal: controller.signal,
       });
 
       const payload = await response.json().catch(() => ({}));
@@ -631,9 +758,14 @@ export default function ContactPage() {
       setIsDialogOpen(false);
       setSent(true);
       setTimeout(() => setSent(false), 2200);
-    } catch {
-      setError("Unable to send right now. Please try again.");
+    } catch (err) {
+      if (err?.name === "AbortError") {
+        setError("Request timed out — try with fewer or smaller attachments.");
+      } else {
+        setError("Unable to send right now. Please try again.");
+      }
     } finally {
+      clearTimeout(timeoutId);
       setSending(false);
     }
   };
@@ -840,7 +972,13 @@ export default function ContactPage() {
                 disabled={sending}
                 className="h-auto rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] py-[8px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
               >
-                {sending ? "..." : sent ? "Sent" : "Send"}
+                {sending ? (
+                  <SendingDots />
+                ) : sent ? (
+                  <SentText />
+                ) : (
+                  "Send"
+                )}
               </button>
             </div>
 
