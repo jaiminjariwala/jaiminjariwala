@@ -40,6 +40,9 @@ function createTransporter() {
     port,
     secure,
     auth: { user, pass },
+    connectionTimeout: 15_000,   // 15 s to establish TCP connection
+    socketTimeout:    45_000,   // 45 s for the DATA transfer (large attachments)
+    greetingTimeout:  10_000,   // 10 s for SMTP greeting
   });
 }
 
