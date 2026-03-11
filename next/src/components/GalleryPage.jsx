@@ -240,6 +240,7 @@ function SunHint({ targetRef }) {
   useEffect(() => {
     try { if (localStorage.getItem('sun-hint-seen')) return; } catch { return; }
     const t = setTimeout(() => {
+      if (window.innerWidth < 768) return;
       const el = targetRef?.current;
       if (!el) return;
       const r  = el.getBoundingClientRect();
