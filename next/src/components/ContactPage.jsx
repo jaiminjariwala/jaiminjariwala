@@ -215,6 +215,115 @@ function AttachmentPreview({ attachment }) {
   );
 }
 
+// ── shared hand-hint helpers ────────────────────────────────────────────────
+function _hhPause(ms) { return new Promise(r => setTimeout(r, ms)); }
+function _hhAnim(el, kf, opts) {
+  return new Promise(resolve => {
+    const a = el.animate(kf, opts);
+    a.onfinish = resolve; a.oncancel = resolve;
+  });
+}
+// Quadratic Bezier: P0=start, P1=control, P2=end, t∈[0,1]
+function _hhQBez(P0, P1, P2, t) {
+  const m = 1 - t;
+  return { x: m*m*P0.x + 2*m*t*P1.x + t*t*P2.x, y: m*m*P0.y + 2*m*t*P1.y + t*t*P2.y };
+}
+// Build keyframes that follow the bezier arc (half-U curve)
+function _hhArcFrames(P0, P1, P2, steps = 8) {
+  return Array.from({ length: steps + 1 }, (_, i) => {
+    const p = _hhQBez(P0, P1, P2, i / steps);
+    return { transform: `translate(${p.x}px, ${p.y}px)` };
+  });
+}
+
+// ── First-visit hand cursor hint for Add file button ────────────────────────
+function AddFileHint({ addFileBtnRef, sentinelRef }) {
+  const cursorRef             = useRef(null);
+  const deadRef               = useRef(false);
+  const [active, setActive]   = useState(false);
+  const [showTip, setShowTip] = useState(false);
+  const [pos,    setPos]      = useState(null);
+
+  const dismiss = () => {
+    deadRef.current = true;
+    setShowTip(false);
+    setActive(false);
+    try { localStorage.setItem('cp-hint-seen', '1'); } catch {}
+  };
+
+  useEffect(() => {
+    try { if (localStorage.getItem('cp-hint-seen')) return; } catch { return; }
+    const t = setTimeout(() => {
+      const btn = addFileBtnRef?.current;
+      const sen = sentinelRef?.current;
+      if (!btn || !sen) return;
+      const r = btn.getBoundingClientRect();
+      const s = sen.getBoundingClientRect();
+      const tx = r.left + r.width  * 0.28;
+      const ty = r.top  + r.height * 0.50;
+      const P0 = { x: tx + 130, y: ty + 90 };
+      const P1 = { x: tx + 30, y: ty + 110 };
+      const P2 = { x: tx, y: ty };
+      setPos({ P0, P1, P2, tx, ty, ttx: r.left, tty: s.top + 10 });
+      setActive(true);
+    }, 1500);
+    return () => clearTimeout(t);
+  }, [addFileBtnRef, sentinelRef]);
+
+  useEffect(() => {
+    if (!active) return;
+    const btn = addFileBtnRef?.current;
+    if (!btn) return;
+    btn.addEventListener('mouseenter', dismiss);
+    return () => btn.removeEventListener('mouseenter', dismiss);
+  }, [active, addFileBtnRef]);
+
+  useEffect(() => {
+    if (!active || !pos) return;
+    deadRef.current = false;
+    const cursor = cursorRef.current;
+    if (!cursor) return;
+    const { P0, P1, P2, tx, ty } = pos;
+    (async () => {
+      cursor.style.opacity   = '0';
+      cursor.style.transform = `translate(${P0.x}px, ${P0.y}px)`;
+      await _hhPause(40); if (deadRef.current) return;
+      await _hhAnim(cursor, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: 'forwards' }); if (deadRef.current) return;
+      await _hhAnim(cursor, _hhArcFrames(P0, P1, P2, 8), { duration: 900, easing: 'ease-in-out', fill: 'forwards' }); if (deadRef.current) return;
+      await _hhAnim(cursor,
+        [{ transform: `translate(${tx}px,${ty}px) scale(1)` }, { transform: `translate(${tx}px,${ty+5}px) scale(0.82)` }],
+        { duration: 100, easing: 'ease-in', fill: 'forwards' }); if (deadRef.current) return;
+      setShowTip(true);
+      await _hhAnim(cursor,
+        [{ transform: `translate(${tx}px,${ty+5}px) scale(0.82)` }, { transform: `translate(${tx}px,${ty}px) scale(1)` }],
+        { duration: 130, easing: 'ease-out', fill: 'forwards' }); if (deadRef.current) return;
+      await _hhPause(2800); if (deadRef.current) return;
+      setShowTip(false);
+      await _hhAnim(cursor, [{ opacity: 1 }, { opacity: 0 }], { duration: 280, fill: 'forwards' });
+      setActive(false);
+      try { localStorage.setItem('cp-hint-seen', '1'); } catch {}
+    })();
+    return () => { deadRef.current = true; };
+  }, [active, pos]);
+
+  if (!active || !pos) return null;
+  return (
+    <>
+      <style>{`@keyframes hh-in{from{opacity:0;transform:translateY(5px) scale(0.94)}to{opacity:1;transform:none}}`}</style>
+      <div ref={cursorRef} aria-hidden="true" style={{ position:'fixed', top:0, left:0, zIndex:9999, pointerEvents:'none', userSelect:'none', willChange:'transform,opacity', filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.30))' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/hand-cursor.png" alt="" draggable={false} style={{ width:'34px', height:'auto', display:'block' }} />
+      </div>
+      {showTip && (
+        <div aria-hidden="true" style={{ position:'fixed', top:pos.tty, left:pos.ttx, zIndex:9999, pointerEvents:'none', whiteSpace:'nowrap', animation:'hh-in 0.2s ease forwards' }}
+          className="rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] md:text-[15px]">
+          Try adding photos or files
+        </div>
+      )}
+    </>
+  );
+}
+
 // ── Sending: 3 pulsing dots (grow+darken left→right) ──
 function SendingDots() {
   return (
@@ -305,6 +414,7 @@ export default function ContactPage() {
   const editableRef = useRef(null);
   const sentinelRef = useRef(null);
   const fileInputRef = useRef(null);
+  const addFileBtnRef = useRef(null);
   const attachmentsStripRef = useRef(null);
   const attachmentsDragRef = useRef({
     dragging: false,
@@ -1150,6 +1260,7 @@ export default function ContactPage() {
                 }}
               />
               <button
+                ref={addFileBtnRef}
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 className="relative z-[1] inline-flex items-center rounded-[7px] border border-[#c9cfda] bg-[#ebebeb] px-[12px] py-[7px] text-[18px] font-medium leading-none tracking-[-0.01em] text-[#3a3a3a] shadow-[inset_0_1px_0_rgba(255,255,255,0.92),inset_0_-1px_0_rgba(164,174,188,0.32)] transition-transform active:scale-[0.98] [-webkit-text-stroke:0.3px_#3a3a3a]"
@@ -1242,6 +1353,8 @@ export default function ContactPage() {
           ) : null}
         </div>
       </div>
+
+      <AddFileHint addFileBtnRef={addFileBtnRef} sentinelRef={sentinelRef} />
     </section>
   );
 }
