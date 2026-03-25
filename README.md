@@ -1,4 +1,4 @@
-### Under total re-development.
+### Re-designed and developed my portfolio website.
 ### Changes made so far:
 1. Migration from React Vite + Vanilla CSS to NextJS + Tailwind + App Router.
 2. Changed the UI entirely.
