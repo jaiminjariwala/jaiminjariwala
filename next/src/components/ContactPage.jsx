@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState, useCallback } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import { Short_Stack } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { useContactDraft } from "@/components/ContactDraftContext";
@@ -19,7 +25,9 @@ function getFileExt(name = "") {
 // macOS Finder style: "IMG_090…4.jpeg"
 function finderName(name = "", startChars = 7, endChars = 6) {
   if (name.length <= startChars + endChars + 1) return name;
-  return name.slice(0, startChars) + "\u2026" + name.slice(name.length - endChars);
+  return (
+    name.slice(0, startChars) + "\u2026" + name.slice(name.length - endChars)
+  );
 }
 
 function isPdfAttachment(file) {
@@ -33,8 +41,224 @@ function isWordAttachment(file) {
     ext === "doc" ||
     ext === "docx" ||
     file?.type === "application/msword" ||
-    file?.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    file?.type ===
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
   );
+}
+
+function isAppleDoc(file) {
+  const ext = getFileExt(file?.name || "").toLowerCase();
+  return ext === "pages" || ext === "numbers" || ext === "key";
+}
+
+function isPresentationAttachment(file) {
+  const ext = getFileExt(file?.name || "").toLowerCase();
+  return (
+    ext === "ppt" ||
+    ext === "pptx" ||
+    ext === "odp" ||
+    file?.type === "application/vnd.ms-powerpoint" ||
+    file?.type ===
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  );
+}
+
+function isVideoAttachment(file) {
+  return (
+    file?.type?.startsWith("video/") ||
+    /\.(mp4|mov|avi|mkv|webm|m4v)$/i.test(file?.name || "")
+  );
+}
+
+function isZipAttachment(file) {
+  const ext = getFileExt(file?.name || "").toLowerCase();
+  return (
+    ext === "zip" ||
+    ext === "gz" ||
+    ext === "tar" ||
+    ext === "rar" ||
+    ext === "7z" ||
+    file?.type === "application/zip" ||
+    file?.type === "application/x-zip-compressed"
+  );
+}
+
+// ── macOS-style ZIP document icon ────────────────────────────────────────────
+function ZipIcon() {
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-[#f0f1f4]">
+      <svg
+        width="54"
+        height="66"
+        viewBox="0 0 54 66"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        {/* Page body */}
+        <path
+          d="M4 0 H38 L54 16 V62 Q54 66 50 66 H4 Q0 66 0 62 V4 Q0 0 4 0Z"
+          fill="white"
+          stroke="#d0d4da"
+          strokeWidth="1"
+        />
+        {/* Folded corner */}
+        <path d="M38 0 L54 16 H42 Q38 16 38 12 Z" fill="#d0d4da" />
+        {/* Zipper track — vertical centre */}
+        <rect x="23" y="10" width="8" height="44" rx="4" fill="#c8cbd0" />
+        {/* Zipper teeth */}
+        {[13, 18, 23, 28, 33, 38, 43].map((y, i) => (
+          <g key={i}>
+            <rect x="19" y={y} width="5" height="3.5" rx="1" fill="#8a8f9a" />
+            <rect
+              x="30"
+              y={y + 1.5}
+              width="5"
+              height="3.5"
+              rx="1"
+              fill="#8a8f9a"
+            />
+          </g>
+        ))}
+        {/* Zipper pull */}
+        <circle
+          cx="27"
+          cy="11"
+          r="4"
+          fill="#6e7380"
+          stroke="#555a63"
+          strokeWidth="0.8"
+        />
+        <circle cx="27" cy="11" r="2" fill="#9ca0aa" />
+        {/* ZIP label */}
+        <text
+          x="27"
+          y="61"
+          textAnchor="middle"
+          fontSize="9"
+          fontWeight="600"
+          fontFamily="-apple-system,sans-serif"
+          fill="#6e7380"
+          letterSpacing="0.5"
+        >
+          ZIP
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+// ── Generic file icon for non-previewable types (PPT binary, RAR, TAR etc.) ──
+function FileIcon({ label }) {
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-[#f4f5f7]">
+      <svg
+        width="50"
+        height="62"
+        viewBox="0 0 50 62"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M4 0 H34 L50 16 V58 Q50 62 46 62 H4 Q0 62 0 58 V4 Q0 0 4 0Z"
+          fill="white"
+          stroke="#d0d4da"
+          strokeWidth="1"
+        />
+        <path d="M34 0 L50 16 H38 Q34 16 34 12 Z" fill="#d0d4da" />
+        <text
+          x="25"
+          y="42"
+          textAnchor="middle"
+          fontSize="9"
+          fontWeight="700"
+          fontFamily="-apple-system,sans-serif"
+          fill="#6e7380"
+          letterSpacing="0.5"
+        >
+          {label}
+        </text>
+      </svg>
+    </div>
+  );
+}
+
+// ── Universal ZIP-based thumbnail extractor (handles deflate via DecompressionStream) ──
+async function extractZipThumb(file, targetPaths) {
+  const arr = new Uint8Array(await file.arrayBuffer());
+  const targets = targetPaths.map((t) => t.toLowerCase());
+  let i = 0;
+  while (i < arr.length - 30) {
+    if (
+      arr[i] === 0x50 &&
+      arr[i + 1] === 0x4b &&
+      arr[i + 2] === 0x03 &&
+      arr[i + 3] === 0x04
+    ) {
+      const compression = arr[i + 8] | (arr[i + 9] << 8);
+      const compSize =
+        (arr[i + 18] |
+          (arr[i + 19] << 8) |
+          (arr[i + 20] << 16) |
+          (arr[i + 21] << 24)) >>>
+        0;
+      const uncompSize =
+        (arr[i + 22] |
+          (arr[i + 23] << 8) |
+          (arr[i + 24] << 16) |
+          (arr[i + 25] << 24)) >>>
+        0;
+      const fnLen = arr[i + 26] | (arr[i + 27] << 8);
+      const extraLen = arr[i + 28] | (arr[i + 29] << 8);
+      const dataStart = i + 30 + fnLen + extraLen;
+      const fname = new TextDecoder()
+        .decode(arr.slice(i + 30, i + 30 + fnLen))
+        .toLowerCase();
+      const matched = targets.some(
+        (t) => fname === t || fname.endsWith("/" + t),
+      );
+
+      if (matched && uncompSize > 0 && compSize > 0) {
+        const compData = arr.slice(dataStart, dataStart + compSize);
+        let imgBytes;
+        if (compression === 0) {
+          imgBytes = compData;
+        } else if (compression === 8) {
+          // Deflate — use native DecompressionStream
+          try {
+            const ds = new DecompressionStream("deflate-raw");
+            const writer = ds.writable.getWriter();
+            const reader = ds.readable.getReader();
+            writer.write(compData);
+            writer.close();
+            const chunks = [];
+            for (; ;) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+            }
+            imgBytes = new Uint8Array(chunks.reduce((s, c) => s + c.length, 0));
+            let off = 0;
+            for (const c of chunks) {
+              imgBytes.set(c, off);
+              off += c.length;
+            }
+          } catch {
+            i = dataStart + compSize;
+            continue;
+          }
+        } else {
+          i = dataStart + compSize;
+          continue;
+        }
+        const mime = fname.endsWith(".png") ? "image/png" : "image/jpeg";
+        return URL.createObjectURL(new Blob([imgBytes], { type: mime }));
+      }
+      i = dataStart + (compSize || 1);
+    } else {
+      i++;
+    }
+  }
+  return null;
 }
 
 function ensurePromiseWithResolversPolyfill() {
@@ -55,19 +279,25 @@ function AttachmentPreview({ attachment }) {
   const [pdfError, setPdfError] = useState(false);
   const [docHtml, setDocHtml] = useState("");
   const [docError, setDocError] = useState(false);
+  const [appleThumb, setAppleThumb] = useState(""); // object URL for Pages/Key/Numbers
+  const [appleError, setAppleError] = useState(false);
+  const [pptxThumb, setPptxThumb] = useState(""); // object URL for PPTX
+  const [pptxError, setPptxError] = useState(false);
+
   const isPdf = isPdfAttachment(attachment.file);
   const isWord = isWordAttachment(attachment.file);
+  const isApple = isAppleDoc(attachment.file);
+  const isPresentation = isPresentationAttachment(attachment.file);
+  const isVideo = isVideoAttachment(attachment.file);
+  const isZip = isZipAttachment(attachment.file);
+  const isPptx =
+    getFileExt(attachment.file?.name || "").toLowerCase() === "pptx";
 
+  // ── PDF thumbnail via canvas ──
   useEffect(() => {
+    if (!isPdf) return;
     let active = true;
-
-    const renderPdfPreview = async () => {
-      if (!isPdf) {
-        setPdfThumb("");
-        setPdfError(false);
-        return;
-      }
-
+    (async () => {
       try {
         ensurePromiseWithResolversPolyfill();
         let pdfjs;
@@ -76,71 +306,119 @@ function AttachmentPreview({ attachment }) {
         } catch {
           pdfjs = await import("pdfjs-dist/build/pdf.mjs");
         }
-
-        if (pdfjs?.GlobalWorkerOptions) {
-          pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
-        }
-
+        if (pdfjs?.GlobalWorkerOptions)
+          pdfjs.GlobalWorkerOptions.workerSrc = "/vendor/pdf.worker.min.mjs";
         const buffer = await attachment.file.arrayBuffer();
-        const loadingTask = pdfjs.getDocument({ data: new Uint8Array(buffer) });
-        const pdf = await loadingTask.promise;
+        const pdf = await pdfjs.getDocument({ data: new Uint8Array(buffer) })
+          .promise;
         const page = await pdf.getPage(1);
-        const baseViewport = page.getViewport({ scale: 1 });
-        const targetWidth = 320;
-        const scale = targetWidth / baseViewport.width;
-        const viewport = page.getViewport({ scale });
-
+        const scale = 320 / page.getViewport({ scale: 1 }).width;
+        const vp = page.getViewport({ scale });
         const canvas = document.createElement("canvas");
-        canvas.width = Math.ceil(viewport.width);
-        canvas.height = Math.ceil(viewport.height);
-        const context = canvas.getContext("2d", { alpha: false, willReadFrequently: false });
-        if (!context) throw new Error("Canvas context unavailable");
-
-        context.fillStyle = "#ffffff";
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        await page.render({ canvasContext: context, viewport, intent: "display" }).promise;
-
+        canvas.width = Math.ceil(vp.width);
+        canvas.height = Math.ceil(vp.height);
+        const ctx = canvas.getContext("2d", { alpha: false });
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({
+          canvasContext: ctx,
+          viewport: vp,
+          intent: "display",
+        }).promise;
         if (!active) return;
         setPdfThumb(canvas.toDataURL("image/jpeg", 0.9));
-        setPdfError(false);
       } catch {
-        if (!active) return;
-        setPdfError(true);
+        if (active) setPdfError(true);
       }
-    };
-
-    renderPdfPreview();
+    })();
     return () => {
       active = false;
     };
   }, [attachment.file, attachment.id, isPdf]);
 
+  // ── Word HTML via mammoth ──
   useEffect(() => {
+    if (!isWord) return;
     let active = true;
-
-    const renderWordPreview = async () => {
-      if (!isWord) return;
-
+    (async () => {
       try {
         const mammoth = await import("mammoth/mammoth.browser.js");
         const buffer = await attachment.file.arrayBuffer();
         const result = await mammoth.convertToHtml({ arrayBuffer: buffer });
         if (!active) return;
-        const html = String(result.value || "").trim();
-        setDocHtml(html);
-        setDocError(false);
+        setDocHtml(String(result.value || "").trim());
       } catch {
-        if (!active) return;
-        setDocError(true);
+        if (active) setDocError(true);
       }
-    };
-
-    renderWordPreview();
+    })();
     return () => {
       active = false;
     };
   }, [attachment.file, attachment.id, isWord]);
 
+  // ── Apple iWork: extract QuickLook thumbnail from ZIP package ──
+  // Pages/Numbers/Keynote all embed a preview at QuickLook/Thumbnail.jpg (or .png)
+  useEffect(() => {
+    if (!isApple) return;
+    let active = true;
+    let blobUrl = "";
+    (async () => {
+      try {
+        const url = await extractZipThumb(attachment.file, [
+          "quicklook/thumbnail.jpg",
+          "quicklook/thumbnail.png",
+          "preview.jpg",
+          "preview.png",
+        ]);
+        if (!active) {
+          if (url) URL.revokeObjectURL(url);
+          return;
+        }
+        if (url) {
+          blobUrl = url;
+          setAppleThumb(url);
+        } else setAppleError(true);
+      } catch {
+        if (active) setAppleError(true);
+      }
+    })();
+    return () => {
+      active = false;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [attachment.file, attachment.id, isApple]);
+
+  // ── PPTX: extract docProps/thumbnail.jpeg from ZIP package ──
+  useEffect(() => {
+    if (!isPptx) return;
+    let active = true;
+    let blobUrl = "";
+    (async () => {
+      try {
+        const url = await extractZipThumb(attachment.file, [
+          "docprops/thumbnail.jpeg",
+          "docprops/thumbnail.jpg",
+          "docprops/thumbnail.png",
+        ]);
+        if (!active) {
+          if (url) URL.revokeObjectURL(url);
+          return;
+        }
+        if (url) {
+          blobUrl = url;
+          setPptxThumb(url);
+        } else setPptxError(true);
+      } catch {
+        if (active) setPptxError(true);
+      }
+    })();
+    return () => {
+      active = false;
+      if (blobUrl) URL.revokeObjectURL(blobUrl);
+    };
+  }, [attachment.file, attachment.id, isPptx]);
+
+  // ── Image ──
   if (attachment.isImage && attachment.previewUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -153,6 +431,30 @@ function AttachmentPreview({ attachment }) {
     );
   }
 
+  // ── Video: show native thumbnail frame ──
+  if (isVideo && attachment.previewUrl) {
+    return (
+      <div className="relative h-full w-full overflow-hidden bg-black">
+        <video
+          src={attachment.previewUrl}
+          className="h-full w-full object-cover"
+          muted
+          preload="metadata"
+          style={{ pointerEvents: "none" }}
+        />
+        {/* play icon overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="rounded-full bg-black/40 p-[7px]">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M3 2L11 7L3 12V2Z" fill="white" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── PDF ──
   if (isPdf && pdfThumb) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -164,7 +466,6 @@ function AttachmentPreview({ attachment }) {
       />
     );
   }
-
   if (isPdf && !pdfError) {
     return (
       <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
@@ -173,60 +474,103 @@ function AttachmentPreview({ attachment }) {
     );
   }
 
-  if (isPdf && attachment.previewUrl) {
+  // ── Word ──
+  if (isWord && docHtml && !docError) {
     return (
-      <div className="relative h-full w-full overflow-hidden bg-white">
-        <iframe
-          title={attachment.file.name}
-          src={`${attachment.previewUrl}#toolbar=0&navpanes=0&scrollbar=0&page=1&view=FitH`}
-          className="h-full w-full border-0 pointer-events-none"
+      <div
+        className="relative h-full w-full bg-white"
+        style={{ overflow: "hidden" }}
+      >
+        <div
+          className="doc-thumb-render text-[#1f2329]"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "480px",
+            maxHeight: "480px",
+            overflow: "hidden",
+            transformOrigin: "top left",
+            transform: "scale(0.31)",
+          }}
+          dangerouslySetInnerHTML={{ __html: docHtml }}
         />
       </div>
     );
   }
-
-  if (isWord) {
-    if (docHtml && !docError) {
-      return (
-        <div className="h-full w-full overflow-hidden bg-white">
-          <div
-            className="doc-thumb-render origin-top-left w-[260%] scale-[0.385] text-[#1f2329]"
-            dangerouslySetInnerHTML={{ __html: docHtml }}
-          />
-        </div>
-      );
-    }
-
-    if (!docError) {
-      return (
-        <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
-          Loading...
-        </div>
-      );
-    }
+  if (isWord && !docError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
+        Loading...
+      </div>
+    );
   }
 
-  return (
-    <div className="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#f5f6f8] to-[#e0e4ea]">
-      <span className="rounded-[6px] bg-white px-[10px] py-[4px] text-[12px] font-semibold tracking-[0.04em] text-[#5d6470]">
-        {getFileExt(attachment.file.name)}
-      </span>
-    </div>
-  );
+  // ── Apple iWork (Pages / Keynote / Numbers) ── real QuickLook thumbnail
+  if (isApple && appleThumb) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={appleThumb}
+        alt={attachment.file.name}
+        draggable={false}
+        className="h-full w-full object-cover"
+      />
+    );
+  }
+  if (isApple && !appleError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
+        Loading...
+      </div>
+    );
+  }
+
+  // ── PPTX ── real docProps thumbnail
+  if (isPptx && pptxThumb) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={pptxThumb}
+        alt={attachment.file.name}
+        draggable={false}
+        className="h-full w-full object-cover"
+      />
+    );
+  }
+  if (isPptx && !pptxError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-white text-[11px] font-medium text-[#6a7280]">
+        Loading...
+      </div>
+    );
+  }
+
+  // ── ZIP ── macOS-style zipper icon
+  if (isZip) return <ZipIcon />;
+
+  // ── Anything else (PPT binary, ODP, RAR, TAR, unknown) ── generic file icon
+  return <FileIcon label={getFileExt(attachment.file?.name || "")} />;
 }
 
 // ── shared hand-hint helpers ────────────────────────────────────────────────
-function _hhPause(ms) { return new Promise(r => setTimeout(r, ms)); }
+function _hhPause(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
 function _hhAnim(el, kf, opts) {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     const a = el.animate(kf, opts);
-    a.onfinish = resolve; a.oncancel = resolve;
+    a.onfinish = resolve;
+    a.oncancel = resolve;
   });
 }
 // Quadratic Bezier: P0=start, P1=control, P2=end, t∈[0,1]
 function _hhQBez(P0, P1, P2, t) {
   const m = 1 - t;
-  return { x: m*m*P0.x + 2*m*t*P1.x + t*t*P2.x, y: m*m*P0.y + 2*m*t*P1.y + t*t*P2.y };
+  return {
+    x: m * m * P0.x + 2 * m * t * P1.x + t * t * P2.x,
+    y: m * m * P0.y + 2 * m * t * P1.y + t * t * P2.y,
+  };
 }
 // Build keyframes that follow the bezier arc (half-U curve)
 function _hhArcFrames(P0, P1, P2, steps = 8) {
@@ -238,29 +582,35 @@ function _hhArcFrames(P0, P1, P2, steps = 8) {
 
 // ── First-visit hand cursor hint for Add file button ────────────────────────
 function AddFileHint({ addFileBtnRef, sentinelRef }) {
-  const cursorRef             = useRef(null);
-  const deadRef               = useRef(false);
-  const [active, setActive]   = useState(false);
+  const cursorRef = useRef(null);
+  const deadRef = useRef(false);
+  const [active, setActive] = useState(false);
   const [showTip, setShowTip] = useState(false);
-  const [pos,    setPos]      = useState(null);
+  const [pos, setPos] = useState(null);
 
   const dismiss = () => {
     deadRef.current = true;
     setShowTip(false);
     setActive(false);
-    try { localStorage.setItem('cp-hint-seen', '1'); } catch {}
+    try {
+      localStorage.setItem("cp-hint-seen", "1");
+    } catch { }
   };
 
   useEffect(() => {
-    try { if (localStorage.getItem('cp-hint-seen')) return; } catch { return; }
+    try {
+      if (localStorage.getItem("cp-hint-seen")) return;
+    } catch {
+      return;
+    }
     const t = setTimeout(() => {
       const btn = addFileBtnRef?.current;
       const sen = sentinelRef?.current;
       if (!btn || !sen) return;
       const r = btn.getBoundingClientRect();
       const s = sen.getBoundingClientRect();
-      const tx = r.left + r.width  * 0.28;
-      const ty = r.top  + r.height * 0.50;
+      const tx = r.left + r.width * 0.28;
+      const ty = r.top + r.height * 0.5;
       const P0 = { x: tx + 130, y: ty + 90 };
       const P1 = { x: tx + 30, y: ty + 110 };
       const P2 = { x: tx, y: ty };
@@ -274,8 +624,8 @@ function AddFileHint({ addFileBtnRef, sentinelRef }) {
     if (!active) return;
     const btn = addFileBtnRef?.current;
     if (!btn) return;
-    btn.addEventListener('mouseenter', dismiss);
-    return () => btn.removeEventListener('mouseenter', dismiss);
+    btn.addEventListener("mouseenter", dismiss);
+    return () => btn.removeEventListener("mouseenter", dismiss);
   }, [active, addFileBtnRef]);
 
   useEffect(() => {
@@ -285,38 +635,97 @@ function AddFileHint({ addFileBtnRef, sentinelRef }) {
     if (!cursor) return;
     const { P0, P1, P2, tx, ty } = pos;
     (async () => {
-      cursor.style.opacity   = '0';
+      cursor.style.opacity = "0";
       cursor.style.transform = `translate(${P0.x}px, ${P0.y}px)`;
-      await _hhPause(40); if (deadRef.current) return;
-      await _hhAnim(cursor, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: 'forwards' }); if (deadRef.current) return;
-      await _hhAnim(cursor, _hhArcFrames(P0, P1, P2, 8), { duration: 900, easing: 'ease-in-out', fill: 'forwards' }); if (deadRef.current) return;
-      await _hhAnim(cursor,
-        [{ transform: `translate(${tx}px,${ty}px) scale(1)` }, { transform: `translate(${tx}px,${ty+5}px) scale(0.82)` }],
-        { duration: 100, easing: 'ease-in', fill: 'forwards' }); if (deadRef.current) return;
+      await _hhPause(40);
+      if (deadRef.current) return;
+      await _hhAnim(cursor, [{ opacity: 0 }, { opacity: 1 }], {
+        duration: 200,
+        fill: "forwards",
+      });
+      if (deadRef.current) return;
+      await _hhAnim(cursor, _hhArcFrames(P0, P1, P2, 8), {
+        duration: 900,
+        easing: "ease-in-out",
+        fill: "forwards",
+      });
+      if (deadRef.current) return;
+      await _hhAnim(
+        cursor,
+        [
+          { transform: `translate(${tx}px,${ty}px) scale(1)` },
+          { transform: `translate(${tx}px,${ty + 5}px) scale(0.82)` },
+        ],
+        { duration: 100, easing: "ease-in", fill: "forwards" },
+      );
+      if (deadRef.current) return;
       setShowTip(true);
-      await _hhAnim(cursor,
-        [{ transform: `translate(${tx}px,${ty+5}px) scale(0.82)` }, { transform: `translate(${tx}px,${ty}px) scale(1)` }],
-        { duration: 130, easing: 'ease-out', fill: 'forwards' }); if (deadRef.current) return;
-      await _hhPause(2800); if (deadRef.current) return;
+      await _hhAnim(
+        cursor,
+        [
+          { transform: `translate(${tx}px,${ty + 5}px) scale(0.82)` },
+          { transform: `translate(${tx}px,${ty}px) scale(1)` },
+        ],
+        { duration: 130, easing: "ease-out", fill: "forwards" },
+      );
+      if (deadRef.current) return;
+      await _hhPause(2800);
+      if (deadRef.current) return;
       setShowTip(false);
-      await _hhAnim(cursor, [{ opacity: 1 }, { opacity: 0 }], { duration: 280, fill: 'forwards' });
+      await _hhAnim(cursor, [{ opacity: 1 }, { opacity: 0 }], {
+        duration: 280,
+        fill: "forwards",
+      });
       setActive(false);
-      try { localStorage.setItem('cp-hint-seen', '1'); } catch {}
+      try {
+        localStorage.setItem("cp-hint-seen", "1");
+      } catch { }
     })();
-    return () => { deadRef.current = true; };
+    return () => {
+      deadRef.current = true;
+    };
   }, [active, pos]);
 
   if (!active || !pos) return null;
   return (
     <>
       <style>{`@keyframes hh-in{from{opacity:0;transform:translateY(5px) scale(0.94)}to{opacity:1;transform:none}}`}</style>
-      <div ref={cursorRef} aria-hidden="true" style={{ position:'fixed', top:0, left:0, zIndex:9999, pointerEvents:'none', userSelect:'none', willChange:'transform,opacity', filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.30))' }}>
+      <div
+        ref={cursorRef}
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          zIndex: 9999,
+          pointerEvents: "none",
+          userSelect: "none",
+          willChange: "transform,opacity",
+          filter: "drop-shadow(0 2px 6px rgba(0,0,0,0.30))",
+        }}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/hand-cursor.png" alt="" draggable={false} style={{ width:'34px', height:'auto', display:'block' }} />
+        <img
+          src="/cursors/hand-cursor.png"
+          alt=""
+          draggable={false}
+          style={{ width: "34px", height: "auto", display: "block" }}
+        />
       </div>
       {showTip && (
-        <div aria-hidden="true" style={{ position:'fixed', top:pos.tty, left:pos.ttx, zIndex:9999, pointerEvents:'none', whiteSpace:'nowrap', animation:'hh-in 0.2s ease forwards' }}
-          className="rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] md:text-[15px]">
+        <div
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            top: pos.tty,
+            left: pos.ttx,
+            zIndex: 9999,
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+            animation: "hh-in 0.2s ease forwards",
+          }}
+          className="rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] md:text-[15px]"
+        >
           Try adding photos or files
         </div>
       )}
@@ -375,12 +784,19 @@ function SentText() {
         tween = gsap.fromTo(
           el,
           { scale: 0.05, opacity: 0 },
-          { scale: 1, opacity: 1, duration: 0.42, ease: "back.out(2.2)", clearProps: "all" }
+          {
+            scale: 1,
+            opacity: 1,
+            duration: 0.42,
+            ease: "back.out(2.2)",
+            clearProps: "all",
+          },
         );
       })
       .catch(() => {
         // GSAP not installed — fall back to CSS keyframe animation
-        el.style.animation = "cp-sent-pop 0.42s cubic-bezier(0.34,1.56,0.64,1) forwards";
+        el.style.animation =
+          "cp-sent-pop 0.42s cubic-bezier(0.34,1.56,0.64,1) forwards";
       });
 
     return () => tween?.kill();
@@ -402,7 +818,8 @@ function SentText() {
 }
 
 export default function ContactPage() {
-  const { message, setMessage, attachments, setAttachments } = useContactDraft();
+  const { message, setMessage, attachments, setAttachments } =
+    useContactDraft();
   const [from, setFrom] = useState("");
   const [fromError, setFromError] = useState("");
   const [messageError, setMessageError] = useState(false);
@@ -442,11 +859,11 @@ export default function ContactPage() {
   const fromIsValidFormat = fromHasText && EMAIL_RE.test(from.trim());
   const fromIsInvalidFormat = fromHasText && !EMAIL_RE.test(from.trim());
   const socialLinks = [
-    { label: "Mail",     href: "mailto:jaiminjariwala5@icloud.com" },
-    { label: "Github",   href: "https://github.com/jaiminjariwala" },
+    { label: "Mail", href: "mailto:jaiminjariwala5@icloud.com" },
+    { label: "Github", href: "https://github.com/jaiminjariwala" },
     { label: "LinkedIn", href: "https://www.linkedin.com/in/jaiminjariwala/" },
     { label: "Leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
-    { label: "Twitter",  href: "https://x.com/jaiminjariwala_" },
+    { label: "Twitter", href: "https://x.com/jaiminjariwala_" },
   ];
 
   // ── Line editor helpers ──
@@ -531,7 +948,8 @@ export default function ContactPage() {
     if (el.scrollWidth <= el.offsetWidth) return;
     const fullText = el.innerText ?? "";
     // binary search for the last char that fits
-    let lo = 0, hi = fullText.length;
+    let lo = 0,
+      hi = fullText.length;
     while (lo < hi - 1) {
       const mid = Math.floor((lo + hi) / 2);
       el.innerText = fullText.slice(0, mid);
@@ -546,26 +964,34 @@ export default function ContactPage() {
     el.innerText = before;
     const n = lineCountRef.current;
     const savedAfter = [];
-    for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+    for (let j = i + 1; j < n; j++)
+      savedAfter.push(lineRefs.current[j]?.innerText ?? "");
     const newCount = Math.max(n + 1, MIN_LINES, i + 2);
     setLineCount(newCount);
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      if (lineRefs.current[i + 1]) {
-        lineRefs.current[i + 1].innerText = after + (savedAfter[0] ? " " + savedAfter[0] : "");
-      }
-      savedAfter.slice(1).forEach((t, idx) => {
-        if (lineRefs.current[i + 2 + idx]) lineRefs.current[i + 2 + idx].innerText = t;
-      });
-      if (lineRefs.current[i + 1]) {
-        setCaretOffset(lineRefs.current[i + 1], after.length);
-        scrollLineIntoView(lineRefs.current[i + 1]);
-        // recurse in case new line also overflows
-        if (lineRefs.current[i + 1].scrollWidth > lineRefs.current[i + 1].offsetWidth) {
-          splitOverflowLine(i + 1, lineRefs.current[i + 1]);
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        if (lineRefs.current[i + 1]) {
+          lineRefs.current[i + 1].innerText =
+            after + (savedAfter[0] ? " " + savedAfter[0] : "");
         }
-      }
-      updateMessageFromDOM();
-    }));
+        savedAfter.slice(1).forEach((t, idx) => {
+          if (lineRefs.current[i + 2 + idx])
+            lineRefs.current[i + 2 + idx].innerText = t;
+        });
+        if (lineRefs.current[i + 1]) {
+          setCaretOffset(lineRefs.current[i + 1], after.length);
+          scrollLineIntoView(lineRefs.current[i + 1]);
+          // recurse in case new line also overflows
+          if (
+            lineRefs.current[i + 1].scrollWidth >
+            lineRefs.current[i + 1].offsetWidth
+          ) {
+            splitOverflowLine(i + 1, lineRefs.current[i + 1]);
+          }
+        }
+        updateMessageFromDOM();
+      }),
+    );
   };
 
   const reflowLinesForCurrentWidth = () => {
@@ -593,20 +1019,34 @@ export default function ContactPage() {
       const extraLines = parts.slice(1);
       const n = lineCountRef.current;
       const savedAfter = [];
-      for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
-      setLineCount(Math.max(n + extraLines.length, MIN_LINES, i + 1 + extraLines.length));
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        extraLines.forEach((part, idx) => {
-          if (lineRefs.current[i + 1 + idx]) lineRefs.current[i + 1 + idx].innerText = part;
-        });
-        savedAfter.forEach((t, idx) => {
-          if (lineRefs.current[i + 1 + extraLines.length + idx]) lineRefs.current[i + 1 + extraLines.length + idx].innerText = t;
-        });
-        const lastEl = lineRefs.current[i + extraLines.length];
-        if (lastEl) { setCaretOffset(lastEl, (extraLines[extraLines.length - 1] ?? "").length); scrollLineIntoView(lastEl); }
-        const msg = updateMessageFromDOM();
-        if (messageError && msg.replace(/\n/g, "").trim()) setMessageError(false);
-      }));
+      for (let j = i + 1; j < n; j++)
+        savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+      setLineCount(
+        Math.max(n + extraLines.length, MIN_LINES, i + 1 + extraLines.length),
+      );
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          extraLines.forEach((part, idx) => {
+            if (lineRefs.current[i + 1 + idx])
+              lineRefs.current[i + 1 + idx].innerText = part;
+          });
+          savedAfter.forEach((t, idx) => {
+            if (lineRefs.current[i + 1 + extraLines.length + idx])
+              lineRefs.current[i + 1 + extraLines.length + idx].innerText = t;
+          });
+          const lastEl = lineRefs.current[i + extraLines.length];
+          if (lastEl) {
+            setCaretOffset(
+              lastEl,
+              (extraLines[extraLines.length - 1] ?? "").length,
+            );
+            scrollLineIntoView(lastEl);
+          }
+          const msg = updateMessageFromDOM();
+          if (messageError && msg.replace(/\n/g, "").trim())
+            setMessageError(false);
+        }),
+      );
       return;
     }
     // check overflow and auto-wrap
@@ -625,7 +1065,10 @@ export default function ContactPage() {
       return;
     }
 
-    if (allMessageSelectedRef.current && (e.key === "Backspace" || e.key === "Delete")) {
+    if (
+      allMessageSelectedRef.current &&
+      (e.key === "Backspace" || e.key === "Delete")
+    ) {
       e.preventDefault();
       clearEditor();
       requestAnimationFrame(() => {
@@ -649,16 +1092,26 @@ export default function ContactPage() {
       const n = lineCountRef.current;
       el.innerText = before;
       const savedAfter = [];
-      for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+      for (let j = i + 1; j < n; j++)
+        savedAfter.push(lineRefs.current[j]?.innerText ?? "");
       // only add 1 new line, never jump by more
       const newN = Math.max(n, i + 2);
       setLineCount(newN);
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        if (lineRefs.current[i + 1]) lineRefs.current[i + 1].innerText = after;
-        savedAfter.forEach((t, idx) => { if (lineRefs.current[i + 2 + idx]) lineRefs.current[i + 2 + idx].innerText = t; });
-        if (lineRefs.current[i + 1]) { setCaretOffset(lineRefs.current[i + 1], 0); scrollLineIntoView(lineRefs.current[i + 1]); }
-        updateMessageFromDOM();
-      }));
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          if (lineRefs.current[i + 1])
+            lineRefs.current[i + 1].innerText = after;
+          savedAfter.forEach((t, idx) => {
+            if (lineRefs.current[i + 2 + idx])
+              lineRefs.current[i + 2 + idx].innerText = t;
+          });
+          if (lineRefs.current[i + 1]) {
+            setCaretOffset(lineRefs.current[i + 1], 0);
+            scrollLineIntoView(lineRefs.current[i + 1]);
+          }
+          updateMessageFromDOM();
+        }),
+      );
       return;
     }
     if (e.key === "Backspace") {
@@ -673,18 +1126,34 @@ export default function ContactPage() {
         const merged = prevText + currText;
         const n = lineCountRef.current;
         const savedAfter = [];
-        for (let j = i + 1; j < n; j++) savedAfter.push(lineRefs.current[j]?.innerText ?? "");
+        for (let j = i + 1; j < n; j++)
+          savedAfter.push(lineRefs.current[j]?.innerText ?? "");
         setLineCount(Math.max(MIN_LINES, n - 1));
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-          if (prevEl) { prevEl.innerText = merged; setCaretOffset(prevEl, prevText.length); scrollLineIntoView(prevEl); }
-          savedAfter.forEach((t, idx) => { if (lineRefs.current[i + idx]) lineRefs.current[i + idx].innerText = t; });
-          updateMessageFromDOM();
-        }));
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            if (prevEl) {
+              prevEl.innerText = merged;
+              setCaretOffset(prevEl, prevText.length);
+              scrollLineIntoView(prevEl);
+            }
+            savedAfter.forEach((t, idx) => {
+              if (lineRefs.current[i + idx])
+                lineRefs.current[i + idx].innerText = t;
+            });
+            updateMessageFromDOM();
+          }),
+        );
         return;
       }
     }
-    if (e.key === "ArrowUp" && i > 0) { e.preventDefault(); lineRefs.current[i - 1]?.focus(); }
-    if (e.key === "ArrowDown" && i < lineCountRef.current - 1) { e.preventDefault(); lineRefs.current[i + 1]?.focus(); }
+    if (e.key === "ArrowUp" && i > 0) {
+      e.preventDefault();
+      lineRefs.current[i - 1]?.focus();
+    }
+    if (e.key === "ArrowDown" && i < lineCountRef.current - 1) {
+      e.preventDefault();
+      lineRefs.current[i + 1]?.focus();
+    }
   };
 
   const compressImage = (file) =>
@@ -703,26 +1172,32 @@ export default function ContactPage() {
         }
         const scale = Math.min(1, MAX_PX / Math.max(w, h));
         const canvas = document.createElement("canvas");
-        canvas.width  = Math.round(w * scale);
+        canvas.width = Math.round(w * scale);
         canvas.height = Math.round(h * scale);
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         canvas.toBlob(
           (blob) => {
-            if (!blob) { resolve(file); return; }
+            if (!blob) {
+              resolve(file);
+              return;
+            }
             // keep original filename, use jpeg mime
             const compressed = new File(
               [blob],
               file.name.replace(/\.[^.]+$/, ".jpg"),
-              { type: "image/jpeg", lastModified: Date.now() }
+              { type: "image/jpeg", lastModified: Date.now() },
             );
             resolve(compressed);
           },
           "image/jpeg",
-          QUALITY
+          QUALITY,
         );
       };
-      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.onerror = () => {
+        URL.revokeObjectURL(url);
+        resolve(file);
+      };
       img.src = url;
     });
 
@@ -734,14 +1209,15 @@ export default function ContactPage() {
     const processed = await Promise.all(
       files.map(async (file, index) => {
         const isImage = file.type.startsWith("image/");
+        const isVid = isVideoAttachment(file);
         const finalFile = isImage ? await compressImage(file) : file;
         return {
           id: `${file.name}-${file.size}-${Date.now()}-${index}`,
           file: finalFile,
           isImage,
-          previewUrl: URL.createObjectURL(finalFile),
+          previewUrl: isImage || isVid ? URL.createObjectURL(finalFile) : "",
         };
-      })
+      }),
     );
 
     setAttachments((prev) => [...prev, ...processed]);
@@ -1082,13 +1558,7 @@ export default function ContactPage() {
                 disabled={sending}
                 className="h-auto rounded-[7px] border border-[#6f97d9] bg-gradient-to-b from-[#8FC0FF] via-[#5C9CF4] to-[#2F72E2] px-[10px] py-[8px] text-[18px] text-[#ffffff] leading-none shadow-[inset_0_1px_0_rgba(255,255,255,0.62),inset_0_-1px_0_rgba(25,67,154,0.45),0_1px_1px_rgba(29,72,157,0.28)] transition-transform active:scale-[0.98] disabled:opacity-60 md:h-auto md:rounded-[8px] md:px-[18px] md:py-[10px] md:text-[22px] md:font-black [-webkit-text-stroke:0.6px_#ffffff]"
               >
-                {sending ? (
-                  <SendingDots />
-                ) : sent ? (
-                  <SentText />
-                ) : (
-                  "Send"
-                )}
+                {sending ? <SendingDots /> : sent ? <SentText /> : "Send"}
               </button>
             </div>
 
@@ -1101,7 +1571,10 @@ export default function ContactPage() {
             >
               <span
                 className="cp-from-label shrink-0 pr-[6px] font-semibold tracking-[-0.01em] text-[#1f2329] [-webkit-text-stroke:0.3px_#000000]"
-                style={{ fontSize: "clamp(21px, 3.5vw, 24px)", lineHeight: "1.12em" }}
+                style={{
+                  fontSize: "clamp(21px, 3.5vw, 24px)",
+                  lineHeight: "1.12em",
+                }}
               >
                 From:
               </span>
@@ -1119,22 +1592,23 @@ export default function ContactPage() {
                   }
                 }}
                 placeholder={
-                  fromError && !from.trim()
-                    ? fromError
-                    : "your@email.com"
+                  fromError && !from.trim() ? fromError : "your@email.com"
                 }
-                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${
-                  fromError && !from.trim()
-                    ? "placeholder:text-[#d53030]"
-                    : "placeholder:text-[#a1a8b3]"
-                }`}
+                className={`cp-from-input flex-1 appearance-none border-0 bg-transparent tracking-[-0.01em] outline-none ring-0 focus:outline-none focus:ring-0 ${fromError && !from.trim()
+                  ? "placeholder:text-[#d53030]"
+                  : "placeholder:text-[#a1a8b3]"
+                  }`}
                 style={{
                   border: "none",
                   boxShadow: "none",
                   fontSize: "clamp(21px, 3.5vw, 24px)",
                   lineHeight: "1.12em",
                   color: fromIsInvalidFormat ? "#C00707" : "#1f2329",
-                  WebkitTextStroke: fromIsInvalidFormat ? "0.3px #C00707" : fromHasText ? "0.3px #000000" : "0px transparent",
+                  WebkitTextStroke: fromIsInvalidFormat
+                    ? "0.3px #C00707"
+                    : fromHasText
+                      ? "0.3px #000000"
+                      : "0px transparent",
                 }}
               />
             </div>
@@ -1143,11 +1617,13 @@ export default function ContactPage() {
             <div className="relative overflow-visible">
               <div
                 ref={linesContainerRef}
+                data-native-selection="true"
                 className="cp-lines-container overflow-y-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
                 style={{ height: "170px", position: "relative" }}
                 onClick={(e) => {
                   setWholeMessageSelected(false);
-                  if (e.target === e.currentTarget) lineRefs.current[lineCountRef.current - 1]?.focus();
+                  if (e.target === e.currentTarget)
+                    lineRefs.current[lineCountRef.current - 1]?.focus();
                 }}
               >
                 {/* Placeholder */}
@@ -1162,7 +1638,9 @@ export default function ContactPage() {
                       color: messageError ? "#d53030" : "#a1a8b3",
                     }}
                   >
-                    {messageError ? "Don't forget to add your message or files..." : "Write your message..."}
+                    {messageError
+                      ? "Don't forget to add your message or files..."
+                      : "Write your message..."}
                   </span>
                 )}
 
@@ -1176,11 +1654,17 @@ export default function ContactPage() {
                       paddingBottom: "6px",
                       paddingLeft: "10px",
                       paddingRight: attachments.length > 0 ? "116px" : "10px",
-                      backgroundColor: allMessageSelected && (message.split("\n")[i] ?? "").trim() ? "rgba(115, 201, 81, 0.32)" : "transparent",
+                      backgroundColor:
+                        allMessageSelected &&
+                          (message.split("\n")[i] ?? "").trim()
+                          ? "rgba(115, 201, 81, 0.32)"
+                          : "transparent",
                     }}
                   >
                     <div
-                      ref={el => { lineRefs.current[i] = el; }}
+                      ref={(el) => {
+                        lineRefs.current[i] = el;
+                      }}
                       contentEditable
                       suppressContentEditableWarning
                       spellCheck={false}
@@ -1198,8 +1682,8 @@ export default function ContactPage() {
                         minHeight: "1.12em",
                       }}
                       onFocus={() => setWholeMessageSelected(false)}
-                      onInput={e => handleLineInput(i, e)}
-                      onKeyDown={e => handleLineKeyDown(i, e)}
+                      onInput={(e) => handleLineInput(i, e)}
+                      onKeyDown={(e) => handleLineKeyDown(i, e)}
                     />
                   </div>
                 ))}
@@ -1210,31 +1694,36 @@ export default function ContactPage() {
                   type="button"
                   onClick={() => setIsDialogOpen((prev) => !prev)}
                   className="cp-att-btn absolute top-[12px] right-[10px] overflow-visible appearance-none border-0 bg-transparent p-0 shadow-none outline-none h-[96px] w-[96px]"
-                  aria-label={isDialogOpen ? "Close attachments" : "Open attachments"}
+                  aria-label={
+                    isDialogOpen ? "Close attachments" : "Open attachments"
+                  }
                 >
                   <div className="relative h-full w-full overflow-visible">
-                    {attachments.slice(-3).reverse().map((att, index) => {
-                      const rotate = index === 0 ? 4 : index === 1 ? -6 : 10;
-                      const shift = index * 4;
+                    {attachments
+                      .slice(-3)
+                      .reverse()
+                      .map((att, index) => {
+                        const rotate = index === 0 ? 4 : index === 1 ? -6 : 10;
+                        const shift = index * 4;
 
-                      return (
-                        <div
-                          key={att.id}
-                          className="absolute inset-0 overflow-hidden rounded-[4px] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.12)]"
-                          style={{
-                            transform: `rotate(${rotate}deg) translate(${shift}px, ${-shift}px)`,
-                            zIndex: 10 - index,
-                          }}
-                        >
-                          <AttachmentPreview attachment={att} />
-                        </div>
-                      );
-                    })}
+                        return (
+                          <div
+                            key={att.id}
+                            className="absolute inset-0 overflow-hidden rounded-[4px] bg-white shadow-[0_2px_6px_rgba(0,0,0,0.12)]"
+                            style={{
+                              transform: `rotate(${rotate}deg) translate(${shift}px, ${-shift}px)`,
+                              zIndex: 10 - index,
+                            }}
+                          >
+                            <AttachmentPreview attachment={att} />
+                          </div>
+                        );
+                      })}
 
                     <div className="cp-paperclip-wrap pointer-events-none absolute -right-[30px] -top-[22px] z-50">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src="/paper-clip.png"
+                        src="/icons/paper-clip.png"
                         alt=""
                         aria-hidden="true"
                         className="cp-paperclip-img h-[68px] w-auto object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.22)]"
@@ -1272,7 +1761,7 @@ export default function ContactPage() {
                 ref={fileInputRef}
                 type="file"
                 multiple
-                accept="image/*,.pdf,.doc,.docx"
+                accept="image/*,video/*,.pdf,.doc,.docx,.ppt,.pptx,.pages,.numbers,.key,.zip,.gz,.tar,.rar,.7z,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/x-iwork-pages-sffpages,application/x-iwork-keynote-sffkey,application/x-iwork-numbers-sffnumbers,application/zip,application/x-zip-compressed"
                 className="hidden"
                 onChange={onFileChange}
               />
@@ -1284,15 +1773,13 @@ export default function ContactPage() {
           {/* ── Attachments dialog ── */}
           {isDialogOpen && attachments.length > 0 ? (
             <div className="mt-[10px] w-full overflow-visible rounded-[14px]">
-
               <div className="pb-[12px]">
                 <div
                   ref={attachmentsStripRef}
                   onMouseDown={onAttachmentsMouseDown}
                   onDragStart={(event) => event.preventDefault()}
-                  className={`overflow-x-auto overflow-y-visible select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
-                    isDraggingAttachments ? "cursor-grabbing" : "cursor-grab"
-                  }`}
+                  className={`overflow-x-auto overflow-y-visible select-none [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${isDraggingAttachments ? "cursor-grabbing" : "cursor-grab"
+                    }`}
                   style={{
                     scrollbarWidth: "none",
                     msOverflowStyle: "none",
@@ -1330,14 +1817,21 @@ export default function ContactPage() {
             </div>
           ) : null}
 
-          <div className="mt-auto pb-[32px] pt-[10px] md:pb-[48px] md:pt-[12px]" data-sr-skip="true">
+          <div
+            className="mt-auto pb-[32px] pt-[10px] md:pb-[48px] md:pt-[12px]"
+            data-sr-skip="true"
+          >
             <div className="cp-social-links flex items-center">
               {socialLinks.map(({ label, href }) => (
                 <a
                   key={label}
                   href={href}
                   target={href.startsWith("mailto") ? undefined : "_blank"}
-                  rel={href.startsWith("mailto") ? undefined : "noopener noreferrer"}
+                  rel={
+                    href.startsWith("mailto")
+                      ? undefined
+                      : "noopener noreferrer"
+                  }
                   className={`${shortStack.className} cp-social-link inline-block cursor-pointer text-[24px] leading-[0.92] tracking-[-0.02em] [-webkit-text-stroke:1.25px_#000000] md:text-[28px] md:[-webkit-text-stroke:1.45px_#000000]`}
                 >
                   {label}

@@ -46,10 +46,10 @@ function bezierKeyframes(P0, P1, P2, steps = 6) {
  *       a half-U sweep from below-right to the button.
  */
 export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 }) {
-  const cursorRef             = useRef(null);
-  const [active, setActive]   = useState(false);
+  const cursorRef = useRef(null);
+  const [active, setActive] = useState(false);
   const [showTip, setShowTip] = useState(false);
-  const [pos, setPos]         = useState(null);
+  const [pos, setPos] = useState(null);
 
   // ── 1. measure & decide whether to show ──────────────────────────────────
   useEffect(() => {
@@ -59,10 +59,10 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
       const btn = targetRef?.current;
       if (!btn) return;
 
-      const r  = btn.getBoundingClientRect();
+      const r = btn.getBoundingClientRect();
       // Land the finger-tip at the centre-left of the button
-      const tx = r.left + r.width  * 0.30;
-      const ty = r.top  + r.height * 0.50;
+      const tx = r.left + r.width * 0.30;
+      const ty = r.top + r.height * 0.50;
 
       // Start: slightly below-right (not from the very bottom of the screen)
       const P0 = { x: tx + 72, y: ty + 52 };
@@ -80,7 +80,7 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
     }, delay);
 
     return () => clearTimeout(t);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── 2. run the animation once pos & cursor are ready ─────────────────────
@@ -94,7 +94,7 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
 
     (async () => {
       // park the cursor at the start, invisible
-      cursor.style.opacity   = "0";
+      cursor.style.opacity = "0";
       cursor.style.transform = `translate(${P0.x}px, ${P0.y}px)`;
       await pause(40);
       if (dead) return;
@@ -114,7 +114,7 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
       // press — nudge down + shrink
       await animEl(cursor,
         [{ transform: `translate(${tx}px, ${ty}px) scale(1)` },
-         { transform: `translate(${tx}px, ${ty + 5}px) scale(0.82)` }],
+        { transform: `translate(${tx}px, ${ty + 5}px) scale(0.82)` }],
         { duration: 100, easing: "ease-in", fill: "forwards" });
       if (dead) return;
 
@@ -123,7 +123,7 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
       // release
       await animEl(cursor,
         [{ transform: `translate(${tx}px, ${ty + 5}px) scale(0.82)` },
-         { transform: `translate(${tx}px, ${ty}px) scale(1)` }],
+        { transform: `translate(${tx}px, ${ty}px) scale(1)` }],
         { duration: 130, easing: "ease-out", fill: "forwards" });
       if (dead) return;
 
@@ -138,11 +138,11 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
         { duration: 280, fill: "forwards" });
 
       setActive(false);
-      try { localStorage.setItem(storageKey, "1"); } catch {}
+      try { localStorage.setItem(storageKey, "1"); } catch { }
     })();
 
     return () => { dead = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
   if (!active || !pos) return null;
@@ -169,7 +169,7 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/hand-cursor.png"
+          src="/cursors/hand-cursor.png"
           alt=""
           draggable={false}
           style={{ width: "34px", height: "auto", display: "block" }}
@@ -182,7 +182,7 @@ export default function HandHint({ targetRef, storageKey, tooltip, delay = 1500 
           aria-hidden="true"
           style={{
             position: "fixed",
-            top:  pos.tty,
+            top: pos.tty,
             left: pos.ttx,
             zIndex: 9999,
             pointerEvents: "none",

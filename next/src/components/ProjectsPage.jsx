@@ -39,7 +39,7 @@ const ProjectsPage = () => {
           className="projects-preview-link"
         >
           <Image
-            src="/project-1.svg"
+            src="/images/project-1.svg"
             alt="Open Source Component Library project preview"
             width={1600}
             height={940}

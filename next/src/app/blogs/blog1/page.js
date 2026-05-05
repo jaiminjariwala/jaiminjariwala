@@ -26,7 +26,7 @@ export default function Blog1() {
             aria-label="Back to blogs"
             className="inline-flex h-[24px] w-[24px] items-center justify-center"
           >
-            <Image src="/left-arrow.svg" alt="" aria-hidden="true" width={22} height={20} priority />
+            <Image src="/icons/left-arrow.svg" alt="" aria-hidden="true" width={22} height={20} priority />
           </Link>
 
           <p
@@ -49,7 +49,7 @@ export default function Blog1() {
           </p>
 
           <Image
-            src="/blog-1-image.svg"
+            src="/images/blog-1-image.svg"
             alt="Sketch style notebook artwork"
             width={1200}
             height={1200}
