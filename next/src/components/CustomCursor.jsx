@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const CURSOR_TILT_DEG = -14;
+
 const getCursorType = (element) => {
   if (!element) return "select-black";
 
@@ -24,6 +26,7 @@ const getCursorType = (element) => {
 
 const CustomCursor = () => {
   const cursorRef = useRef(null);
+  const cursorTypeRef = useRef("select-black");
   const [cursorType, setCursorType] = useState("select-black");
 
   useEffect(() => {
@@ -42,13 +45,19 @@ const CustomCursor = () => {
 
       const x = event.clientX;
       const y = event.clientY;
-      cursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 
       const elementUnderPointer = document.elementFromPoint(x, y);
-      setCursorType(getCursorType(elementUnderPointer));
+      const nextType = getCursorType(elementUnderPointer);
+      cursorTypeRef.current = nextType;
+      setCursorType(nextType);
+
+      // Only the select cursor tilts; text and hand stay upright.
+      const tilt = nextType === "select-black" ? ` rotate(${CURSOR_TILT_DEG}deg)` : "";
+      cursor.style.transform = `translate3d(${x}px, ${y}px, 0)${tilt}`;
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
+
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       document.head.removeChild(styleTag);
