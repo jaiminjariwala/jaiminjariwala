@@ -16,8 +16,8 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
-const CARD_ASPECT = 1.37;
-const ROLE_TITLES = ["Software Developer", "Frontend Developer", "Web Developer", "Product Designer"];
+const CARD_ASPECT = 1.58;
+const ROLE_TITLES = ["Software Engineer", "Frontend Engineer", "Product Engineer", "Full Stack Engineer"];
 const BAND_VISUAL = {
   lineWidthDesktop: 120,
   lineWidthMobile: 100,
@@ -270,8 +270,8 @@ export default function HireMeLanyard() {
   const cardRef = useRef(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const [cardSize, setCardSize] = useState({
-    width: 290,
-    height: Math.round(290 * CARD_ASPECT),
+    width: 260,
+    height: Math.round(260 * CARD_ASPECT),
   });
 
   useEffect(() => {
@@ -279,7 +279,7 @@ export default function HireMeLanyard() {
     if (!stage) return undefined;
 
     const updateSize = () => {
-      const width = clamp(stage.clientWidth * 0.26, 220, 320);
+      const width = clamp(stage.clientWidth * 0.205, 178, 262);
       setCardSize({
         width,
         height: Math.round(width * CARD_ASPECT),
@@ -320,8 +320,9 @@ export default function HireMeLanyard() {
         }}
       >
         <div className="hire-badge-card-inner tracking-[-0.09em]">
+          <span className="hire-badge-punch" aria-hidden="true" />
           <Image
-            src="/my-profile-1.png"
+            src="/images/my-profile-1.png"
             alt="Jaimin Jariwala"
             width={480}
             height={480}
