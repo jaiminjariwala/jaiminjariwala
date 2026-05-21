@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import { getCloudinaryUrl, getPhotoId, getPhotoPosition } from "@/components/galleryData";
@@ -50,7 +52,15 @@ export default function GalleryFolderPhotosPage({ section }) {
       <Navbar />
 
       <div className="mx-auto w-full max-w-[689px] pt-2 md:pt-6" style={{ paddingLeft: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)', paddingRight: 'clamp(0px, calc((768px - 100vw) * 9999), 20px)' }}>
-        <h1 className="text-[32px] leading-none tracking-[-0.02em] [-webkit-text-stroke:0.5px_#000000]">
+        <Link
+          href="/gallery"
+          aria-label="Back to gallery"
+          className="inline-flex h-[24px] w-[24px] items-center justify-center"
+        >
+          <Image src="/icons/left-arrow.svg" alt="" aria-hidden="true" width={22} height={20} priority />
+        </Link>
+
+        <h1 className="mt-[18px] text-[32px] leading-none tracking-[-0.02em] [-webkit-text-stroke:0.5px_#000000]">
           {section.title}
         </h1>
       </div>
