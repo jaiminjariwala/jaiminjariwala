@@ -6,7 +6,6 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 const links = [
   { label: "home", href: "/", isHome: true },
-  { label: "about", href: "/about" },
   { label: "hire me", href: "/hire-me" },
   { label: "projects", href: "/projects" },
   { label: "blogs", href: "/blogs" },
@@ -90,7 +89,7 @@ const Navbar = () => {
                   className="group relative inline-flex h-[30px] w-[30px] shrink-0 items-center justify-center p-0"
                 >
                   <Image
-                    src="/home-icon-svg.svg"
+                    src="/icons/home-icon-svg.svg"
                     alt="Home"
                     width={30}
                     height={30}
@@ -98,7 +97,7 @@ const Navbar = () => {
                     className="absolute inset-0 transition-opacity duration-200 group-hover:opacity-0"
                   />
                   <Image
-                    src="/home-icon-svg-hover.svg"
+                    src="/icons/home-icon-svg-hover.svg"
                     alt=""
                     aria-hidden="true"
                     width={30}
