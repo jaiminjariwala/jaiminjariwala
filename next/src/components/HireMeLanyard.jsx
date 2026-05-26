@@ -279,7 +279,10 @@ export default function HireMeLanyard() {
     if (!stage) return undefined;
 
     const updateSize = () => {
-      const width = clamp(stage.clientWidth * 0.205, 178, 262);
+      const isMobile = window.innerWidth < 768;
+      const width = isMobile
+        ? clamp(stage.clientWidth * 0.55, 210, 300)
+        : clamp(stage.clientWidth * 0.205, 178, 262);
       setCardSize({
         width,
         height: Math.round(width * CARD_ASPECT),
