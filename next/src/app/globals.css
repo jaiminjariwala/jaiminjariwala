@@ -86,7 +86,8 @@
   box-sizing: border-box;
 }
 
-ul, ol {
+ul,
+ol {
   padding-inline-start: 0;
   margin-block-start: 0;
   margin-block-end: 0;
@@ -127,13 +128,32 @@ a {
 }
 
 ::selection {
-  background: #81d653;
+  background: transparent;
   color: inherit;
 }
 
 ::-moz-selection {
-  background: #81d653;
+  background: transparent;
   color: inherit;
+}
+
+/* Chromium drops -webkit-text-stroke while text is in the native selection
+   range, so the stroke-faked "bold" hero name looks thin under the custom
+   green highlight. It won't let us restore the stroke on ::selection either,
+   but it DOES honor text-shadow there, so we rebuild the lost weight with a
+   crisp (0-blur) black outline that only applies while selected. */
+.hero-name::selection {
+  color: inherit;
+  text-shadow:
+    0.8px 0 0 #000, -0.8px 0 0 #000, 0 0.8px 0 #000, 0 -0.8px 0 #000,
+    0.6px 0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px -0.6px 0 #000;
+}
+
+.hero-name::-moz-selection {
+  color: inherit;
+  text-shadow:
+    0.8px 0 0 #000, -0.8px 0 0 #000, 0 0.8px 0 #000, 0 -0.8px 0 #000,
+    0.6px 0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px -0.6px 0 #000;
 }
 
 .hero-layout {
@@ -228,6 +248,7 @@ a {
 }
 
 .hire-badge-card-inner {
+  position: relative;
   width: 100%;
   height: 100%;
   border-radius: 22px;
@@ -236,7 +257,20 @@ a {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 14% 9% 10%;
+  padding: 22% 9% 6%;
+}
+
+/* Lanyard-style punch hole near the top, like a real ID card. */
+.hire-badge-punch {
+  position: absolute;
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20%;
+  height: clamp(8px, 3%, 14px);
+  border-radius: 999px;
+  background: #000000;
+  pointer-events: none;
 }
 
 .hire-badge-photo {
@@ -259,7 +293,7 @@ a {
 }
 
 .hire-badge-role {
-  margin: 10.5% 0 0;
+  margin: 13% 0 0;
   font-family: "Graphik", var(--font-inter), sans-serif;
   font-size: clamp(1rem, 1.35vw, 1.4rem);
   font-weight: 400;
@@ -343,8 +377,21 @@ a {
 
 /* ── Gallery Page ── */
 @keyframes gallery-sun-spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gallery-folder-visual {
+  transform: scale(0.88);
+  transform-origin: top center;
+  margin-left: -11px;
+  margin-right: -11px;
+  margin-bottom: -20px;
 }
 
 @media (max-width: 767px) {
@@ -361,29 +408,24 @@ a {
   }
 
   .gallery-folder-grid {
-    justify-content: center !important;
-    column-gap: 22px !important;
-    row-gap: 16px !important;
-  }
-
-  .gallery-folder-grid {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    justify-items: center;
+    justify-content: flex-start !important;
+    column-gap: 30px !important;
   }
 
   .gallery-folder-card {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 130px;
+    flex: 0 0 auto;
+    width: 130px;
   }
 
   .gallery-folder-visual {
     transform: scale(0.68);
     transform-origin: top center;
     margin-bottom: -52px;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .gallery-folder-title {
@@ -392,6 +434,7 @@ a {
 }
 
 @media (hover: hover) and (pointer: fine) {
+
   html,
   body,
   * {
@@ -410,22 +453,34 @@ a {
     background-position: center;
     background-size: contain;
     transform: translate3d(-100px, -100px, 0);
+    transform-origin: 0 0;
     will-change: transform;
   }
 
   .custom-cursor.select-black {
-    background-image: url("/select-cursor-black.png");
+    background-image: url("/cursors/select-cursor-black.png");
   }
 
   .custom-cursor.text {
     width: 24px;
     height: 24px;
-    background-image: url("/text-cursor.png");
+    background-image: url("/cursors/text-cursor.png");
   }
 
   .custom-cursor.hand {
     width: 38px;
     height: 38px;
-    background-image: url("/hand-cursor.png");
+    background-image: url("/cursors/hand-cursor.png");
+  }
+}
+
+/* "(hit delete or backspace key)" hint next to Back to gallery: laptop only. */
+.gallery-delete-hint {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .gallery-delete-hint {
+    display: inline;
   }
 }
