@@ -59,7 +59,7 @@ const Navbar = () => {
           right: 0,
           zIndex: 50,
           width: "100%",
-          paddingTop: isDesktop ? "60px" : "40px",
+          paddingTop: isDesktop ? "60px" : "20px",
           paddingBottom: isDesktop ? "60px" : "40px",
           backgroundColor: "transparent",
         }}

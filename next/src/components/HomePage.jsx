@@ -26,7 +26,7 @@ const HomePage = () => {
               Jariwala
             </h1>
 
-            <p className="mt-[48px] md:mt-[58px] w-full text-[clamp(22px,1.65vw,22px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]" style={{ paddingRight: 'clamp(20px, calc((100vw - 768px) * 9999), 28px)' }}>
+            <p className="mt-[48px] md:mt-[58px] w-full text-[clamp(21px,1.65vw,21px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]" style={{ paddingRight: 'clamp(20px, calc((100vw - 768px) * 9999), 28px)' }}>
               I am a <span className="font-bold">full-stack product engineer</span> who builds AI-powered products, from autonomous agents to delightful, detail-obsessed interfaces. I like living across the whole stack: design, frontend, backend, and the systems glue in between.
             </p>
           </div>
@@ -47,11 +47,11 @@ const HomePage = () => {
         </div>
 
         <div
-          className="w-full text-[clamp(22px,1.65vw,22px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
+          className="w-full text-[clamp(21px,1.65vw,21px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
           style={{ marginTop: "clamp(36px, calc((768px - 100vw) * 9999), 50px)" }}
         >
           <p>
-            Right now I am a <span className="font-bold">Design Technologist I (L4) intern</span>{" "}
+            Right now I am a <span className="[-webkit-text-stroke:1.1px_#000000]">Design Technologist I (L4) intern</span>{" "}
             <a href="https://www.amazon.com" target="_blank" rel="noreferrer" className="text-[#3896ff] [-webkit-text-stroke:0.3px_#3896ff]">
               @amazon
             </a>{" "}
