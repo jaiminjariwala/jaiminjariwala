@@ -194,25 +194,171 @@ a {
   border-radius: 999px;
   background: #81d653;
   color: #000000;
-  font-size: clamp(18px, 3.2vw, 21px);
+  font-size: 4.2cqw;
   font-weight: 400;
-  padding: 0.15em 0.6em;
+  padding: 0.15em 0.7em;
   -webkit-text-stroke: 0.3px #000000;
 }
 
-.projects-preview-link {
-  display: block;
-  width: 100%;
+/* Projects preview: a notebook "page" with the title handwritten on it and the
+   app screenshot stuck on top, both slightly tilted. */
+.projects-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  align-items: flex-start;
   margin-top: 12px;
-  border-radius: 2px;
-  overflow: hidden;
+  /* Break out wider than the 689px content column, centered on the viewport. */
+  width: min(1120px, calc(100vw - 32px));
+  margin-left: 50%;
+  transform: translateX(-50%);
 }
 
-.projects-preview-image {
+.projects-stage {
+  position: relative;
+  flex: 0 1 545px;
+  min-width: 0;
+  /* Establish a container so on-page content scales with the page width. */
+  container-type: inline-size;
+}
+
+.projects-page-img {
+  position: relative;
+  z-index: 2;
   display: block;
   width: 100%;
   height: auto;
-  object-fit: cover;
+  pointer-events: none;
+}
+
+.projects-pin {
+  position: absolute;
+  top: -13%;
+  left: -19%;
+  width: 48%;
+  height: auto;
+  z-index: 1;
+  transform: rotate(-20deg);
+  filter: drop-shadow(0 4px 7px rgba(0, 0, 0, 0.28));
+  pointer-events: none;
+}
+
+/* Front copy: same pin, but sits ABOVE the page and is clipped to only the
+   head end, so the head stays on top of the page while the bar (from the
+   base copy behind the page) reads as threaded underneath it. */
+.projects-pin-front {
+  z-index: 9;
+  clip-path: inset(0 0 0 55%);
+  filter: none;
+}
+
+/* Soft curved shadow where the pin pierces into the page. Sits on the page
+   (above it) but below the front head, reads as a slit/depression. */
+.projects-pin-pierce {
+  position: absolute;
+  z-index: 8;
+  top: 7.5%;
+  left: 8%;
+  width: 18px;
+  height: 16px;
+  border-radius: 50%;
+  border-left: 9px solid rgba(0, 0, 0, 0.42);
+  transform: rotate(-20deg);
+  filter: blur(5px);
+  pointer-events: none;
+}
+
+.projects-page-caption {
+  position: absolute;
+  top: 60%;
+  left: 18%;
+  width: 76%;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.projects-page-title {
+  margin: 0;
+  font-size: 5.2cqw;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #111111;
+  -webkit-text-stroke: 0.4px #111111;
+}
+
+.projects-desc-row {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  width: 100%;
+}
+
+.projects-page-desc {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 4cqw;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #333333;
+}
+
+.projects-github-link {
+  flex: 0 0 auto;
+  font-size: 4cqw;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #111111;
+  -webkit-text-stroke: 0.7px #111111;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.projects-shot-wrap {
+  position: absolute;
+  top: 16%;
+  left: 18%;
+  width: 76%;
+  z-index: 3;
+}
+
+.projects-shot-link {
+  position: relative;
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.projects-shot-tape {
+  position: absolute;
+  width: 26%;
+  height: auto;
+  opacity: 0.82;
+  z-index: 6;
+  pointer-events: none;
+}
+
+.projects-shot-tape-tl {
+  top: -8%;
+  left: -10%;
+  transform: rotate(-45deg);
+}
+
+.projects-shot-tape-br {
+  bottom: -5%;
+  right: -7%;
+  transform: rotate(-45deg);
+}
+
+.projects-shot-img {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .hire-r3f-lanyard {
