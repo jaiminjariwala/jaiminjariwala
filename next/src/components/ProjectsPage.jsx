@@ -58,10 +58,10 @@ const ProjectsPage = () => {
                 className="projects-shot-link"
               >
                 <Image
-                  src="/images/project_1_image.png"
+                  src="/images/project-1-shot.png"
                   alt="Open Source Component Library project preview"
-                  width={3450}
-                  height={1926}
+                  width={2922}
+                  height={1767}
                   priority
                   className="projects-shot-img"
                 />
