@@ -62,6 +62,9 @@ const Navbar = () => {
           paddingTop: isDesktop ? "60px" : "20px",
           paddingBottom: isDesktop ? "60px" : "40px",
           backgroundColor: "transparent",
+          // Transparent bar shouldn't eat clicks on content scrolling beneath
+          // it — only the links (the <ul>) stay interactive.
+          pointerEvents: "none",
         }}
       >
         <ul
@@ -74,7 +77,8 @@ const Navbar = () => {
             alignItems: "center",
             justifyContent: isDesktop ? "space-between" : "flex-start",
             gap: isDesktop ? 0 : "16px 24px",
-            backgroundColor: "#ffffff",
+            backgroundColor: "transparent",
+            pointerEvents: "auto",
             width: isDesktop ? "689px" : "100%",
             marginLeft: "auto",
             marginRight: "auto",
