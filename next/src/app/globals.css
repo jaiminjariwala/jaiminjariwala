@@ -219,8 +219,69 @@ a {
   position: relative;
   flex: 0 1 545px;
   min-width: 0;
+  aspect-ratio: 438 / 581;
+  perspective: 1500px;
   /* Establish a container so on-page content scales with the page width. */
   container-type: inline-size;
+  /* Never highlight page text/images while dragging the flip. */
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Each project page in the stack. The interactive page (front) is dragged up
+   to curl it away; a WebGL canvas renders the actual curl/turn. */
+.projects-card {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Interactive page face. Drag it up to turn the page. */
+.projects-curl-face {
+  cursor: grab;
+}
+
+.projects-curl-face:active {
+  cursor: grabbing;
+}
+
+/* Each text line is its own block so the curl texture can measure it. */
+.pc-line {
+  display: block;
+}
+
+/* WebGL curl overlay — larger than the page (so the lifted curl isn't clipped)
+   and centered on the stage. Sits above the faces but below the pin head so the
+   pin still reads as threaded through the page. */
+.projects-curl-canvas {
+  position: absolute;
+  top: -70%;
+  left: -70%;
+  width: 240%;
+  height: 240%;
+  z-index: 7;
+  pointer-events: none;
+}
+
+.projects-curl-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* The next page sits directly behind, nudged down-and-right so only its right
+   and bottom edges peek out from under the current page — reads as a stack. */
+/* Sits exactly behind the current page (no outward extension); revealed as
+   the top page curls away. */
+.projects-card-behind {
+  z-index: 4;
+  touch-action: auto;
+  filter: brightness(0.985);
 }
 
 .projects-page-img {
@@ -283,6 +344,7 @@ a {
 
 .projects-page-title {
   margin: 0;
+  font-family: var(--font-short-stack), cursive;
   font-size: 5.2cqw;
   line-height: 1.05;
   letter-spacing: -0.02em;
@@ -301,6 +363,7 @@ a {
   margin: 0;
   flex: 1 1 auto;
   min-width: 0;
+  font-family: var(--font-short-stack), cursive;
   font-size: 4cqw;
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -309,6 +372,7 @@ a {
 
 .projects-github-link {
   flex: 0 0 auto;
+  font-family: var(--font-short-stack), cursive;
   font-size: 4cqw;
   line-height: 1.25;
   letter-spacing: -0.01em;
