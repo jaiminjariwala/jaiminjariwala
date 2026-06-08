@@ -12,7 +12,7 @@ const projects = [
     {
         id: "component-library",
         title: ["Open Source", "Component Library"],
-        desc: ["A small set of reusable, open-source React &", "Tailwind UI components."],
+        desc: ["A small set of reusable, open\u2011source React &", "Tailwind UI components."],
         live: "https://component-library-six-eta.vercel.app",
         code: "https://github.com/jaiminjariwala/NEXT-JS/tree/main/component-library",
         img: "/images/project-1-shot.png",
@@ -51,7 +51,7 @@ const NEXT_Z = 8; // the next page sits this far behind, so the turning page
 // (which dips to negative z in the second half) passes behind it.
 // The WebGL canvas is larger than the page so the lifted curl isn't clipped;
 // the camera is pulled back by the same factor so the flat page still aligns.
-const CANVAS_MARGIN = 2.4;
+const CANVAS_MARGIN = 3.4;
 
 /* ----------------------------------------------------------------------- */
 /* The paper page rendered as normal, interactive HTML. Text lines are      */
@@ -224,7 +224,11 @@ function buildPageTexture(stageEl, faceEl) {
         ctx.font = fontOf(cs);
         if ("letterSpacing" in ctx) ctx.letterSpacing = cs.letterSpacing;
         const strokeW = parseFloat(cs.webkitTextStrokeWidth) || 0;
-        const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.2;
+        const fs = parseFloat(cs.fontSize);
+        const lh = parseFloat(cs.lineHeight) || fs * 1.2;
+        // Browser centers glyphs in the line box (half-leading); match it so the
+        // texture text sits exactly where the HTML text does (no vertical jump).
+        const pad = (lh - fs) / 2;
         el.querySelectorAll(".pc-line").forEach((ln) => {
             const r = rel(ln);
             const maxW = r.w + 0.5; // block width the text wraps within
@@ -238,7 +242,7 @@ function buildPageTexture(stageEl, faceEl) {
             };
             const words = ln.textContent.split(" ");
             let line = "";
-            let y = r.y;
+            let y = r.y + pad;
             for (let i = 0; i < words.length; i++) {
                 const test = line ? line + " " + words[i] : words[i];
                 if (line && ctx.measureText(test).width > maxW) {
@@ -262,6 +266,9 @@ function buildPageTexture(stageEl, faceEl) {
         const cs = getComputedStyle(gh);
         const r = rel(gh);
         const fs = parseFloat(cs.fontSize);
+        const lh = parseFloat(cs.lineHeight) || fs * 1.2;
+        const pad = (lh - fs) / 2; // half-leading, matches the HTML position
+        const gy = r.y + pad;
         ctx.textBaseline = "top";
         ctx.fillStyle = cs.color;
         ctx.font = fontOf(cs);
@@ -270,12 +277,12 @@ function buildPageTexture(stageEl, faceEl) {
         if (strokeW > 0) {
             ctx.lineWidth = strokeW;
             ctx.strokeStyle = cs.webkitTextStrokeColor || cs.color;
-            ctx.strokeText(gh.textContent, r.x, r.y);
+            ctx.strokeText(gh.textContent, r.x, gy);
         }
-        ctx.fillText(gh.textContent, r.x, r.y);
+        ctx.fillText(gh.textContent, r.x, gy);
         ctx.strokeStyle = cs.color;
         ctx.lineWidth = Math.max(1, fs * 0.055);
-        const uy = r.y + fs * 1.04;
+        const uy = gy + fs * 1.04;
         ctx.beginPath();
         ctx.moveTo(r.x, uy);
         ctx.lineTo(r.x + gh.getBoundingClientRect().width, uy);
@@ -322,7 +329,10 @@ const vertexShader = /* glsl */ `
     vShade = 1.0;
     if (b > 0.0) {
       float t = clamp(b / max(uBmax, 0.0001), 0.0, 1.0);
-      float phi = uProgress * (uA0 + uA1 * t);
+      // Ease the extra bend back to zero as the page goes behind, so it
+      // straightens out and tucks in flat instead of bulging out into view.
+      float a1 = uA1 * (1.0 - smoothstep(0.5, 0.9, uProgress));
+      float phi = uProgress * (uA0 + a1 * t);
       bb = b * cos(phi);
       z = b * sin(phi);
       vShade = 1.0 - 0.12 * sin(clamp(phi, 0.0, PI));
@@ -332,7 +342,7 @@ const vertexShader = /* glsl */ `
     z -= smoothstep(0.5, 1.0, uProgress) * uZSink;
     // Fade out over the final stretch so the turning sheet can't peek out from
     // behind the new page before it settles.
-    vFade = 1.0 - smoothstep(0.72, 0.96, uProgress);
+    vFade = 1.0 - smoothstep(0.86, 0.98, uProgress);
     vec2 xy = uHinge + a * uDir + bb * uPerp;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(xy, z, 1.0);
   }
@@ -581,6 +591,9 @@ export default function ProjectsCurl() {
         if (!st.moving) {
             if (amount < 6) return;
             st.moving = true;
+            st.lastT = performance.now();
+            st.lastAmount = amount;
+            st.vel = 0;
             setAnimating(false);
             e.currentTarget.setPointerCapture?.(st.id);
             // Freshen both textures from the live faces at the moment of drag.
@@ -595,6 +608,12 @@ export default function ProjectsCurl() {
                 }
             }
         }
+        // Track drag velocity (px/ms toward the pin) so a quick flick can commit.
+        const now = performance.now();
+        const dt = now - st.lastT;
+        if (dt > 0) st.vel = (amount - st.lastAmount) / dt;
+        st.lastT = now;
+        st.lastAmount = amount;
         setProgress(amount / DRAG_REF);
     };
 
@@ -602,19 +621,27 @@ export default function ProjectsCurl() {
         const st = drag.current;
         if (!st.active) return;
         const moved = st.moving;
+        const vel = st.vel || 0;
         drag.current = { active: false, moving: false, startY: 0, id: null };
         try {
             e.currentTarget.releasePointerCapture?.(e.pointerId);
         } catch { }
         if (!moved) return;
 
-        if (progressRef.current > 0.4) {
-            tween(1, 900, () => {
+        const p = progressRef.current;
+        // Commit the flip on a small drag past ~20%, or on a quick flick toward
+        // the pin — you don't have to drag all the way.
+        const commit = p > 0.2 || vel > 0.45;
+        if (commit) {
+            // Finish at a constant, gentle speed regardless of how far/fast the
+            // drag went, so a little flick still plays the full slow turn.
+            const dur = Math.max(360, (1 - p) * 1100);
+            tween(1, dur, () => {
                 setIndex((i) => (i + 1) % len);
                 setProgress(0);
             });
         } else {
-            tween(0, 320);
+            tween(0, Math.max(220, p * 500));
         }
     };
 
@@ -679,7 +706,7 @@ export default function ProjectsCurl() {
                 >
                     <Canvas
                         gl={{ alpha: true, antialias: true }}
-                        dpr={[1, 2]}
+                        dpr={[1, 1.5]}
                         camera={{ fov: CURL_FOV, position: [0, 0, CURL_DIST] }}
                     >
                         <FitCamera />
