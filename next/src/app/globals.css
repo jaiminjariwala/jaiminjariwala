@@ -217,7 +217,9 @@ a {
 
 .projects-stage {
   position: relative;
-  flex: 0 1 545px;
+  /* Cap by viewport height (438/581 aspect) so the page never overflows and
+     forces the section to scroll. */
+  flex: 0 1 min(640px, calc((100vh - 170px) * 0.754));
   min-width: 0;
   aspect-ratio: 438 / 581;
   perspective: 1500px;
@@ -260,10 +262,10 @@ a {
    pin still reads as threaded through the page. */
 .projects-curl-canvas {
   position: absolute;
-  top: -70%;
-  left: -70%;
-  width: 240%;
-  height: 240%;
+  top: -120%;
+  left: -120%;
+  width: 340%;
+  height: 340%;
   z-index: 7;
   pointer-events: none;
 }
@@ -345,7 +347,7 @@ a {
 .projects-page-title {
   margin: 0;
   font-family: var(--font-short-stack), cursive;
-  font-size: 5.2cqw;
+  font-size: 5.7cqw;
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: #111111;
@@ -364,7 +366,7 @@ a {
   flex: 1 1 auto;
   min-width: 0;
   font-family: var(--font-short-stack), cursive;
-  font-size: 4cqw;
+  font-size: 4.4cqw;
   line-height: 1.25;
   letter-spacing: -0.01em;
   color: #333333;
@@ -373,7 +375,7 @@ a {
 .projects-github-link {
   flex: 0 0 auto;
   font-family: var(--font-short-stack), cursive;
-  font-size: 4cqw;
+  font-size: 4.4cqw;
   line-height: 1.25;
   letter-spacing: -0.01em;
   color: #111111;
@@ -384,9 +386,9 @@ a {
 
 .projects-shot-wrap {
   position: absolute;
-  top: 16%;
-  left: 18%;
-  width: 76%;
+  top: 14%;
+  left: 9%;
+  width: 86%;
   z-index: 3;
 }
 
