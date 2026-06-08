@@ -48,10 +48,10 @@ const HomePage = () => {
 
         <div
           className="w-full text-[clamp(21px,1.65vw,21px)] font-normal leading-[1.28] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
-          style={{ marginTop: "clamp(36px, calc((768px - 100vw) * 9999), 50px)" }}
+          style={{ marginTop: "clamp(14px, calc((768px - 100vw) * 9999), 50px)" }}
         >
           <p>
-            Right now I am a <span className="[-webkit-text-stroke:1.1px_#000000]">Design Technologist I (L4) intern</span>{" "}
+            Right now I am a <span className="[-webkit-text-stroke:0.7px_#000000]">Design Technologist I (L4) intern</span>{" "}
             <a href="https://www.amazon.com" target="_blank" rel="noreferrer" className="text-[#3896ff] [-webkit-text-stroke:0.3px_#3896ff]">
               @amazon
             </a>{" "}
@@ -60,7 +60,7 @@ const HomePage = () => {
 
           <p className="mt-7">
             On the side I am building{" "}
-            <span className="font-bold">Computer or Browser Use and Smart Copilot</span>, a screen-aware app that reasons about your screen and can act for you in a browser or on your computer, similar to OpenAI&apos;s Operator and Claude&apos;s Computer Use, while strengthening my Electron skills. Before grad school I was an <span className="font-bold">AI/ML intern</span>{" "}
+            <span className="font-bold">Computer or Browser Use and Smart Copilot</span>, a screen-aware app that reasons about your screen and can act for you in a browser or on your computer, similar to OpenAI&apos;s Operator and Claude&apos;s Computer Use, while strengthening my Electron skills. Before grad school I was an <span className="[-webkit-text-stroke:0.7px_#000000]">AI/ML intern</span>{" "}
             <a href="https://logicwind.com" target="_blank" rel="noreferrer" className="text-[#3896ff] [-webkit-text-stroke:0.3px_#3896ff]">
               @logicwind
             </a>{" "}
