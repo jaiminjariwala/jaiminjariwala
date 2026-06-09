@@ -225,6 +225,8 @@ a {
   perspective: 1500px;
   /* Establish a container so on-page content scales with the page width. */
   container-type: inline-size;
+  /* Capture touch swipes for the flip instead of letting them scroll/pan. */
+  touch-action: none;
   /* Never highlight page text/images while dragging the flip. */
   user-select: none;
   -webkit-user-select: none;

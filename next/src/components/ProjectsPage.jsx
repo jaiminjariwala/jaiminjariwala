@@ -3,7 +3,10 @@ import ProjectsCurl from "@/components/ProjectsCurl";
 
 const ProjectsPage = () => {
   return (
-    <section className="min-h-screen bg-white text-black" style={{ overflow: "clip" }}>
+    <section
+      className="bg-white text-black"
+      style={{ height: "100dvh", overflow: "hidden" }}
+    >
       <Navbar />
 
       <div
