@@ -3,6 +3,15 @@ export const CLOUD_NAME = "deodbdaxc";
 export const getCloudinaryUrl = (publicId, width = 1200) =>
   `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_${width},q_auto,f_auto/${publicId}`;
 
+// A photo entry can be either a plain public-id string, or an object
+// { id, position } where `position` is a CSS object-position value used to
+// control how the image is cropped inside the fixed-size polaroid frame.
+export const getPhotoId = (photo) =>
+  typeof photo === "string" ? photo : photo.id;
+
+export const getPhotoPosition = (photo) =>
+  typeof photo === "string" ? "center" : photo.position ?? "center";
+
 export const photoSections = [
   {
     slug: "washington-dc",
@@ -61,6 +70,55 @@ export const photoSections = [
       "FullSizeR_fnx6qd",
     ],
   },
+  {
+    slug: "seattle",
+    title: "Seattle",
+    photos: [
+      "IMG_2743_cesazy",
+      "IMG_2752_xgckrw",
+      "IMG_2738_fjs95p",
+      "IMG_2737_yneinm",
+      "IMG_2593_cegsge",
+      "IMG_2670_egohiu",
+      "IMG_2582_zcf1lh",
+      "IMG_2591_ithkqf",
+      "IMG_2589_nhogym",
+      "IMG_2425_dojw1e",
+      "IMG_2580_ksyjm5",
+      "IMG_2439_khosai",
+      "IMG_2423_yl4xnw",
+      "IMG_2406_wb7lzn",
+      "IMG_2422_up19z2",
+      "IMG_2409_id3xjd",
+      "IMG_2416_q2ki12",
+      "IMG_2418_slxdjy",
+      "IMG_2376_ckmmkb",
+      "IMG_2403_zwiyyj",
+      "IMG_2344_ahjmik",
+      "IMG_2327_diciwl",
+      "IMG_2324_upco7s",
+      "IMG_2341_sqcof1",
+      "IMG_2281_sr9vbo",
+      "IMG_2295_zdut4x",
+      "IMG_2265_vgygoq",
+      "IMG_2235_vywfwu",
+      "IMG_2259_msktoi",
+      "IMG_2225_sfomuz",
+      "IMG_2233_yrwoin",
+      "IMG_2222_yyomzj",
+      "IMG_2219_o6e6rc",
+      "IMG_2218_dpgjhn",
+      "IMG_2199_hq39dm",
+      "IMG_2187_dymfer",
+      "IMG_2181_ikufjf",
+      "IMG_2176_mwhcej",
+      "IMG_2164_bld1pb",
+      "IMG_2154_ntosbm",
+      "IMG_2159_qffbzt",
+      "IMG_2152_wvabvo",
+      { id: "IMG_2155_vrsyyi", position: "center 30%" },
+    ],
+  },
 ];
 
 export const folders = photoSections.map((section) => ({
@@ -69,7 +127,7 @@ export const folders = photoSections.map((section) => ({
   count: `${section.photos.length} items`,
   images: section.photos
     .slice(0, 4)
-    .map((publicId) => getCloudinaryUrl(publicId, 1200)),
+    .map((photo) => getCloudinaryUrl(getPhotoId(photo), 1200)),
 }));
 
 export const getSectionBySlug = (slug) =>

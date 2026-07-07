@@ -14,11 +14,12 @@ const shortStack = Short_Stack({
 
 function GlassFolder({ title, count, images, slug }) {
   const [isHovered, setIsHovered] = useState(false);
+  const folderImages = Array.from({ length: 4 }, (_, index) => images[index] ?? null);
 
   return (
     <Link
       href={`/gallery/${slug}`}
-      className="gallery-folder-card block w-[185px] cursor-pointer"
+      className="gallery-folder-card block w-[162px] shrink-0 cursor-pointer"
     >
       <div
         className="gallery-folder-visual"
@@ -34,7 +35,9 @@ function GlassFolder({ title, count, images, slug }) {
           style={{
             ...styles.paper,
             ...styles.paperFarLeft,
-            backgroundImage: `url(${images[0]})`,
+            backgroundImage: folderImages[0]
+              ? `url(${folderImages[0]})`
+              : styles.emptyPaperBackground,
             transform: isHovered
               ? "translate(-50%, -62px) translateX(-20px) rotateZ(-40deg)"
               : "translate(-50%, 16px) translateX(-18px) rotateZ(-8deg)",
@@ -45,7 +48,9 @@ function GlassFolder({ title, count, images, slug }) {
           style={{
             ...styles.paper,
             ...styles.paperInnerLeft,
-            backgroundImage: `url(${images[1]})`,
+            backgroundImage: folderImages[1]
+              ? `url(${folderImages[1]})`
+              : styles.emptyPaperBackground,
             transform: isHovered
               ? "translate(-50%, -72px) translateX(-2px) rotateZ(-22deg)"
               : "translate(-50%, 10px) translateX(-6px) rotateZ(-2deg)",
@@ -56,7 +61,9 @@ function GlassFolder({ title, count, images, slug }) {
           style={{
             ...styles.paper,
             ...styles.paperInnerRight,
-            backgroundImage: `url(${images[2]})`,
+            backgroundImage: folderImages[2]
+              ? `url(${folderImages[2]})`
+              : styles.emptyPaperBackground,
             transform: isHovered
               ? "translate(-50%, -72px) translateX(2px) rotateZ(22deg)"
               : "translate(-50%, 10px) translateX(6px) rotateZ(2deg)",
@@ -67,7 +74,9 @@ function GlassFolder({ title, count, images, slug }) {
           style={{
             ...styles.paper,
             ...styles.paperFarRight,
-            backgroundImage: `url(${images[3]})`,
+            backgroundImage: folderImages[3]
+              ? `url(${folderImages[3]})`
+              : styles.emptyPaperBackground,
             transform: isHovered
               ? "translate(-50%, -62px) translateX(20px) rotateZ(40deg)"
               : "translate(-50%, 16px) translateX(18px) rotateZ(8deg)",
@@ -78,9 +87,36 @@ function GlassFolder({ title, count, images, slug }) {
           <div
             style={{
               ...styles.glassShape,
-              transform: isHovered ? "rotateX(-18deg)" : "rotateX(0deg)",
+              transform: isHovered ? "rotateX(-24deg)" : "rotateX(0deg)",
             }}
-          />
+          >
+            {slug === "seattle" && (
+              <span
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "52%",
+                  transform: "translate(-50%, -50%)",
+                  width: "84%",
+                  textAlign: "center",
+                  fontWeight: 400,
+                  fontSize: "21px",
+                  lineHeight: 1.05,
+                  letterSpacing: "-0.01em",
+                  // Deeper saturated blue matching the printed logo in the
+                  // reference folder image.
+                  color: "#2183c8",
+                  WebkitTextStroke: "0.5px #2183c8",
+                  pointerEvents: "none",
+                  userSelect: "none",
+                }}
+              >
+                Summer internship at{" "}
+                <span style={{ fontFamily: "var(--font-short-stack), cursive", WebkitTextStroke: "2px #2183c8" }}>Amazon</span>
+              </span>
+            )}
+          </div>
         </div>
 
         <div
@@ -93,12 +129,12 @@ function GlassFolder({ title, count, images, slug }) {
       </div>
 
       <p
-        className="gallery-folder-title mt-[25px] text-center font-normal leading-[1.35] tracking-[-0.01em] text-[#2b2f35] [-webkit-text-stroke:0.3px_#000000]"
-        style={{ fontSize: "clamp(21px, 3.5vw, 24px)", marginBottom: 5 }}
+        className="gallery-folder-title mt-[14px] text-center font-normal leading-[1.35] tracking-[-0.01em] text-[#2b2f35] [-webkit-text-stroke:0.3px_#000000]"
+        style={{ fontSize: "clamp(18px, 3vw, 20px)", marginBottom: 5 }}
       >
         {title}
       </p>
-      <p className="mt-[-2px] mb-0 text-center text-[18px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]">
+      <p className="mt-[-2px] mb-0 text-center text-[16px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]">
         {count}
       </p>
     </Link>
@@ -110,7 +146,7 @@ const styles = {
     position: "relative",
     width: "185px",
     height: "159px",
-    perspective: "1500px",
+    perspective: "550px",
     cursor: "pointer",
   },
   backPlate: {
@@ -149,6 +185,8 @@ const styles = {
     backgroundRepeat: "no-repeat",
     zIndex: 3,
   },
+  emptyPaperBackground:
+    "linear-gradient(135deg, #f8fbff 0%, #edf4fb 48%, #dfeaf4 100%)",
   paperFarLeft: { width: "82px", height: "96px", zIndex: 3 },
   paperInnerLeft: { width: "86px", height: "102px", zIndex: 4 },
   paperInnerRight: { width: "86px", height: "102px", zIndex: 5 },
@@ -185,13 +223,15 @@ const styles = {
     width: "100%",
     height: "69%",
     zIndex: 10,
+    transformStyle: "preserve-3d",
   },
   glassShape: {
     width: "100%",
     height: "100%",
-    position: "relative",
+    position: "absolute",
+    bottom: 0,
     background:
-      "linear-gradient(180deg, #76c8ef 0%, #60bbe7 56%, #4eaedd 100%)",
+      "linear-gradient(180deg, #76c8ef 0%, #6cc3ec 56%, #62bce6 100%)",
     border: "none",
     borderRadius: "12px",
     overflow: "hidden",
@@ -200,7 +240,7 @@ const styles = {
     backfaceVisibility: "hidden",
     transition: "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
     boxShadow:
-      "inset 0 1px 0 rgba(255,255,255,0.42), 0 8px 18px rgba(12, 40, 63, 0.2)",
+      "inset 0 1px 0 rgba(255,255,255,0.42), 0 3px 8px rgba(12, 40, 63, 0.1)",
   },
   groundShadow: {
     position: "absolute",
@@ -219,22 +259,22 @@ const styles = {
 // ── bezier helpers ──
 function _hhPause(ms) { return new Promise(r => setTimeout(r, ms)); }
 function _hhAnim(el, kf, opts) { return new Promise(resolve => { const a = el.animate(kf, opts); a.onfinish = resolve; a.oncancel = resolve; }); }
-function _hhQBez(P0, P1, P2, t) { const m = 1-t; return { x: m*m*P0.x+2*m*t*P1.x+t*t*P2.x, y: m*m*P0.y+2*m*t*P1.y+t*t*P2.y }; }
-function _hhArcFrames(P0, P1, P2, n=8) { return Array.from({length:n+1},(_,i)=>{ const p=_hhQBez(P0,P1,P2,i/n); return {transform:`translate(${p.x}px,${p.y}px)`}; }); }
+function _hhQBez(P0, P1, P2, t) { const m = 1 - t; return { x: m * m * P0.x + 2 * m * t * P1.x + t * t * P2.x, y: m * m * P0.y + 2 * m * t * P1.y + t * t * P2.y }; }
+function _hhArcFrames(P0, P1, P2, n = 8) { return Array.from({ length: n + 1 }, (_, i) => { const p = _hhQBez(P0, P1, P2, i / n); return { transform: `translate(${p.x}px,${p.y}px)` }; }); }
 
 function SunHint({ targetRef }) {
-  const cursorRef           = useRef(null);
-  const deadRef             = useRef(false);
+  const cursorRef = useRef(null);
+  const deadRef = useRef(false);
   const [active, setActive] = useState(false);
   const [showTip, setShowTip] = useState(false);
-  const [pos,    setPos]    = useState(null);
+  const [pos, setPos] = useState(null);
 
   // Instant dismiss when user hovers the target
   const dismiss = () => {
     deadRef.current = true;
     setShowTip(false);
     setActive(false);
-    try { localStorage.setItem('sun-hint-seen','1'); } catch {}
+    try { localStorage.setItem('sun-hint-seen', '1'); } catch { }
   };
 
   useEffect(() => {
@@ -243,9 +283,9 @@ function SunHint({ targetRef }) {
       if (window.innerWidth < 768) return;
       const el = targetRef?.current;
       if (!el) return;
-      const r  = el.getBoundingClientRect();
-      const tx = r.left + r.width  * 0.42;
-      const ty = r.top  + r.height * 0.48;
+      const r = el.getBoundingClientRect();
+      const tx = r.left + r.width * 0.42;
+      const ty = r.top + r.height * 0.48;
       const P0 = { x: tx + 130, y: ty + 90 };
       const P1 = { x: tx + 30, y: ty + 110 };
       const P2 = { x: tx, y: ty };
@@ -271,19 +311,19 @@ function SunHint({ targetRef }) {
     if (!cursor) return;
     const { P0, P1, P2, tx, ty } = pos;
     (async () => {
-      cursor.style.opacity   = '0';
+      cursor.style.opacity = '0';
       cursor.style.transform = `translate(${P0.x}px,${P0.y}px)`;
       await _hhPause(40); if (deadRef.current) return;
-      await _hhAnim(cursor, [{opacity:0},{opacity:1}], {duration:200,fill:'forwards'}); if (deadRef.current) return;
-      await _hhAnim(cursor, _hhArcFrames(P0,P1,P2,8), {duration:900,easing:'ease-in-out',fill:'forwards'}); if (deadRef.current) return;
-      await _hhAnim(cursor, [{transform:`translate(${tx}px,${ty}px) scale(1)`},{transform:`translate(${tx}px,${ty+5}px) scale(0.82)`}], {duration:100,easing:'ease-in',fill:'forwards'}); if (deadRef.current) return;
+      await _hhAnim(cursor, [{ opacity: 0 }, { opacity: 1 }], { duration: 200, fill: 'forwards' }); if (deadRef.current) return;
+      await _hhAnim(cursor, _hhArcFrames(P0, P1, P2, 8), { duration: 900, easing: 'ease-in-out', fill: 'forwards' }); if (deadRef.current) return;
+      await _hhAnim(cursor, [{ transform: `translate(${tx}px,${ty}px) scale(1)` }, { transform: `translate(${tx}px,${ty + 5}px) scale(0.82)` }], { duration: 100, easing: 'ease-in', fill: 'forwards' }); if (deadRef.current) return;
       setShowTip(true);
-      await _hhAnim(cursor, [{transform:`translate(${tx}px,${ty+5}px) scale(0.82)`},{transform:`translate(${tx}px,${ty}px) scale(1)`}], {duration:130,easing:'ease-out',fill:'forwards'}); if (deadRef.current) return;
+      await _hhAnim(cursor, [{ transform: `translate(${tx}px,${ty + 5}px) scale(0.82)` }, { transform: `translate(${tx}px,${ty}px) scale(1)` }], { duration: 130, easing: 'ease-out', fill: 'forwards' }); if (deadRef.current) return;
       await _hhPause(2800); if (deadRef.current) return;
       setShowTip(false);
-      await _hhAnim(cursor, [{opacity:1},{opacity:0}], {duration:280,fill:'forwards'});
+      await _hhAnim(cursor, [{ opacity: 1 }, { opacity: 0 }], { duration: 280, fill: 'forwards' });
       setActive(false);
-      try { localStorage.setItem('sun-hint-seen','1'); } catch {}
+      try { localStorage.setItem('sun-hint-seen', '1'); } catch { }
     })();
     return () => { deadRef.current = true; };
   }, [active, pos]);
@@ -292,12 +332,12 @@ function SunHint({ targetRef }) {
   return (
     <>
       <style>{`@keyframes hh-in{from{opacity:0;transform:translateY(5px) scale(0.94)}to{opacity:1;transform:none}}`}</style>
-      <div ref={cursorRef} aria-hidden="true" style={{position:'fixed',top:0,left:0,zIndex:9999,pointerEvents:'none',userSelect:'none',willChange:'transform,opacity',filter:'drop-shadow(0 2px 6px rgba(0,0,0,0.30))'}}>
+      <div ref={cursorRef} aria-hidden="true" style={{ position: 'fixed', top: 0, left: 0, zIndex: 9999, pointerEvents: 'none', userSelect: 'none', willChange: 'transform,opacity', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.30))' }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/hand-cursor.png" alt="" draggable={false} style={{width:'34px',height:'auto',display:'block'}} />
+        <img src="/cursors/hand-cursor.png" alt="" draggable={false} style={{ width: '34px', height: 'auto', display: 'block' }} />
       </div>
       {showTip && (
-        <div aria-hidden="true" style={{position:'fixed',top:pos.tty,left:pos.ttx,zIndex:9999,pointerEvents:'none',whiteSpace:'nowrap',animation:'hh-in 0.2s ease forwards'}}
+        <div aria-hidden="true" style={{ position: 'fixed', top: pos.tty, left: pos.ttx, zIndex: 9999, pointerEvents: 'none', whiteSpace: 'nowrap', animation: 'hh-in 0.2s ease forwards' }}
           className="rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] md:text-[15px]">
           Hover on the sun for a little secret.
         </div>
@@ -312,9 +352,11 @@ const GalleryPage = () => {
     <section className="relative h-screen bg-white text-black flex flex-col overflow-hidden">
       <Navbar />
 
+      {/* Decorative sun, airplane, and boat temporarily hidden to reduce
+          visual clutter. Uncomment to bring them back.
       <div ref={sunRef} className="gallery-sun-wrapper group absolute left-[20px] top-[20px] z-[60] cursor-pointer md:left-[12px] md:top-[12px]">
         <Image
-          src="/sun_exact_4k.svg"
+          src="/illustrations/sun_exact_4k.svg"
           alt="Sun illustration"
           width={560}
           height={560}
@@ -331,27 +373,38 @@ const GalleryPage = () => {
         </div>
       </div>
 
-      <div className="gallery-airplane-wrapper group fixed bottom-[20px] right-[20px] z-[60] cursor-pointer">
+      <div className="gallery-airplane-wrapper group fixed bottom-[20px] left-[20px] z-[60] cursor-pointer">
         <Image
-          src="/airplane_4k_transparent.svg"
+          src="/illustrations/airplane_4k_transparent.svg"
           alt="Airplane illustration"
           width={560}
           height={560}
           className="block h-auto w-[250px] md:w-[390px]"
+          style={{ transform: "scaleX(-1)" }}
           priority={false}
         />
-        <div className="pointer-events-none absolute bottom-full right-[6%] mb-[8px] w-max max-w-[calc(100vw-24px)] whitespace-nowrap rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:text-[15px]">
+        <div className="pointer-events-none absolute bottom-full left-[6%] mb-[8px] w-max max-w-[calc(100vw-24px)] whitespace-nowrap rounded-[4px] bg-white/95 px-3 py-2 text-[18px] leading-[1.3] tracking-[-0.01em] text-[#111111] shadow-[0_8px_24px_rgba(0,0,0,0.16)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 md:text-[15px]">
           Wanna fly to California!
         </div>
       </div>
 
+      <div className="gallery-boat-wrapper pointer-events-none fixed bottom-[20px] left-[200px] z-[55] md:left-[360px]">
+        <Image
+          src="/images/boat_image_2.png"
+          alt="Boat illustration"
+          width={800}
+          height={800}
+          className="block h-auto w-[130px] md:w-[200px]"
+          priority={false}
+        />
+      </div>
+      */}
+
       <div className="flex flex-1 items-center justify-center">
         <div
-          className="w-full max-w-[689px]"
+          className="w-full"
           style={{
-            marginTop: "-75px",
-            paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-            paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+            marginTop: "-185px",
           }}
         >
           {/* <p
@@ -364,21 +417,34 @@ const GalleryPage = () => {
             here ;)
           </p> */}
 
-          <div className="gallery-folder-grid flex flex-wrap items-start justify-between gap-y-[20px]">
-            {folders.map((folder) => (
-              <GlassFolder
-                key={folder.title}
-                title={folder.title}
-                count={folder.count}
-                images={folder.images}
-                slug={folder.slug}
-              />
-            ))}
+          <div
+            className="gallery-folder-scroll overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            style={{
+              paddingLeft: "20px",
+              paddingRight: "20px",
+              paddingTop: "110px",
+              paddingBottom: "50px",
+            }}
+          >
+            <div
+              className="gallery-folder-grid flex flex-nowrap items-start gap-x-[36px]"
+              style={{ justifyContent: "safe center" }}
+            >
+              {folders.map((folder) => (
+                <GlassFolder
+                  key={folder.title}
+                  title={folder.title}
+                  count={folder.count}
+                  images={folder.images}
+                  slug={folder.slug}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      <SunHint targetRef={sunRef} />
+      {/* <SunHint targetRef={sunRef} /> */}
     </section>
   );
 };
