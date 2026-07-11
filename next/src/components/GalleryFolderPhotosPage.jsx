@@ -60,13 +60,13 @@ export default function GalleryFolderPhotosPage({ section }) {
           <Image src="/icons/left-arrow.svg" alt="" aria-hidden="true" width={22} height={20} priority />
         </Link>
 
-        <h1 className="mt-[18px] text-[32px] leading-none tracking-[-0.02em] [-webkit-text-stroke:0.5px_#000000]">
+        <h1 className="mt-[10px] text-[32px] leading-none tracking-[-0.02em] [-webkit-text-stroke:0.5px_#000000]">
           {section.title}
         </h1>
       </div>
 
-      <div className="relative left-1/2 mt-8 w-screen -translate-x-1/2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:mt-10">
-        <div className="flex min-h-[400px] w-max items-start px-5 pb-8 pt-16 md:min-h-[1440px] md:px-12 md:pb-16 md:pt-36">
+      <div className="gallery-photo-scroll relative left-1/2 w-screen -translate-x-1/2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="gallery-photo-row flex w-max items-start">
           {section.photos.map((photo, index) => {
             const publicId = getPhotoId(photo);
             const objectPosition = getPhotoPosition(photo);
@@ -96,7 +96,7 @@ export default function GalleryFolderPhotosPage({ section }) {
                 <img
                   src={getCloudinaryUrl(publicId, 1400)}
                   alt={`${section.title} photo ${index + 1}`}
-                  className="block h-[244px] w-[203px] object-cover md:h-[812px] md:w-[678px]"
+                  className="gallery-photo"
                   style={{ objectPosition }}
                   draggable="false"
                 />

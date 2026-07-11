@@ -484,3 +484,38 @@ a {
     display: inline;
   }
 }
+
+/* Gallery folder photo view — responsive sizing via explicit media queries
+   (Tailwind md: variants aren't reliably applied in this project). Mobile is
+   the base; desktop scales the polaroids and spacing up at >=768px. */
+.gallery-photo-scroll {
+  margin-top: 12px;
+}
+
+.gallery-photo-row {
+  min-height: 400px;
+  padding: 64px 20px 72px;
+}
+
+.gallery-photo {
+  display: block;
+  height: 244px;
+  width: 203px;
+  object-fit: cover;
+}
+
+@media (min-width: 768px) {
+  .gallery-photo-scroll {
+    margin-top: 6px;
+  }
+
+  .gallery-photo-row {
+    min-height: 520px;
+    padding: 8px 48px 100px;
+  }
+
+  .gallery-photo {
+    height: 420px;
+    width: 350px;
+  }
+}
