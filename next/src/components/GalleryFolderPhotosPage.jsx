@@ -63,6 +63,12 @@ export default function GalleryFolderPhotosPage({ section }) {
         <h1 className="mt-[10px] text-[32px] leading-none tracking-[-0.02em] [-webkit-text-stroke:0.5px_#000000]">
           {section.title}
         </h1>
+
+        {section.dateRange && (
+          <p className="gallery-folder-date text-[16px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8] [-webkit-text-stroke:0.4px_#0b65d8]">
+            {section.dateRange}
+          </p>
+        )}
       </div>
 
       <div className="gallery-photo-scroll relative left-1/2 w-screen -translate-x-1/2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">

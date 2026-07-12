@@ -16,6 +16,7 @@ export const photoSections = [
   {
     slug: "washington-dc",
     title: "Washington D.C.",
+    dateRange: "August 2025 to December 2025",
     photos: [
       "IMG_0078_e7ossg",
       "IMG_0101_nzxq3r",
@@ -41,6 +42,7 @@ export const photoSections = [
   {
     slug: "virginia",
     title: "Virginia",
+    dateRange: "December 2025 to May 2026",
     photos: [
       "IMG_0469_wrhfaf",
       "IMG_0471_v6y6in",
@@ -61,6 +63,7 @@ export const photoSections = [
   {
     slug: "baltimore",
     title: "Baltimore",
+    dateRange: "September 2025",
     photos: [
       "FullSizeR_lamwpt",
       "FullSizeR_kawt6z",
@@ -73,6 +76,7 @@ export const photoSections = [
   {
     slug: "seattle",
     title: "Seattle",
+    dateRange: "May 2026 to Present",
     photos: [
       "IMG_2743_cesazy",
       "IMG_2752_xgckrw",
