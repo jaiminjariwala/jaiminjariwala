@@ -523,7 +523,7 @@ a {
 /* Folder date range under the city name. Tighter on laptop (reduce top gap),
    small normal gap on mobile. */
 .gallery-folder-date {
-  margin-top: 2px;
+  margin-top: -8px;
 }
 
 @media (min-width: 768px) {
