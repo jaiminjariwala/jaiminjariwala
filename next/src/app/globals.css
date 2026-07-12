@@ -417,13 +417,13 @@ a {
     flex-direction: column;
     align-items: center;
     flex: 0 0 auto;
-    width: 130px;
+    width: 150px;
   }
 
   .gallery-folder-visual {
-    transform: scale(0.68);
+    transform: scale(0.8);
     transform-origin: top center;
-    margin-bottom: -52px;
+    margin-bottom: -34px;
     margin-left: 0;
     margin-right: 0;
   }
@@ -489,12 +489,12 @@ a {
    (Tailwind md: variants aren't reliably applied in this project). Mobile is
    the base; desktop scales the polaroids and spacing up at >=768px. */
 .gallery-photo-scroll {
-  margin-top: 12px;
+  margin-top: 2px;
 }
 
 .gallery-photo-row {
   min-height: 400px;
-  padding: 20px 20px 72px;
+  padding: 4px 20px 72px;
 }
 
 .gallery-photo {
