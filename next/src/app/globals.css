@@ -587,6 +587,21 @@ a {
   .hire-badge-card-inner {
     border-radius: 18px;
   }
+
+  /* Mobile-only: slightly larger photo and name in the hire-me card. */
+  .hire-badge-photo {
+    width: 94%;
+  }
+
+  .hire-badge-name {
+    font-size: 2rem;
+    /* Loosen the tight card tracking a touch on mobile. */
+    letter-spacing: -0.03em;
+  }
+
+  .hire-badge-role {
+    font-size: 1.18rem;
+  }
 }
 
 /* ── Gallery Page ── */

@@ -17,11 +17,12 @@ import { MeshLineGeometry, MeshLineMaterial } from "meshline";
 extend({ MeshLineGeometry, MeshLineMaterial });
 
 const CARD_ASPECT = 1.58;
+const CARD_ASPECT_MOBILE = 1.55;
 const ROLE_TITLES = ["Software Engineer", "Frontend Engineer", "Product Engineer", "Full Stack Engineer"];
 const BAND_VISUAL = {
-  lineWidthDesktop: 120,
-  lineWidthMobile: 100,
-  lineWidthLargeDesktop: 120,
+  lineWidthDesktop: 104,
+  lineWidthMobile: 82,
+  lineWidthLargeDesktop: 104,
   clipTopDesktopPx: 9,
   clipTopMobilePx: 9,
   tipDockOverlapDesktopPx: 0,
@@ -285,7 +286,7 @@ export default function HireMeLanyard() {
         : clamp(stage.clientWidth * 0.205, 178, 262);
       setCardSize({
         width,
-        height: Math.round(width * CARD_ASPECT),
+        height: Math.round(width * (isMobile ? CARD_ASPECT_MOBILE : CARD_ASPECT)),
       });
     };
 
