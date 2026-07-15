@@ -817,7 +817,7 @@ function SentText() {
   );
 }
 
-export default function ContactPage() {
+export default function ContactPage({ embedded = false }) {
   const { message, setMessage, attachments, setAttachments } =
     useContactDraft();
   const [from, setFrom] = useState("");
@@ -1388,8 +1388,10 @@ export default function ContactPage() {
     event.preventDefault();
   };
 
-  // Keep the bottom typing line visible without manual page scroll.
+  // Keep the bottom typing line visible on the standalone contact page.
   useLayoutEffect(() => {
+    if (embedded) return;
+
     const target = sentinelRef.current;
     if (!target) return;
     const rect = target.getBoundingClientRect();
@@ -1398,7 +1400,7 @@ export default function ContactPage() {
     if (overflow > 0) {
       window.scrollTo({ top: window.scrollY + overflow, behavior: "auto" });
     }
-  }, [message]);
+  }, [embedded, message]);
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -1432,7 +1434,13 @@ export default function ContactPage() {
   }, [isDialogOpen]);
 
   return (
-    <section className="flex h-screen flex-col overflow-hidden bg-white text-black">
+    <section
+      className={
+        embedded
+          ? "contact-page-embedded flex flex-col bg-white text-black"
+          : "flex h-screen flex-col overflow-hidden bg-white text-black"
+      }
+    >
       {/* Desktop overrides — bypasses Tailwind JIT for guaranteed rendering */}
       <style>{`
         .cp-social-link {
@@ -1516,16 +1524,23 @@ export default function ContactPage() {
         }
       `}</style>
 
-      <Navbar />
+      {!embedded && <Navbar />}
 
       <div
-        className="mx-auto flex min-h-0 w-full max-w-[689px] flex-1 flex-col pb-[14px] md:pb-[18px]"
+        className={`mx-auto flex w-full max-w-[689px] flex-col${embedded ? "" : " min-h-0 flex-1 pb-[14px] md:pb-[18px]"
+          }`}
         style={{
           paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
           paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
         }}
       >
-        <div className="mt-[24px] flex min-h-0 flex-1 flex-col md:mt-[28px]">
+        <div
+          className={
+            embedded
+              ? "flex flex-col"
+              : "mt-[24px] flex min-h-0 flex-1 flex-col md:mt-[28px]"
+          }
+        >
           <div
             className="overflow-visible rounded-[8px] border border-[#cfd4dd] bg-[#f9f9f8] shadow-[0_4px_10px_rgba(0,0,0,0.08)] md:rounded-[16px]"
             data-sr-skip="true"
@@ -1817,28 +1832,30 @@ export default function ContactPage() {
             </div>
           ) : null}
 
-          <div
-            className="mt-auto pb-[32px] pt-[10px] md:pb-[48px] md:pt-[12px]"
-            data-sr-skip="true"
-          >
-            <div className="cp-social-links flex items-center">
-              {socialLinks.map(({ label, href }) => (
-                <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith("mailto") ? undefined : "_blank"}
-                  rel={
-                    href.startsWith("mailto")
-                      ? undefined
-                      : "noopener noreferrer"
-                  }
-                  className={`${shortStack.className} cp-social-link inline-block cursor-pointer text-[24px] leading-[0.92] tracking-[-0.02em] [-webkit-text-stroke:1.25px_#000000] md:text-[28px] md:[-webkit-text-stroke:1.45px_#000000]`}
-                >
-                  {label}
-                </a>
-              ))}
+          {!embedded && (
+            <div
+              className="mt-auto pb-[32px] pt-[10px] md:pb-[48px] md:pt-[12px]"
+              data-sr-skip="true"
+            >
+              <div className="cp-social-links flex items-center">
+                {socialLinks.map(({ label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    target={href.startsWith("mailto") ? undefined : "_blank"}
+                    rel={
+                      href.startsWith("mailto")
+                        ? undefined
+                        : "noopener noreferrer"
+                    }
+                    className={`${shortStack.className} cp-social-link inline-block cursor-pointer text-[24px] leading-[0.92] tracking-[-0.02em] [-webkit-text-stroke:1.25px_#000000] md:text-[28px] md:[-webkit-text-stroke:1.45px_#000000]`}
+                  >
+                    {label}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {error ? (
             <p className="mt-[10px] text-[14px] leading-none tracking-[-0.01em] text-[#d53030]">
@@ -1848,7 +1865,9 @@ export default function ContactPage() {
         </div>
       </div>
 
-      <AddFileHint addFileBtnRef={addFileBtnRef} sentinelRef={sentinelRef} />
+      {!embedded && (
+        <AddFileHint addFileBtnRef={addFileBtnRef} sentinelRef={sentinelRef} />
+      )}
     </section>
   );
 }
