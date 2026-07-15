@@ -745,3 +745,103 @@ a {
     margin-top: -10px;
   }
 }
+
+/* ── Homepage compact story composition ── */
+.home-story-flow {
+  --home-story-gap: clamp(50px, calc(4vw + 20px), 68px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--home-story-gap);
+  padding-top: 80px;
+}
+
+.home-story-section {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  background: #ffffff;
+}
+
+.home-story-copy {
+  margin-block: 0;
+  margin-inline: auto;
+}
+
+.home-story-contact {
+  padding-bottom: clamp(48px, 7vw, 80px);
+}
+
+@media (min-width: 768px) {
+  .home-story-flow {
+    padding-top: 114px;
+  }
+}
+
+/* Reuse the existing folder cards without their standalone viewport shell. */
+.inline-gallery-folders>section {
+  display: block !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+.inline-gallery-folders>section>nav,
+.inline-gallery-folders>section>nav+[aria-hidden="true"] {
+  display: none !important;
+}
+
+.inline-gallery-folders>section>.flex {
+  display: block !important;
+}
+
+.inline-gallery-folders>section>.flex>.w-full {
+  margin-top: 0 !important;
+}
+
+.inline-gallery-folders .gallery-folder-scroll {
+  padding-top: 78px !important;
+  padding-bottom: 0 !important;
+}
+
+.projects-page-embedded {
+  padding-top: clamp(62px, 9vw, 104px);
+}
+
+.projects-page-embedded .projects-row {
+  margin-top: 0;
+}
+
+.inline-gallery-photo-scroll {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.inline-gallery-photo-row {
+  min-height: 360px;
+  padding: 4px 20px 46px;
+}
+
+.inline-unfold {
+  animation: inline-unfold 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transform-origin: top center;
+}
+
+@keyframes inline-unfold {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scaleY(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+@media (min-width: 768px) {
+  .inline-gallery-photo-row {
+    min-height: 500px;
+    padding: 8px 48px 66px;
+  }
+}

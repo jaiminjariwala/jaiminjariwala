@@ -1,11 +1,5 @@
-import Navbar from "@/components/Navbar";
-import HireMeLanyard from "@/components/HireMeLanyard";
+import { redirect } from "next/navigation";
 
 export default function HireMe() {
-  return (
-    <section className="relative min-h-screen bg-white text-black overflow-hidden">
-      <HireMeLanyard />
-      <Navbar />
-    </section>
-  );
+  redirect("/");
 }
