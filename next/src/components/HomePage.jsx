@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Short_Stack } from "next/font/google";
 import ContactPage from "@/components/ContactPage";
+import GitHubContributions from "@/components/GitHubContributions";
 import InlineBlog from "@/components/InlineBlog";
 import InlineGallery from "@/components/InlineGallery";
 import Navbar from "@/components/Navbar";
@@ -19,11 +20,11 @@ const contentGutter = {
 };
 
 const storyCopyClass =
-  "mx-auto w-full max-w-[689px] text-[clamp(21px,3.5vw,24px)] font-normal leading-[1.35] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]";
+  "mx-auto w-full max-w-[689px] text-[clamp(19px,3vw,21px)] font-normal leading-[1.32] tracking-[-0.01em]";
 
 const HomePage = () => {
   return (
-    <main className="bg-white text-[#000000]">
+    <main className="home-page bg-white text-[#000000]">
       <section id="home" className="home-story-flow relative bg-white">
         <Navbar />
 
@@ -39,7 +40,7 @@ const HomePage = () => {
               </h1>
 
               <p
-                className="mt-[48px] w-full text-[clamp(21px,3.5vw,24px)] font-normal leading-[1.35] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000] md:mt-[58px]"
+                className="mt-[48px] w-full text-[clamp(19px,3vw,21px)] font-normal leading-[1.32] tracking-[-0.01em] md:mt-[58px]"
                 style={{
                   paddingRight:
                     "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
@@ -68,7 +69,7 @@ const HomePage = () => {
           </div>
 
           <div
-            className="w-full text-[clamp(21px,3.5vw,24px)] font-normal leading-[1.35] tracking-[-0.01em] [-webkit-text-stroke:0.3px_#000000]"
+            className="w-full text-[clamp(19px,3vw,21px)] font-normal leading-[1.32] tracking-[-0.01em]"
             style={{
               marginTop:
                 "clamp(14px, calc((768px - 100vw) * 9999), 50px)",
@@ -97,11 +98,11 @@ const HomePage = () => {
         </div>
 
         <section
-          id="gallery"
-          className="home-story-section home-story-gallery"
-          aria-label="Photo folders"
+          id="github"
+          className="home-story-section home-story-contributions"
+          aria-labelledby="github-contributions-title"
         >
-          <InlineGallery />
+          <GitHubContributions />
         </section>
 
         <div className={`${storyCopyClass} home-story-copy`} style={contentGutter}>
@@ -145,6 +146,14 @@ const HomePage = () => {
             product looks, feels, and gets used.
           </p>
         </div>
+
+        <section
+          id="gallery"
+          className="home-story-section home-story-gallery"
+          aria-label="Photo folders"
+        >
+          <InlineGallery />
+        </section>
 
         <section
           id="blogs"

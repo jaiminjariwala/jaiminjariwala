@@ -2,86 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Regular-Trial.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-RegularItalic-Trial.otf') format('opentype');
-  font-weight: 400;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Light-Trial.otf') format('opentype');
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-LightItalic-Trial.otf') format('opentype');
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Medium-Trial.otf') format('opentype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-MediumItalic-Trial.otf') format('opentype');
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Semibold-Trial.otf') format('opentype');
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-SemiboldItalic-Trial.otf') format('opentype');
-  font-weight: 600;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-Bold-Trial.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Graphik';
-  src: url('/fonts/Graphik_Collection/Graphik Family/Graphik-BoldItalic-Trial.otf') format('opentype');
-  font-weight: 700;
-  font-style: italic;
-  font-display: swap;
-}
-
 * {
   box-sizing: border-box;
 }
@@ -94,7 +14,7 @@ ol {
 }
 
 body {
-  font-family: inherit;
+  font-family: var(--font-inter), Arial, sans-serif;
   margin: 0;
   background: #ffffff;
   color: #000000;
@@ -127,46 +47,96 @@ a {
   text-decoration: none;
 }
 
-::selection {
-  background: transparent;
-  color: inherit;
-}
-
-::-moz-selection {
-  background: transparent;
-  color: inherit;
-}
-
-/* Chromium drops -webkit-text-stroke while text is in the native selection
-   range, so the stroke-faked "bold" hero name looks thin under the custom
-   green highlight. It won't let us restore the stroke on ::selection either,
-   but it DOES honor text-shadow there, so we rebuild the lost weight with a
-   crisp (0-blur) black outline that only applies while selected. */
-.hero-name::selection {
-  color: inherit;
-  text-shadow:
-    0.8px 0 0 #000, -0.8px 0 0 #000, 0 0.8px 0 #000, 0 -0.8px 0 #000,
-    0.6px 0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px -0.6px 0 #000;
-}
-
-.hero-name::-moz-selection {
-  color: inherit;
-  text-shadow:
-    0.8px 0 0 #000, -0.8px 0 0 #000, 0 0.8px 0 #000, 0 -0.8px 0 #000,
-    0.6px 0.6px 0 #000, -0.6px 0.6px 0 #000, 0.6px -0.6px 0 #000, -0.6px -0.6px 0 #000;
-}
-
 .hero-layout {
   grid-template-columns: 1.2fr 1fr;
 }
 
+.site-navbar-shell {
+  width: 100%;
+}
+
+.site-navbar {
+  position: relative;
+  z-index: 50;
+  width: 100%;
+  padding: 20px 0 40px;
+  pointer-events: none;
+}
+
 .site-navbar-list {
-  background-color: #ffffff;
+  display: flex;
+  align-items: center;
   width: min(689px, calc(100% - 32px));
-  margin-left: auto;
-  margin-right: auto;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
   justify-content: space-between;
   flex-wrap: nowrap;
+  background-color: #ffffff;
+  pointer-events: auto;
+}
+
+.site-navbar-list li {
+  margin: 0;
+  padding: 0;
+}
+
+.site-navbar-link {
+  display: inline-flex;
+  align-items: center;
+  color: #000000;
+  font-size: clamp(19px, 3vw, 21px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  -webkit-text-stroke: 0 #000000;
+  transition: -webkit-text-stroke-width 160ms ease;
+}
+
+.site-navbar-link:hover {
+  -webkit-text-stroke-width: 0.25px;
+}
+
+.site-navbar-link:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid #0969da;
+  outline-offset: 4px;
+}
+
+.home-story-flow>.site-navbar-shell {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 0;
+}
+
+.home-story-flow>.site-navbar-shell .site-navbar {
+  padding-bottom: 0;
+}
+
+.home-story-section {
+  scroll-margin-top: 96px;
+}
+
+@media (min-width: 768px) {
+  .site-navbar-shell {
+    height: 114px;
+  }
+
+  .site-navbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    padding: 34px 0 60px;
+  }
+
+  .home-story-flow>.site-navbar-shell {
+    height: 0;
+  }
 }
 
 .projects-hero-row {
@@ -508,7 +478,7 @@ a {
 
 .hire-badge-role {
   margin: 13% 0 0;
-  font-family: "Graphik", var(--font-inter), sans-serif;
+  font-family: var(--font-inter), Arial, sans-serif;
   font-size: clamp(1rem, 1.35vw, 1.4rem);
   font-weight: 400;
   line-height: 1;
@@ -548,7 +518,7 @@ a {
   }
 
   .site-navbar-list {
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
     column-gap: 1rem;
     row-gap: 0.4rem;
@@ -801,6 +771,7 @@ a {
   overflow: visible !important;
 }
 
+.inline-gallery-folders>section>.site-navbar-shell,
 .inline-gallery-folders>section>nav,
 .inline-gallery-folders>section>nav+[aria-hidden="true"] {
   display: none !important;
@@ -820,6 +791,7 @@ a {
 }
 
 .projects-page-embedded {
+  overflow: visible;
   padding-top: clamp(62px, 9vw, 104px);
 }
 
@@ -830,6 +802,10 @@ a {
 .inline-gallery-photo-scroll {
   width: 100%;
   margin-top: 6px;
+  /* The horizontal scrollport clips ink outside its padding box. Reserve room
+     below it so rotated polaroid shadows fade naturally instead of ending at
+     a hard invisible line. */
+  padding-bottom: 36px;
 }
 
 .inline-gallery-photo-row {
@@ -855,8 +831,65 @@ a {
 }
 
 @media (min-width: 768px) {
+  .home-story-gallery {
+    margin-top: calc(0px - var(--home-story-gap));
+  }
+
   .inline-gallery-photo-row {
     min-height: 500px;
     padding: 8px 48px 66px;
+  }
+}
+
+/* Mobile homepage: keep wide visual effects inside the viewport and separate
+   vertical page scrolling from the project's horizontal flip gesture. */
+@media (max-width: 767px) {
+
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overscroll-behavior-x: none;
+  }
+
+  body {
+    position: relative;
+  }
+
+  .home-page,
+  .home-story-flow {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  .home-story-flow>* {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .home-story-copy {
+    align-self: center;
+  }
+
+  .inline-gallery-folders .gallery-folder-scroll {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .home-story-contributions {
+    margin-bottom: -24px;
+  }
+
+  .projects-page-embedded {
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .projects-stage,
+  .projects-card {
+    touch-action: pan-y;
   }
 }
