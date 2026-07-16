@@ -1,7 +1,6 @@
 "use client";
 
 import CustomCursor from "@/components/CustomCursor";
-import TextSelectionHighlight from "@/components/TextSelectionHighlight";
 import { ContactDraftProvider } from "@/components/ContactDraftContext";
 
 const ClientShell = ({ children }) => {
@@ -9,7 +8,6 @@ const ClientShell = ({ children }) => {
     <ContactDraftProvider>
       {children}
       <CustomCursor />
-      <TextSelectionHighlight />
     </ContactDraftProvider>
   );
 };

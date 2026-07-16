@@ -1475,18 +1475,6 @@ export default function ContactPage({ embedded = false }) {
           -webkit-text-stroke: 0 transparent !important;
         }
 
-        .cp-from-input::selection,
-        .cp-line-inner::selection {
-          background: #73c951 !important;
-          color: #000000 !important;
-        }
-
-        .cp-from-input::-moz-selection,
-        .cp-line-inner::-moz-selection {
-          background: #73c951 !important;
-          color: #000000 !important;
-        }
-
         .doc-thumb-render {
           transform-origin: top left;
           line-height: 1.25;
