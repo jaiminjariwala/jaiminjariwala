@@ -7,6 +7,10 @@ const CURSOR_TILT_DEG = -14;
 const getCursorType = (element) => {
   if (!element) return "select-black";
 
+  if (element.closest('[data-cursor-type="select-black"]')) {
+    return "select-black";
+  }
+
   const isInteractive =
     element.tagName === "A" ||
     element.tagName === "BUTTON" ||
