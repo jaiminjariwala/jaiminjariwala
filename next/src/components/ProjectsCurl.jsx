@@ -467,6 +467,9 @@ const CURL_DIST = (PAGE_H / 2 / Math.tan((CURL_FOV * Math.PI) / 180 / 2)) * CANV
 
 function FitCamera() {
     const { camera } = useThree();
+    // Three.js cameras are mutable scene objects; React Three Fiber expects
+    // these properties to be configured imperatively.
+    /* eslint-disable react-hooks/immutability */
     useEffect(() => {
         camera.fov = CURL_FOV;
         camera.position.set(0, 0, CURL_DIST);
@@ -474,6 +477,7 @@ function FitCamera() {
         camera.far = CURL_DIST * 2;
         camera.updateProjectionMatrix();
     }, [camera]);
+    /* eslint-enable react-hooks/immutability */
     return null;
 }
 
@@ -576,6 +580,7 @@ export default function ProjectsCurl() {
         drag.current = {
             active: true,
             moving: false,
+            intent: null,
             startX: e.clientX,
             startY: e.clientY,
             id: e.pointerId,
@@ -585,9 +590,26 @@ export default function ProjectsCurl() {
     const onPointerMove = (e) => {
         const st = drag.current;
         if (!st.active) return;
-        // Dragging toward the top-left (left / up) flips the page over the
-        // diagonal spine.
-        const amount = (st.startX - e.clientX + (st.startY - e.clientY)) / 2;
+
+        const deltaX = st.startX - e.clientX;
+        const deltaY = st.startY - e.clientY;
+
+        // On touch screens, wait for a clear gesture direction. Vertical
+        // movement remains native page scrolling; a primarily horizontal left
+        // swipe owns the pointer and flips the project page.
+        if (!st.moving && e.pointerType === "touch") {
+            const absX = Math.abs(deltaX);
+            const absY = Math.abs(deltaY);
+            if (!st.intent && Math.max(absX, absY) >= 8) {
+                st.intent = absY > absX ? "scroll" : "flip";
+            }
+            if (!st.intent || st.intent === "scroll" || deltaX <= 0) return;
+        }
+
+        // Mouse/trackpad keeps the original diagonal gesture. Mobile uses the
+        // horizontal distance only so vertical page movement cannot curl it.
+        const amount =
+            e.pointerType === "touch" ? deltaX : (deltaX + deltaY) / 2;
         if (!st.moving) {
             if (amount < 6) return;
             st.moving = true;

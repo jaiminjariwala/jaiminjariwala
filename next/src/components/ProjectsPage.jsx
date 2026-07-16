@@ -6,9 +6,7 @@ const ProjectsPage = ({ embedded = false }) => {
     <section
       className={`bg-white text-black${embedded ? " projects-page-embedded" : ""}`}
       style={
-        embedded
-          ? { overflow: "visible" }
-          : { height: "100dvh", overflow: "hidden" }
+        embedded ? undefined : { height: "100dvh", overflow: "hidden" }
       }
     >
       {!embedded && <Navbar />}

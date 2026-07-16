@@ -117,11 +117,46 @@ export default function InlineGallery() {
     const link = target.closest('a[href^="/gallery/"]');
     const href = link?.getAttribute("href");
     const slug = href?.split("/").filter(Boolean).pop();
+    const gallerySection = link?.closest(".home-story-gallery");
     if (!slug || !getSectionBySlug(slug)) return;
 
     event.preventDefault();
     event.stopPropagation();
     setSelectedSlug(slug);
+
+    // The folders are replaced in place. On mobile, wait for React to commit
+    // the detail view, then scroll only by the amount the first polaroid (plus
+    // its shadow) extends below the viewport. This preserves as much of the
+    // preceding paragraph as possible instead of pinning the gallery to the top.
+    if (
+      gallerySection instanceof HTMLElement &&
+      window.matchMedia("(max-width: 767px)").matches
+    ) {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          const firstPolaroid = gallerySection.querySelector(
+            ".inline-gallery-photo-row > article",
+          );
+          if (!(firstPolaroid instanceof HTMLElement)) return;
+
+          const shadowClearance = 36;
+          const safeViewportBottom = window.innerHeight - 16;
+          const hiddenBottom =
+            firstPolaroid.getBoundingClientRect().bottom +
+            shadowClearance -
+            safeViewportBottom;
+          if (hiddenBottom <= 0) return;
+
+          const reduceMotion = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+          ).matches;
+          window.scrollBy({
+            top: Math.ceil(hiddenBottom),
+            behavior: reduceMotion ? "auto" : "smooth",
+          });
+        });
+      });
+    }
   };
 
   if (selectedSection) {
