@@ -330,7 +330,7 @@ button.day {
 
   .heading {
     margin-bottom: 22px;
-    font-size: 13px;
+    font-size: 15px;
     line-height: 1.2;
   }
 
@@ -358,7 +358,7 @@ button.day {
   }
 
   .graph {
-    --cell-size: 13px;
+    --cell-size: 15px;
     --cell-gap: 4px;
     width: max-content;
     min-width: max-content;
@@ -368,7 +368,7 @@ button.day {
     grid-template-columns: repeat(var(--week-count), var(--cell-size));
     column-gap: var(--cell-gap);
     height: 26px;
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .graphBody,
@@ -397,12 +397,12 @@ button.day {
 
   .legend {
     margin-top: 12px;
-    font-size: 13px;
+    font-size: 15px;
   }
 
   .legendTile {
-    width: 13px;
-    height: 13px;
+    width: 15px;
+    height: 15px;
   }
 
   .tooltip {
