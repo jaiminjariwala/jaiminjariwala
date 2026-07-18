@@ -24,7 +24,16 @@ function GlassFolder({ title, count, images, slug }) {
       <div
         className="gallery-folder-visual"
         style={styles.folderAnchor}
-        onMouseEnter={() => setIsHovered(true)}
+        onMouseEnter={() => {
+          // Touch taps synthesize mouseenter right before the click, which
+          // briefly flashed the fan-out on phones. Only hover-capable
+          // pointers get the animation.
+          if (
+            window.matchMedia("(hover: hover) and (pointer: fine)").matches
+          ) {
+            setIsHovered(true);
+          }
+        }}
         onMouseLeave={() => setIsHovered(false)}
       >
         <div style={styles.backPlate} />
@@ -129,12 +138,12 @@ function GlassFolder({ title, count, images, slug }) {
       </div>
 
       <p
-        className="gallery-folder-meta gallery-folder-title mt-[14px] text-center font-normal leading-[1.35] tracking-[-0.01em] text-[#2b2f35]"
+        className="gallery-folder-meta gallery-folder-title mt-[14px] text-center leading-[1.35] tracking-[-0.01em] text-[#2b2f35]"
         style={{ fontSize: "clamp(18px, 3vw, 20px)", marginBottom: 5 }}
       >
         {title}
       </p>
-      <p className="gallery-folder-meta mt-[-2px] mb-0 text-center text-[16px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]">
+      <p className="gallery-folder-meta gallery-folder-count mt-[-2px] mb-0 text-center text-[16px] leading-none tracking-[-0.02em] text-[#0b65d8]">
         {count}
       </p>
     </Link>
@@ -420,15 +429,16 @@ const GalleryPage = () => {
           <div
             className="gallery-folder-scroll overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
             style={{
-              paddingLeft: "20px",
-              paddingRight: "20px",
               paddingTop: "110px",
               paddingBottom: "50px",
             }}
           >
+            {/* Horizontal padding lives on the content (w-max) instead of the
+                scroller: browsers drop a horizontal scroller's own trailing
+                padding, which left the last folder flush against the edge. */}
             <div
-              className="gallery-folder-grid flex flex-nowrap items-start gap-x-[46px]"
-              style={{ justifyContent: "safe center" }}
+              className="gallery-folder-grid mx-auto flex w-max flex-nowrap items-start gap-x-[46px]"
+              style={{ paddingLeft: "20px", paddingRight: "20px" }}
             >
               {folders.map((folder) => (
                 <GlassFolder

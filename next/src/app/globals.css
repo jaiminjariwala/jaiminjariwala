@@ -708,8 +708,8 @@ a {
 
 .gallery-photo {
   display: block;
-  height: 244px;
-  width: 203px;
+  height: 228px;
+  width: 190px;
   object-fit: cover;
 }
 
@@ -724,20 +724,21 @@ a {
   }
 
   .gallery-photo {
-    height: 420px;
-    width: 350px;
+    height: 360px;
+    width: 300px;
   }
 }
 
 /* Folder date range under the city name. Tighter on laptop (reduce top gap),
    small normal gap on mobile. */
 .gallery-folder-date {
-  margin-top: -8px;
+  margin-top: -12px;
+  font-family: var(--font-inter), Arial, sans-serif;
 }
 
 @media (min-width: 768px) {
   .gallery-folder-date {
-    margin-top: -10px;
+    margin-top: -14px;
   }
 }
 
@@ -856,6 +857,20 @@ a {
 
 .gallery-folder-meta {
   font-family: var(--font-inter), Arial, sans-serif;
+}
+
+/* No gray/blue flash when tapping a folder on touch screens. */
+.gallery-folder-card {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* City names and item counts under the folders read slightly bolder.
+   Inter ships in 100-weight steps here, so 500 plus a hairline stroke lands
+   visually between 500 and 600. */
+.gallery-folder-title,
+.gallery-folder-count {
+  font-weight: 500;
+  -webkit-text-stroke: 0.2px currentColor;
 }
 
 .projects-page-embedded .projects-row {
