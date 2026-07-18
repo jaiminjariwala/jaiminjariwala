@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 import GitHubContributions from "@/components/GitHubContributions";
-import InlineBlog from "@/components/InlineBlog";
 import InlineGallery from "@/components/InlineGallery";
 import ProjectsPage from "@/components/ProjectsPage";
 import { getCloudinaryUrl } from "@/components/galleryData";
@@ -167,14 +166,6 @@ const HomePage = () => {
           aria-label="Photo folders"
         >
           <InlineGallery />
-        </section>
-
-        <section
-          id="blogs"
-          className="home-story-section home-story-blog"
-          aria-label="Blog"
-        >
-          <InlineBlog />
         </section>
 
       </section>
