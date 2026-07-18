@@ -30,7 +30,7 @@ const ProjectsPage = ({ embedded = false }) => {
       {!embedded && <Navbar />}
 
       <div
-        className={`mx-auto w-full${embedded ? " max-w-[760px]" : " max-w-[689px] pb-[28px]"
+        className={`mx-auto w-full${embedded ? " max-w-[920px]" : " max-w-[689px] pb-[28px]"
           }`}
         style={{
           paddingLeft: sidePadding,
@@ -47,14 +47,14 @@ const ProjectsPage = ({ embedded = false }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Open the Component Library project"
-              className="block w-full"
+              className="mobile-full-bleed block w-full"
             >
               <Image
                 src="/images/project-1-shot.png"
                 alt="Component Library project interface"
                 width={2922}
                 height={1767}
-                sizes="(max-width: 767px) calc(100vw - 24px), 760px"
+                sizes="(max-width: 767px) 100vw, 920px"
                 className="block h-auto w-full"
               />
             </a>

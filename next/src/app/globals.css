@@ -897,8 +897,13 @@ a {
 }
 
 .projects-embedded-title {
-  width: min(640px, 100%);
+  /* Same column geometry as the hero heading: a 720px centered block whose
+     left edge matches the story copy. The container already pads 12px on
+     phones, so 8px more lands the text on the hero's 20px mobile gutter. */
+  width: min(720px, 100%);
   margin: 0 auto clamp(28px, 3.5vw, 38px);
+  padding-left: clamp(0px, calc((768px - 100vw) * 9999), 8px);
+  padding-right: clamp(0px, calc((768px - 100vw) * 9999), 8px);
   color: #000000;
   font-size: clamp(32px, 4.2vw, 48px);
   font-style: normal;
@@ -1166,5 +1171,18 @@ a {
   .mobile-menu-list li {
     animation: none;
     opacity: 1;
+  }
+}
+
+/* ── Convention: every content image on the homepage bleeds to the phone's
+   left and right edges, no matter which padded column it sits inside. The
+   negative margins cancel exactly whatever gutter the parent applies. Kept
+   at the end of the file so it always wins the cascade. ── */
+@media (max-width: 767px) {
+  .mobile-full-bleed {
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
   }
 }

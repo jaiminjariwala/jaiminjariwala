@@ -156,7 +156,7 @@ const HomePage = () => {
           aria-label="My background"
         >
           <figure data-reveal className="home-education-figure">
-            <div className="home-education-image-frame">
+            <div className="home-education-image-frame mobile-full-bleed">
               <img
                 src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
                 alt="Kogan Plaza with the blue clock at The George Washington University, Washington, D.C."
