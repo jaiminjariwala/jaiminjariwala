@@ -855,6 +855,10 @@ a {
   text-wrap: balance;
 }
 
+.gallery-folder-meta {
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
 .projects-page-embedded .projects-row {
   margin-top: 0;
 }

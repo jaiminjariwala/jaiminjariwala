@@ -129,12 +129,12 @@ function GlassFolder({ title, count, images, slug }) {
       </div>
 
       <p
-        className="gallery-folder-title mt-[14px] text-center font-normal leading-[1.35] tracking-[-0.01em] text-[#2b2f35] [-webkit-text-stroke:0.3px_#000000]"
+        className="gallery-folder-meta gallery-folder-title mt-[14px] text-center font-normal leading-[1.35] tracking-[-0.01em] text-[#2b2f35]"
         style={{ fontSize: "clamp(18px, 3vw, 20px)", marginBottom: 5 }}
       >
         {title}
       </p>
-      <p className="mt-[-2px] mb-0 text-center text-[16px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]">
+      <p className="gallery-folder-meta mt-[-2px] mb-0 text-center text-[16px] font-normal leading-none tracking-[-0.02em] text-[#0b65d8]">
         {count}
       </p>
     </Link>
