@@ -426,11 +426,32 @@ const GitHubContributions = () => {
                               type="button"
                               aria-label={accessibleLabel}
                               aria-expanded={isSelected}
-                              onClick={() =>
+                              onMouseDown={(event) => {
+                                // Keep mouse clicks from focus-pinning a
+                                // tooltip on hover devices; keyboard focus
+                                // still shows tooltips for accessibility.
+                                if (
+                                  window.matchMedia(
+                                    "(hover: hover) and (pointer: fine)",
+                                  ).matches
+                                ) {
+                                  event.preventDefault();
+                                }
+                              }}
+                              onClick={() => {
+                                // Laptops see tooltips on hover alone;
+                                // tap-to-pin is touch-only.
+                                if (
+                                  window.matchMedia(
+                                    "(hover: hover) and (pointer: fine)",
+                                  ).matches
+                                ) {
+                                  return;
+                                }
                                 setSelectedDate((current) =>
-                                  current === day.date ? null : day.date
-                                )
-                              }
+                                  current === day.date ? null : day.date,
+                                );
+                              }}
                             />
                             <span
                               className={`${styles.tooltip} ${isSelected ? styles.tooltipOpen : ""
