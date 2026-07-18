@@ -21,6 +21,11 @@ body {
   font-weight: 400;
 }
 
+/* Text selection highlight: light gray instead of the browser default. */
+::selection {
+  background: rgb(220, 220, 220);
+}
+
 p,
 .portfolio-paragraph {
   font-family: Georgia, "Times New Roman", Times, serif;
