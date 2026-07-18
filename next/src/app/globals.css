@@ -580,6 +580,16 @@ a {
     min-height: 100svh;
   }
 
+  /* GitHub section: same treatment — its own full-height screen with the
+     contribution graph centered vertically. */
+  #github {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
 
   .site-navbar-list {
     justify-content: flex-start;

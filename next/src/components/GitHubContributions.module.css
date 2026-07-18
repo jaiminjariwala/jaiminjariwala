@@ -307,7 +307,7 @@ button.day {
   }
 
   .graph {
-    --cell-size: 12px;
+    --cell-size: 13px;
     --cell-gap: 4px;
     width: max-content;
     min-width: max-content;
@@ -350,8 +350,8 @@ button.day {
   }
 
   .legendTile {
-    width: 12px;
-    height: 12px;
+    width: 13px;
+    height: 13px;
   }
 
   .tooltip {

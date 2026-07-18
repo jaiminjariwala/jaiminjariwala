@@ -17,7 +17,7 @@ const MENU_ITEMS = [
   { label: "Me", target: "me", offset: 0 },
   { label: "Currently", target: "currently", offset: 0 },
   { label: "My Background", target: "background", offset: 0 },
-  { label: "GitHub", target: "github", offset: 16 },
+  { label: "GitHub", target: "github", offset: 0 },
   { label: "Projects", target: "projects", offset: 16 },
   { label: "Gallery", target: "gallery", offset: 16 },
 ];
