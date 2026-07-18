@@ -231,10 +231,11 @@ button.day {
 }
 
 /* The last weeks anchor their tooltip to the right so it stays inside the
-   scroller now that the filler month after the data is gone. */
+   scroller now that the filler month after the data is gone. The 8px
+   overhang past the tile puts the corner-safe arrow on the tile's center. */
 .week:nth-last-child(-n + 8) .tooltip {
   left: auto;
-  right: 0;
+  right: -8px;
   transform: translateY(4px);
 }
 
