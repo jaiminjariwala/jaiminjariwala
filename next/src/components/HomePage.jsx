@@ -1,9 +1,11 @@
 "use client";
 
+import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
+import MobileMenu from "@/components/MobileMenu";
 import ProjectsPage from "@/components/ProjectsPage";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
@@ -22,32 +24,94 @@ const storyCopyClass =
   "mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]";
 
 const HomePage = () => {
+  const mainRef = useRef(null);
+
+  // Mobile-only: the hero heading and first paragraph show immediately;
+  // everything marked data-reveal stays hidden until the visitor starts
+  // scrolling, then fades up as soon as its top clears the bottom edge.
+  useLayoutEffect(() => {
+    const root = mainRef.current;
+    if (!root) return undefined;
+
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (!isMobile || reduceMotion) return undefined;
+
+    root.classList.add("home-reveal-ready");
+    const targets = Array.from(root.querySelectorAll("[data-reveal]"));
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-revealed");
+          observer.unobserve(entry.target);
+        });
+      },
+      // Trigger as soon as an element's top clears the bottom ~12% of the
+      // screen, so nothing needs long scrolling before it appears.
+      { rootMargin: "0px 0px -12% 0px", threshold: 0 },
+    );
+
+    const startObserving = () =>
+      targets.forEach((el) => observer.observe(el));
+
+    const onFirstScroll = () => {
+      window.removeEventListener("scroll", onFirstScroll);
+      startObserving();
+    };
+
+    if (window.scrollY > 0) {
+      // Restored mid-page (e.g. back navigation): reveal in place.
+      startObserving();
+    } else {
+      window.addEventListener("scroll", onFirstScroll, { passive: true });
+    }
+
+    return () => {
+      window.removeEventListener("scroll", onFirstScroll);
+      observer.disconnect();
+      root.classList.remove("home-reveal-ready");
+    };
+  }, []);
+
   return (
-    <main className="home-page bg-white text-[#000000]">
+    <main ref={mainRef} className="home-page bg-white text-[#000000]">
+      <MobileMenu />
+
       <section id="home" className="home-story-flow relative bg-white">
         <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
-          <h1 className={`${playfair.className} home-hero-title`}>
-            I Build and Ship: Products and The Systems Underneath Them.
-          </h1>
+          <div className="home-hero-region">
+            <div className="home-hero-intro">
+              <h1 className={`${playfair.className} home-hero-title`}>
+                I Build and Ship: Products and The Systems Underneath Them.
+              </h1>
 
-          <div className="hero-layout grid items-center justify-between">
-            <div className="w-full self-center">
-              <p
-                className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
-                style={{
-                  paddingRight:
-                    "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
-                }}
-              >
-                Hi, I am Jaimin Jariwala, a software engineer who builds AI
-                products end to end. The interface is what people see, and I
-                care deeply about that layer, but most of my work lives
-                underneath it: agent loops, backend systems, APIs, and
-                infrastructure. I like owning everything from idea to shipped.
-              </p>
+              <div className="home-hero-copy w-full">
+                <p
+                  className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+                  style={{
+                    paddingRight:
+                      "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
+                  }}
+                >
+                  Hi, I am Jaimin Jariwala, a software engineer who builds AI
+                  products end to end. The interface is what people see, and I
+                  care deeply about that layer, but most of my work lives
+                  underneath it: agent loops, backend systems, APIs, and
+                  infrastructure. I like owning everything from idea to
+                  shipped.
+                </p>
+              </div>
             </div>
 
-            <div className="hero-profile relative flex justify-center">
+            <div
+              data-reveal
+              id="me"
+              className="hero-profile relative flex justify-center"
+            >
               <div className="flex h-[335px] w-[260px] items-center justify-center overflow-hidden">
                 <Image
                   src="/images/my-profile-2.png"
@@ -62,6 +126,8 @@ const HomePage = () => {
           </div>
 
           <div
+            data-reveal
+            id="currently"
             className="w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
             style={{
               marginTop:
@@ -84,39 +150,47 @@ const HomePage = () => {
           </div>
         </div>
 
-        <figure className="home-education-figure">
-          <div className="home-education-image-frame">
-            <img
-              src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
-              alt="Kogan Plaza with the blue clock at The George Washington University, Washington, D.C."
-              loading="lazy"
-              className="home-education-image"
-            />
-          </div>
-          <figcaption className="home-education-caption">
-            I am also pursuing my Master&apos;s in Computer Science at The George
-            Washington University, Washington D.C.
-          </figcaption>
-        </figure>
-
-        <div
-          className={`${storyCopyClass} home-story-copy`}
-          style={{ ...contentGutter, marginTop: -36 }}
+        <section
+          id="background"
+          className="home-background-section"
+          aria-label="My background"
         >
-          <p className="portfolio-paragraph">
-            Before grad school I was an{" "}
-            <span className="experience-emphasis">
-              AI/ML intern at Logicwind
-            </span>{" "}
-            in India. I worked on a graphology project that reads human
-            handwriting and predicts personality traits from it. I built
-            scalable computer vision models, machine learning pipelines, and
-            the APIs that served them. I also worked on a street object and
-            lane detection project.
-          </p>
-        </div>
+          <figure data-reveal className="home-education-figure">
+            <div className="home-education-image-frame">
+              <img
+                src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
+                alt="Kogan Plaza with the blue clock at The George Washington University, Washington, D.C."
+                loading="lazy"
+                className="home-education-image"
+              />
+            </div>
+            <figcaption className="home-education-caption">
+              I am also pursuing my Master&apos;s in Computer Science at The George
+              Washington University, Washington D.C.
+            </figcaption>
+          </figure>
+
+          <div
+            data-reveal
+            className={`${storyCopyClass} home-story-copy`}
+            style={{ ...contentGutter, marginTop: -36 }}
+          >
+            <p className="portfolio-paragraph">
+              Before grad school I was an{" "}
+              <span className="experience-emphasis">
+                AI/ML intern at Logicwind
+              </span>{" "}
+              in India. I worked on a graphology project that reads human
+              handwriting and predicts personality traits from it. I built
+              scalable computer vision models, machine learning pipelines, and
+              the APIs that served them. I also worked on a street object and
+              lane detection project.
+            </p>
+          </div>
+        </section>
 
         <section
+          data-reveal
           id="github"
           className="home-story-section home-story-contributions"
           aria-labelledby="github-contributions-title"
@@ -125,6 +199,7 @@ const HomePage = () => {
         </section>
 
         <section
+          data-reveal
           id="projects"
           className="home-story-section home-story-projects"
           aria-label="Projects"
@@ -132,7 +207,11 @@ const HomePage = () => {
           <ProjectsPage embedded />
         </section>
 
-        <div className={`${storyCopyClass} home-story-copy`} style={contentGutter}>
+        <div
+          data-reveal
+          className={`${storyCopyClass} home-story-copy`}
+          style={contentGutter}
+        >
           <p className="portfolio-paragraph">
             On the side I am building{" "}
             <span className="experience-emphasis">
@@ -160,6 +239,7 @@ const HomePage = () => {
         </div>
 
         <section
+          data-reveal
           id="gallery"
           className="home-story-section home-story-gallery"
           aria-label="Photo folders"

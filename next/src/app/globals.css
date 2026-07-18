@@ -57,8 +57,30 @@ a {
   text-decoration: none;
 }
 
-.hero-layout {
+/* Desktop hero: heading spans the full width, the intro paragraph and photo
+   share the row beneath it. The intro wrapper dissolves (display: contents)
+   so its children participate in this grid; on phones it becomes the
+   full-screen centered opening block instead. */
+.home-hero-region {
+  display: grid;
   grid-template-columns: minmax(0, 1fr) 260px;
+  align-items: center;
+}
+
+.home-hero-intro {
+  display: contents;
+}
+
+.home-hero-region .home-hero-title {
+  grid-column: 1 / -1;
+}
+
+.home-hero-copy {
+  grid-column: 1;
+}
+
+.home-hero-region .hero-profile {
+  grid-column: 2;
 }
 
 .site-navbar-shell {
@@ -519,13 +541,45 @@ a {
 }
 
 @media (max-width: 767px) {
-  .hero-layout {
-    grid-template-columns: 1fr;
+
+  /* First phone screen: only the heading and intro paragraph, centered
+     vertically in the viewport on any screen height. The photo sits below
+     the fold and fades in on scroll. */
+  .home-story-flow {
+    padding-top: 0;
   }
 
-  .hero-profile {
-    margin-top: 2rem;
+  .home-hero-region {
+    display: block;
   }
+
+  .home-hero-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
+  /* "Me" jump target: on phones the photo gets its own full-height screen,
+     centered vertically, so only the photo and white space are visible. */
+  .hero-profile {
+    margin-top: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    align-items: center;
+  }
+
+  /* "Currently" jump target: same treatment — the paragraph gets its own
+     full-height screen, centered vertically. */
+  #currently {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
 
   .site-navbar-list {
     justify-content: flex-start;
@@ -969,5 +1023,148 @@ a {
   .projects-stage,
   .projects-card {
     touch-action: pan-y;
+  }
+}
+
+/* Mobile-only scroll reveal for the homepage story. The hiding is gated on
+   the .home-reveal-ready class, which only JavaScript adds (mobile viewports,
+   motion allowed), so content is never hidden without a way to reveal it. */
+@media (max-width: 767px) {
+  .home-reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 520ms ease,
+      transform 520ms ease;
+  }
+
+  .home-reveal-ready [data-reveal].is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── "My background" wrapper: groups the university figure and the Logicwind
+   paragraph as one jump target while reproducing the story flow's own gap,
+   so wrapping them changes nothing visually. ── */
+.home-background-section {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--home-story-gap);
+}
+
+/* ── Mobile hamburger menu ── */
+.mobile-menu-button {
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 120;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-menu-button span {
+  display: block;
+  width: 17px;
+  height: 2px;
+  border-radius: 999px;
+  background: #000000;
+  transition: transform 220ms ease;
+}
+
+.mobile-menu-button.is-open span:first-child {
+  transform: translateY(3.5px) rotate(45deg);
+}
+
+.mobile-menu-button.is-open span:last-child {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: none;
+  background: #ffffff;
+  animation: mobile-menu-fade 240ms ease both;
+}
+
+@media (max-width: 767px) {
+  .mobile-menu-button {
+    display: flex;
+  }
+
+  .mobile-menu-overlay {
+    display: block;
+  }
+}
+
+@keyframes mobile-menu-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.mobile-menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  margin: 0;
+  padding: 108px 26px 0;
+  list-style: none;
+}
+
+.mobile-menu-list li {
+  opacity: 0;
+  animation: mobile-menu-item 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes mobile-menu-item {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mobile-menu-link {
+  display: inline-block;
+  color: #000000;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .mobile-menu-overlay,
+  .mobile-menu-list li {
+    animation: none;
+    opacity: 1;
   }
 }
