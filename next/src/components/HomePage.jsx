@@ -1,17 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { Short_Stack } from "next/font/google";
+import { Playfair_Display } from "next/font/google";
 import ContactPage from "@/components/ContactPage";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineBlog from "@/components/InlineBlog";
 import InlineGallery from "@/components/InlineGallery";
-import Navbar from "@/components/Navbar";
 import ProjectsPage from "@/components/ProjectsPage";
+import { getCloudinaryUrl } from "@/components/galleryData";
 
-const shortStack = Short_Stack({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  weight: "400",
+  weight: "800",
+  display: "swap",
 });
 
 const contentGutter = {
@@ -20,42 +21,38 @@ const contentGutter = {
 };
 
 const storyCopyClass =
-  "mx-auto w-full max-w-[689px] text-[clamp(19px,3vw,21px)] font-normal leading-[1.32] tracking-[-0.01em]";
+  "mx-auto w-full max-w-[720px] text-[clamp(21px,3vw,23px)] font-normal leading-[1.42] tracking-[-0.01em]";
 
 const HomePage = () => {
   return (
     <main className="home-page bg-white text-[#000000]">
       <section id="home" className="home-story-flow relative bg-white">
-        <Navbar />
+        <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
+          <h1 className={`${playfair.className} home-hero-title`}>
+            I love to build and ship — products, and the systems underneath
+            them.
+          </h1>
 
-        <div className="mx-auto w-full max-w-[689px]" style={contentGutter}>
           <div className="hero-layout grid items-center justify-between">
-            <div className="w-full self-start">
-              <h1
-                className={`hero-name ${shortStack.className} text-[56px] font-normal leading-[1.1] tracking-[-0.03em] [-webkit-text-stroke:2.8px_#000000]`}
-              >
-                Jaimin
-                <br />
-                Jariwala
-              </h1>
-
+            <div className="w-full self-center">
               <p
-                className="mt-[48px] w-full text-[clamp(19px,3vw,21px)] font-normal leading-[1.32] tracking-[-0.01em] md:mt-[58px]"
+                className="portfolio-paragraph w-full text-[clamp(21px,3vw,23px)] font-normal leading-[1.42] tracking-[-0.01em]"
                 style={{
                   paddingRight:
                     "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
                 }}
               >
-                I am a <span className="font-bold">full-stack product engineer</span>{" "}
-                who builds AI-powered products, from autonomous agents to
-                delightful, detail-obsessed interfaces. I like living across the
-                whole stack: design, frontend, backend, and the systems glue in
-                between.
+                Hi, I am Jaimin Jariwala. I am a software engineer and I build
+                AI products end to end. The interface is what people see, and I
+                care deeply about that layer. Most of my work, though, lives
+                underneath it: agent loops, backend systems, APIs, and
+                infrastructure. Frontend, backend, infra, I like owning
+                everything from idea to shipped.
               </p>
             </div>
 
             <div className="hero-profile relative flex justify-center">
-              <div className="flex h-[360px] w-[280px] items-center justify-center overflow-hidden">
+              <div className="flex h-[335px] w-[260px] items-center justify-center overflow-hidden">
                 <Image
                   src="/images/my-profile-2.png"
                   alt="Jaimin profile illustration"
@@ -69,32 +66,58 @@ const HomePage = () => {
           </div>
 
           <div
-            className="w-full text-[clamp(19px,3vw,21px)] font-normal leading-[1.32] tracking-[-0.01em]"
+            className="w-full text-[clamp(21px,3vw,23px)] font-normal leading-[1.42] tracking-[-0.01em]"
             style={{
               marginTop:
-                "clamp(14px, calc((768px - 100vw) * 9999), 50px)",
+                "clamp(28px, calc((768px - 100vw) * 9999), 50px)",
             }}
           >
-            <p>
+            <p className="portfolio-paragraph">
               Right now I am a{" "}
-              <span className="[-webkit-text-stroke:0.7px_#000000]">
-                Design Technologist I (L4) intern
+              <span className="experience-emphasis">
+                Design Technologist I (L4) intern at Amazon
               </span>{" "}
-              <a
-                href="https://www.amazon.com"
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#3896ff] [-webkit-text-stroke:0.3px_#3896ff]"
-              >
-                @amazon
-              </a>{" "}
-              in Seattle. It sits in the design job family, but it is a technical
-              role, I build and ship prototypes, currently voice-driven experiences
-              across a range of devices, from Alexa-powered devices to iPad. I am
-              also pursuing my <span className="font-bold">Master&apos;s in Computer Science</span>{" "}
-              at The George Washington University, Washington D.C.
+              in Seattle. It sits in the design job family, but the work is
+              engineering. I build and ship working prototypes of voice
+              experiences for devices like the Echo Show and Echo Dot, along
+              with web and mobile prototypes. I also build the AWS
+              infrastructure behind them, with Lambda endpoints, session state
+              in DynamoDB, and a skill pipeline that puts a full conversation
+              on a real Echo you can talk to.
             </p>
           </div>
+        </div>
+
+        <figure className="home-education-figure">
+          <div className="home-education-image-frame">
+            <img
+              src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
+              alt="Kogan Plaza with the blue clock at The George Washington University, Washington, D.C."
+              loading="lazy"
+              className="home-education-image"
+            />
+          </div>
+          <figcaption className="home-education-caption">
+            I am also pursuing my Master&apos;s in Computer Science at The George
+            Washington University, Washington D.C.
+          </figcaption>
+        </figure>
+
+        <div
+          className={`${storyCopyClass} home-story-copy`}
+          style={{ ...contentGutter, marginTop: -36 }}
+        >
+          <p className="portfolio-paragraph">
+            Before grad school I was an{" "}
+            <span className="experience-emphasis">
+              AI/ML intern at Logicwind
+            </span>{" "}
+            in India. I worked on a graphology project that reads human
+            handwriting and predicts personality traits from it. I built
+            scalable computer vision models and machine learning pipelines, and
+            created the APIs that served them to the frontend. I also worked on
+            a government project for street object and lane detection.
+          </p>
         </div>
 
         <section
@@ -105,32 +128,6 @@ const HomePage = () => {
           <GitHubContributions />
         </section>
 
-        <div className={`${storyCopyClass} home-story-copy`} style={contentGutter}>
-          <p>
-            On the side I am building{" "}
-            <span className="font-bold">
-              Computer or Browser Use and Smart Copilot
-            </span>
-            , a screen-aware app that reasons about your screen and can act for
-            you in a browser or on your computer, similar to OpenAI&apos;s Operator
-            and Claude&apos;s Computer Use, while strengthening my Electron skills.
-            Before grad school I was an{" "}
-            <span className="[-webkit-text-stroke:0.7px_#000000]">
-              AI/ML intern
-            </span>{" "}
-            <a
-              href="https://logicwind.com"
-              target="_blank"
-              rel="noreferrer"
-              className="text-[#3896ff] [-webkit-text-stroke:0.3px_#3896ff]"
-            >
-              @logicwind
-            </a>{" "}
-            in India, where I also did my Bachelor&apos;s in CS. Surat, Gujarat,
-            India is home.
-          </p>
-        </div>
-
         <section
           id="projects"
           className="home-story-section home-story-projects"
@@ -140,10 +137,29 @@ const HomePage = () => {
         </section>
 
         <div className={`${storyCopyClass} home-story-copy`} style={contentGutter}>
-          <p>
-            I am obsessed with the details, typography, motion, color, and the
-            feel of an interface, and how the little things transform how a
-            product looks, feels, and gets used.
+          <p className="portfolio-paragraph">
+            On the side I am building{" "}
+            <span className="experience-emphasis">
+              Computer or Browser Use and Smart Copilot
+            </span>
+            , a screen-aware macOS app with two engines in one Electron
+            process. Smart Copilot is capture-and-advise: grab a region of your
+            screen and ask by text or voice, with Whisper running locally in a
+            worker for dictation and a local SmolVLM fallback for when the
+            gateway is unreachable. Computer or Browser Use is the autonomous
+            half, similar to OpenAI&apos;s Operator and Claude&apos;s Computer
+            Use: an intent router classifies each message, and commands hand
+            off to a perceive-reason-act agent loop with eleven states, step
+            budgets, and a fail-closed safety gate with a kill switch. The loop
+            drives a real Chromium inside a Docker sandbox it orchestrates
+            itself (Xvfb, a live noVNC view, an HTTP control server), or, with
+            permission, my Mac directly. Perception is hybrid: screenshots plus
+            DOM elements with screen coordinates, so the model spends fewer
+            vision tokens hunting for a search box. Underneath sit typed IPC
+            bridges, a multi-provider OpenAI-compatible client with fallback, a
+            deterministic eval harness that replays the production loop with
+            seeded clocks and scores every run, and 300+ tests, some
+            property-based.
           </p>
         </div>
 
