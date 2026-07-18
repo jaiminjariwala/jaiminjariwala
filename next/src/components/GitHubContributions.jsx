@@ -114,6 +114,8 @@ const GitHubContributions = () => {
   const sectionRef = useRef(null);
   const viewportRef = useRef(null);
   const weeksRef = useRef(null);
+  const openTooltipRef = useRef(null);
+  const tooltipBodyLeftRef = useRef(null);
   const calendar = useMemo(
     () => buildCalendar(state.data?.contributions ?? []),
     [state.data]
@@ -204,7 +206,12 @@ const GitHubContributions = () => {
 
       firstFrame = window.requestAnimationFrame(() => {
         secondFrame = window.requestAnimationFrame(() => {
-          const viewportRight = viewport.getBoundingClientRect().right;
+          // Align to the content box: the scroller carries horizontal padding
+          // purely to widen its clip box for tooltips.
+          const paddingRight =
+            parseFloat(window.getComputedStyle(viewport).paddingRight) || 0;
+          const viewportRight =
+            viewport.getBoundingClientRect().right - paddingRight;
           const weeksRight = weeks.getBoundingClientRect().right;
           const tileEdgeOffset = weeksRight - viewportRight;
           const targetScrollLeft = viewport.scrollLeft + tileEdgeOffset;
@@ -229,6 +236,78 @@ const GitHubContributions = () => {
       window.removeEventListener("resize", alignMobileRightEdge);
     };
   }, [isReady, calendar.weeks.length]);
+
+  // Tap-opened tooltips: the body clamps inside the window and the arrow
+  // slides to point at the selected tile. While a tooltip is open, tapping a
+  // nearby tile keeps the body exactly where it is — only the content and
+  // the arrow move; the body relocates only when the new tile is beyond the
+  // arrow's reach (or the tooltip chain was closed in between).
+  useLayoutEffect(() => {
+    const previous = openTooltipRef.current;
+    if (previous) {
+      previous.classList.remove(styles.tooltipAdjusted);
+      previous.style.removeProperty("--tooltip-left");
+      previous.style.removeProperty("--tooltip-arrow-left");
+      openTooltipRef.current = null;
+    }
+
+    if (!selectedDate) {
+      tooltipBodyLeftRef.current = null;
+      return;
+    }
+    const section = sectionRef.current;
+    if (!section) return;
+    const tooltip = section.querySelector(`.${styles.tooltipOpen}`);
+    const wrap = tooltip?.parentElement;
+    if (!tooltip || !wrap) return;
+
+    const wrapRect = wrap.getBoundingClientRect();
+    const width = tooltip.offsetWidth;
+    // The real clipping context is the window (the mobile scroller's clip
+    // box is widened to the screen edges in CSS), so tooltips may overhang
+    // the graph itself.
+    const bounds = { left: 12, right: window.innerWidth - 12 };
+    const wrapCenterX = wrapRect.left + wrapRect.width / 2;
+
+    // Arrow apex keeps 15px from either tooltip edge: the last hairline of
+    // the 12px corner radius it can overlap recedes under a pixel.
+    const arrowInset = 15;
+
+    // Sticky body: reuse the open tooltip's position when the new tile is
+    // still within the arrow's reach and the (possibly re-sized) body still
+    // fits the window from there.
+    let bodyLeft = null;
+    const previousLeft = tooltipBodyLeftRef.current;
+    if (previousLeft != null) {
+      const apex = wrapCenterX - previousLeft;
+      const arrowReaches =
+        apex >= arrowInset && apex <= width - arrowInset;
+      const stillFits =
+        previousLeft >= bounds.left && previousLeft + width <= bounds.right;
+      if (arrowReaches && stillFits) bodyLeft = previousLeft;
+    }
+
+    if (bodyLeft == null) {
+      const naturalLeft = wrapCenterX - width / 2;
+      const minLeft = bounds.left;
+      const maxLeft = Math.max(minLeft, bounds.right - width);
+      bodyLeft = Math.min(Math.max(naturalLeft, minLeft), maxLeft);
+    }
+
+    const arrowLeft = Math.min(
+      Math.max(wrapCenterX - bodyLeft, arrowInset),
+      width - arrowInset,
+    );
+
+    tooltip.style.setProperty(
+      "--tooltip-left",
+      `${bodyLeft - wrapRect.left}px`,
+    );
+    tooltip.style.setProperty("--tooltip-arrow-left", `${arrowLeft}px`);
+    tooltip.classList.add(styles.tooltipAdjusted);
+    openTooltipRef.current = tooltip;
+    tooltipBodyLeftRef.current = bodyLeft;
+  }, [selectedDate]);
 
   useEffect(() => {
     const dismissTooltip = (event) => {

@@ -141,7 +141,7 @@ button.day {
   width: max-content;
   max-width: 280px;
   padding: 12px 16px 9px;
-  border: 1px solid rgba(17, 24, 39, 0.08);
+  border: 0;
   border-radius: 12px;
   background: #ffffff;
   color: #111111;
@@ -157,7 +157,9 @@ button.day {
 
 .tooltip::after {
   position: absolute;
-  top: 100%;
+  /* Tucked 1px under the body so the seam never opens, even where the
+     corner radius starts receding near the edges. */
+  top: calc(100% - 1px);
   left: 50%;
   width: 0;
   height: 0;
@@ -254,6 +256,21 @@ button.day {
   }
 }
 
+/* Tap-opened tooltips measured in JS: the body clamps inside the viewport
+   while the arrow slides to stay above the selected tile. Overrides the
+   edge-week anchoring rules above, which remain as the hover fallback. */
+.tooltipAdjusted {
+  left: var(--tooltip-left, 50%) !important;
+  right: auto !important;
+  transform: none !important;
+}
+
+.tooltipAdjusted::after {
+  left: var(--tooltip-arrow-left, 50%) !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
 @keyframes contributionPulse {
   from {
     opacity: 0.38;
@@ -318,8 +335,16 @@ button.day {
   }
 
   .viewport {
+    /* Negative margins + matching padding widen the scroller's clip box to
+       the screen edges (the section leaves 20px per side) without moving the
+       graph, so edge tooltips can overhang the last columns. width: auto is
+       required — the base width: 100% would pin the box to the section width
+       and put the clip edge 40px short of the screen. */
+    width: auto;
     margin-top: -68px;
+    margin-inline: -20px;
     padding-top: 68px;
+    padding-inline: 20px;
     padding-bottom: 10px;
     overflow-x: auto;
     overflow-y: hidden;
