@@ -749,6 +749,9 @@ a {
   align-items: center;
   gap: var(--home-story-gap);
   padding-top: clamp(36px, 5vw, 56px);
+  /* The gallery folders are the last section, so close the page with the
+     same breathing room the hero heading gets at the top. */
+  padding-bottom: clamp(36px, 5vw, 56px);
 }
 
 .home-story-section {
