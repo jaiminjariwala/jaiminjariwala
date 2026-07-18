@@ -857,7 +857,8 @@ a {
   object-position: center;
 }
 
-.home-education-caption {
+.home-education-caption,
+.projects-embedded-caption {
   margin-top: 9px;
   color: #686868;
   font-family: var(--font-inter), Arial, sans-serif;
@@ -911,22 +912,26 @@ a {
   text-wrap: balance;
 }
 
-.projects-embedded-title {
-  /* Same column geometry as the hero heading: a 720px centered block whose
-     left edge matches the story copy. The container already pads 12px on
-     phones, so 8px more lands the text on the hero's 20px mobile gutter. */
+/* Project description under the screenshot: the story copy's type in the
+   same 720px column as the heading above it. */
+.projects-embedded-desc {
   width: min(720px, 100%);
-  margin: 0 auto clamp(28px, 3.5vw, 38px);
+  margin: clamp(22px, 2.8vw, 30px) auto 0;
   padding-left: clamp(0px, calc((768px - 100vw) * 9999), 8px);
   padding-right: clamp(0px, calc((768px - 100vw) * 9999), 8px);
-  color: #000000;
-  font-size: clamp(32px, 4.2vw, 48px);
-  font-style: normal;
-  font-weight: 700;
-  line-height: 1.1;
+  font-size: clamp(21.5px, 3vw, 23.5px);
+  font-weight: 400;
+  line-height: 1.48;
   letter-spacing: -0.01em;
   text-align: left;
-  text-wrap: balance;
+}
+
+/* Editorial inline link, underlined in teal like an article reference. */
+.projects-embedded-github {
+  color: rgb(55, 123, 158);
+  text-decoration: underline;
+  text-decoration-color: rgb(55, 123, 158);
+  text-underline-offset: 3px;
 }
 
 .gallery-folder-meta {
