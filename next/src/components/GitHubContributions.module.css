@@ -228,6 +228,32 @@ button.day {
   }
 }
 
+/* The last weeks anchor their tooltip to the right so it stays inside the
+   scroller now that the filler month after the data is gone. */
+.week:nth-last-child(-n + 8) .tooltip {
+  left: auto;
+  right: 0;
+  transform: translateY(4px);
+}
+
+.week:nth-last-child(-n + 8) .tooltip::after {
+  /* Clear of the 12px corner radius so the arrow meets the flat bottom edge. */
+  left: auto;
+  right: 8px;
+  transform: none;
+}
+
+.week:nth-last-child(-n + 8) .tooltipOpen,
+.week:nth-last-child(-n + 8) .dayWrap:focus-within .tooltip {
+  transform: translateY(0);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .week:nth-last-child(-n + 8) .dayWrap:hover .tooltip {
+    transform: translateY(0);
+  }
+}
+
 @keyframes contributionPulse {
   from {
     opacity: 0.38;

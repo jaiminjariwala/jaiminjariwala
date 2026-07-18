@@ -42,29 +42,9 @@ function buildCalendar(contributions) {
     .map((day) => ({ ...day, parsedDate: parseUtcDate(day.date) }))
     .filter((day) => day.parsedDate)
     .sort((a, b) => a.date.localeCompare(b.date));
-  const calendarDays = [...validDays];
-  const lastDay = validDays[validDays.length - 1];
-
-  if (lastDay) {
-    const paddingEnd = new Date(
-      Date.UTC(
-        lastDay.parsedDate.getUTCFullYear(),
-        lastDay.parsedDate.getUTCMonth() + 2,
-        0
-      )
-    );
-    const cursor = new Date(lastDay.parsedDate);
-    cursor.setUTCDate(cursor.getUTCDate() + 1);
-
-    while (cursor <= paddingEnd) {
-      calendarDays.push({
-        date: cursor.toISOString().slice(0, 10),
-        parsedDate: new Date(cursor),
-        isPadding: true,
-      });
-      cursor.setUTCDate(cursor.getUTCDate() + 1);
-    }
-  }
+  // The calendar ends at the last real contribution day; tooltips near the
+  // right edge anchor rightward in CSS instead of relying on filler tiles.
+  const calendarDays = validDays;
 
   const weekMap = new Map();
 
@@ -340,17 +320,6 @@ const GitHubContributions = () => {
                       key={week.key}
                     >
                       {week.days.map((day, dayIndex) => {
-                        if (day?.isPadding) {
-                          return (
-                            <span
-                              className={styles.day}
-                              data-level="0"
-                              aria-hidden="true"
-                              key={day.date}
-                            />
-                          );
-                        }
-
                         if (!day) {
                           return (
                             <span
