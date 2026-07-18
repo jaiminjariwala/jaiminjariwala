@@ -19,7 +19,7 @@ const contentGutter = {
 };
 
 const storyCopyClass =
-  "mx-auto w-full max-w-[720px] text-[clamp(21px,3vw,23px)] font-normal leading-[1.42] tracking-[-0.01em]";
+  "mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]";
 
 const HomePage = () => {
   return (
@@ -27,24 +27,23 @@ const HomePage = () => {
       <section id="home" className="home-story-flow relative bg-white">
         <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
           <h1 className={`${playfair.className} home-hero-title`}>
-            I Build &amp; Ship Products and The Systems Underneath Them.
+            I Build and Ship: Products and The Systems Underneath Them.
           </h1>
 
           <div className="hero-layout grid items-center justify-between">
             <div className="w-full self-center">
               <p
-                className="portfolio-paragraph w-full text-[clamp(21px,3vw,23px)] font-normal leading-[1.42] tracking-[-0.01em]"
+                className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
                 style={{
                   paddingRight:
                     "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
                 }}
               >
-                Hi, I am Jaimin Jariwala. I am a software engineer and I build
-                AI products end to end. The interface is what people see, and I
-                care deeply about that layer. Most of my work, though, lives
+                Hi, I am Jaimin Jariwala, a software engineer who builds AI
+                products end to end. The interface is what people see, and I
+                care deeply about that layer, but most of my work lives
                 underneath it: agent loops, backend systems, APIs, and
-                infrastructure. Frontend, backend, infra, I like owning
-                everything from idea to shipped.
+                infrastructure. I like owning everything from idea to shipped.
               </p>
             </div>
 
@@ -63,7 +62,7 @@ const HomePage = () => {
           </div>
 
           <div
-            className="w-full text-[clamp(21px,3vw,23px)] font-normal leading-[1.42] tracking-[-0.01em]"
+            className="w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
             style={{
               marginTop:
                 "clamp(28px, calc((768px - 100vw) * 9999), 50px)",
@@ -111,9 +110,9 @@ const HomePage = () => {
             </span>{" "}
             in India. I worked on a graphology project that reads human
             handwriting and predicts personality traits from it. I built
-            scalable computer vision models and machine learning pipelines, and
-            created the APIs that served them to the frontend. I also worked on
-            a government project for street object and lane detection.
+            scalable computer vision models, machine learning pipelines, and
+            the APIs that served them. I also worked on a street object and
+            lane detection project.
           </p>
         </div>
 
