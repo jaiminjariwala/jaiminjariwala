@@ -29,8 +29,7 @@ const HomePage = () => {
       <section id="home" className="home-story-flow relative bg-white">
         <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
           <h1 className={`${playfair.className} home-hero-title`}>
-            I love to build and ship — products, and the systems underneath
-            them.
+            I Build &amp; Ship Products and The Systems Underneath Them.
           </h1>
 
           <div className="hero-layout grid items-center justify-between">
