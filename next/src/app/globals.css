@@ -618,7 +618,7 @@ a {
 
   .gallery-folder-grid {
     justify-content: flex-start !important;
-    column-gap: 30px !important;
+    column-gap: 36px !important;
   }
 
   .gallery-folder-card {

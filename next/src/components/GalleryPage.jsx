@@ -427,7 +427,7 @@ const GalleryPage = () => {
             }}
           >
             <div
-              className="gallery-folder-grid flex flex-nowrap items-start gap-x-[36px]"
+              className="gallery-folder-grid flex flex-nowrap items-start gap-x-[46px]"
               style={{ justifyContent: "safe center" }}
             >
               {folders.map((folder) => (
