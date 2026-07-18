@@ -191,20 +191,20 @@ const HomePage = () => {
 
         <section
           data-reveal
-          id="github"
-          className="home-story-section home-story-contributions"
-          aria-labelledby="github-contributions-title"
-        >
-          <GitHubContributions />
-        </section>
-
-        <section
-          data-reveal
           id="projects"
           className="home-story-section home-story-projects"
           aria-label="Projects"
         >
           <ProjectsPage embedded />
+        </section>
+
+        <section
+          data-reveal
+          id="github"
+          className="home-story-section home-story-contributions"
+          aria-labelledby="github-contributions-title"
+        >
+          <GitHubContributions />
         </section>
 
         <div
