@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
-import ContactPage from "@/components/ContactPage";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineBlog from "@/components/InlineBlog";
 import InlineGallery from "@/components/InlineGallery";
@@ -178,13 +177,6 @@ const HomePage = () => {
           <InlineBlog />
         </section>
 
-        <section
-          id="contact"
-          className="home-story-section home-story-contact"
-          aria-label="Contact"
-        >
-          <ContactPage embedded />
-        </section>
       </section>
     </main>
   );

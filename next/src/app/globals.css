@@ -795,10 +795,6 @@ a {
   text-align: center;
 }
 
-.home-story-contact {
-  padding-bottom: clamp(48px, 7vw, 80px);
-}
-
 /* Reuse the existing folder cards without their standalone viewport shell. */
 .inline-gallery-folders>section {
   display: block !important;
