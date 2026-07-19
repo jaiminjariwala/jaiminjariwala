@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({
@@ -27,6 +27,19 @@ const MENU_ITEMS = [
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const hapticRef = useRef(null);
+
+  // iOS has no web vibration API, but toggling a native switch input
+  // (iOS 17.4+) emits the system's light haptic tick — the same feel native
+  // apps use. Android browsers get the Vibration API directly. Anywhere
+  // unsupported this is a silent no-op.
+  const triggerHaptic = () => {
+    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+      navigator.vibrate(10);
+      return;
+    }
+    hapticRef.current?.click();
+  };
 
   // Lock page scroll behind the open overlay; Escape closes it.
   useEffect(() => {
@@ -78,11 +91,26 @@ export default function MobileMenu() {
         aria-expanded={isOpen}
         aria-controls="mobile-menu-overlay"
         aria-label={isOpen ? "Close menu" : "Open menu"}
-        onClick={() => setIsOpen((open) => !open)}
+        onClick={() => {
+          triggerHaptic();
+          setIsOpen((open) => !open);
+        }}
       >
         <span aria-hidden="true" />
         <span aria-hidden="true" />
       </button>
+
+      {/* Invisible native switch: toggling it is what makes iOS produce its
+          haptic tick. Hidden from view and assistive tech, but not
+          display:none, which would mute the haptic. */}
+      <input
+        ref={hapticRef}
+        type="checkbox"
+        switch=""
+        tabIndex={-1}
+        aria-hidden="true"
+        className="mobile-menu-haptic"
+      />
 
       {isOpen ? (
         <nav

@@ -1119,6 +1119,17 @@ a {
   transform: translateY(-3.5px) rotate(-45deg);
 }
 
+/* Off-screen carrier for the iOS haptic switch trick. */
+.mobile-menu-haptic {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
