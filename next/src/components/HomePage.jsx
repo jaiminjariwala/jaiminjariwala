@@ -3,6 +3,7 @@
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
 import { Playfair_Display } from "next/font/google";
+import DesktopSidebar from "@/components/DesktopSidebar";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
@@ -80,6 +81,7 @@ const HomePage = () => {
   return (
     <main ref={mainRef} className="home-page bg-white text-[#000000]">
       <MobileMenu />
+      <DesktopSidebar />
 
       <section id="home" className="home-story-flow relative bg-white">
         <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
@@ -209,6 +211,7 @@ const HomePage = () => {
 
         <section
           data-reveal
+          id="project-2"
           className="home-story-section"
           aria-label="Computer or Browser Use and Smart Copilot project"
         >
