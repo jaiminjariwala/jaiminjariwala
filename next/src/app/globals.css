@@ -1119,14 +1119,13 @@ a {
   transform: translateY(-3.5px) rotate(-45deg);
 }
 
-/* Off-screen carrier for the iOS haptic switch trick. */
+/* Off-screen carrier for the iOS haptic switch trick: rendered at natural
+   size and full opacity just outside the viewport, since hiding tricks can
+   mute the haptic. */
 .mobile-menu-haptic {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
+  top: -120px;
+  left: -120px;
   pointer-events: none;
 }
 

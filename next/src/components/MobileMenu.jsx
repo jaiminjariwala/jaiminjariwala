@@ -29,14 +29,16 @@ export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const hapticRef = useRef(null);
 
-  // iOS has no web vibration API, but toggling a native switch input
+  // iOS has no web vibration API, but toggling a native switch control
   // (iOS 17.4+) emits the system's light haptic tick — the same feel native
-  // apps use. Android browsers get the Vibration API directly. Anywhere
-  // unsupported this is a silent no-op.
+  // apps use. Android browsers get the Vibration API. Every channel is
+  // attempted because each silently no-ops where unsupported.
   const triggerHaptic = () => {
-    if (typeof navigator !== "undefined" && "vibrate" in navigator) {
+    if (
+      typeof navigator !== "undefined" &&
+      typeof navigator.vibrate === "function"
+    ) {
       navigator.vibrate(10);
-      return;
     }
     hapticRef.current?.click();
   };
@@ -100,17 +102,14 @@ export default function MobileMenu() {
         <span aria-hidden="true" />
       </button>
 
-      {/* Invisible native switch: toggling it is what makes iOS produce its
-          haptic tick. Hidden from view and assistive tech, but not
-          display:none, which would mute the haptic. */}
-      <input
-        ref={hapticRef}
-        type="checkbox"
-        switch=""
-        tabIndex={-1}
-        aria-hidden="true"
-        className="mobile-menu-haptic"
-      />
+      {/* Invisible native switch: iOS plays its system haptic tick when it
+          toggles, and clicking the wrapping label is the reliable trigger.
+          It sits just off-screen at natural size and full opacity, because
+          display:none, visibility:hidden, or opacity:0 can mute the haptic
+          in some WebKit versions. */}
+      <label ref={hapticRef} className="mobile-menu-haptic" aria-hidden="true">
+        <input type="checkbox" switch="" tabIndex={-1} />
+      </label>
 
       {isOpen ? (
         <nav
