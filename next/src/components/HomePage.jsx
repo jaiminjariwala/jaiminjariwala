@@ -83,6 +83,17 @@ const HomePage = () => {
       <MobileMenu />
       <DesktopSidebar />
 
+      {/* The top-edge twin of the sidebar's progressive cloud: text melts
+          into white as it scrolls out under the top of the viewport. */}
+      <div className="top-edge-veil" aria-hidden="true">
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+      </div>
+
       <section id="home" className="home-story-flow relative bg-white">
         <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
           <div className="home-hero-region">

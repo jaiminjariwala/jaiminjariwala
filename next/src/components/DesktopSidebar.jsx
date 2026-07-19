@@ -176,31 +176,46 @@ export default function DesktopSidebar() {
   };
 
   return (
-    <nav className="desktop-sidebar" aria-label="Section shortcuts">
-      <ul className="desktop-sidebar-list">
-        {SIDEBAR_ITEMS.map((item) => (
-          <li key={item.label}>
-            {item.href ? (
-              <a
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="desktop-sidebar-link desktop-sidebar-external"
-              >
-                {item.label}
-              </a>
-            ) : (
-              <a
-                href={`#${item.target}`}
-                className="desktop-sidebar-link"
-                onClick={(event) => goTo(event, item)}
-              >
-                {item.label}
-              </a>
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <>
+      {/* iOS-style progressive blur behind the sidebar: invisible on the
+          white page, but full-bleed content (the photo carousel) melts into
+          a soft cloud as it slides underneath the words. Six stacked
+          backdrop-blur layers with staggered gradient masks ramp the blur
+          strength down smoothly, so there is no visible seam anywhere. */}
+      <div className="desktop-sidebar-veil" aria-hidden="true">
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+        <div />
+      </div>
+      <nav className="desktop-sidebar" aria-label="Section shortcuts">
+        <ul className="desktop-sidebar-list">
+          {SIDEBAR_ITEMS.map((item) => (
+            <li key={item.label}>
+              {item.href ? (
+                <a
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="desktop-sidebar-link desktop-sidebar-external"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <a
+                  href={`#${item.target}`}
+                  className="desktop-sidebar-link"
+                  onClick={(event) => goTo(event, item)}
+                >
+                  {item.label}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </>
   );
 }

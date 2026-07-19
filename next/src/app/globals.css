@@ -1224,6 +1224,162 @@ a {
   }
 }
 
+/* iOS-style progressive blur ("cloud") behind the sidebar. Invisible over
+   the white page; when the full-bleed photo carousel slides underneath, it
+   blurs and whitens gradually toward the left edge instead of a hard cut —
+   the same treatment iOS uses around the Dynamic Island. The mask fades
+   both the blur and the white wash, and the width never reaches the 920px
+   content column, so regular images are untouched. */
+.desktop-sidebar-veil {
+  display: none;
+}
+
+@media (min-width: 1280px) {
+  .desktop-sidebar-veil {
+    display: block;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    /* As wide as the space beside the 920px content column allows. */
+    width: min(320px, calc((100vw - 920px) / 2));
+    z-index: 55;
+    pointer-events: none;
+    /* Same gentle recipe as the top-edge veil, rotated: content stays
+       faintly readable at the very left edge instead of dying into white. */
+    background: linear-gradient(to right,
+        rgba(255, 255, 255, 0.55) 0%,
+        rgba(255, 255, 255, 0.42) 22%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.18) 56%,
+        rgba(255, 255, 255, 0.08) 72%,
+        rgba(255, 255, 255, 0) 90%);
+  }
+
+  /* Blur ramp: each layer covers a narrow, overlapping band with its own
+     fade-in/fade-out mask; strengths step down from left to right and the
+     last step is faint enough that the veil's edge is invisible. */
+  .desktop-sidebar-veil>div {
+    position: absolute;
+    inset: 0;
+  }
+
+  .desktop-sidebar-veil>div:nth-child(1) {
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    -webkit-mask-image: linear-gradient(to right, #000 0%, #000 8%, transparent 20%);
+    mask-image: linear-gradient(to right, #000 0%, #000 8%, transparent 20%);
+  }
+
+  .desktop-sidebar-veil>div:nth-child(2) {
+    -webkit-backdrop-filter: blur(2.6px);
+    backdrop-filter: blur(2.6px);
+    -webkit-mask-image: linear-gradient(to right, transparent 4%, #000 13%, #000 22%, transparent 34%);
+    mask-image: linear-gradient(to right, transparent 4%, #000 13%, #000 22%, transparent 34%);
+  }
+
+  .desktop-sidebar-veil>div:nth-child(3) {
+    -webkit-backdrop-filter: blur(1.7px);
+    backdrop-filter: blur(1.7px);
+    -webkit-mask-image: linear-gradient(to right, transparent 16%, #000 25%, #000 33%, transparent 45%);
+    mask-image: linear-gradient(to right, transparent 16%, #000 25%, #000 33%, transparent 45%);
+  }
+
+  .desktop-sidebar-veil>div:nth-child(4) {
+    -webkit-backdrop-filter: blur(1px);
+    backdrop-filter: blur(1px);
+    -webkit-mask-image: linear-gradient(to right, transparent 28%, #000 37%, #000 45%, transparent 56%);
+    mask-image: linear-gradient(to right, transparent 28%, #000 37%, #000 45%, transparent 56%);
+  }
+
+  .desktop-sidebar-veil>div:nth-child(5) {
+    -webkit-backdrop-filter: blur(0.6px);
+    backdrop-filter: blur(0.6px);
+    -webkit-mask-image: linear-gradient(to right, transparent 40%, #000 48%, #000 56%, transparent 68%);
+    mask-image: linear-gradient(to right, transparent 40%, #000 48%, #000 56%, transparent 68%);
+  }
+
+  .desktop-sidebar-veil>div:nth-child(6) {
+    -webkit-backdrop-filter: blur(0.3px);
+    backdrop-filter: blur(0.3px);
+    -webkit-mask-image: linear-gradient(to right, transparent 52%, #000 62%, #000 74%, transparent 88%);
+    mask-image: linear-gradient(to right, transparent 52%, #000 62%, #000 74%, transparent 88%);
+  }
+}
+
+/* Top-edge progressive cloud: the vertical twin of the sidebar veil, on
+   every screen size. Its height stays inside the page's top padding, so
+   nothing looks washed at rest; scrolling text melts into white on its way
+   out of the viewport. */
+.top-edge-veil {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  /* Roughly two paragraph lines tall on every screen. */
+  height: clamp(96px, 9vw, 116px);
+  z-index: 55;
+  pointer-events: none;
+  /* Deliberately light at the very edge: the top line under the veil stays
+     readable (it only fully disappears by leaving the screen), the second
+     line is barely touched, and the tail is a whisper so the resting hero
+     heading looks clean. */
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.55) 0%,
+      rgba(255, 255, 255, 0.42) 22%,
+      rgba(255, 255, 255, 0.3) 40%,
+      rgba(255, 255, 255, 0.18) 56%,
+      rgba(255, 255, 255, 0.08) 72%,
+      rgba(255, 255, 255, 0) 90%);
+}
+
+.top-edge-veil>div {
+  position: absolute;
+  inset: 0;
+}
+
+.top-edge-veil>div:nth-child(1) {
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 8%, transparent 20%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 8%, transparent 20%);
+}
+
+.top-edge-veil>div:nth-child(2) {
+  -webkit-backdrop-filter: blur(2.6px);
+  backdrop-filter: blur(2.6px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 4%, #000 13%, #000 22%, transparent 34%);
+  mask-image: linear-gradient(to bottom, transparent 4%, #000 13%, #000 22%, transparent 34%);
+}
+
+.top-edge-veil>div:nth-child(3) {
+  -webkit-backdrop-filter: blur(1.7px);
+  backdrop-filter: blur(1.7px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 16%, #000 25%, #000 33%, transparent 45%);
+  mask-image: linear-gradient(to bottom, transparent 16%, #000 25%, #000 33%, transparent 45%);
+}
+
+.top-edge-veil>div:nth-child(4) {
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 28%, #000 37%, #000 45%, transparent 56%);
+  mask-image: linear-gradient(to bottom, transparent 28%, #000 37%, #000 45%, transparent 56%);
+}
+
+.top-edge-veil>div:nth-child(5) {
+  -webkit-backdrop-filter: blur(0.6px);
+  backdrop-filter: blur(0.6px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000 48%, #000 56%, transparent 68%);
+  mask-image: linear-gradient(to bottom, transparent 40%, #000 48%, #000 56%, transparent 68%);
+}
+
+.top-edge-veil>div:nth-child(6) {
+  -webkit-backdrop-filter: blur(0.3px);
+  backdrop-filter: blur(0.3px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 52%, #000 62%, #000 74%, transparent 88%);
+  mask-image: linear-gradient(to bottom, transparent 52%, #000 62%, #000 74%, transparent 88%);
+}
+
 .desktop-sidebar-list {
   display: flex;
   flex-direction: column;
