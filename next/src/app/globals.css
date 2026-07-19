@@ -931,7 +931,7 @@ a {
   color: rgb(55, 123, 158);
   text-decoration: underline;
   text-decoration-color: rgb(55, 123, 158);
-  text-underline-offset: 3px;
+  text-decoration-thickness: 1.25px;
 }
 
 .gallery-folder-meta {
