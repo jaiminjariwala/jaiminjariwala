@@ -207,36 +207,56 @@ const HomePage = () => {
           <GitHubContributions />
         </section>
 
-        <div
+        <section
           data-reveal
-          className={`${storyCopyClass} home-story-copy`}
-          style={contentGutter}
+          className="home-story-section"
+          aria-label="Computer or Browser Use and Smart Copilot project"
         >
-          <p className="portfolio-paragraph">
-            On the side I am building{" "}
-            <span className="experience-emphasis">
-              Computer or Browser Use and Smart Copilot
-            </span>
-            , a screen-aware macOS app with two engines in one Electron
-            process. Smart Copilot is capture-and-advise: grab a region of your
-            screen and ask by text or voice, with Whisper running locally in a
-            worker for dictation and a local SmolVLM fallback for when the
-            gateway is unreachable. Computer or Browser Use is the autonomous
-            half, similar to OpenAI&apos;s Operator and Claude&apos;s Computer
-            Use: an intent router classifies each message, and commands hand
-            off to a perceive-reason-act agent loop with eleven states, step
-            budgets, and a fail-closed safety gate with a kill switch. The loop
-            drives a real Chromium inside a Docker sandbox it orchestrates
-            itself (Xvfb, a live noVNC view, an HTTP control server), or, with
-            permission, my Mac directly. Perception is hybrid: screenshots plus
-            DOM elements with screen coordinates, so the model spends fewer
-            vision tokens hunting for a search box. Underneath sit typed IPC
-            bridges, a multi-provider OpenAI-compatible client with fallback, a
-            deterministic eval harness that replays the production loop with
-            seeded clocks and scores every run, and 300+ tests, some
-            property-based.
-          </p>
-        </div>
+          <div
+            className="mx-auto w-full max-w-[920px]"
+            style={{
+              paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 12px)",
+              paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 12px)",
+            }}
+          >
+            <figure>
+              <Image
+                src="/project_2.png"
+                alt="Computer or Browser Use and Smart Copilot app interface"
+                width={3186}
+                height={1932}
+                sizes="(max-width: 767px) 100vw, 920px"
+                className="mobile-full-bleed block h-auto w-full"
+              />
+              <figcaption className="projects-embedded-caption">
+                Computer or Browser Use and Smart Copilot
+              </figcaption>
+            </figure>
+            <p className="projects-embedded-desc">
+              On the side I&apos;m building{" "}
+              <span className="experience-emphasis">
+                Computer or Browser Use and Smart Copilot
+              </span>
+              , a screen-aware macOS app with two engines in one Electron
+              process. Smart Copilot is capture-and-advise: grab a region of
+              your screen, attach PDFs or short videos (the raw video never
+              leaves the Mac), and ask by text or voice. Computer or Browser
+              Use is the autonomous half, similar to OpenAI&apos;s Operator
+              and Claude&apos;s Computer Use: give it a goal and it drives a
+              real browser, a Docker sandbox, or, with permission, my Mac
+              directly.{" "}
+              <a
+                href="https://github.com/jaiminjariwala/computer-or-browser-use-and-smart-copilot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="projects-embedded-github"
+              >
+                Github
+              </a>
+              .
+            </p>
+          </div>
+        </section>
 
         <section
           data-reveal
