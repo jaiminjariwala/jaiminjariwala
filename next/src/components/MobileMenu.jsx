@@ -20,6 +20,9 @@ const MENU_ITEMS = [
   { label: "Projects", target: "projects", offset: 16 },
   { label: "GitHub", target: "github", offset: 0 },
   { label: "Gallery", target: "gallery", offset: 16 },
+  // External profiles open in a new tab instead of jumping to a section.
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/jaiminjariwala/" },
+  { label: "LeetCode", href: "https://leetcode.com/u/jaiminjariwala/" },
 ];
 
 export default function MobileMenu() {
@@ -90,16 +93,28 @@ export default function MobileMenu() {
           <ul className="mobile-menu-list">
             {MENU_ITEMS.map((item, index) => (
               <li
-                key={item.target}
+                key={item.label}
                 style={{ animationDelay: `${80 + index * 55}ms` }}
               >
-                <a
-                  href={`#${item.target}`}
-                  className={`${playfair.className} mobile-menu-link`}
-                  onClick={(event) => goTo(event, item)}
-                >
-                  {item.label}
-                </a>
+                {item.href ? (
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${playfair.className} mobile-menu-link`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.label}
+                  </a>
+                ) : (
+                  <a
+                    href={`#${item.target}`}
+                    className={`${playfair.className} mobile-menu-link`}
+                    onClick={(event) => goTo(event, item)}
+                  >
+                    {item.label}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
