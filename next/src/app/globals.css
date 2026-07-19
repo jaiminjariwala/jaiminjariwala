@@ -992,9 +992,32 @@ a {
     margin-top: calc(0px - var(--home-story-gap));
   }
 
+  /* The negative margin above exists for the FOLDERS view, which brings its
+     own internal padding. The opened-folder view has none, so its back
+     arrow was landing nearly flush under the project 2 paragraph — restore
+     the normal section rhythm above it. */
+  .inline-gallery-detail {
+    padding-top: var(--home-story-gap);
+  }
+
+  /* Trimmed bottom paddings: enough for the rotated polaroids' drop
+     shadows, without the deep white band under the opened folder. */
   .inline-gallery-photo-row {
     min-height: 500px;
-    padding: 8px 48px 66px;
+    padding: 8px 48px 30px;
+  }
+
+  .inline-gallery-photo-scroll {
+    padding-bottom: 14px;
+  }
+}
+
+/* With the sidebar present, the first polaroid starts just to its right;
+   horizontal scrolling still carries the photos under the sidebar and its
+   veil. */
+@media (min-width: 1280px) {
+  .inline-gallery-photo-row {
+    padding-left: 170px;
   }
 }
 
