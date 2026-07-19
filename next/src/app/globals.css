@@ -1432,6 +1432,18 @@ a {
   text-decoration: underline;
   text-decoration-color: rgb(55, 123, 158);
   text-decoration-thickness: 1.25px;
+  /* A touch thicker than the plain sidebar words. */
+  -webkit-text-stroke: 0.3px currentColor;
+  transition:
+    color 350ms ease,
+    text-decoration-color 350ms ease;
+}
+
+/* While an opened photo folder sits behind the sidebar, the teal links go
+   black for readability, easing back once the photos close or scroll away. */
+.desktop-sidebar.is-over-photos .desktop-sidebar-external {
+  color: #000000;
+  text-decoration-color: #000000;
 }
 
 /* Selection-style text flash: measured gray strips sit BEHIND the text

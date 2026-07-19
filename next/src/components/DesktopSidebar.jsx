@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 // Desktop-only floating nav: a bare column of words on the left edge,
 // vertically centered. Clicking a word scrolls to its section, then the
 // section's TEXT flashes like a full mouse selection — gray bands cover the
@@ -150,6 +152,62 @@ const flashWhenSettled = (element) => {
 };
 
 export default function DesktopSidebar() {
+  const navRef = useRef(null);
+  const [overPhotos, setOverPhotos] = useState(false);
+
+  // While an opened photo folder overlaps the sidebar vertically, the teal
+  // profile links turn black so they read over the photos, and smoothly
+  // turn back when the folder closes or is scrolled away.
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const nav = navRef.current;
+      const polaroids = document.querySelectorAll(
+        ".inline-gallery-detail .inline-gallery-photo-row article",
+      );
+      if (!nav || polaroids.length === 0) {
+        setOverPhotos(false);
+        return;
+      }
+      // Black only when a polaroid actually sits behind the words — both
+      // axes must overlap, so photos parked to the right don't trigger it.
+      const sidebar = nav.getBoundingClientRect();
+      const hit = Array.from(polaroids).some((el) => {
+        const r = el.getBoundingClientRect();
+        return (
+          r.left < sidebar.right &&
+          r.right > sidebar.left &&
+          r.top < sidebar.bottom &&
+          r.bottom > sidebar.top
+        );
+      });
+      setOverPhotos(hit);
+    };
+    const schedule = () => {
+      if (!raf) raf = window.requestAnimationFrame(update);
+    };
+
+    // The detail view mounts/unmounts on open/close; watch for it, and
+    // track both page scrolling and the photo row's own horizontal
+    // scrolling (capture catches scroll events from any inner scroller).
+    const observer = new MutationObserver(schedule);
+    observer.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener("scroll", schedule, {
+      passive: true,
+      capture: true,
+    });
+    window.addEventListener("resize", schedule);
+    schedule();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule, { capture: true });
+      window.removeEventListener("resize", schedule);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
   const goTo = (event, item) => {
     event.preventDefault();
     cancelPending?.();
@@ -190,7 +248,11 @@ export default function DesktopSidebar() {
         <div />
         <div />
       </div>
-      <nav className="desktop-sidebar" aria-label="Section shortcuts">
+      <nav
+        ref={navRef}
+        className={`desktop-sidebar${overPhotos ? " is-over-photos" : ""}`}
+        aria-label="Section shortcuts"
+      >
         <ul className="desktop-sidebar-list">
           {SIDEBAR_ITEMS.map((item) => (
             <li key={item.label}>
