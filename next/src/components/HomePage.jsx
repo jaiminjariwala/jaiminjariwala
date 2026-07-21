@@ -110,12 +110,12 @@ const HomePage = () => {
                       "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
                   }}
                 >
-                  Hi, I am Jaimin Jariwala, a software engineer who builds AI
-                  products end to end. The interface is what people see, and I
-                  care deeply about that layer, but most of my work lives
-                  underneath it: agent loops, backend systems, APIs, and
-                  infrastructure. I like owning everything from idea to
-                  shipped.
+                  Hi, I am{" "}
+                  <span className="experience-emphasis">Jaimin Jariwala</span>
+                  , a software engineer who builds AI products end to end. I
+                  love working on agent loops, backend systems, APIs, and the
+                  infrastructure underneath. I like owning everything from
+                  idea to shipped.
                 </p>
               </div>
             </div>
@@ -153,12 +153,9 @@ const HomePage = () => {
                 Design Technologist I (L4) intern at Amazon
               </span>{" "}
               in Seattle. It sits in the design job family, but the work is
-              engineering. I build and ship working prototypes of voice
-              experiences for devices like the Echo Show and Echo Dot, along
-              with web and mobile prototypes. I also build the AWS
-              infrastructure behind them, with Lambda endpoints, session state
-              in DynamoDB, and a skill pipeline that puts a full conversation
-              on a real Echo you can talk to.
+              engineering. I do on-device prototyping for the Echo Show and
+              Echo Dot, web and mobile prototypes, and the AWS infrastructure
+              behind them.
             </p>
           </div>
         </div>
@@ -193,11 +190,8 @@ const HomePage = () => {
               <span className="experience-emphasis">
                 AI/ML intern at Logicwind
               </span>{" "}
-              in India. I worked on a graphology project that reads human
-              handwriting and predicts personality traits from it. I built
-              scalable computer vision models, machine learning pipelines, and
-              the APIs that served them. I also worked on a street object and
-              lane detection project.
+              in India, where I built scalable computer vision models,
+              machine learning pipelines, and the APIs that served them.
             </p>
           </div>
         </section>
