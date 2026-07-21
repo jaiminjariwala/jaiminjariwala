@@ -2,19 +2,12 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
-import { Playfair_Display } from "next/font/google";
 import DesktopSidebar from "@/components/DesktopSidebar";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
 import ProjectsPage from "@/components/ProjectsPage";
 import { getCloudinaryUrl } from "@/components/galleryData";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  weight: "800",
-  display: "swap",
-});
 
 const contentGutter = {
   paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
@@ -95,27 +88,28 @@ const HomePage = () => {
       </div>
 
       <section id="home" className="home-story-flow relative bg-white">
-        <div className="mx-auto w-full max-w-[720px]" style={contentGutter}>
+        <div
+          className="home-hero-viewport mx-auto w-full max-w-[720px]"
+          style={contentGutter}
+        >
           <div className="home-hero-region">
             <div className="home-hero-intro">
-              <h1 className={`${playfair.className} home-hero-title`}>
-                I Build and Ship: Products and The Systems Underneath Them.
-              </h1>
-
               <div className="home-hero-copy w-full">
                 <p
                   className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
                   style={{
+                    // Phones keep their small right inset; on desktop the
+                    // intro runs the full column width.
                     paddingRight:
-                      "clamp(20px, calc((100vw - 768px) * 9999), 28px)",
+                      "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
                   }}
                 >
                   Hi, I am{" "}
                   <span className="experience-emphasis">Jaimin Jariwala</span>
                   , a software engineer who builds AI products end to end. I
-                  love working on agent loops, backend systems, APIs, and the
-                  infrastructure underneath. I like owning everything from
-                  idea to shipped.
+                  love working on agent loops, backend
+                  systems, APIs, and the infrastructure underneath. I like
+                  owning everything from idea to shipped.
                 </p>
               </div>
             </div>
@@ -125,16 +119,25 @@ const HomePage = () => {
               id="me"
               className="hero-profile relative flex justify-center"
             >
-              <div className="flex h-[335px] w-[260px] items-center justify-center overflow-hidden">
+              {/* Untrimmed: the photo renders at its natural 3:4 ratio, no
+                  crop box, no zoom. On phones it bleeds to both screen
+                  edges like every other homepage image. */}
+              <figure style={{ margin: 0 }}>
                 <Image
-                  src="/images/my-profile-2.png"
-                  alt="Jaimin profile illustration"
-                  width={360}
-                  height={360}
+                  src={getCloudinaryUrl(
+                    "621D5FFE-03CC-4021-8C9D-819EE21214A8_eeeq9l",
+                    800,
+                  )}
+                  alt="Jaimin Jariwala portrait"
+                  width={1086}
+                  height={1448}
                   priority
-                  className="h-full w-full origin-center scale-[1.15] object-cover"
+                  className="mobile-full-bleed h-auto w-[320px]"
                 />
-              </div>
+                <figcaption className="home-education-caption hero-photo-caption">
+                  Captured on Day 1 at SEA41
+                </figcaption>
+              </figure>
             </div>
           </div>
 
@@ -144,7 +147,7 @@ const HomePage = () => {
             className="w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
             style={{
               marginTop:
-                "clamp(28px, calc((768px - 100vw) * 9999), 50px)",
+                "clamp(12px, calc((768px - 100vw) * 9999), 50px)",
             }}
           >
             <p className="portfolio-paragraph">
