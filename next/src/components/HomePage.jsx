@@ -104,12 +104,10 @@ const HomePage = () => {
                       "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
                   }}
                 >
-                  Hi, I am{" "}
-                  <span className="experience-emphasis">Jaimin Jariwala</span>
-                  , a software engineer who builds AI products end to end. I
-                  love working on agent loops, backend
-                  systems, APIs, and the infrastructure underneath. I like
-                  owning everything from idea to shipped.
+                  Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
+                  loves building & shipping products and scalable end-to-end
+                  systems, 0 → 1. I handle frontend, backend, cloud
+                  integration, containerization, and agent orchestration.
                 </p>
               </div>
             </div>
@@ -141,26 +139,6 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div
-            data-reveal
-            id="currently"
-            className="w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
-            style={{
-              marginTop:
-                "clamp(12px, calc((768px - 100vw) * 9999), 50px)",
-            }}
-          >
-            <p className="portfolio-paragraph">
-              Right now I am a{" "}
-              <span className="experience-emphasis">
-                Design Technologist I (L4) intern at Amazon
-              </span>{" "}
-              in Seattle. It sits in the design job family, but the work is
-              engineering. I do on-device prototyping for the Echo Show and
-              Echo Dot, web and mobile prototypes, and the AWS infrastructure
-              behind them.
-            </p>
-          </div>
         </div>
 
         <section
