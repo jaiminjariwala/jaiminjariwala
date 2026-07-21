@@ -10,10 +10,21 @@ import { useEffect, useRef, useState } from "react";
 // links (teal, underlined) and just open in a new tab.
 
 const SIDEBAR_ITEMS = [
-  // "home" scrolls to the very top; the hero heading is what flashes.
-  { label: "think big", target: "home", flashSelector: ".home-hero-title" },
-  { label: "me", target: "me", flashSelector: ".home-hero-copy p" },
-  { label: "currently", target: "currently", flashSelector: "#currently p" },
+  // The first three all live on the centered opening screen, so they only
+  // scroll back to the top of the page (no movement at all when already
+  // there) and flash their own piece of it.
+  {
+    label: "me",
+    target: "me",
+    topStage: true,
+    flashSelector: ".home-hero-copy p",
+  },
+  {
+    label: "currently",
+    target: "currently",
+    topStage: true,
+    flashSelector: "#currently p",
+  },
   {
     label: "background",
     target: "background",
@@ -41,8 +52,10 @@ const SIDEBAR_ITEMS = [
   { label: "github", href: "https://github.com/jaiminjariwala" },
 ];
 
-// Breathing room kept above a section after the jump.
-const SCROLL_OFFSET = 24;
+// Landing position for a section after the jump: enough to clear the
+// top-edge progressive veil (up to 116px tall), so photos and headings
+// arrive fully sharp below it instead of half-melted into the cloud.
+const SCROLL_OFFSET = 132;
 
 // Cancels whatever the previous click is still doing (settle watcher or a
 // running flash) so two quick clicks never fight each other.
@@ -217,13 +230,18 @@ export default function DesktopSidebar() {
     ).matches;
     const behavior = reduceMotion ? "auto" : "smooth";
 
-    if (item.target === "home") {
+    if (item.topStage) {
       window.scrollTo({ top: 0, behavior });
     } else {
       const el = document.getElementById(item.target);
       if (!el) return;
-      const top =
-        el.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET;
+      const rect = el.getBoundingClientRect();
+      // Prefer landing below the top veil; when a section is too tall for
+      // that, pull it up just enough that its bottom fits on screen too,
+      // but never closer than 16px to the top edge.
+      const fitOffset = window.innerHeight - rect.height - 24;
+      const offset = Math.max(Math.min(SCROLL_OFFSET, fitOffset), 16);
+      const top = rect.top + window.scrollY - offset;
       window.scrollTo({ top: Math.max(0, top), behavior });
     }
 
