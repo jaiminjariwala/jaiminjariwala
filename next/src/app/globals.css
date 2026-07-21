@@ -859,6 +859,11 @@ a {
   }
 }
 
+/* Tighter than the shared 9px caption gap. */
+.home-education-caption.hero-photo-caption {
+  margin-top: 6px;
+}
+
 .home-education-figure {
   width: min(920px, calc(100% - 24px));
   margin: 0 auto;

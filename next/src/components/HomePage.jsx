@@ -132,10 +132,10 @@ const HomePage = () => {
                   width={1086}
                   height={1448}
                   priority
-                  className="mobile-full-bleed h-auto w-[320px]"
+                  className="mobile-full-bleed block h-auto w-[320px]"
                 />
                 <figcaption className="home-education-caption hero-photo-caption">
-                  Captured on Day 1 at SEA41
+                  Captured on Day 1 at SEA41, Seattle
                 </figcaption>
               </figure>
             </div>
