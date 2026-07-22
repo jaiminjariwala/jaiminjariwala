@@ -141,6 +141,47 @@ const HomePage = () => {
 
         </div>
 
+        {/* Second opening screen: only the Amazon image and its paragraph,
+            centered in their own viewport. */}
+        <div
+          data-reveal
+          className="home-amazon-stage mx-auto w-full max-w-[720px]"
+          style={contentGutter}
+        >
+          {/* Untrimmed at its natural ratio, scaled to the university
+              photo's 920px width via the column-breakout figure. */}
+          <figure id="work-experience-2" className="hero-amazon-figure">
+            <Image
+              src={getCloudinaryUrl("amazon_image_zlpqhu", 1600)}
+              alt="Design Technologist internship at Amazon"
+              width={1672}
+              height={941}
+              sizes="(max-width: 767px) 100vw, 920px"
+              className="mobile-full-bleed block h-auto w-full"
+            />
+            <figcaption className="home-education-caption">
+              At present, I am a Design Technologist I (L4) intern on SHUX
+              (Smart Home UX) Alexa Team at SEA41, Amazon.
+            </figcaption>
+          </figure>
+
+          <p
+            className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+            style={{
+              marginTop: 28,
+              paddingRight:
+                "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+            }}
+          >
+            During my internship, I built and delivered Echo Show Device
+            Prototype Starter Kit 0 → 1 that enables one command rapid on
+            device prototyping, cutting setup from 2+ days of manual work to
+            about 90 seconds. Built using React Native, AWS services, and a
+            Figma MCP-to-React Native workflow to accelerate design-to-device
+            implementation.
+          </p>
+        </div>
+
         <section
           id="background"
           className="home-background-section"

@@ -71,6 +71,16 @@ a {
   flex-direction: column;
 }
 
+/* Second opening screen: the Amazon image and its paragraph get their own
+   centered viewport on every screen size. */
+.home-amazon-stage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
 .home-hero-intro {
   display: contents;
 }
@@ -840,6 +850,11 @@ a {
     order: -1;
     justify-content: flex-start;
     margin-bottom: 32px;
+  }
+
+  /* Same veil bias as the first screen. */
+  .home-amazon-stage {
+    padding-top: 48px;
   }
 
   /* Doubled class beats the shared centered caption rule that appears
