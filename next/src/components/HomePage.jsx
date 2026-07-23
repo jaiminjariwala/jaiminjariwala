@@ -187,20 +187,38 @@ const HomePage = () => {
           className="home-background-section"
           aria-label="My background"
         >
-          <figure data-reveal className="home-education-figure">
-            <div className="home-education-image-frame mobile-full-bleed">
-              <img
-                src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
-                alt="Kogan Plaza with the blue clock at The George Washington University, Washington, D.C."
-                loading="lazy"
-                className="home-education-image"
-              />
+          {/* Grouped so the sidebar can center the image and its paragraph
+              together in the viewport. */}
+          <div id="education" className="w-full">
+            <figure data-reveal className="home-education-figure">
+              <div className="home-education-image-frame mobile-full-bleed">
+                <img
+                  src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
+                  alt="Kogan Plaza with the blue clock at The George Washington University, Washington, D.C."
+                  loading="lazy"
+                  className="home-education-image"
+                />
+              </div>
+              <figcaption className="home-education-caption">
+                Pursuing Master&apos;s in Computer Science at The George
+                Washington University, Washington D.C. (August 2025 -
+                Present)
+              </figcaption>
+            </figure>
+
+            <div
+              data-reveal
+              className="home-story-copy mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+              style={{ ...contentGutter, marginTop: 28 }}
+            >
+              <p className="portfolio-paragraph">
+                Focusing on Distributed Systems, Software Engineering, Unix
+                Systems Administration, Design and Analysis of Algorithms,
+                Cloud Computing, and Technology Entrepreneurship. Incoming
+                Computer System Architecture TA.
+              </p>
             </div>
-            <figcaption className="home-education-caption">
-              I am also pursuing my Master&apos;s in Computer Science at The George
-              Washington University, Washington D.C.
-            </figcaption>
-          </figure>
+          </div>
 
           <div
             data-reveal
