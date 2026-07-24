@@ -13,16 +13,18 @@ const playfair = Playfair_Display({
 // "My Background") use 0 so the image lands flush with the top edge of the
 // screen; text targets keep a small breathing gap.
 const MENU_ITEMS = [
-  { label: "Home", target: "home", offset: 0 },
   { label: "Me", target: "me", offset: 0 },
-  { label: "Currently", target: "currently", offset: 0 },
-  { label: "My Background", target: "background", offset: 0 },
-  { label: "Projects", target: "projects", offset: 16 },
-  { label: "GitHub", target: "github", offset: 0 },
+  { label: "Work Experience 2", target: "work-experience-2", offset: 0 },
+  { label: "Education", target: "background", offset: 0 },
+  { label: "Work Experience 1", target: "work-experience-1", offset: 0 },
+  { label: "Project 1", target: "projects", offset: 16 },
+  { label: "GitHub Work", target: "github", offset: 0 },
+  { label: "Project 2", target: "project-2", offset: 0 },
   { label: "Gallery", target: "gallery", offset: 16 },
   // External profiles open in a new tab instead of jumping to a section.
   { label: "LinkedIn", href: "https://www.linkedin.com/in/jaiminjariwala/" },
   { label: "LeetCode", href: "https://leetcode.com/u/jaiminjariwala/" },
+  { label: "GitHub", href: "https://github.com/jaiminjariwala" },
 ];
 
 export default function MobileMenu() {
@@ -78,8 +80,14 @@ export default function MobileMenu() {
 
         const el = document.getElementById(item.target);
         if (!el) return;
-        const top =
-          el.getBoundingClientRect().top + window.scrollY - item.offset;
+        // Sum layout offsets instead of reading the bounding rect: not-yet-
+        // revealed sections carry the reveal animation's translateY(18px),
+        // which would land the jump 18px short.
+        let elTop = 0;
+        for (let node = el; node; node = node.offsetParent) {
+          elTop += node.offsetTop;
+        }
+        const top = elTop - item.offset;
         window.scrollTo({ top: Math.max(0, top), behavior });
       });
     });

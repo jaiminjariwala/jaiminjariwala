@@ -13,23 +13,22 @@ const SIDEBAR_ITEMS = [
   // The first three all live on the centered opening screen, so they only
   // scroll back to the top of the page (no movement at all when already
   // there) and flash their own piece of it.
+  // The photo and the intro both live on the opening screen.
   {
     label: "me",
     target: "me",
     topStage: true,
     flashSelector: ".home-hero-copy p",
   },
+  // Amazon internship: the image plus the starter-kit paragraph under it.
   {
-    label: "currently",
-    target: "currently",
-    topStage: true,
-    flashSelector: "#currently p",
+    label: "work experience 2",
+    target: "work-experience-2",
+    flashSelector: "#work-experience-2 + p",
   },
-  {
-    label: "background",
-    target: "background",
-    flashSelector: "#background .home-story-copy p",
-  },
+  // Image-plus-paragraph groups, centered vertically in the viewport.
+  { label: "education", target: "education", center: true },
+  { label: "work experience 1", target: "work-experience-1", center: true },
   {
     label: "project 1",
     target: "projects",
@@ -236,11 +235,17 @@ export default function DesktopSidebar() {
       const el = document.getElementById(item.target);
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      // Prefer landing below the top veil; when a section is too tall for
-      // that, pull it up just enough that its bottom fits on screen too,
-      // but never closer than 16px to the top edge.
-      const fitOffset = window.innerHeight - rect.height - 24;
-      const offset = Math.max(Math.min(SCROLL_OFFSET, fitOffset), 16);
+      let offset;
+      if (item.center) {
+        // Center the group vertically in the viewport.
+        offset = Math.max((window.innerHeight - rect.height) / 2, 16);
+      } else {
+        // Prefer landing below the top veil; when a section is too tall
+        // for that, pull it up just enough that its bottom fits on screen
+        // too, but never closer than 16px to the top edge.
+        const fitOffset = window.innerHeight - rect.height - 24;
+        offset = Math.max(Math.min(SCROLL_OFFSET, fitOffset), 16);
+      }
       const top = rect.top + window.scrollY - offset;
       window.scrollTo({ top: Math.max(0, top), behavior });
     }
