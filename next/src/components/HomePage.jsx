@@ -14,9 +14,6 @@ const contentGutter = {
   paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
 };
 
-const storyCopyClass =
-  "mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]";
-
 const HomePage = () => {
   const mainRef = useRef(null);
 
@@ -220,19 +217,44 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div
-            data-reveal
-            className={`${storyCopyClass} home-story-copy`}
-            style={{ ...contentGutter, marginTop: -36 }}
-          >
-            <p className="portfolio-paragraph">
-              Before grad school I was an{" "}
-              <span className="experience-emphasis">
-                AI/ML intern at Logicwind
-              </span>{" "}
-              in India, where I built scalable computer vision models,
-              machine learning pipelines, and the APIs that served them.
-            </p>
+          {/* Grouped so the sidebar can center the image and its paragraph
+              together in the viewport. */}
+          <div id="work-experience-1" className="w-full">
+            <figure data-reveal className="home-education-figure">
+              {/* Square source cropped from the top: the 3:2 frame anchors
+                  the image to its bottom edge. */}
+              <div className="home-education-image-frame mobile-full-bleed">
+                <Image
+                  src={getCloudinaryUrl(
+                    "logicwind_company_experience_image_erwixu",
+                    1600,
+                  )}
+                  alt="AI/ML internship at Logicwind"
+                  fill
+                  sizes="(max-width: 767px) 100vw, 920px"
+                  className="home-education-image"
+                  style={{ objectPosition: "center bottom" }}
+                />
+              </div>
+              <figcaption className="home-education-caption">
+                AI/ML Intern at Logicwind (May 2024 - December 2024)
+              </figcaption>
+            </figure>
+
+            <div
+              data-reveal
+              className="home-story-copy mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+              style={{ ...contentGutter, marginTop: 28 }}
+            >
+              <p className="portfolio-paragraph">
+                Built machine-learning and computer-vision models with
+                PyTorch for handwritten-text analysis and road-infrastructure
+                (lanes and objects detection) analysis through REST APIs.
+                Reduced inference latency by 20% and improved model accuracy
+                from 72% to 96%; resolved production issues with engineering
+                and client teams.
+              </p>
+            </div>
           </div>
         </section>
 
