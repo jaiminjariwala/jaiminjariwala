@@ -109,11 +109,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div
-              data-reveal
-              id="me"
-              className="hero-profile relative flex justify-center"
-            >
+            <div id="me" className="hero-profile relative flex justify-center">
               {/* Untrimmed: the photo renders at its natural 3:4 ratio, no
                   crop box, no zoom. On phones it bleeds to both screen
                   edges like every other homepage image. */}
@@ -127,7 +123,7 @@ const HomePage = () => {
                   width={1086}
                   height={1448}
                   priority
-                  className="mobile-full-bleed block h-auto w-[320px]"
+                  className="mobile-full-bleed block h-auto w-[360px]"
                 />
                 <figcaption className="home-education-caption hero-photo-caption">
                   Captured on Day 1 at SEA41, Seattle

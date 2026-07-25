@@ -63,12 +63,17 @@ a {
 }
 
 /* Desktop hero: a full-width stack — photo first (see the order rule
-   below), then the intro paragraph, then the "currently" paragraph. The
-   intro wrapper dissolves (display: contents); on phones the region goes
-   back to plain blocks and each piece is its own full-screen stage. */
+   below), then the intro paragraph. The intro wrapper dissolves (display:
+   contents); on phones the region goes back to plain blocks and each piece
+   is its own full-screen stage. */
 .home-hero-region {
   display: flex;
   flex-direction: column;
+}
+
+/* The photo comes before the intro copy on every viewport. */
+.home-hero-region .hero-profile {
+  order: -1;
 }
 
 /* Second opening screen: the Amazon image and its paragraph get their own
@@ -544,32 +549,16 @@ a {
 
 @media (max-width: 767px) {
 
-  /* First phone screen: only the heading and intro paragraph, centered
-     vertically in the viewport on any screen height. The photo sits below
-     the fold and fades in on scroll. */
-  .home-story-flow {
-    padding-top: 0;
-  }
-
+  /* First phone screen: the photo sticks to the very top of the screen,
+     with the intro paragraph following underneath. (The padding-top reset
+     lives in the later mobile block so it wins over the base rule.) */
   .home-hero-region {
-    display: block;
-  }
-
-  .home-hero-intro {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     min-height: 100vh;
     min-height: 100svh;
   }
 
-  /* "Me" jump target: on phones the photo gets its own full-height screen,
-     centered vertically, so only the photo and white space are visible. */
   .hero-profile {
-    margin-top: 0;
-    min-height: 100vh;
-    min-height: 100svh;
-    align-items: center;
+    margin: 0 0 20px;
   }
 
   /* GitHub section: same treatment — its own full-height screen with the
@@ -847,7 +836,6 @@ a {
      with air below before the intro copy. Its caption aligns left with it
      (phones keep the centered caption style). */
   .home-hero-region .hero-profile {
-    order: -1;
     justify-content: flex-start;
     margin-bottom: 32px;
   }
@@ -1064,6 +1052,12 @@ a {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+  }
+
+  /* Defined after the base .home-story-flow rule so it actually wins: the
+     first phone screen starts flush at the top edge (photo touches it). */
+  .home-story-flow {
+    padding-top: 0;
   }
 
   .home-story-flow>* {
