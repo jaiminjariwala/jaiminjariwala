@@ -857,6 +857,15 @@ a {
   margin-top: 6px;
 }
 
+/* Amazon image in the hero: identical footprint to the university photo,
+   but it lives inside the 720px column, so it breaks out to the viewport
+   center on its own. */
+.hero-amazon-figure {
+  width: min(920px, calc(100vw - 24px));
+  margin: 28px 0 0 50%;
+  transform: translateX(-50%);
+}
+
 .home-education-figure {
   width: min(920px, calc(100% - 24px));
   margin: 0 auto;
