@@ -319,6 +319,15 @@ const HomePage = () => {
               >
                 Github
               </a>
+              .{" "}
+              <a
+                href="https://github.com/jaiminjariwala/computer-or-browser-use-and-smart-copilot/releases"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="projects-embedded-github"
+              >
+                Download
+              </a>
               .
             </p>
           </div>

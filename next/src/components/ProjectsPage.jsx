@@ -71,6 +71,15 @@ const ProjectsPage = ({ embedded = false }) => {
               >
                 Github
               </a>
+              .{" "}
+              <a
+                href="https://component-library-six-eta.vercel.app"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="projects-embedded-github"
+              >
+                Live
+              </a>
               .
             </p>
           </>
