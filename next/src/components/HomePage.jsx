@@ -92,15 +92,7 @@ const HomePage = () => {
           <div className="home-hero-region">
             <div className="home-hero-intro">
               <div className="home-hero-copy w-full">
-                <p
-                  className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
-                  style={{
-                    // Phones keep their small right inset; on desktop the
-                    // intro runs the full column width.
-                    paddingRight:
-                      "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-                  }}
-                >
+                <p className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,26px)] font-normal leading-[1.48] tracking-[-0.01em]">
                   Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
                   loves building & shipping scalable end-to-end{" "}
                   <span className="whitespace-nowrap">products 0 → 1.</span>
