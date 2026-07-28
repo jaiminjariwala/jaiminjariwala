@@ -102,9 +102,11 @@ const HomePage = () => {
                   }}
                 >
                   Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
-                  loves building & shipping products and scalable end-to-end
-                  systems, 0 → 1. I handle frontend, backend, cloud
-                  integration, containerization, and agent orchestration.
+                  loves building & shipping scalable end-to-end{" "}
+                  <span className="whitespace-nowrap">products 0 → 1.</span>
+                  <br />
+                  I am best at frontend, backend, cloud integration,
+                  containerization, and agent orchestration.
                 </p>
               </div>
             </div>
