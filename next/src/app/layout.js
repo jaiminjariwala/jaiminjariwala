@@ -17,6 +17,17 @@ const shortStack = Short_Stack({
 export const metadata = {
   title: "Jaimin Jariwala",
   description: "Portfolio",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Jaimin Jariwala",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }) {

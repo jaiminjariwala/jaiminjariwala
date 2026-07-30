@@ -28,7 +28,7 @@ body {
 
 p,
 .portfolio-paragraph {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: var(--font-inter), Arial, sans-serif;
 }
 
 .experience-emphasis {
@@ -1131,7 +1131,7 @@ a {
 /* ── Mobile hamburger menu ── */
 .mobile-menu-button {
   position: fixed;
-  top: 14px;
+  top: calc(14px + env(safe-area-inset-top));
   left: 14px;
   z-index: 120;
   display: none;
@@ -1212,7 +1212,7 @@ a {
   flex-direction: column;
   gap: 22px;
   margin: 0;
-  padding: 96px 26px 40px;
+  padding: calc(96px + env(safe-area-inset-top)) 26px 40px;
   list-style: none;
 }
 
