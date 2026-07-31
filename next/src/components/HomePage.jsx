@@ -76,6 +76,7 @@ const HomePage = () => {
       {/* The top-edge twin of the sidebar's progressive cloud: text melts
           into white as it scrolls out under the top of the viewport. */}
       <div className="top-edge-veil" aria-hidden="true">
+        <div className="top-edge-veil-tint" />
         <div />
         <div />
         <div />
@@ -94,7 +95,8 @@ const HomePage = () => {
               <div className="home-hero-copy w-full">
                 <p className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,26px)] font-normal leading-[1.48] tracking-[-0.01em]">
                   Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
-                  loves building & shipping scalable end-to-end products{" "}.
+                  loves building & shipping scalable end-to-end products{" "}
+                  <span className="whitespace-nowrap">0 → 1.</span>
                   <br />
                   I am best at frontend, backend, cloud integration,
                   containerization, and agent orchestration.

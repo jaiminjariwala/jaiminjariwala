@@ -43,6 +43,7 @@ p,
 }
 
 html {
+  background: #ffffff;
   overflow-x: hidden;
 }
 
@@ -1361,17 +1362,28 @@ a {
    out of the viewport. */
 .top-edge-veil {
   position: fixed;
-  top: 0;
+  /* Start below the real status bar instead of at the true top: 0. A
+     fixed/blurred element overlapping the actual status-bar pixels is what
+     makes Safari 26's Liquid Glass give up on translucent color-sampling
+     there and paint the bar solid white. Clearing that strip lets Safari
+     sample the page behind it again, so the status bar goes back to
+     translucent, and the fade now simply begins right underneath it. */
+  top: env(safe-area-inset-top, 0px);
   right: 0;
   left: 0;
   /* Roughly two paragraph lines tall on every screen. */
   height: clamp(96px, 9vw, 116px);
   z-index: 55;
   pointer-events: none;
-  /* Deliberately light at the very edge: the top line under the veil stays
-     readable (it only fully disappears by leaving the screen), the second
-     line is barely touched, and the tail is a whisper so the resting hero
-     heading looks clean. */
+}
+
+/* Deliberately light at the very edge: the top line under the veil stays
+   readable (it only fully disappears by leaving the screen), the second
+   line is barely touched, and the tail is a whisper so the resting hero
+   heading looks clean. */
+.top-edge-veil-tint {
+  position: absolute;
+  inset: 0;
   background: linear-gradient(to bottom,
       rgba(255, 255, 255, 0.55) 0%,
       rgba(255, 255, 255, 0.42) 22%,
@@ -1386,42 +1398,42 @@ a {
   inset: 0;
 }
 
-.top-edge-veil>div:nth-child(1) {
+.top-edge-veil>div:nth-child(2) {
   -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 8%, transparent 20%);
   mask-image: linear-gradient(to bottom, #000 0%, #000 8%, transparent 20%);
 }
 
-.top-edge-veil>div:nth-child(2) {
+.top-edge-veil>div:nth-child(3) {
   -webkit-backdrop-filter: blur(2.6px);
   backdrop-filter: blur(2.6px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 4%, #000 13%, #000 22%, transparent 34%);
   mask-image: linear-gradient(to bottom, transparent 4%, #000 13%, #000 22%, transparent 34%);
 }
 
-.top-edge-veil>div:nth-child(3) {
+.top-edge-veil>div:nth-child(4) {
   -webkit-backdrop-filter: blur(1.7px);
   backdrop-filter: blur(1.7px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 16%, #000 25%, #000 33%, transparent 45%);
   mask-image: linear-gradient(to bottom, transparent 16%, #000 25%, #000 33%, transparent 45%);
 }
 
-.top-edge-veil>div:nth-child(4) {
+.top-edge-veil>div:nth-child(5) {
   -webkit-backdrop-filter: blur(1px);
   backdrop-filter: blur(1px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 28%, #000 37%, #000 45%, transparent 56%);
   mask-image: linear-gradient(to bottom, transparent 28%, #000 37%, #000 45%, transparent 56%);
 }
 
-.top-edge-veil>div:nth-child(5) {
+.top-edge-veil>div:nth-child(6) {
   -webkit-backdrop-filter: blur(0.6px);
   backdrop-filter: blur(0.6px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000 48%, #000 56%, transparent 68%);
   mask-image: linear-gradient(to bottom, transparent 40%, #000 48%, #000 56%, transparent 68%);
 }
 
-.top-edge-veil>div:nth-child(6) {
+.top-edge-veil>div:nth-child(7) {
   -webkit-backdrop-filter: blur(0.3px);
   backdrop-filter: blur(0.3px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 52%, #000 62%, #000 74%, transparent 88%);
