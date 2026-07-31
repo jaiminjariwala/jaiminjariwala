@@ -1356,90 +1356,6 @@ a {
   }
 }
 
-/* Top-edge progressive cloud: the vertical twin of the sidebar veil, on
-   every screen size. Its height stays inside the page's top padding, so
-   nothing looks washed at rest; scrolling text melts into white on its way
-   out of the viewport. */
-.top-edge-veil {
-  position: fixed;
-  /* Start below the real status bar instead of at the true top: 0. A
-     fixed/blurred element overlapping the actual status-bar pixels is what
-     makes Safari 26's Liquid Glass give up on translucent color-sampling
-     there and paint the bar solid white. Clearing that strip lets Safari
-     sample the page behind it again, so the status bar goes back to
-     translucent, and the fade now simply begins right underneath it. */
-  top: env(safe-area-inset-top, 0px);
-  right: 0;
-  left: 0;
-  /* Roughly two paragraph lines tall on every screen. */
-  height: clamp(96px, 9vw, 116px);
-  z-index: 55;
-  pointer-events: none;
-}
-
-/* Deliberately light at the very edge: the top line under the veil stays
-   readable (it only fully disappears by leaving the screen), the second
-   line is barely touched, and the tail is a whisper so the resting hero
-   heading looks clean. */
-.top-edge-veil-tint {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom,
-      rgba(255, 255, 255, 0.55) 0%,
-      rgba(255, 255, 255, 0.42) 22%,
-      rgba(255, 255, 255, 0.3) 40%,
-      rgba(255, 255, 255, 0.18) 56%,
-      rgba(255, 255, 255, 0.08) 72%,
-      rgba(255, 255, 255, 0) 90%);
-}
-
-.top-edge-veil>div {
-  position: absolute;
-  inset: 0;
-}
-
-.top-edge-veil>div:nth-child(2) {
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 8%, transparent 20%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 8%, transparent 20%);
-}
-
-.top-edge-veil>div:nth-child(3) {
-  -webkit-backdrop-filter: blur(2.6px);
-  backdrop-filter: blur(2.6px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 4%, #000 13%, #000 22%, transparent 34%);
-  mask-image: linear-gradient(to bottom, transparent 4%, #000 13%, #000 22%, transparent 34%);
-}
-
-.top-edge-veil>div:nth-child(4) {
-  -webkit-backdrop-filter: blur(1.7px);
-  backdrop-filter: blur(1.7px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 16%, #000 25%, #000 33%, transparent 45%);
-  mask-image: linear-gradient(to bottom, transparent 16%, #000 25%, #000 33%, transparent 45%);
-}
-
-.top-edge-veil>div:nth-child(5) {
-  -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(1px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 28%, #000 37%, #000 45%, transparent 56%);
-  mask-image: linear-gradient(to bottom, transparent 28%, #000 37%, #000 45%, transparent 56%);
-}
-
-.top-edge-veil>div:nth-child(6) {
-  -webkit-backdrop-filter: blur(0.6px);
-  backdrop-filter: blur(0.6px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 40%, #000 48%, #000 56%, transparent 68%);
-  mask-image: linear-gradient(to bottom, transparent 40%, #000 48%, #000 56%, transparent 68%);
-}
-
-.top-edge-veil>div:nth-child(7) {
-  -webkit-backdrop-filter: blur(0.3px);
-  backdrop-filter: blur(0.3px);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 52%, #000 62%, #000 74%, transparent 88%);
-  mask-image: linear-gradient(to bottom, transparent 52%, #000 62%, #000 74%, transparent 88%);
-}
-
 .desktop-sidebar-list {
   display: flex;
   flex-direction: column;
@@ -1527,22 +1443,5 @@ a {
     max-width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-  }
-}
-
-/* TEST: on phones, strip backdrop-filter out of the top-edge veil entirely
-   (keep only the flat gradient tint) to check whether Safari's status-bar
-   translucency is being disabled by the mere presence of a blurred fixed
-   element anywhere near the top of the page, even one that no longer
-   overlaps the safe area itself. Desktop is untouched. */
-@media (max-width: 767px) {
-  .top-edge-veil > div:nth-child(2),
-  .top-edge-veil > div:nth-child(3),
-  .top-edge-veil > div:nth-child(4),
-  .top-edge-veil > div:nth-child(5),
-  .top-edge-veil > div:nth-child(6),
-  .top-edge-veil > div:nth-child(7) {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
 }
