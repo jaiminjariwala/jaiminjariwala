@@ -95,8 +95,7 @@ const HomePage = () => {
               <div className="home-hero-copy w-full">
                 <p className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,26px)] font-normal leading-[1.48] tracking-[-0.01em]">
                   Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
-                  loves building & shipping scalable end-to-end products{" "}
-                  <span className="whitespace-nowrap">0 → 1.</span>
+                  loves building & shipping scalable end-to-end products.
                   <br />
                   I am best at frontend, backend, cloud integration,
                   containerization, and agent orchestration.
