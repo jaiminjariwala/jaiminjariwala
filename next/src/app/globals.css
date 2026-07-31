@@ -1529,3 +1529,20 @@ a {
     margin-right: calc(50% - 50vw);
   }
 }
+
+/* TEST: on phones, strip backdrop-filter out of the top-edge veil entirely
+   (keep only the flat gradient tint) to check whether Safari's status-bar
+   translucency is being disabled by the mere presence of a blurred fixed
+   element anywhere near the top of the page, even one that no longer
+   overlaps the safe area itself. Desktop is untouched. */
+@media (max-width: 767px) {
+  .top-edge-veil > div:nth-child(2),
+  .top-edge-veil > div:nth-child(3),
+  .top-edge-veil > div:nth-child(4),
+  .top-edge-veil > div:nth-child(5),
+  .top-edge-veil > div:nth-child(6),
+  .top-edge-veil > div:nth-child(7) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
