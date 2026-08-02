@@ -2,10 +2,10 @@
 
 import { useLayoutEffect, useRef } from "react";
 import Image from "next/image";
-import DesktopSidebar from "@/components/DesktopSidebar";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
+import Navbar from "@/components/Navbar";
 import ProjectsPage from "@/components/ProjectsPage";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
@@ -71,9 +71,9 @@ const HomePage = () => {
   return (
     <main ref={mainRef} className="home-page bg-white text-[#000000]">
       <MobileMenu />
-      <DesktopSidebar />
 
       <section id="home" className="home-story-flow relative bg-white">
+        <Navbar />
         <div
           className="home-hero-viewport mx-auto w-full max-w-[720px]"
           style={contentGutter}
@@ -82,11 +82,13 @@ const HomePage = () => {
             <div className="home-hero-intro">
               <div className="home-hero-copy w-full">
                 <p className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,26px)] font-normal leading-[1.48] tracking-[-0.01em]">
-                  Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
-                  loves building & shipping scalable end-to-end products.
-                  <br />
-                  I am best at frontend, backend, cloud integration,
-                  containerization, and agent orchestration.
+                  <span className="intro-highlight-text">
+                    Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
+                    loves building & shipping scalable end-to-end products.
+                    <br />
+                    I am best at frontend, backend, cloud integration,
+                    containerization, and agent orchestration.
+                  </span>
                 </p>
               </div>
             </div>
@@ -116,46 +118,14 @@ const HomePage = () => {
 
         </div>
 
-        {/* Second opening screen: only the Amazon image and its paragraph,
-            centered in their own viewport. */}
-        <div
+        <section
           data-reveal
-          className="home-amazon-stage mx-auto w-full max-w-[720px]"
-          style={contentGutter}
+          id="gallery"
+          className="home-story-section home-story-gallery"
+          aria-label="Photo folders"
         >
-          {/* Untrimmed at its natural ratio, scaled to the university
-              photo's 920px width via the column-breakout figure. */}
-          <figure id="work-experience-2" className="hero-amazon-figure">
-            <Image
-              src={getCloudinaryUrl("amazon_image_zlpqhu", 1600)}
-              alt="Design Technologist internship at Amazon"
-              width={1672}
-              height={941}
-              sizes="(max-width: 767px) 100vw, 920px"
-              className="mobile-full-bleed block h-auto w-full"
-            />
-            <figcaption className="home-education-caption">
-              At present, I am a Design Technologist I (L4) intern on SHUX
-              (Smart Home UX) Alexa Team at SEA41, Amazon.
-            </figcaption>
-          </figure>
-
-          <p
-            className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
-            style={{
-              marginTop: 28,
-              paddingRight:
-                "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-            }}
-          >
-            During my internship, I built and delivered Echo Show Device
-            Prototype Starter Kit 0 → 1 that enables one command rapid on
-            device prototyping, cutting setup from 2+ days of manual work to
-            about 90 seconds. Built using React Native, AWS services, and a
-            Figma MCP-to-React Native workflow to accelerate design-to-device
-            implementation.
-          </p>
-        </div>
+          <InlineGallery />
+        </section>
 
         <section
           id="background"
@@ -187,16 +157,52 @@ const HomePage = () => {
               style={{ ...contentGutter, marginTop: 28 }}
             >
               <p className="portfolio-paragraph">
-                Focusing on Distributed Systems, Software Engineering, Unix
-                Systems Administration, Design and Analysis of Algorithms,
-                Cloud Computing, and Technology Entrepreneurship. Incoming
-                Computer System Architecture TA.
+                Focusing on Distributed Systems, Software Security, Systems
+                Engineering I, Software Engineering, Unix Systems
+                Administration, Design and Analysis of Algorithms, Cloud
+                Computing, and Technology Entrepreneurship. Incoming Computer
+                System Architecture TA.
               </p>
             </div>
           </div>
 
-          {/* Grouped so the sidebar can center the image and its paragraph
-              together in the viewport. */}
+          <div
+            data-reveal
+            className="home-amazon-stage mx-auto w-full max-w-[720px]"
+            style={contentGutter}
+          >
+            <figure id="work-experience-2" className="hero-amazon-figure">
+              <Image
+                src={getCloudinaryUrl("amazon_image_zlpqhu", 1600)}
+                alt="Design Technologist internship at Amazon"
+                width={1672}
+                height={941}
+                sizes="(max-width: 767px) 100vw, 920px"
+                className="mobile-full-bleed block h-auto w-full"
+              />
+              <figcaption className="home-education-caption">
+                At present, I am a Design Technologist I (L4) intern on SHUX
+                (Smart Home UX) Alexa Team at SEA41, Amazon.
+              </figcaption>
+            </figure>
+
+            <p
+              className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+              style={{
+                marginTop: 28,
+                paddingRight:
+                  "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+              }}
+            >
+              During my internship, I built and delivered Echo Show Device
+              Prototype Starter Kit 0 → 1 that enables one command rapid on
+              device prototyping, cutting setup from 2+ days of manual work
+              to about 90 seconds. Built using React Native, AWS services,
+              and a Figma MCP-to-React Native workflow to accelerate
+              design-to-device implementation.
+            </p>
+          </div>
+
           <div id="work-experience-1" className="w-full">
             <figure data-reveal className="home-education-figure">
               {/* Square source cropped from the top: the 3:2 frame anchors
@@ -313,15 +319,6 @@ const HomePage = () => {
               .
             </p>
           </div>
-        </section>
-
-        <section
-          data-reveal
-          id="gallery"
-          className="home-story-section home-story-gallery"
-          aria-label="Photo folders"
-        >
-          <InlineGallery />
         </section>
 
       </section>

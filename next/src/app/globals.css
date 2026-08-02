@@ -31,6 +31,17 @@ p,
   font-family: var(--font-inter), Arial, sans-serif;
 }
 
+/* One consistent reading style across the portfolio's body copy. */
+.home-page {
+  --body-copy-font-size: clamp(21.5px, 3vw, 23.5px);
+}
+
+.home-page .portfolio-paragraph,
+.home-page .projects-embedded-desc {
+  font-size: var(--body-copy-font-size) !important;
+  line-height: 1.42 !important;
+}
+
 .experience-emphasis {
   font-weight: 600;
   -webkit-text-stroke: 0.15px currentColor;
@@ -77,14 +88,12 @@ a {
   order: -1;
 }
 
-/* Second opening screen: the Amazon image and its paragraph get their own
-   centered viewport on every screen size. */
+/* Keep the Amazon image close to the introductory copy instead of vertically
+   centering it in a second viewport. */
 .home-amazon-stage {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  min-height: 100vh;
-  min-height: 100svh;
+  justify-content: flex-start;
 }
 
 .home-hero-intro {
@@ -92,28 +101,39 @@ a {
 }
 
 .site-navbar-shell {
-  width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 80;
+  align-self: center;
+  width: min(720px, calc(100% - 40px));
+  margin: 0 auto;
+  background: transparent;
 }
 
 .site-navbar {
   position: relative;
-  z-index: 50;
   width: 100%;
-  padding: 20px 0 40px;
-  pointer-events: none;
+  /* Start below the browser's translucent top chrome so the first row is
+     never obscured in the live preview. */
+  padding: 56px 0 24px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .site-navbar-list {
   display: flex;
   align-items: center;
-  width: min(689px, calc(100% - 32px));
+  justify-content: flex-start;
+  /* Match the reading width used by the surrounding paragraphs. */
+  width: 100%;
   margin: 0 auto;
   padding: 0;
   list-style: none;
-  justify-content: space-between;
-  flex-wrap: nowrap;
+  column-gap: clamp(14px, 2vw, 24px);
+  row-gap: 6px;
+  flex-wrap: wrap;
   background-color: #ffffff;
-  pointer-events: auto;
 }
 
 .site-navbar-list li {
@@ -125,7 +145,7 @@ a {
   display: inline-flex;
   align-items: center;
   color: #000000;
-  font-size: clamp(19px, 3vw, 21px);
+  font-size: var(--body-copy-font-size) !important;
   font-weight: 400;
   line-height: 1;
   letter-spacing: -0.01em;
@@ -135,8 +155,34 @@ a {
   transition: -webkit-text-stroke-width 160ms ease;
 }
 
+.intro-highlight-text {
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.intro-highlight-text.is-highlighted {
+  animation: intro-highlight 1200ms ease-out;
+}
+
+@keyframes intro-highlight {
+  0%,
+  65% {
+    background: rgb(220, 220, 220);
+  }
+
+  100% {
+    background: transparent;
+  }
+}
+
 .site-navbar-link:hover {
   -webkit-text-stroke-width: 0.25px;
+}
+
+.site-navbar-external {
+  text-decoration-line: underline !important;
+  text-decoration-thickness: 1.25px !important;
+  text-underline-offset: 2px !important;
 }
 
 .site-navbar-link:focus-visible {
@@ -145,37 +191,14 @@ a {
   outline-offset: 4px;
 }
 
-.home-story-flow>.site-navbar-shell {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 0;
-}
-
-.home-story-flow>.site-navbar-shell .site-navbar {
-  padding-bottom: 0;
-}
-
 .home-story-section {
-  scroll-margin-top: 96px;
+  scroll-margin-top: 160px;
 }
 
-@media (min-width: 768px) {
-  .site-navbar-shell {
-    height: 114px;
-  }
-
+@media (max-width: 767px) {
+  .site-navbar-shell,
   .site-navbar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    padding: 34px 0 60px;
-  }
-
-  .home-story-flow>.site-navbar-shell {
-    height: 0;
+    display: none;
   }
 }
 
@@ -813,24 +836,15 @@ a {
   margin-inline: auto;
 }
 
-/* Desktop opening screen: the heading, intro, photo, and the "currently"
-   paragraph fill the first viewport, vertically centered on any laptop
-   height, with the university section starting below the fold. Phones keep
-   their own full-screen stages. */
+/* Desktop opening content follows the in-flow navbar; phones keep their own
+   full-screen stages. */
 @media (min-width: 768px) {
   .home-story-flow {
     padding-top: 0;
   }
 
   .home-hero-viewport {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 100vh;
-    min-height: 100svh;
-    /* Bias the centered stage down a touch so the photo doesn't hug the
-       top edge. */
-    padding-top: 48px;
+    padding-top: 0;
   }
 
   /* Photo leads the stack on desktop, left-aligned against the column,
@@ -839,11 +853,6 @@ a {
   .home-hero-region .hero-profile {
     justify-content: flex-start;
     margin-bottom: 32px;
-  }
-
-  /* Same veil bias as the first screen. */
-  .home-amazon-stage {
-    padding-top: 48px;
   }
 
   /* Doubled class beats the shared centered caption rule that appears
@@ -868,7 +877,7 @@ a {
    center on its own. */
 .hero-amazon-figure {
   width: min(920px, calc(100vw - 24px));
-  margin: 28px 0 0 50%;
+  margin: 0 0 0 50%;
   transform: translateX(-50%);
 }
 
@@ -991,7 +1000,7 @@ a {
 }
 
 .inline-unfold {
-  animation: inline-unfold 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: inline-unfold 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
   transform-origin: top center;
 }
 
@@ -1004,6 +1013,49 @@ a {
   to {
     opacity: 1;
     transform: translateY(0) scaleY(1);
+  }
+}
+
+.inline-fold {
+  pointer-events: none;
+  animation: inline-fold 520ms cubic-bezier(0.4, 0, 1, 1) both;
+  transform-origin: top center;
+}
+
+@keyframes inline-fold {
+  from {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-12px) scaleY(0.96);
+  }
+}
+
+.inline-gallery-polaroid {
+  animation: inline-polaroid-enter 460ms cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+  transform-origin: center bottom;
+}
+
+@keyframes inline-polaroid-enter {
+  from {
+    opacity: 0;
+    transform: translateY(54px) scale(0.94) rotate(0deg);
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inline-unfold,
+  .inline-fold,
+  .inline-gallery-polaroid {
+    animation: none;
   }
 }
 
@@ -1029,15 +1081,6 @@ a {
 
   .inline-gallery-photo-scroll {
     padding-bottom: 14px;
-  }
-}
-
-/* With the sidebar present, the first polaroid starts just to its right;
-   horizontal scrolling still carries the photos under the sidebar and its
-   veil. */
-@media (min-width: 1280px) {
-  .inline-gallery-photo-row {
-    padding-left: 170px;
   }
 }
 
