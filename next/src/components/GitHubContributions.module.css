@@ -1,12 +1,12 @@
 .section {
-  width: min(1000px, calc(100% - 40px));
+  width: calc(100% - clamp(40px, 5vw, 96px));
   margin-inline: auto;
   color: #000000;
   font-family: inherit;
 }
 
 .heading {
-  margin: 0 0 14px;
+  margin: 0;
   color: #687076;
   font-size: 14px;
   font-weight: 400;
@@ -15,21 +15,81 @@
   -webkit-text-stroke: 0;
 }
 
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.scrollControls {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 11px;
+}
+
+.scrollControl {
+  display: grid;
+  width: 16px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  place-items: center;
+  background: transparent;
+  color: #a7a7a7;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+  transition: color 140ms ease;
+}
+
+.scrollControl:hover {
+  color: #6b6b6b;
+}
+
+.scrollControl svg {
+  width: 16px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.scrollControl:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 2px;
+}
+
 .viewport {
   width: 100%;
   min-width: 0;
-  overflow: visible;
+  padding-bottom: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .graph {
-  --cell-gap: clamp(2px, 0.3vw, 4px);
-  width: 100%;
-  min-width: 0;
+  --cell-size: 16px;
+  --cell-gap: 4px;
+  width: max-content;
+  min-width: max-content;
 }
 
 .monthRow {
   display: grid;
-  grid-template-columns: repeat(var(--week-count), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--week-count), var(--cell-size));
   column-gap: var(--cell-gap);
   height: 26px;
   color: #687076;
@@ -46,19 +106,18 @@
 
 .graphBody,
 .weeks {
-  width: 100%;
-  min-width: 0;
+  width: max-content;
+  min-width: max-content;
 }
 
 .weeks {
-  display: grid;
-  grid-template-columns: repeat(var(--week-count), minmax(0, 1fr));
+  display: flex;
   gap: var(--cell-gap);
 }
 
 .week {
   display: grid;
-  grid-template-rows: repeat(7, auto);
+  grid-template-rows: repeat(7, var(--cell-size));
   gap: var(--cell-gap);
   min-width: 0;
 }
@@ -66,10 +125,10 @@
 .dayWrap,
 .day {
   display: block;
-  width: 100%;
-  min-width: 0;
-  height: auto;
-  aspect-ratio: 1;
+  width: var(--cell-size);
+  min-width: var(--cell-size);
+  height: var(--cell-size);
+  aspect-ratio: auto;
 }
 
 .dayWrap {
@@ -330,9 +389,12 @@ button.day {
   }
 
   .heading {
-    margin-bottom: 22px;
     font-size: 15px;
     line-height: 1.2;
+  }
+
+  .headingRow {
+    margin-bottom: 22px;
   }
 
   .viewport {

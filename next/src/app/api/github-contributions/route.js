@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 const GITHUB_USERNAME = "jaiminjariwala";
 const GITHUB_CONTRIBUTIONS_URL = `https://github.com/users/${GITHUB_USERNAME}/contributions`;
+const CONTRIBUTION_START_DATE = "2024-10-01";
 const REVALIDATE_SECONDS = 60 * 60;
 const FETCH_TIMEOUT_MS = 10_000;
 const MIN_CALENDAR_DAYS = 365;
@@ -101,17 +102,7 @@ function parseContributionHtml(html) {
   const contributions = Array.from(contributionByDate.values()).sort((a, b) =>
     a.date.localeCompare(b.date)
   );
-  const firstTimestamp = Date.parse(`${contributions[0]?.date}T00:00:00Z`);
-  const lastTimestamp = Date.parse(`${contributions.at(-1)?.date}T00:00:00Z`);
-  const expectedDayCount =
-    Number.isNaN(firstTimestamp) || Number.isNaN(lastTimestamp)
-      ? 0
-      : Math.round((lastTimestamp - firstTimestamp) / DAY_IN_MS) + 1;
-
-  if (
-    contributions.length < MIN_CALENDAR_DAYS ||
-    contributions.length !== expectedDayCount
-  ) {
+  if (!contributions.length) {
     throw new Error("GitHub returned an incomplete contribution calendar.");
   }
 
@@ -134,24 +125,56 @@ function parseContributionHtml(html) {
 
 export async function GET() {
   try {
-    const response = await fetch(GITHUB_CONTRIBUTIONS_URL, {
-      headers: {
-        Accept: "text/html",
-        "User-Agent": "jaiminjariwala-portfolio",
-      },
-      next: { revalidate: REVALIDATE_SECONDS },
-      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    const today = new Date().toISOString().slice(0, 10);
+    const startYear = Number.parseInt(CONTRIBUTION_START_DATE.slice(0, 4), 10);
+    const endYear = Number.parseInt(today.slice(0, 4), 10);
+    const years = Array.from(
+      { length: endYear - startYear + 1 },
+      (_, index) => startYear + index,
+    );
+    const calendars = await Promise.all(
+      years.map(async (year) => {
+        const response = await fetch(
+          `${GITHUB_CONTRIBUTIONS_URL}?from=${year}-01-01&to=${year}-12-31`,
+          {
+            headers: {
+              Accept: "text/html",
+              "User-Agent": "jaiminjariwala-portfolio",
+            },
+            next: { revalidate: REVALIDATE_SECONDS },
+            signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error(`GitHub responded with status ${response.status}.`);
+        }
+
+        return parseContributionHtml(await response.text()).contributions;
+      }),
+    );
+    const contributionByDate = new Map();
+
+    calendars.flat().forEach((day) => {
+      if (day.date >= CONTRIBUTION_START_DATE && day.date <= today) {
+        contributionByDate.set(day.date, day);
+      }
     });
 
-    if (!response.ok) {
-      throw new Error(`GitHub responded with status ${response.status}.`);
-    }
+    const contributions = Array.from(contributionByDate.values()).sort((a, b) =>
+      a.date.localeCompare(b.date),
+    );
 
-    const calendar = parseContributionHtml(await response.text());
+    if (!contributions.length) {
+      throw new Error("GitHub returned no contribution history.");
+    }
 
     return NextResponse.json(
       {
-        ...calendar,
+        username: GITHUB_USERNAME,
+        profileUrl: `https://github.com/${GITHUB_USERNAME}`,
+        range: { from: CONTRIBUTION_START_DATE, to: today },
+        contributions,
         updatedAt: new Date().toISOString(),
       },
       {

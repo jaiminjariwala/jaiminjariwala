@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { label: "work1", target: "work-experience-1" },
   { label: "project 2", target: "project-2" },
   { label: "project 1", target: "projects" },
-  { label: "github work", target: "github" },
   { label: "github", href: "https://github.com/jaiminjariwala" },
   { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
   { label: "linkedin", href: "https://www.linkedin.com/in/jaiminjariwala/" },

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import styles from "./GitHubContributions.module.css";
 
 const PROFILE_URL = "https://github.com/jaiminjariwala";
@@ -65,20 +65,40 @@ function buildCalendar(contributions) {
     weeks.map((week, index) => [week.key, index])
   );
   const monthMap = new Map();
+  const yearMap = new Map();
 
   calendarDays.forEach((day) => {
     const monthKey = day.date.slice(0, 7);
+    const weekIndex = weekIndexes.get(getWeekKey(day.parsedDate));
 
     if (!monthMap.has(monthKey)) {
       monthMap.set(monthKey, {
         key: monthKey,
         label: MONTH_FORMATTER.format(day.parsedDate),
-        weekIndex: weekIndexes.get(getWeekKey(day.parsedDate)),
+        weekIndex,
       });
     }
+
+    const year = day.date.slice(0, 4);
+    if (!yearMap.has(year)) {
+      yearMap.set(year, {
+        year,
+        total: 0,
+        firstWeekIndex: weekIndex,
+      });
+    }
+
+    const yearEntry = yearMap.get(year);
+    yearEntry.total += day.count;
+    yearEntry.firstWeekIndex = Math.min(yearEntry.firstWeekIndex, weekIndex);
+    yearEntry.lastWeekIndex = Math.max(yearEntry.lastWeekIndex ?? weekIndex, weekIndex);
   });
 
-  return { weeks, months: Array.from(monthMap.values()) };
+  return {
+    weeks,
+    months: Array.from(monthMap.values()),
+    years: Array.from(yearMap.values()),
+  };
 }
 
 function getDayDetails(day) {
@@ -111,6 +131,7 @@ const GitHubContributions = () => {
     stale: false,
   });
   const [selectedDate, setSelectedDate] = useState(null);
+  const [activeYear, setActiveYear] = useState(null);
   const sectionRef = useRef(null);
   const viewportRef = useRef(null);
   const weeksRef = useRef(null);
@@ -123,6 +144,37 @@ const GitHubContributions = () => {
   const isReady = state.status === "success";
   const displayedWeeks = isReady ? calendar.weeks : LOADING_WEEKS;
   const profileUrl = state.data?.profileUrl || PROFILE_URL;
+  const activeYearData =
+    calendar.years.find((year) => year.year === activeYear) ??
+    calendar.years[0];
+  const totalContributions = calendar.years.reduce(
+    (total, year) => total + year.total,
+    0,
+  );
+
+  const updateActiveYear = useCallback(() => {
+    const viewport = viewportRef.current;
+    if (!isReady || !viewport || !calendar.years.length) return;
+
+    // The complete history is intentionally visible as one continuous strip.
+    // On wide displays several years can be on-screen at once, so map the
+    // actual scroll progress across its three year summaries.
+    const maxScrollLeft = Math.max(
+      0,
+      viewport.scrollWidth - viewport.clientWidth,
+    );
+    const progress =
+      maxScrollLeft === 0
+        ? 0
+        : Math.min(1, Math.max(0, viewport.scrollLeft / maxScrollLeft));
+    const yearIndex = Math.round(progress * (calendar.years.length - 1));
+    const nextYear = calendar.years[yearIndex]?.year;
+    if (nextYear) {
+      setActiveYear((currentYear) =>
+        currentYear === nextYear ? currentYear : nextYear,
+      );
+    }
+  }, [calendar.years, isReady]);
 
   useEffect(() => {
     let isActive = true;
@@ -237,6 +289,17 @@ const GitHubContributions = () => {
     };
   }, [isReady, calendar.weeks.length]);
 
+  useLayoutEffect(() => {
+    if (!isReady) return;
+    const frame = window.requestAnimationFrame(updateActiveYear);
+    window.addEventListener("resize", updateActiveYear);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateActiveYear);
+    };
+  }, [isReady, calendar.weeks.length, updateActiveYear]);
+
   // Tap-opened tooltips: the body clamps inside the window and the arrow
   // slides to point at the selected tile. While a tooltip is open, tapping a
   // nearby tile keeps the body exactly where it is — only the content and
@@ -322,6 +385,7 @@ const GitHubContributions = () => {
 
   const handleViewportScroll = () => {
     setSelectedDate(null);
+    updateActiveYear();
 
     const activeElement = document.activeElement;
     if (
@@ -332,8 +396,18 @@ const GitHubContributions = () => {
     }
   };
 
-  const heading = isReady
-    ? `${state.data.total.toLocaleString()} GitHub contributions in the last year`
+  const scrollGraph = (direction) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    viewport.scrollBy({
+      left: viewport.clientWidth * 0.75 * direction,
+      behavior: "smooth",
+    });
+  };
+
+  const heading = isReady && activeYearData
+    ? `${activeYearData.total.toLocaleString()} GitHub contributions in ${activeYearData.year}`
     : state.status === "error"
       ? "GitHub contributions"
       : "Loading GitHub contributions…";
@@ -345,9 +419,35 @@ const GitHubContributions = () => {
 
   return (
     <div ref={sectionRef} className={styles.section}>
-      <h2 id="github-contributions-title" className={styles.heading}>
-        {heading}
-      </h2>
+      <div className={styles.headingRow}>
+        <h2 id="github-contributions-title" className={styles.heading}>
+          {heading}
+        </h2>
+        <div className={styles.scrollControls} aria-label="Scroll contribution history">
+          <button
+            className={styles.scrollControl}
+            data-cursor-type="select-black"
+            type="button"
+            aria-label="Show earlier contribution history"
+            onClick={() => scrollGraph(-1)}
+          >
+            <svg viewBox="0 0 16 12" aria-hidden="true">
+              <path d="M15 6H1M6 .5 1 6l5 5.5" />
+            </svg>
+          </button>
+          <button
+            className={styles.scrollControl}
+            data-cursor-type="select-black"
+            type="button"
+            aria-label="Show later contribution history"
+            onClick={() => scrollGraph(1)}
+          >
+            <svg viewBox="0 0 16 12" aria-hidden="true">
+              <path d="M1 6h14M10 .5 15 6l-5 5.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
       {state.status === "error" ? (
         <div className={styles.error} role="status">
@@ -386,17 +486,18 @@ const GitHubContributions = () => {
                   ref={weeksRef}
                   className={styles.weeks}
                   role={isReady ? "group" : undefined}
-                  aria-label={
-                    isReady
-                      ? `${state.data.total.toLocaleString()} GitHub contributions from ${state.data.range.from} through ${state.data.range.to}.`
+                    aria-label={
+                      isReady
+                      ? `${totalContributions.toLocaleString()} GitHub contributions from ${state.data.range.from} through ${state.data.range.to}.`
                       : undefined
-                  }
+                    }
                 >
                   {displayedWeeks.map((week) => (
                     <div
                       className={styles.week}
                       role={isReady ? "presentation" : undefined}
                       key={week.key}
+                      data-calendar-year={week.key.slice(0, 4)}
                     >
                       {week.days.map((day, dayIndex) => {
                         if (!day) {
