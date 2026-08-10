@@ -105,9 +105,18 @@ a {
   top: 0;
   z-index: 80;
   align-self: center;
-  width: min(720px, calc(100% - 40px));
+  width: fit-content;
+  max-width: calc(100% - 40px);
   margin: 0 auto;
   background: transparent;
+  transition: transform 220ms ease, opacity 180ms ease;
+  will-change: transform;
+}
+
+.site-navbar-shell.is-scroll-hidden {
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(calc(-100% - 8px));
 }
 
 .site-navbar {
@@ -126,7 +135,8 @@ a {
   align-items: center;
   justify-content: flex-start;
   /* Match the reading width used by the surrounding paragraphs. */
-  width: 100%;
+  width: fit-content;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0;
   list-style: none;
@@ -881,6 +891,163 @@ a {
   transform: translateX(-50%);
 }
 
+.work-experience-carousel {
+  width: 100%;
+  scroll-margin-top: 160px;
+}
+
+.projects-carousel {
+  width: 100%;
+  scroll-margin-top: 160px;
+}
+
+.work-experience-viewport {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+
+.projects-carousel-viewport {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y;
+}
+
+.work-experience-viewport::-webkit-scrollbar,
+.projects-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.work-experience-track {
+  display: flex;
+  width: 200%;
+}
+
+.projects-carousel-track {
+  display: flex;
+  width: 200%;
+}
+
+.work-experience-slide {
+  flex: 0 0 50%;
+  min-width: 0;
+  scroll-snap-align: start;
+  /* Both work anchors live on the individual slides. Keep the image controls
+     below the sticky navbar whenever a navigation link jumps here. */
+  scroll-margin-top: 160px;
+}
+
+.projects-carousel-slide {
+  flex: 0 0 50%;
+  min-width: 0;
+  scroll-snap-align: start;
+  scroll-margin-top: 160px;
+}
+
+.work-experience-controls-row {
+  display: flex;
+  width: min(920px, calc(100% - 24px));
+  margin: 0 auto 10px;
+  justify-content: flex-end;
+}
+
+.projects-carousel-controls-row {
+  display: flex;
+  width: min(920px, calc(100% - 24px));
+  margin: 0 auto 10px;
+  justify-content: flex-end;
+}
+
+.projects-carousel-slide-content {
+  padding-left: clamp(0px, calc((768px - 100vw) * 9999), 12px);
+  padding-right: clamp(0px, calc((768px - 100vw) * 9999), 12px);
+}
+
+.projects-carousel-slide figure {
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .work-experience-controls-row,
+  .projects-carousel-controls-row {
+    /* The work stage deliberately has breathing room above its photo; bring
+       only the navigation down into that space so it reads as attached. */
+    position: relative;
+    z-index: 1;
+    transform: translateY(22px);
+  }
+
+  /* Match Amazon's stage spacing so either experience starts the same
+     distance below the shared navigation arrows. */
+  .work-experience-logicwind {
+    padding-top: clamp(22px, 2.4vw, 36px);
+  }
+
+  .projects-carousel-slide-content {
+    padding-top: clamp(22px, 2.4vw, 36px);
+  }
+}
+
+.work-experience-figure {
+  position: relative;
+}
+
+.work-experience-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.work-experience-controls button {
+  display: grid;
+  width: 16px;
+  height: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  place-items: center;
+  background: transparent;
+  color: #a7a7a7;
+  cursor: pointer;
+  font: inherit;
+  line-height: 1;
+  transition: color 140ms ease;
+}
+
+.work-experience-controls button:not(:disabled):hover {
+  color: #6b6b6b;
+}
+
+.work-experience-controls button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.work-experience-controls button:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 3px;
+}
+
+.work-experience-controls svg {
+  width: 16px;
+  height: 12px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
 .home-education-image-frame {
   position: relative;
   width: 100%;
@@ -1060,6 +1227,20 @@ a {
 }
 
 @media (min-width: 768px) {
+  /* The folder gallery is embedded in the story flow. Match its internal
+     top and bottom air so the folders sit visually centered between the
+     intro copy and the next section. */
+  .inline-gallery-folders .gallery-folder-scroll {
+    padding-top: 32px !important;
+    padding-bottom: 46px !important;
+  }
+
+  /* Keep the Amazon work block equally separated from the content above
+     and below it. */
+  .home-amazon-stage {
+    margin-block: clamp(22px, 2.4vw, 36px);
+  }
+
   .home-story-gallery {
     margin-top: calc(0px - var(--home-story-gap));
   }
