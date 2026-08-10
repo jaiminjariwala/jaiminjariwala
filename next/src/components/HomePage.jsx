@@ -1,17 +1,347 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
 import Navbar from "@/components/Navbar";
-import ProjectsPage from "@/components/ProjectsPage";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
 const contentGutter = {
   paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
   paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+};
+
+const WorkExperienceCarousel = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const viewportRef = useRef(null);
+
+  const scrollToExperience = (index) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    viewport.scrollTo({
+      left: viewport.clientWidth * index,
+      behavior: "smooth",
+    });
+  };
+
+  const updateActiveExperience = (event) => {
+    const viewport = event.currentTarget;
+    const nextIndex = Math.round(viewport.scrollLeft / viewport.clientWidth);
+    setActiveIndex((currentIndex) =>
+      currentIndex === nextIndex ? currentIndex : nextIndex,
+    );
+  };
+
+  const renderControls = () => (
+    <div
+      className="work-experience-controls"
+      aria-label="Work experience navigation"
+      style={{ position: "static" }}
+    >
+      <button
+        type="button"
+        data-cursor-type="select-black"
+        aria-label="Show Amazon experience"
+        disabled={activeIndex === 0}
+        onClick={() => scrollToExperience(0)}
+      >
+        <svg viewBox="0 0 16 12" aria-hidden="true">
+          <path d="M15 6H1M6 .5 1 6l5 5.5" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        data-cursor-type="select-black"
+        aria-label="Show Logicwind experience"
+        disabled={activeIndex === 1}
+        onClick={() => scrollToExperience(1)}
+      >
+        <svg viewBox="0 0 16 12" aria-hidden="true">
+          <path d="M1 6h14M10 .5 15 6l-5 5.5" />
+        </svg>
+      </button>
+    </div>
+  );
+
+  return (
+    <section
+      data-reveal
+      className="work-experience-carousel"
+      aria-label="Work experience"
+    >
+      <div
+        className="work-experience-controls-row"
+        style={{
+          display: "flex",
+          width: "min(920px, calc(100% - 24px))",
+          margin: "0 auto 10px",
+          justifyContent: "flex-end",
+        }}
+      >
+        {renderControls()}
+      </div>
+      <div
+        ref={viewportRef}
+        className="work-experience-viewport"
+        onScroll={updateActiveExperience}
+      >
+        <div className="work-experience-track">
+        <article className="work-experience-slide" id="work-experience-2">
+          <div
+            className="home-amazon-stage mx-auto w-full max-w-[720px]"
+            style={contentGutter}
+          >
+            <figure className="hero-amazon-figure work-experience-figure">
+              <Image
+                src={getCloudinaryUrl("amazon_image_zlpqhu", 1600)}
+                alt="Design Technologist internship at Amazon"
+                width={1672}
+                height={941}
+                sizes="(max-width: 767px) 100vw, 920px"
+                className="mobile-full-bleed block h-auto w-full"
+              />
+              <figcaption className="home-education-caption">
+                At present, I am a Design Technologist I (L4) intern on SHUX
+                (Smart Home UX) Alexa Team at SEA41, Amazon.
+              </figcaption>
+            </figure>
+
+            <p
+              className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+              style={{
+                marginTop: 28,
+                paddingRight:
+                  "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+              }}
+            >
+              During my internship, I built and delivered Echo Show Device
+              Prototype Starter Kit 0 → 1 that enables one command rapid on
+              device prototyping, cutting setup from 2+ days of manual work
+              to about 90 seconds. Built using React Native, AWS services,
+              and a Figma MCP-to-React Native workflow to accelerate
+              design-to-device implementation.
+            </p>
+          </div>
+        </article>
+
+        <article className="work-experience-slide" id="work-experience-1">
+          <div className="work-experience-logicwind w-full">
+            <figure className="home-education-figure work-experience-figure">
+              <div className="home-education-image-frame mobile-full-bleed">
+                <Image
+                  src={getCloudinaryUrl(
+                    "logicwind_company_experience_image_erwixu",
+                    1600,
+                  )}
+                  alt="AI/ML internship at Logicwind"
+                  fill
+                  sizes="(max-width: 767px) 100vw, 920px"
+                  className="home-education-image"
+                  style={{ objectPosition: "center bottom" }}
+                />
+              </div>
+              <figcaption className="home-education-caption">
+                AI/ML Intern at Logicwind (May 2024 - December 2024)
+              </figcaption>
+            </figure>
+
+            <div
+              className="home-story-copy mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
+              style={{ ...contentGutter, marginTop: 28 }}
+            >
+              <p className="portfolio-paragraph">
+                Built machine-learning and computer-vision models with
+                PyTorch for handwritten-text analysis and road-infrastructure
+                (lanes and objects detection) analysis through REST APIs.
+                Reduced inference latency by 20% and improved model accuracy
+                from 72% to 96%; resolved production issues with engineering
+                and client teams.
+              </p>
+            </div>
+          </div>
+        </article>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ProjectsCarousel = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const viewportRef = useRef(null);
+
+  const scrollToProject = (index) => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+
+    viewport.scrollTo({
+      left: viewport.clientWidth * index,
+      behavior: "smooth",
+    });
+  };
+
+  const updateActiveProject = (event) => {
+    const viewport = event.currentTarget;
+    const nextIndex = Math.round(viewport.scrollLeft / viewport.clientWidth);
+    setActiveIndex((currentIndex) =>
+      currentIndex === nextIndex ? currentIndex : nextIndex,
+    );
+  };
+
+  return (
+    <section
+      data-reveal
+      id="project-2"
+      className="projects-carousel"
+      aria-label="Projects"
+    >
+      <div className="projects-carousel-controls-row">
+        <div
+          className="work-experience-controls"
+          aria-label="Project navigation"
+        >
+          <button
+            type="button"
+            data-cursor-type="select-black"
+            aria-label="Show Computer or Browser Use project"
+            disabled={activeIndex === 0}
+            onClick={() => scrollToProject(0)}
+          >
+            <svg viewBox="0 0 16 12" aria-hidden="true">
+              <path d="M15 6H1M6 .5 1 6l5 5.5" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            data-cursor-type="select-black"
+            aria-label="Show Component Library project"
+            disabled={activeIndex === 1}
+            onClick={() => scrollToProject(1)}
+          >
+            <svg viewBox="0 0 16 12" aria-hidden="true">
+              <path d="M1 6h14M10 .5 15 6l-5 5.5" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div
+        ref={viewportRef}
+        className="projects-carousel-viewport"
+        onScroll={updateActiveProject}
+      >
+        <div className="projects-carousel-track">
+          <article className="projects-carousel-slide">
+            <div className="projects-carousel-slide-content mx-auto w-full max-w-[920px]">
+              <figure>
+                <Image
+                  src="/project_2.png"
+                  alt="Computer or Browser Use and Smart Copilot app interface"
+                  width={3186}
+                  height={1932}
+                  sizes="(max-width: 767px) 100vw, 920px"
+                  className="mobile-full-bleed block h-auto w-full"
+                />
+                <figcaption className="projects-embedded-caption">
+                  Computer or Browser Use and Smart Copilot
+                </figcaption>
+              </figure>
+              <p className="projects-embedded-desc">
+                On the side I&apos;m building{" "}
+                <span className="experience-emphasis">
+                  Computer or Browser Use and Smart Copilot
+                </span>
+                , a screen-aware macOS app with two engines in one Electron
+                process. Smart Copilot is capture-and-advise: grab a region of
+                your screen, attach PDFs or short videos (the raw video never
+                leaves the Mac), and ask by text or voice. Computer or Browser
+                Use is the autonomous half, similar to OpenAI&apos;s Operator
+                and Claude&apos;s Computer Use: give it a goal and it drives a
+                real browser, a Docker sandbox, or, with permission, my Mac
+                directly.{" "}
+                <a
+                  href="https://github.com/jaiminjariwala/computer-or-browser-use-and-smart-copilot"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="projects-embedded-github"
+                >
+                  Github
+                </a>
+                .{" "}
+                <a
+                  href="https://github.com/jaiminjariwala/computer-or-browser-use-and-smart-copilot/releases"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="projects-embedded-github"
+                >
+                  Download
+                </a>
+                .
+              </p>
+            </div>
+          </article>
+
+          <article id="projects" className="projects-carousel-slide">
+            <div className="projects-carousel-slide-content mx-auto w-full max-w-[920px]">
+              <figure>
+                <a
+                  href="https://component-library-six-eta.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open the Component Library project"
+                  className="mobile-full-bleed block w-full"
+                >
+                  <Image
+                    src="/images/project-1-shot.png"
+                    alt="Component Library project interface"
+                    width={2922}
+                    height={1767}
+                    sizes="(max-width: 767px) 100vw, 920px"
+                    className="block h-auto w-full"
+                  />
+                </a>
+                <figcaption className="projects-embedded-caption">
+                  Open Source Component Library Project
+                </figcaption>
+              </figure>
+              <p className="projects-embedded-desc">
+                An open-source component library and playground built with
+                Next.js and TypeScript. It&apos;s a workspace where you can
+                browse polished UI components, see them render live, read and
+                edit their code in an in-browser editor, and grab any assets
+                they use. Signed-in users can publish their own components to
+                a shared community gallery, fork others&apos; work, and roll back
+                through version history. I built it to have one place where
+                interactive, copy-paste-ready components live, with the real
+                code and assets right next to the preview.{" "}
+                <a
+                  href="https://github.com/jaiminjariwala/NEXT-JS/tree/main/component-library"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="projects-embedded-github"
+                >
+                  Github
+                </a>
+                .{" "}
+                <a
+                  href="https://component-library-six-eta.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="projects-embedded-github"
+                >
+                  Live
+                </a>
+                .
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  );
 };
 
 const HomePage = () => {
@@ -83,8 +413,9 @@ const HomePage = () => {
               <div className="home-hero-copy w-full">
                 <p className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,26px)] font-normal leading-[1.48] tracking-[-0.01em]">
                   <span className="intro-highlight-text">
-                    Hi, I am Jaimin Mukesh Jariwala, a Software Engineer who
-                    loves building & shipping scalable end-to-end products.
+                    Hi, I am Jaimin Mukesh Jariwala, a Software Engineer
+                    <br />
+                    who loves building & shipping scalable end-to-end products.
                     <br />
                     I am best at frontend, backend, cloud integration,
                     containerization, and agent orchestration.
@@ -166,89 +497,7 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div
-            data-reveal
-            className="home-amazon-stage mx-auto w-full max-w-[720px]"
-            style={contentGutter}
-          >
-            <figure id="work-experience-2" className="hero-amazon-figure">
-              <Image
-                src={getCloudinaryUrl("amazon_image_zlpqhu", 1600)}
-                alt="Design Technologist internship at Amazon"
-                width={1672}
-                height={941}
-                sizes="(max-width: 767px) 100vw, 920px"
-                className="mobile-full-bleed block h-auto w-full"
-              />
-              <figcaption className="home-education-caption">
-                At present, I am a Design Technologist I (L4) intern on SHUX
-                (Smart Home UX) Alexa Team at SEA41, Amazon.
-              </figcaption>
-            </figure>
-
-            <p
-              className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
-              style={{
-                marginTop: 28,
-                paddingRight:
-                  "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-              }}
-            >
-              During my internship, I built and delivered Echo Show Device
-              Prototype Starter Kit 0 → 1 that enables one command rapid on
-              device prototyping, cutting setup from 2+ days of manual work
-              to about 90 seconds. Built using React Native, AWS services,
-              and a Figma MCP-to-React Native workflow to accelerate
-              design-to-device implementation.
-            </p>
-          </div>
-
-          <div id="work-experience-1" className="w-full">
-            <figure data-reveal className="home-education-figure">
-              {/* Square source cropped from the top: the 3:2 frame anchors
-                  the image to its bottom edge. */}
-              <div className="home-education-image-frame mobile-full-bleed">
-                <Image
-                  src={getCloudinaryUrl(
-                    "logicwind_company_experience_image_erwixu",
-                    1600,
-                  )}
-                  alt="AI/ML internship at Logicwind"
-                  fill
-                  sizes="(max-width: 767px) 100vw, 920px"
-                  className="home-education-image"
-                  style={{ objectPosition: "center bottom" }}
-                />
-              </div>
-              <figcaption className="home-education-caption">
-                AI/ML Intern at Logicwind (May 2024 - December 2024)
-              </figcaption>
-            </figure>
-
-            <div
-              data-reveal
-              className="home-story-copy mx-auto w-full max-w-[720px] text-[clamp(21.5px,3vw,23.5px)] font-normal leading-[1.48] tracking-[-0.01em]"
-              style={{ ...contentGutter, marginTop: 28 }}
-            >
-              <p className="portfolio-paragraph">
-                Built machine-learning and computer-vision models with
-                PyTorch for handwritten-text analysis and road-infrastructure
-                (lanes and objects detection) analysis through REST APIs.
-                Reduced inference latency by 20% and improved model accuracy
-                from 72% to 96%; resolved production issues with engineering
-                and client teams.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section
-          data-reveal
-          id="projects"
-          className="home-story-section home-story-projects"
-          aria-label="Projects"
-        >
-          <ProjectsPage embedded />
+          <WorkExperienceCarousel />
         </section>
 
         <section
@@ -260,66 +509,7 @@ const HomePage = () => {
           <GitHubContributions />
         </section>
 
-        <section
-          data-reveal
-          id="project-2"
-          className="home-story-section"
-          aria-label="Computer or Browser Use and Smart Copilot project"
-        >
-          <div
-            className="mx-auto w-full max-w-[920px]"
-            style={{
-              paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 12px)",
-              paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 12px)",
-            }}
-          >
-            <figure>
-              <Image
-                src="/project_2.png"
-                alt="Computer or Browser Use and Smart Copilot app interface"
-                width={3186}
-                height={1932}
-                sizes="(max-width: 767px) 100vw, 920px"
-                className="mobile-full-bleed block h-auto w-full"
-              />
-              <figcaption className="projects-embedded-caption">
-                Computer or Browser Use and Smart Copilot
-              </figcaption>
-            </figure>
-            <p className="projects-embedded-desc">
-              On the side I&apos;m building{" "}
-              <span className="experience-emphasis">
-                Computer or Browser Use and Smart Copilot
-              </span>
-              , a screen-aware macOS app with two engines in one Electron
-              process. Smart Copilot is capture-and-advise: grab a region of
-              your screen, attach PDFs or short videos (the raw video never
-              leaves the Mac), and ask by text or voice. Computer or Browser
-              Use is the autonomous half, similar to OpenAI&apos;s Operator
-              and Claude&apos;s Computer Use: give it a goal and it drives a
-              real browser, a Docker sandbox, or, with permission, my Mac
-              directly.{" "}
-              <a
-                href="https://github.com/jaiminjariwala/computer-or-browser-use-and-smart-copilot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="projects-embedded-github"
-              >
-                Github
-              </a>
-              .{" "}
-              <a
-                href="https://github.com/jaiminjariwala/computer-or-browser-use-and-smart-copilot/releases"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="projects-embedded-github"
-              >
-                Download
-              </a>
-              .
-            </p>
-          </div>
-        </section>
+        <ProjectsCarousel />
 
       </section>
     </main>
