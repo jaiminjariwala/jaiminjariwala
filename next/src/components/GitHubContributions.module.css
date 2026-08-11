@@ -68,6 +68,10 @@
 .viewport {
   width: 100%;
   min-width: 0;
+  /* Horizontal overflow clips the graph, so reserve invisible headroom
+     inside the scrollport for tooltips above the first contribution row. */
+  margin-top: -80px;
+  padding-top: 80px;
   padding-bottom: 10px;
   overflow-x: auto;
   overflow-y: hidden;
