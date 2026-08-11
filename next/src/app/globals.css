@@ -682,6 +682,10 @@ a {
   margin-bottom: -20px;
 }
 
+.gallery-folder-controls-row {
+  display: none;
+}
+
 @media (max-width: 767px) {
   .gallery-sun-wrapper {
     display: none !important;
@@ -718,6 +722,17 @@ a {
 
   .gallery-folder-title {
     margin-top: 8px !important;
+  }
+}
+
+/* Keep the folder controls exclusive to touch-first mobile devices. This
+   avoids showing them in a narrow or zoomed desktop browser. */
+@media (max-width: 767px) and (pointer: coarse) {
+  .gallery-folder-controls-row {
+    display: flex;
+    width: calc(100% - 40px);
+    margin: 0 auto 10px;
+    justify-content: flex-end;
   }
 }
 
@@ -1028,6 +1043,25 @@ a {
   color: #6b6b6b;
 }
 
+/* A first-visit cue that there is more content horizontally. It stops as
+   soon as the visitor moves the carousel and is disabled for reduced motion. */
+.work-experience-controls button.is-next-hint:not(:disabled) {
+  animation: carousel-next-arrow-hint 1.15s steps(1, end) infinite;
+}
+
+@keyframes carousel-next-arrow-hint {
+  0%,
+  44%,
+  100% {
+    color: #a7a7a7;
+  }
+
+  45%,
+  78% {
+    color: #000000;
+  }
+}
+
 .work-experience-controls button:disabled {
   cursor: default;
   opacity: 1;
@@ -1036,6 +1070,13 @@ a {
 .work-experience-controls button:focus-visible {
   outline: 2px solid #0969da;
   outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .work-experience-controls button.is-next-hint:not(:disabled) {
+    animation: none;
+    color: #000000;
+  }
 }
 
 .work-experience-controls svg {
@@ -1146,6 +1187,14 @@ a {
 .gallery-folder-count {
   font-weight: 500;
   -webkit-text-stroke: 0.2px currentColor;
+}
+
+.gallery-folder-title {
+  margin-bottom: 2px !important;
+}
+
+.gallery-folder-count {
+  margin-top: -4px !important;
 }
 
 .projects-page-embedded .projects-row {

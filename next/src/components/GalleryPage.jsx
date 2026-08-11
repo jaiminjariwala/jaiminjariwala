@@ -357,6 +357,38 @@ function SunHint({ targetRef }) {
 
 const GalleryPage = () => {
   const sunRef = useRef(null);
+  const folderScrollRef = useRef(null);
+  const [folderScrollState, setFolderScrollState] = useState({
+    atStart: true,
+    atEnd: false,
+  });
+  const [shouldHintNextFolder, setShouldHintNextFolder] = useState(true);
+
+  const updateFolderScrollState = (viewport) => {
+    const maxScrollLeft = Math.max(
+      0,
+      viewport.scrollWidth - viewport.clientWidth,
+    );
+    const scrollLeft = viewport.scrollLeft;
+
+    if (scrollLeft > 12) setShouldHintNextFolder(false);
+    setFolderScrollState({
+      atStart: scrollLeft <= 1,
+      atEnd: scrollLeft >= maxScrollLeft - 1,
+    });
+  };
+
+  const scrollFolders = (direction) => {
+    const viewport = folderScrollRef.current;
+    if (!viewport) return;
+
+    if (direction > 0) setShouldHintNextFolder(false);
+    viewport.scrollBy({
+      left: viewport.clientWidth * 0.72 * direction,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <section className="relative h-screen bg-white text-black flex flex-col overflow-hidden">
       <Navbar />
@@ -427,7 +459,40 @@ const GalleryPage = () => {
           </p> */}
 
           <div
+            className="gallery-folder-controls-row"
+            aria-label="Gallery folder navigation"
+          >
+            <div className="work-experience-controls">
+              <button
+                type="button"
+                data-cursor-type="select-black"
+                aria-label="Show earlier folders"
+                disabled={folderScrollState.atStart}
+                onClick={() => scrollFolders(-1)}
+              >
+                <svg viewBox="0 0 16 12" aria-hidden="true">
+                  <path d="M15 6H1M6 .5 1 6l5 5.5" />
+                </svg>
+              </button>
+              <button
+                className={shouldHintNextFolder ? "is-next-hint" : undefined}
+                type="button"
+                data-cursor-type="select-black"
+                aria-label="Show more folders"
+                disabled={folderScrollState.atEnd}
+                onClick={() => scrollFolders(1)}
+              >
+                <svg viewBox="0 0 16 12" aria-hidden="true">
+                  <path d="M1 6h14M10 .5 15 6l-5 5.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div
+            ref={folderScrollRef}
             className="gallery-folder-scroll overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            onScroll={(event) => updateFolderScrollState(event.currentTarget)}
             style={{
               paddingTop: "110px",
               paddingBottom: "50px",

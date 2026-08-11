@@ -13,9 +13,17 @@ const contentGutter = {
   paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
 };
 
+const useNextArrowHint = () => {
+  // The cue begins on each fresh page visit and stops for the remainder of
+  // that visit as soon as the visitor moves to the next carousel item.
+  const [shouldHint, setShouldHint] = useState(true);
+  return [shouldHint, () => setShouldHint(false)];
+};
+
 const WorkExperienceCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const viewportRef = useRef(null);
+  const [shouldHintNext, dismissNextHint] = useNextArrowHint();
 
   const scrollToExperience = (index) => {
     const viewport = viewportRef.current;
@@ -29,6 +37,7 @@ const WorkExperienceCarousel = () => {
 
   const updateActiveExperience = (event) => {
     const viewport = event.currentTarget;
+    if (viewport.scrollLeft > 12) dismissNextHint();
     const nextIndex = Math.round(viewport.scrollLeft / viewport.clientWidth);
     setActiveIndex((currentIndex) =>
       currentIndex === nextIndex ? currentIndex : nextIndex,
@@ -53,11 +62,15 @@ const WorkExperienceCarousel = () => {
         </svg>
       </button>
       <button
+        className={shouldHintNext ? "is-next-hint" : undefined}
         type="button"
         data-cursor-type="select-black"
         aria-label="Show Logicwind experience"
         disabled={activeIndex === 1}
-        onClick={() => scrollToExperience(1)}
+        onClick={() => {
+          dismissNextHint();
+          scrollToExperience(1);
+        }}
       >
         <svg viewBox="0 0 16 12" aria-hidden="true">
           <path d="M1 6h14M10 .5 15 6l-5 5.5" />
@@ -172,6 +185,7 @@ const WorkExperienceCarousel = () => {
 const ProjectsCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const viewportRef = useRef(null);
+  const [shouldHintNext, dismissNextHint] = useNextArrowHint();
 
   const scrollToProject = (index) => {
     const viewport = viewportRef.current;
@@ -185,6 +199,7 @@ const ProjectsCarousel = () => {
 
   const updateActiveProject = (event) => {
     const viewport = event.currentTarget;
+    if (viewport.scrollLeft > 12) dismissNextHint();
     const nextIndex = Math.round(viewport.scrollLeft / viewport.clientWidth);
     setActiveIndex((currentIndex) =>
       currentIndex === nextIndex ? currentIndex : nextIndex,
@@ -215,11 +230,15 @@ const ProjectsCarousel = () => {
             </svg>
           </button>
           <button
+            className={shouldHintNext ? "is-next-hint" : undefined}
             type="button"
             data-cursor-type="select-black"
             aria-label="Show Component Library project"
             disabled={activeIndex === 1}
-            onClick={() => scrollToProject(1)}
+            onClick={() => {
+              dismissNextHint();
+              scrollToProject(1);
+            }}
           >
             <svg viewBox="0 0 16 12" aria-hidden="true">
               <path d="M1 6h14M10 .5 15 6l-5 5.5" />

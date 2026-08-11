@@ -135,6 +135,7 @@ const GitHubContributions = () => {
   const sectionRef = useRef(null);
   const viewportRef = useRef(null);
   const weeksRef = useRef(null);
+  const hasInitialGraphPositionRef = useRef(false);
   const openTooltipRef = useRef(null);
   const tooltipBodyLeftRef = useRef(null);
   const calendar = useMemo(
@@ -248,46 +249,30 @@ const GitHubContributions = () => {
     if (!isReady || !viewportRef.current || !weeksRef.current) return;
 
     const viewport = viewportRef.current;
-    const weeks = weeksRef.current;
-    const mobileQuery = window.matchMedia("(max-width: 767px)");
     let firstFrame;
     let secondFrame;
 
-    const alignMobileRightEdge = () => {
-      if (!mobileQuery.matches) return;
+    if (hasInitialGraphPositionRef.current) return undefined;
 
-      firstFrame = window.requestAnimationFrame(() => {
-        secondFrame = window.requestAnimationFrame(() => {
-          // Align to the content box: the scroller carries horizontal padding
-          // purely to widen its clip box for tooltips.
-          const paddingRight =
-            parseFloat(window.getComputedStyle(viewport).paddingRight) || 0;
-          const viewportRight =
-            viewport.getBoundingClientRect().right - paddingRight;
-          const weeksRight = weeks.getBoundingClientRect().right;
-          const tileEdgeOffset = weeksRight - viewportRight;
-          const targetScrollLeft = viewport.scrollLeft + tileEdgeOffset;
-
-          viewport.scrollLeft = Math.max(
-            0,
-            Math.min(
-              targetScrollLeft,
-              viewport.scrollWidth - viewport.clientWidth
-            )
-          );
-        });
+    // Start at the newest contribution weeks (currently 2026) so visitors
+    // see the current year first, while native horizontal scrolling still
+    // exposes the earlier years to the left.
+    firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => {
+        viewport.scrollLeft = Math.max(
+          0,
+          viewport.scrollWidth - viewport.clientWidth,
+        );
+        hasInitialGraphPositionRef.current = true;
+        updateActiveYear();
       });
-    };
-
-    alignMobileRightEdge();
-    window.addEventListener("resize", alignMobileRightEdge);
+    });
 
     return () => {
       window.cancelAnimationFrame(firstFrame);
       window.cancelAnimationFrame(secondFrame);
-      window.removeEventListener("resize", alignMobileRightEdge);
     };
-  }, [isReady, calendar.weeks.length]);
+  }, [isReady, calendar.weeks.length, updateActiveYear]);
 
   useLayoutEffect(() => {
     if (!isReady) return;

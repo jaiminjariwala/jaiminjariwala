@@ -13,18 +13,15 @@ const playfair = Playfair_Display({
 // "My Background") use 0 so the image lands flush with the top edge of the
 // screen; text targets keep a small breathing gap.
 const MENU_ITEMS = [
-  { label: "Me", target: "me", offset: 0 },
-  { label: "Work Experience 2", target: "work-experience-2", offset: 0 },
-  { label: "Education", target: "background", offset: 0 },
-  { label: "Work Experience 1", target: "work-experience-1", offset: 0 },
-  { label: "Project 1", target: "projects", offset: 16 },
-  { label: "GitHub Work", target: "github", offset: 0 },
-  { label: "Project 2", target: "project-2", offset: 0 },
-  { label: "Gallery", target: "gallery", offset: 16 },
+  { label: "me", target: "me", offset: 0 },
+  { label: "gallery", target: "gallery", offset: 16 },
+  { label: "education", target: "education", offset: 0 },
+  { label: "work", target: "work-experience-2", offset: 0 },
+  { label: "projects", target: "project-2", offset: 0 },
   // External profiles open in a new tab instead of jumping to a section.
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/jaiminjariwala/" },
-  { label: "LeetCode", href: "https://leetcode.com/u/jaiminjariwala/" },
-  { label: "GitHub", href: "https://github.com/jaiminjariwala" },
+  { label: "github", href: "https://github.com/jaiminjariwala" },
+  { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
+  { label: "linkedin", href: "https://www.linkedin.com/in/jaiminjariwala/" },
 ];
 
 export default function MobileMenu() {
