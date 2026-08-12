@@ -47,7 +47,7 @@
 }
 
 .scrollControl:hover {
-  color: #6b6b6b;
+  color: #111111;
 }
 
 .scrollControl svg {
@@ -58,6 +58,11 @@
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.5;
+  transition: stroke-width 140ms ease;
+}
+
+.scrollControl:hover svg {
+  stroke-width: 2.35;
 }
 
 .scrollControl:focus-visible {
@@ -273,13 +278,15 @@ button.day {
 
 .week:nth-child(-n + 8) .tooltip {
   right: auto;
-  left: 0;
+  /* Shift the body left so the arrow can stay centered on the tile while
+     attaching to the flat portion of its rounded bottom edge. */
+  left: -12px;
   transform: translateY(4px);
 }
 
 .week:nth-child(-n + 8) .tooltip::after {
   right: auto;
-  left: calc(var(--cell-size, 14px) / 2);
+  left: 20px;
 }
 
 .week:nth-child(-n + 8) .tooltipOpen,
