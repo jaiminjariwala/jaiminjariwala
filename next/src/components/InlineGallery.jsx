@@ -16,8 +16,8 @@ const BASE_DROP = 22;
 // Must stay below the page's own bottom padding (36px+) so the scroll target
 // remains reachable once the folders swap to the taller detail view.
 const OPEN_BOTTOM_SPACE = 28;
+const OPEN_SCROLL_DURATION_MS = 0;
 const SCROLL_DURATION_MS = 460;
-const FOLDER_TRANSITION_MS = 520;
 
 const hashText = (value) => {
   let hash = 2166136261;
@@ -41,7 +41,8 @@ const animateWindowScroll = (targetY, duration) =>
   new Promise((resolve) => {
     const startY = window.scrollY;
     const change = targetY - startY;
-    if (Math.abs(change) < 1) {
+    if (Math.abs(change) < 1 || duration <= 0) {
+      window.scrollTo(0, targetY);
       resolve();
       return;
     }
@@ -60,13 +61,9 @@ const animateWindowScroll = (targetY, duration) =>
     window.requestAnimationFrame(step);
   });
 
-function InlineFolderPhotos({ section, onBack, isClosing = false }) {
+function InlineFolderPhotos({ section, onBack }) {
   return (
-    <section
-      className={`inline-gallery-detail ${
-        isClosing ? "inline-fold" : "inline-unfold"
-      } bg-white text-black`}
-    >
+    <section className="inline-gallery-detail inline-unfold bg-white text-black">
       <div
         className="mx-auto w-full max-w-[689px]"
         style={{
@@ -116,10 +113,9 @@ function InlineFolderPhotos({ section, onBack, isClosing = false }) {
             return (
               <article
                 key={publicId}
-                className="inline-gallery-polaroid shrink-0 bg-[#f7f5ea] shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
+                className="shrink-0 bg-[#f7f5ea] shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                 style={{
                   transform: `rotate(${angle}deg) translateY(${BASE_DROP + lift}px)`,
-                  animationDelay: `${90 + index * 70}ms`,
                   marginLeft: index === 0 ? 0 : "clamp(18px, 2.4vw, 34px)",
                   zIndex: index + 1,
                   borderStyle: "solid",
@@ -146,8 +142,8 @@ function InlineFolderPhotos({ section, onBack, isClosing = false }) {
 }
 
 export default function InlineGallery() {
-  // phase: "idle" (folders) | "pending" (folders shifting up) | "open"
-  // (photos visible) | "closing" (photos fold away before folders return)
+  // phase: "idle" (folders) | "pending" (desktop: folders shifting up) |
+  // "open" (photos visible)
   const [view, setView] = useState({ slug: null, phase: "idle" });
   // Extra document height while the close glide is in flight. Held in state
   // (set from event handlers) so a stale value can never silently stick to
@@ -183,17 +179,19 @@ export default function InlineGallery() {
   };
 
   const handleBack = () => {
+    const detailHeight = detailRef.current?.offsetHeight ?? 0;
+
     if (prefersReducedMotion()) {
       setView({ slug: null, phase: "idle" });
       window.scrollTo(0, savedScrollYRef.current);
       return;
     }
 
-    // Keep the photos mounted long enough to fold out, rather than removing
-    // their occupied space in a single frame.
-    setView((current) =>
-      current.phase === "open" ? { ...current, phase: "closing" } : current,
-    );
+    // Swap back to the folders with the spacer already holding the photos
+    // view's height, so the document stays tall enough to glide back down.
+    restoreRef.current = true;
+    setSpacerHeight(detailHeight);
+    setView({ slug: null, phase: "idle" });
   };
 
   // Open choreography (all viewports): measure the hidden detail view, extend
@@ -237,7 +235,7 @@ export default function InlineGallery() {
     }
 
     let cancelled = false;
-    animateWindowScroll(targetY, SCROLL_DURATION_MS).then(() => {
+    animateWindowScroll(targetY, OPEN_SCROLL_DURATION_MS).then(() => {
       if (cancelled) return;
       setView((current) =>
         current.phase === "pending"
@@ -248,22 +246,6 @@ export default function InlineGallery() {
     return () => {
       cancelled = true;
     };
-  }, [view]);
-
-  // Once the fold-out has finished, swap the folders back in while a spacer
-  // preserves the detail view's height. The existing restore effect then
-  // glides the page back to its pre-open scroll position.
-  useLayoutEffect(() => {
-    if (view.phase !== "closing") return undefined;
-
-    const detailHeight = detailRef.current?.offsetHeight ?? 0;
-    const timer = window.setTimeout(() => {
-      restoreRef.current = true;
-      setSpacerHeight(detailHeight);
-      setView({ slug: null, phase: "idle" });
-    }, FOLDER_TRANSITION_MS);
-
-    return () => window.clearTimeout(timer);
   }, [view]);
 
   // Close choreography (all viewports): the photos have already folded away
@@ -286,17 +268,10 @@ export default function InlineGallery() {
     };
   }, [view]);
 
-  if (
-    (view.phase === "open" || view.phase === "closing") &&
-    selectedSection
-  ) {
+  if (view.phase === "open" && selectedSection) {
     return (
       <div ref={detailRef}>
-        <InlineFolderPhotos
-          section={selectedSection}
-          onBack={handleBack}
-          isClosing={view.phase === "closing"}
-        />
+        <InlineFolderPhotos section={selectedSection} onBack={handleBack} />
       </div>
     );
   }
