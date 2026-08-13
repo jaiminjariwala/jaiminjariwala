@@ -385,8 +385,14 @@ const GitHubContributions = () => {
     const viewport = viewportRef.current;
     if (!viewport) return;
 
-    viewport.scrollBy({
-      left: viewport.clientWidth * 0.75 * direction,
+    const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+    const targetLeft = Math.min(
+      maxScrollLeft,
+      Math.max(0, viewport.scrollLeft + viewport.clientWidth * 0.75 * direction),
+    );
+
+    viewport.scrollTo({
+      left: targetLeft,
       behavior: "smooth",
     });
   };

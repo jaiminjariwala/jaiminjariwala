@@ -405,7 +405,18 @@ button.day {
   }
 
   .headingRow {
+    position: relative;
+    z-index: 2;
     margin-bottom: 22px;
+  }
+
+  .scrollControls {
+    gap: 14px;
+  }
+
+  .scrollControl {
+    width: 20px;
+    height: 24px;
   }
 
   .viewport {

@@ -1289,6 +1289,12 @@ a {
    vertical page scrolling from the project's horizontal flip gesture. */
 @media (max-width: 767px) {
 
+  .work-experience-controls {
+    /* 16px arrow buttons + 18px gap matches the 34px visual center spacing
+       of the contribution graph's mobile controls. */
+    gap: 18px !important;
+  }
+
   html,
   body {
     width: 100%;
