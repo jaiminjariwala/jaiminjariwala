@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
@@ -11,6 +11,27 @@ import { getCloudinaryUrl } from "@/components/galleryData";
 const contentGutter = {
   paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
   paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
+};
+
+const WASHINGTON_TIME_FORMATTER = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  second: "2-digit",
+  hour12: true,
+  timeZone: "America/New_York",
+});
+
+const useWashingtonTime = () => {
+  const [now, setNow] = useState(null);
+
+  useEffect(() => {
+    const updateTime = () => setNow(new Date());
+    updateTime();
+    const interval = window.setInterval(updateTime, 1000);
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return now;
 };
 
 const useNextArrowHint = () => {
@@ -365,6 +386,7 @@ const ProjectsCarousel = () => {
 
 const HomePage = () => {
   const mainRef = useRef(null);
+  const washingtonTime = useWashingtonTime();
 
   // Mobile-only: the hero heading and first paragraph show immediately;
   // everything marked data-reveal stays hidden until the visitor starts
@@ -447,7 +469,7 @@ const HomePage = () => {
               {/* Untrimmed: the photo renders at its natural 3:4 ratio, no
                   crop box, no zoom. On phones it bleeds to both screen
                   edges like every other homepage image. */}
-              <figure style={{ margin: 0 }}>
+              <figure className="hero-photo-figure" style={{ margin: 0 }}>
                 <Image
                   src={getCloudinaryUrl(
                     "621D5FFE-03CC-4021-8C9D-819EE21214A8_eeeq9l",
@@ -462,6 +484,14 @@ const HomePage = () => {
                 <figcaption className="home-education-caption hero-photo-caption">
                   Captured on Day 1 at SEA41, Seattle
                 </figcaption>
+                <aside className="hero-photo-current-location">
+                  <span>Washington D.C.</span>
+                  <time dateTime={washingtonTime?.toISOString()}>
+                    {washingtonTime
+                      ? WASHINGTON_TIME_FORMATTER.format(washingtonTime)
+                      : "—"}
+                  </time>
+                </aside>
               </figure>
             </div>
           </div>
