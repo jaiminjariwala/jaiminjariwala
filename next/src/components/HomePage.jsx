@@ -21,6 +21,9 @@ const WASHINGTON_TIME_FORMATTER = new Intl.DateTimeFormat("en-US", {
   timeZone: "America/New_York",
 });
 
+const formatWashingtonTime = (date) =>
+  WASHINGTON_TIME_FORMATTER.format(date).replace(/:/g, "\u200A:\u200A");
+
 const useWashingtonTime = () => {
   const [now, setNow] = useState(null);
 
@@ -488,7 +491,7 @@ const HomePage = () => {
                   <span>Washington D.C.</span>
                   <time dateTime={washingtonTime?.toISOString()}>
                     {washingtonTime
-                      ? WASHINGTON_TIME_FORMATTER.format(washingtonTime)
+                      ? formatWashingtonTime(washingtonTime)
                       : "—"}
                   </time>
                 </aside>

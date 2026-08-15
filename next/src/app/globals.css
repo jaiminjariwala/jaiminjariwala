@@ -925,6 +925,12 @@ a {
   }
 }
 
+@media (max-width: 767px) {
+  .hero-photo-current-location {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+
 .home-education-figure {
   width: min(920px, calc(100% - 24px));
   margin: 0 auto;
