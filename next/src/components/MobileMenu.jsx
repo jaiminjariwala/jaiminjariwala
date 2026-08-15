@@ -13,15 +13,15 @@ const playfair = Playfair_Display({
 // "My Background") use 0 so the image lands flush with the top edge of the
 // screen; text targets keep a small breathing gap.
 const MENU_ITEMS = [
-  { label: "me", target: "me", offset: 0 },
-  { label: "gallery", target: "gallery", offset: 16 },
-  { label: "education", target: "education", offset: 0 },
-  { label: "work", target: "work-experience-2", offset: 0 },
-  { label: "projects", target: "project-2", offset: 0 },
+  { label: "Me", target: "me", offset: 0 },
+  { label: "Gallery", target: "gallery", offset: 16 },
+  { label: "Education", target: "education", offset: 0 },
+  { label: "Work", target: "work-experience-2", offset: 0 },
+  { label: "Projects", target: "project-2", offset: 0 },
   // External profiles open in a new tab instead of jumping to a section.
-  { label: "github", href: "https://github.com/jaiminjariwala" },
-  { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
-  { label: "linkedin", href: "https://www.linkedin.com/in/jaiminjariwala/" },
+  { label: "Github", href: "https://github.com/jaiminjariwala" },
+  { label: "Leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
+  { label: "Linkedin", href: "https://www.linkedin.com/in/jaiminjariwala/" },
 ];
 
 export default function MobileMenu() {
