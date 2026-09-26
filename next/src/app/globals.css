@@ -26,6 +26,14 @@ body {
   background: rgb(220, 220, 220);
 }
 
+.portfolio-highlight {
+  background: rgb(220, 220, 220);
+  color: inherit;
+  border-radius: 5px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 p,
 .portfolio-paragraph {
   font-family: var(--font-inter), Arial, sans-serif;
@@ -605,7 +613,6 @@ a {
     min-height: 100svh;
   }
 
-
   .site-navbar-list {
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -931,9 +938,21 @@ a {
   }
 }
 
+/* Viewport-based (not parent-based) so the Logicwind photo is always exactly
+   as wide as the Amazon photo, which also uses min(920px, 100vw - 24px). */
 .home-education-figure {
-  width: min(920px, calc(100% - 24px));
+  width: min(920px, calc(100vw - 24px));
   margin: 0 auto;
+}
+
+/* Shared labels sit close to their education and work photos. */
+.home-section-heading {
+  margin: 0 0 6px;
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: var(--body-copy-font-size);
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: left;
 }
 
 /* Amazon image in the hero: identical footprint to the university photo,
@@ -945,81 +964,42 @@ a {
   transform: translateX(-50%);
 }
 
-.work-experience-carousel {
+/* Vertical stacks: work experience and projects render one below the other,
+   so there is no sideways sliding and no arrow navigation. */
+.work-experience-stack {
   width: 100%;
+  scroll-margin-top: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.work-experience-item {
+  /* Anchors live on the individual items; keep them clear of the navbar. */
   scroll-margin-top: 160px;
 }
 
-.projects-carousel {
+.work-experience-item + .work-experience-item {
+  /* Each entry (photo + text) is one block; separate blocks with the same
+     gap the page uses between sections, so spacing is equal above and
+     below every entry. */
+  margin-top: var(--home-story-gap);
+}
+
+.projects-stack {
   width: 100%;
+  scroll-margin-top: 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.projects-stack-item {
   scroll-margin-top: 160px;
 }
 
-.work-experience-viewport {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  touch-action: pan-x pan-y;
-}
-
-.projects-carousel-viewport {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  touch-action: pan-x pan-y;
-}
-
-.work-experience-viewport::-webkit-scrollbar,
-.projects-carousel-viewport::-webkit-scrollbar {
-  display: none;
-}
-
-.work-experience-track {
-  display: flex;
-  width: 200%;
-}
-
-.projects-carousel-track {
-  display: flex;
-  width: 200%;
-}
-
-.work-experience-slide {
-  flex: 0 0 50%;
-  min-width: 0;
-  scroll-snap-align: start;
-  /* Both work anchors live on the individual slides. Keep the image controls
-     below the sticky navbar whenever a navigation link jumps here. */
-  scroll-margin-top: 160px;
-}
-
-.projects-carousel-slide {
-  flex: 0 0 50%;
-  min-width: 0;
-  scroll-snap-align: start;
-  scroll-margin-top: 160px;
-}
-
-.work-experience-controls-row {
-  display: flex;
-  width: min(920px, calc(100% - 24px));
-  margin: 0 auto 10px;
-  justify-content: flex-end;
-}
-
-.projects-carousel-controls-row {
-  display: flex;
-  width: min(920px, calc(100% - 24px));
-  margin: 0 auto 10px;
-  justify-content: flex-end;
+.projects-stack-item + .projects-stack-item {
+  /* Same as work experience: one block after another with the page's
+     standard section gap, equal above and below every entry. */
+  margin-top: var(--home-story-gap);
 }
 
 .projects-carousel-slide-content {
@@ -1027,46 +1007,110 @@ a {
   padding-right: clamp(0px, calc((768px - 100vw) * 9999), 12px);
 }
 
-.projects-carousel-slide figure {
+.projects-stack-item figure {
   margin: 0;
 }
 
-@media (min-width: 768px) {
-  .work-experience-controls-row,
-  .projects-carousel-controls-row {
-    /* The work stage deliberately has breathing room above its photo; bring
-       only the navigation down into that space so it reads as attached. */
-    position: relative;
-    z-index: 1;
-    transform: translateY(7px);
-  }
-
-  /* Match Amazon's stage spacing so either experience starts the same
-     distance below the shared navigation arrows. */
-  .work-experience-logicwind {
-    padding-top: clamp(22px, 2.4vw, 36px);
-  }
-
-  .projects-carousel-slide-content {
-    padding-top: clamp(22px, 2.4vw, 36px);
-  }
+/* Codex Lite media gallery: README screenshots and demo videos in a
+   full-bleed horizontal strip, edge to edge of the screen like the
+   Seattle gallery photos. Each item is the Amazon photo width, placed
+   side by side. Scrollbar is hidden; left/right arrows sit on top of
+   the images. */
+.codex-gallery {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 }
 
-.work-experience-figure {
-  position: relative;
+.codex-gallery-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  /* Side padding centers the first item in the viewport like the Amazon
+     photo; scrolling moves everything left from there. */
+  padding-top: 4px;
+  padding-bottom: 12px;
+  padding-left: max(4vw, calc(50vw - 460px));
+  padding-right: max(4vw, calc(50vw - 460px));
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.work-experience-controls {
-  display: inline-flex;
+.codex-gallery-track::-webkit-scrollbar {
+  display: none;
+}
+
+.codex-gallery-item {
+  flex: 0 0 auto;
+  width: min(920px, 92vw);
+  aspect-ratio: 16 / 10;
+  height: min(575px, 57.5vw);
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f2f2f2;
+  /* Center each photo in the viewport when it snaps into place. */
+  scroll-snap-align: center;
+  margin: 0;
+}
+
+.codex-gallery-item img,
+.codex-gallery-item video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: inherit;
+}
+
+.codex-gallery-settings {
+  background: #141414;
+}
+
+.codex-gallery-video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: #141414;
+  cursor: pointer;
+}
+
+.codex-gallery-video:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: -3px;
+}
+
+.codex-gallery-item video {
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.home-education-image-frame,
+.home-education-figure > img,
+.work-experience-figure img,
+.projects-stack-item figure img {
+  border-radius: 6px;
+}
+
+/* Gallery arrows styled like the GitHub streak arrows: thin minimal
+   arrows in a row above the strip, no circles. */
+.codex-gallery-nav {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 11px;
+  margin-bottom: 12px;
 }
 
-.work-experience-controls button {
+.codex-gallery-nav-button {
   display: grid;
   width: 16px;
   height: 12px;
-  padding: 0;
+  padding: 8px;
   border: 0;
   border-radius: 0;
   place-items: center;
@@ -1078,56 +1122,11 @@ a {
   transition: color 140ms ease;
 }
 
-.work-experience-controls button:not(:disabled):hover {
-  color: #111111 !important;
+.codex-gallery-nav-button:hover {
+  color: #111111;
 }
 
-.work-experience-controls button.is-next-hint:not(:disabled):hover {
-  animation: none !important;
-  color: #111111 !important;
-}
-
-.work-experience-controls button:not(:disabled):hover svg {
-  stroke-width: 2.35;
-}
-
-/* A first-visit cue that there is more content horizontally. It stops as
-   soon as the visitor moves the carousel and is disabled for reduced motion. */
-.work-experience-controls button.is-next-hint:not(:disabled) {
-  animation: carousel-next-arrow-hint 1.15s steps(1, end) infinite;
-}
-
-@keyframes carousel-next-arrow-hint {
-  0%,
-  44%,
-  100% {
-    color: #a7a7a7;
-  }
-
-  45%,
-  78% {
-    color: #000000;
-  }
-}
-
-.work-experience-controls button:disabled {
-  cursor: default;
-  opacity: 1;
-}
-
-.work-experience-controls button:focus-visible {
-  outline: 2px solid #0969da;
-  outline-offset: 3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .work-experience-controls button.is-next-hint:not(:disabled) {
-    animation: none;
-    color: #000000;
-  }
-}
-
-.work-experience-controls svg {
+.codex-gallery-nav-button svg {
   width: 16px;
   height: 12px;
   fill: none;
@@ -1136,6 +1135,19 @@ a {
   stroke-linejoin: round;
   stroke-width: 1.5;
   transition: stroke-width 140ms ease;
+}
+
+.codex-gallery-nav-button:hover svg {
+  stroke-width: 2.35;
+}
+
+.codex-gallery-nav-button:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 2px;
+}
+
+.work-experience-figure {
+  position: relative;
 }
 
 .home-education-image-frame {
@@ -1280,7 +1292,6 @@ a {
   }
 }
 
-
 @media (min-width: 768px) {
   /* The folder gallery is embedded in the story flow. Match its internal
      top and bottom air so the folders sit visually centered between the
@@ -1328,12 +1339,6 @@ a {
    vertical page scrolling from the project's horizontal flip gesture. */
 @media (max-width: 767px) {
 
-  .work-experience-controls {
-    /* 16px arrow buttons + 18px gap matches the 34px visual center spacing
-       of the contribution graph's mobile controls. */
-    gap: 18px !important;
-  }
-
   html,
   body {
     width: 100%;
@@ -1374,8 +1379,6 @@ a {
     padding-bottom: 0 !important;
   }
 
-  .work-experience-controls-row,
-  .projects-carousel-controls-row,
   .gallery-folder-controls-row {
     margin-bottom: 18px !important;
   }
