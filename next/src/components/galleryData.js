@@ -1,7 +1,19 @@
 export const CLOUD_NAME = "deodbdaxc";
 
+// Serve Baltimore from the site itself for both folder previews and full photos.
+const bundledBaltimorePhotos = new Set([
+  "FullSizeR_lamwpt",
+  "FullSizeR_kawt6z",
+  "IMG_0608_sr0ixr",
+  "FullSizeR_yeb66c",
+  "FullSizeR_wwzqrj",
+  "FullSizeR_fnx6qd",
+]);
+
 export const getCloudinaryUrl = (publicId, width = 1200) =>
-  `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_${width},q_auto,f_auto/${publicId}`;
+  bundledBaltimorePhotos.has(publicId)
+    ? `/images/baltimore/${publicId}.jpg`
+    : `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/w_${width},q_auto,f_auto/${publicId}`;
 
 // A photo entry can be either a plain public-id string, or an object
 // { id, position } where `position` is a CSS object-position value used to
