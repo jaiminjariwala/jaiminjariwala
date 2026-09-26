@@ -6,7 +6,7 @@ const NAV_ITEMS = [
   { label: "me", target: "me" },
   { label: "gallery", target: "gallery" },
   { label: "education", target: "education" },
-  { label: "work", target: "work-experience-2" },
+  { label: "work", target: "work" },
   { label: "projects", target: "project-2" },
   { label: "github", href: "https://github.com/jaiminjariwala" },
   { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },

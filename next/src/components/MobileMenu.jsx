@@ -16,7 +16,7 @@ const MENU_ITEMS = [
   { label: "Me", target: "me", offset: 0 },
   { label: "Gallery", target: "gallery", offset: 16 },
   { label: "Education", target: "education", offset: 0 },
-  { label: "Work", target: "work-experience-2", offset: 0 },
+  { label: "Work", target: "work", offset: 0 },
   { label: "Projects", target: "project-2", offset: 0 },
   // External profiles open in a new tab instead of jumping to a section.
   { label: "Github", href: "https://github.com/jaiminjariwala" },
