@@ -1,46 +1,51 @@
 <div align="center">
-  <img src="profile/assets/welcome.svg" width="800" alt="Welcome to my GitHub Profile" />
+  <img src="https://github.com/BrunnerLivio/brunnerlivio/blob/master/images/welcome.png?raw=true" style="max-width: 100%;" alt="Welcome to my Github Profile" />
   <br /><br />
-  <strong>My name is Jaimin and I like Go, TypeScript and Python.</strong>
+  <img height="50" alt="My Name is Jaimin and I like Go, TypeScript and Python" src="profile/assets/personal-note.svg" />
   <br /><br />
 </div>
 
-<table align="center">
+<table width="100%" align="center">
   <tr>
-    <td align="center" width="260">
+    <td align="center">
       <a href="https://jaiminjariwala.netlify.app">
-        <strong>Visit my personal website</strong><br /><br />
-        <img src="profile/assets/globe.gif" width="144" height="144" alt="A spinning blue globe" />
+        <strong>Visit my personal website</strong><br /><br /><br />
+        <img src="https://raw.githubusercontent.com/BrunnerLivio/brunnerlivio/master/images/globe.gif" height="80" alt="Globe" />
       </a>
     </td>
-    <td align="center" width="260">
+    <td align="center">
       <a href="https://component-library-six-eta.vercel.app">
         <strong>Explore my Component Library</strong><br /><br />
-        <img src="profile/assets/components.gif" width="144" height="144" alt="Colorful UI components assembling inside a retro browser window" />
+        <img src="profile/assets/components.gif" height="100" alt="Component Library" />
       </a>
     </td>
-    <td align="center" width="260">
+    <td align="center">
       <a href="https://github.com/jaiminjariwala/codex-lite/releases/latest">
         <strong>Try out Codex Lite macOS app!</strong><br /><br />
-        <img src="profile/assets/codex-lite.gif" width="144" height="144" alt="The rotating Codex Lite beach-ball app icon" />
+        <img src="profile/assets/codex-lite.gif" height="100" alt="The rotating Codex Lite beach-ball app icon" />
       </a>
     </td>
   </tr>
 </table>
 
 <div align="center">
-  <h2>✍️ Guestbook</h2>
-  <p>Leave a little note from your corner of the internet.</p>
-  <a href="https://github.com/jaiminjariwala/jaiminjariwala/issues/1#issuecomment-new"><strong>Add a new entry →</strong></a>
-  &nbsp;·&nbsp;
-  <a href="https://github.com/jaiminjariwala/jaiminjariwala/issues/1">Read all entries</a>
+  <a href="https://github.com/jaiminjariwala/jaiminjariwala/issues/1#issuecomment-new"><img src="https://raw.githubusercontent.com/BrunnerLivio/brunnerlivio/master/images/guestbook.svg" alt="Guestbook (Add a new entry)" /></a>
 </div>
 
 <!-- guestbook:start -->
-Be the first to sign the guestbook!
+| Name | Date | Message |
+|---|---|---|
+| — | — | Be the first to sign the guestbook! |
 <!-- guestbook:end -->
 
 <div align="center">
+  <img height="120" alt="Thanks for visiting my profile, see you next time!" width="100%" src="https://raw.githubusercontent.com/BrunnerLivio/brunnerlivio/master/images/marquee.svg" />
   <br />
-  <img src="profile/assets/thanks.svg" width="800" alt="Thanks for visiting my profile, see you next time!" />
+  <img src="https://raw.githubusercontent.com/BrunnerLivio/brunnerlivio/master/images/notepad.gif" alt="Site created with Notepad" height="30" />
+  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <img src="https://raw.githubusercontent.com/BrunnerLivio/brunnerlivio/master/images/ie_logo.gif" alt="Microsoft Internet Explorer" />
+  <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
+  <img src="https://raw.githubusercontent.com/BrunnerLivio/brunnerlivio/master/images/noframes.gif" alt="Campaign Against Frames" />
 </div>
+
+<!-- Retro layout and shared artwork: https://github.com/BrunnerLivio/brunnerlivio -->

@@ -11,9 +11,10 @@ function escapeMessage(value) {
 }
 function renderEntries(comments) {
   const entries = comments.filter(c => c.user?.type === 'User' && /^[a-zA-Z0-9-]+$/.test(c.user.login) && c.body?.trim()).slice(-5).reverse();
-  if (!entries.length) return 'Be the first to sign the guestbook!';
-  return ['| Visitor | Date (UTC) | Message |', '| --- | --- | --- |', ...entries.map(c =>
-    `| [${c.user.login}](https://github.com/${c.user.login}) | ${new Date(c.created_at).toISOString().slice(0,10)} | ${escapeMessage(c.body)} |`
+  const header = ['| Name | Date | Message |', '|---|---|---|'];
+  if (!entries.length) return [...header, '| — | — | Be the first to sign the guestbook! |'].join('\n');
+  return [...header, ...entries.map(c =>
+    `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" /> ${c.user.login}</a> | ${new Date(c.created_at).toISOString().replace('T', ' ').replace('.000Z', ' UTC')} | ${escapeMessage(c.body)} |`
   )].join('\n');
 }
 async function main() {
@@ -43,12 +44,12 @@ async function main() {
   console.log('Updated the profile guestbook.');
 }
 if (process.argv.includes('--test')) {
-  assert.equal(renderEntries([]),'Be the first to sign the guestbook!');
+  assert.ok(renderEntries([]).includes('Be the first to sign the guestbook!'));
   const row = renderEntries([{user:{login:'visitor',type:'User'},body:'Hello | <img src=x>\n![x](bad) $HOME `code`',created_at:'2026-09-27T12:00:00Z'}]);
   assert.ok(row.includes('Hello &#124; &lt;img src=x&gt;'));
   assert.ok(!row.includes('![x]'));
   assert.ok(row.includes('2026-09-27'));
-  assert.equal(renderEntries([{user:{login:'bot',type:'Bot'},body:'test'}]),'Be the first to sign the guestbook!');
+  assert.equal(renderEntries([{user:{login:'bot',type:'Bot'},body:'test'}]),renderEntries([]));
   console.log('Guestbook rendering tests passed.');
 } else {
   main().catch(error=>{console.error(error.message);process.exitCode=1;});
