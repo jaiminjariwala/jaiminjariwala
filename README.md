@@ -7,22 +7,22 @@
 
 <table width="100%" align="center">
   <tr>
-    <td align="center">
+    <td align="center" valign="top" width="33%">
       <a href="https://jaiminjariwala.netlify.app">
-        <strong>Visit my personal website</strong><br /><br /><br />
-        <p><img src="profile/assets/retro/globe.gif" height="80" alt="Globe" /></p>
+        <strong>Visit my portfolio<br />website</strong><br /><br />
+        <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/earth-rotating.gif" width="120" height="120" alt="Crayon Earth rotating on its axis" />
       </a>
     </td>
-    <td align="center">
+    <td align="center" valign="top" width="33%">
       <a href="https://component-library-six-eta.vercel.app">
-        <strong>Explore my Component Library</strong><br /><br />
-        <p><img src="profile/assets/retro/book.gif" height="100" alt="Component Library" /></p>
+        <strong>Explore my<br />Component Library</strong><br /><br />
+        <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/retro/book.gif" height="120" alt="Component Library" />
       </a>
     </td>
-    <td align="center">
+    <td align="center" valign="top" width="33%">
       <a href="https://github.com/jaiminjariwala/codex-lite/releases/latest">
-        <strong>Try out Codex Lite macOS app!</strong><br /><br />
-        <p><img src="profile/assets/codex-lite.gif" height="100" alt="The rotating Codex Lite beach-ball app icon" /></p>
+        <strong>Try out Codex Lite<br />macOS Desktop app!</strong><br /><br />
+        <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/codex-lite.gif" width="120" height="120" alt="The rotating Codex Lite beach-ball app icon" />
       </a>
     </td>
   </tr>
