@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="230" viewBox="0 0 800 230" role="img" aria-label="Welcome to my GitHub Profile">
+  <defs>
+    <linearGradient id="ink" x2="0" y2="1"><stop stop-color="#ffff98"/><stop offset=".5" stop-color="#ffc665"/><stop offset="1" stop-color="#ff7793"/></linearGradient>
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#303d62" stroke-width=".5"/></pattern>
+  </defs>
+  <rect x="1" y="1" width="798" height="228" rx="14" fill="#151d36" stroke="#7386bb" stroke-width="2"/>
+  <rect x="2" y="2" width="796" height="226" rx="14" fill="url(#grid)"/>
+  <g fill="#9ee8da"><path d="m58 43 3 11 11 3-11 3-3 11-3-11-11-3 11-3Z"/><path d="m734 159 3 11 11 3-11 3-3 11-3-11-11-3 11-3Z"/></g>
+  <g text-anchor="middle" font-family="Georgia,serif" font-weight="bold" font-style="italic">
+    <text x="403" y="112" font-size="66" fill="#71466d" stroke="#71466d" stroke-width="3">Welcome to my</text>
+    <text x="400" y="107" font-size="66" fill="url(#ink)">Welcome to my</text>
+    <text x="403" y="182" font-size="65" fill="#71466d" stroke="#71466d" stroke-width="3">GitHub Profile</text>
+    <text x="400" y="177" font-size="65" fill="url(#ink)">GitHub Profile</text>
+  </g>
+  <text x="400" y="32" text-anchor="middle" font-family="monospace" font-size="12" letter-spacing="4" fill="#a3cfcf">JAIMIN'S CORNER OF THE INTERNET</text>
+  <g fill="#ffeeb5"><circle cx="692" cy="61" r="3"/><circle cx="99" cy="176" r="3"/></g>
+</svg>

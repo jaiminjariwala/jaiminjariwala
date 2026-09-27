@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="100" viewBox="0 0 800 100" role="img" aria-label="Thanks for visiting my profile, see you next time!">
+  <rect x="1" y="1" width="798" height="98" rx="12" fill="#151d36" stroke="#7386bb" stroke-width="2"/>
+  <text x="400" y="42" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-style="italic" fill="#ffdf96">Thanks for visiting my profile,</text>
+  <text x="400" y="74" text-anchor="middle" font-family="Georgia,serif" font-size="25" font-style="italic" fill="#a1e4d6">see you next time!</text>
+  <g fill="#ffdf96"><path d="m43 35 3 11 11 3-11 3-3 11-3-11-11-3 11-3Z"/><path d="m757 35 3 11 11 3-11 3-3 11-3-11-11-3 11-3Z"/></g>
+</svg>
