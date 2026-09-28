@@ -6,6 +6,9 @@ const size = 256;
 async function writeGif(name, frames, delays) {
   await sharp(Buffer.concat(frames), {raw:{width:size,height:size*frames.length,channels:4,pageHeight:size}})
     .gif({loop:0,delay:delays,colours:256,effort:8,dither:0}).toFile(path.join(dir,name));
+  // Animated WebP avoids GitHub's grey GIF-player tile and preserves full alpha.
+  await sharp(Buffer.concat(frames), {raw:{width:size,height:size*frames.length,channels:4,pageHeight:size}})
+    .webp({loop:0,delay:delays,lossless:true,effort:5}).toFile(path.join(dir,name.replace('.gif','.webp')));
 }
 async function main() {
   const portrait = path.join(dir,'portrait-blink-sheet.png');
@@ -30,25 +33,38 @@ async function main() {
   const tree = await sharp(path.join(dir,'tree-cutout.png')).resize(232,232,{fit:'contain',background:'#00000000'})
     .extend({top:12,bottom:12,left:12,right:12,background:'#00000000'}).ensureAlpha().raw().toBuffer();
   const frames=[];
+  const base=Buffer.from(tree), grains=[];
+  const green=p=>tree[p+3]>240 && tree[p+1]>tree[p]*1.12 && tree[p+1]>tree[p+2]*1.08;
+  // Lift bright crayon flecks off the foliage, then move each small grain cluster
+  // independently. The underlying drawing is not warped into flowing waves.
+  for(let y=20;y<190;y++) for(let x=8;x<size-8;x++) {
+    const p=(y*size+x)*4;
+    if(!green(p)||tree[p]<170||tree[p+2]<150) continue;
+    let best=p,contrast=tree[p+1]-tree[p];
+    for(let dy=-4;dy<=4;dy++) for(let dx=-4;dx<=4;dx++) {
+      const q=((y+dy)*size+x+dx)*4;
+      if(green(q)&&tree[q+1]-tree[q]>contrast){best=q;contrast=tree[q+1]-tree[q];}
+    }
+    if(best===p) continue;
+    for(let c=0;c<3;c++) base[p+c]=tree[best+c];
+    const seed=((Math.floor(x/3)*73856093)^(Math.floor(y/3)*19349663))>>>0;
+    grains.push({x,y,p,phase:(seed%1000)/1000*Math.PI*2,frequency:1+seed%3});
+  }
   for(let f=0;f<64;f++) {
     const phase=f/64*Math.PI*2;
-    const frame=Buffer.from(tree);
-    for(let y=0;y<size;y++) for(let x=0;x<size;x++) {
-      const p=(y*size+x)*4;
-      // Move the crayon texture inside green areas; silhouette and trunk stay fixed.
-      if(tree[p+3]<240 || tree[p+1]<tree[p]*1.12 || tree[p+1]<tree[p+2]*1.08) continue;
-      const sx=x+1.6*Math.sin(phase)*Math.sin(y/37);
-      const sy=y+0.8*Math.cos(phase)*Math.sin(x/43);
-      const ix=Math.floor(sx),iy=Math.floor(sy),fx=sx-ix,fy=sy-iy;
-      if(ix<0||iy<0||ix>=size-1||iy>=size-1) continue;
-      const indices=[(iy*size+ix)*4,(iy*size+ix+1)*4,((iy+1)*size+ix)*4,((iy+1)*size+ix+1)*4];
-      if(indices.some(j=>tree[j+3]<240)) continue;
-      const weights=[(1-fx)*(1-fy),fx*(1-fy),(1-fx)*fy,fx*fy];
-      for(let c=0;c<3;c++) frame[p+c]=Math.round(indices.reduce((sum,j,n)=>sum+tree[j+c]*weights[n],0));
+    const frame=Buffer.from(base);
+    for(const grain of grains) {
+      const x=Math.round(grain.x+7*Math.sin(phase+grain.phase));
+      const y=Math.round(grain.y+6*Math.sin(phase*grain.frequency+grain.phase*1.7));
+      if(x<0||x>=size||y<0||y>=190) continue;
+      const q=(y*size+x)*4;
+      if(!green(q)) continue;
+      for(let c=0;c<3;c++) frame[q+c]=tree[grain.p+c];
     }
     frames.push(frame);
   }
   await writeGif('component-tree.gif',frames,Array(64).fill(100));
+  console.log('Independently moving crayon pixels:',grains.length);
   const ballPath=path.join(dir,'codex-lite.gif');
   const ballMeta=await sharp(ballPath,{animated:true}).metadata();
   const ballFrames=[];

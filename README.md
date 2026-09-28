@@ -12,21 +12,21 @@
         <strong>Visit my portfolio<br />website</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/portfolio-blink.gif" width="120" height="120" alt="A smiling crayon portrait blinking" />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/portfolio-blink.webp" width="120" height="120" alt="A smiling crayon portrait blinking" />
     </td>
     <td align="center" valign="top" width="250">
       <a href="https://component-library-six-eta.vercel.app">
         <strong>Explore my<br />Component Library</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/component-tree.gif" width="120" height="120" alt="Component Library crayon tree with gently moving foliage texture" />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/component-tree.webp" width="120" height="120" alt="Component Library tree with crayon flecks moving horizontally and vertically" />
     </td>
     <td align="center" valign="top" width="250">
       <a href="https://github.com/jaiminjariwala/codex-lite/releases/latest">
         <strong>Try out Codex Lite<br />macOS Desktop app!</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/codex-lite-slow.gif" width="120" height="120" alt="The slowly rotating Codex Lite beach-ball app icon" />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/codex-lite-slow.webp" width="120" height="120" alt="The slowly rotating Codex Lite beach-ball app icon" />
     </td>
   </tr>
 </table>
@@ -49,10 +49,7 @@
   <img src="profile/assets/tech-stack/styling-build.svg" width="100%" alt="Styling and Build: HTML5, CSS3, Tailwind CSS, Vite" />
   <img src="profile/assets/tech-stack/backend.svg" width="100%" alt="Backend: Node.js, Express, REST APIs, GraphQL, gRPC, Webhooks, Kafka" />
   <img src="profile/assets/tech-stack/databases.svg" width="100%" alt="Databases: MongoDB, Redis, Supabase, PostgreSQL" />
-  <img src="profile/assets/tech-stack/auth.svg" width="100%" alt="Auth: Session, JWT, OAuth 2.0" />
   <img src="profile/assets/tech-stack/cloud-devops.svg" width="100%" alt="Cloud and DevOps: AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" />
-  <img src="profile/assets/tech-stack/ai-ml.svg" width="100%" alt="AI/ML Systems: LLM Integration, Ollama, Whisper, Playwright" />
-  <img src="profile/assets/tech-stack/cs-fundamentals.svg" width="100%" alt="CS Fundamentals: Data Structures and Algorithms, Object Oriented Programming, System Design" />
 </div>
 
 <!-- coding-time: reserved for verified all-time tracking data -->
