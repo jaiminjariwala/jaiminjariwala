@@ -10,11 +10,12 @@ async function main() {
     for(let y=0;y<size;y++) for(let x=0;x<size;x++) {
       const nx=(x+0.5-size/2)/radius, ny=-(y+0.5-size/2)/radius;
       const distance=Math.hypot(nx,ny);
-      const edge=1+0.004*Math.sin(Math.atan2(ny,nx)*71);
+      const angle=Math.atan2(ny,nx);
+      const edge=1+0.008*Math.sin(angle*71)+0.005*Math.sin(angle*113);
       if(distance>edge) continue;
       const dst=(y*size+x)*4;
       frame[dst+3]=255;
-      if(distance>0.974) {frame[dst]=7;frame[dst+1]=9;frame[dst+2]=8;continue;}
+      if(distance>0.94+0.008*Math.sin(angle*53)) {frame[dst]=3;frame[dst+1]=5;frame[dst+2]=3;continue;}
       const nz=Math.sqrt(Math.max(0,1-nx*nx-ny*ny));
       const longitude=Math.atan2(nx,nz)+f/count*Math.PI*2-0.45;
       const latitude=Math.asin(Math.max(-1,Math.min(1,ny)));
@@ -29,7 +30,7 @@ async function main() {
     frames.push(frame);
   }
   await sharp(Buffer.concat(frames),{raw:{width:size,height:size*count,channels:4,pageHeight:size}})
-    .gif({loop:0,delay:80,effort:7,colours:256}).toFile(path.join(__dirname,'assets/earth-rotating.gif'));
+    .gif({loop:0,delay:80,effort:7,colours:256}).toFile(path.join(__dirname,'assets/earth-rotating-v2.gif'));
   await sharp(frames[0],{raw:{width:size,height:size,channels:4}}).png().toFile('/tmp/jaimin-earth-preview.png');
   console.log('Rendered 80 frames, seamless 6.4-second rotation.');
 }

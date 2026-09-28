@@ -1,4 +1,8 @@
 const assert = require('node:assert/strict');
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/New_York', year: 'numeric', month: 'numeric', day: 'numeric',
+  hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true,
+});
 
 // Treat visitor messages as untrusted text, never commands or raw Markdown.
 function escapeMessage(value) {
@@ -14,7 +18,7 @@ function renderEntries(comments) {
   const header = ['| Name | Date | Message |', '|---|---|---|'];
   if (!entries.length) return [...header, '| — | — | Be the first to sign the guestbook! |'].join('\n');
   return [...header, ...entries.map(c =>
-    `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" /> ${c.user.login}</a> | ${new Date(c.created_at).toISOString().replace('T', ' ').replace('.000Z', ' UTC')} | ${escapeMessage(c.body)} |`
+    `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" /> ${c.user.login}</a> | ${dateFormatter.format(new Date(c.created_at))} | ${escapeMessage(c.body)} |`
   )].join('\n');
 }
 async function main() {
@@ -48,7 +52,9 @@ if (process.argv.includes('--test')) {
   const row = renderEntries([{user:{login:'visitor',type:'User'},body:'Hello | <img src=x>\n![x](bad) $HOME `code`',created_at:'2026-09-27T12:00:00Z'}]);
   assert.ok(row.includes('Hello &#124; &lt;img src=x&gt;'));
   assert.ok(!row.includes('![x]'));
-  assert.ok(row.includes('2026-09-27'));
+  assert.ok(row.includes('9/27/2026, 8:00:00 AM'));
+  assert.equal(dateFormatter.format(new Date('2026-09-28T14:39:10Z')), '9/28/2026, 10:39:10 AM');
+  assert.equal(dateFormatter.format(new Date('2026-01-28T14:39:10Z')), '1/28/2026, 9:39:10 AM');
   assert.equal(renderEntries([{user:{login:'bot',type:'Bot'},body:'test'}]),renderEntries([]));
   console.log('Guestbook rendering tests passed.');
 } else {

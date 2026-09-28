@@ -12,7 +12,7 @@
         <strong>Visit my portfolio<br />website</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/earth-rotating.gif" width="120" height="120" alt="Crayon Earth rotating on its axis" />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/earth-rotating-v2.gif" width="120" height="120" alt="Crayon Earth rotating on its axis" />
     </td>
     <td align="center" valign="top" width="250">
       <a href="https://component-library-six-eta.vercel.app">
