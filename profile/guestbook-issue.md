@@ -31,8 +31,6 @@ A [GitHub Action](https://github.com/jaiminjariwala/jaiminjariwala/actions/workf
 
 It updates the guestbook table in my [profile README](https://github.com/jaiminjariwala/jaiminjariwala/blob/main/README.md) with the five latest visitor comments. Your GitHub username, profile picture, and the date you posted are captured automatically. Dates use your optional timezone declaration (with daylight-saving time handled automatically), or the labelled Eastern default. Valid timezone declarations are left out of the displayed message. Messages are shown as plain text, up to 240 characters. The original comments remain here even when they leave the latest-five table.
 
-Inspired by [Livio Brunner's guestbook](https://github.com/BrunnerLivio/brunnerlivio/issues/62).
-
 </details>
 
 Thanks for visiting!
