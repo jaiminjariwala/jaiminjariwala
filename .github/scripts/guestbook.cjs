@@ -33,13 +33,21 @@ function escapeMessage(value) {
     .replace(/\*/g, '&#42;').replace(/_/g, '&#95;')
     .replace(/\\/g, '&#92;');
 }
+function messagePreview(value) {
+  const lines = String(value).trim().split(/\r?\n/);
+  const firstLine = lines[0].replace(/\s+/g, ' ').trim();
+  const characters = Array.from(firstLine);
+  const hasMore = characters.length > 48 || lines.slice(1).some(line => line.trim());
+  const preview = characters.slice(0, hasMore ? 45 : 48).join('').trimEnd() + (hasMore ? '...' : '');
+  return escapeMessage(preview).replace(/ /g, '&nbsp;');
+}
 function renderEntries(comments) {
   const entries = comments.filter(c => c.user?.type === 'User' && /^[a-zA-Z0-9-]+$/.test(c.user.login) && c.body?.trim()).slice(-5).reverse();
   const header = ['| Name | Date | Message |', '|---|---|---|'];
   if (!entries.length) return [...header, '| — | — | Be the first to sign the guestbook! |'].join('\n');
   return [...header, ...entries.map(c => {
     const details = entryDetails(c.body);
-    return `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" /> ${c.user.login}</a> | ${formatDate(c.created_at, details)} | ${escapeMessage(details.message)} |`;
+    return `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" />&nbsp;${c.user.login}</a> | ${formatDate(c.created_at, details)} | ${messagePreview(details.message)} |`;
   })].join('\n');
 }
 async function main() {
@@ -71,7 +79,12 @@ async function main() {
 if (process.argv.includes('--test')) {
   assert.ok(renderEntries([]).includes('Be the first to sign the guestbook!'));
   const row = renderEntries([{user:{login:'visitor',type:'User'},body:'Hello | <img src=x>\n![x](bad) $HOME `code`',created_at:'2026-09-27T12:00:00Z'}]);
-  assert.ok(row.includes('Hello &#124; &lt;img src=x&gt;'));
+  assert.ok(row.includes('Hello&nbsp;&#124;&nbsp;&lt;img&nbsp;src=x&gt;...'));
+  assert.ok(row.includes('/>&nbsp;visitor'));
+  assert.equal(messagePreview('Hello\nSecond line'), 'Hello...');
+  assert.equal(messagePreview('Hello there'), 'Hello&nbsp;there');
+  assert.equal(messagePreview('x'.repeat(100)), 'x'.repeat(45) + '...');
+  assert.equal(messagePreview('Hello\r\n\r\n'), 'Hello');
   assert.ok(!row.includes('![x]'));
   assert.ok(row.includes('9/27/2026,&nbsp;8:00:00&nbsp;AM'));
   const timestamp = '2026-09-28T14:39:10Z';
