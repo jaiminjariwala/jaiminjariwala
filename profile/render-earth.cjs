@@ -24,13 +24,14 @@ async function main() {
       const sx=Math.min(info.width-1,Math.floor(u*info.width));
       const sy=Math.min(info.height-1,Math.floor(v*info.height));
       const src=(sy*info.width+sx)*4;
-      const light=0.72+0.28*Math.max(0,-nx*0.3+ny*0.25+nz*0.92);
+      // Flat crayon artwork: avoid the artificial dark 3D lighting of earlier versions.
+      const light=1;
       for(let c=0;c<3;c++) frame[dst+c]=Math.round(data[src+c]*light);
     }
     frames.push(frame);
   }
   await sharp(Buffer.concat(frames),{raw:{width:size,height:size*count,channels:4,pageHeight:size}})
-    .gif({loop:0,delay:80,effort:7,colours:256}).toFile(path.join(__dirname,'assets/earth-rotating-v2.gif'));
+    .gif({loop:0,delay:80,effort:7,colours:256}).toFile(path.join(__dirname,'assets/earth-rotating-v3.gif'));
   await sharp(frames[0],{raw:{width:size,height:size,channels:4}}).png().toFile('/tmp/jaimin-earth-preview.png');
   console.log('Rendered 80 frames, seamless 6.4-second rotation.');
 }
