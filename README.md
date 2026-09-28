@@ -38,9 +38,9 @@
 <!-- guestbook:start -->
 | Name | Date | Message |
 |---|---|---|
-| <a href="https://github.com/mihnea-popescu"><img width="24" src="https://github.com/mihnea-popescu.png?size=24" alt="mihnea-popescu" /> mihnea-popescu</a> | 9/28/2026,&nbsp;3:13:47&nbsp;PM&nbsp;ET | Love this new profile! Keep up the good work Jay!!! |
-| <a href="https://github.com/ari-sax"><img width="24" src="https://github.com/ari-sax.png?size=24" alt="ari-sax" /> ari-sax</a> | 9/28/2026,&nbsp;1:19:01&nbsp;PM&nbsp;ET | Yoo! Good stuff! We keep hustling.🙌🏻 |
-| <a href="https://github.com/HetalLad"><img width="24" src="https://github.com/HetalLad.png?size=24" alt="HetalLad" /> HetalLad</a> | 9/28/2026,&nbsp;10:39:10&nbsp;AM&nbsp;ET | Wow those animations are really amazing!!! I am currently working on distributed systems. |
+| <a href="https://github.com/mihnea-popescu"><img width="24" src="https://github.com/mihnea-popescu.png?size=24" alt="mihnea-popescu" />&nbsp;mihnea-popescu</a> | 9/28/2026,&nbsp;3:13:47&nbsp;PM&nbsp;ET | Love&nbsp;this&nbsp;new&nbsp;profile!&nbsp;Keep&nbsp;up&nbsp;the&nbsp;good&nbsp;work... |
+| <a href="https://github.com/ari-sax"><img width="24" src="https://github.com/ari-sax.png?size=24" alt="ari-sax" />&nbsp;ari-sax</a> | 9/28/2026,&nbsp;1:19:01&nbsp;PM&nbsp;ET | Yoo!&nbsp;Good&nbsp;stuff!&nbsp;We&nbsp;keep&nbsp;hustling.🙌🏻 |
+| <a href="https://github.com/HetalLad"><img width="24" src="https://github.com/HetalLad.png?size=24" alt="HetalLad" />&nbsp;HetalLad</a> | 9/28/2026,&nbsp;10:39:10&nbsp;AM&nbsp;ET | Wow&nbsp;those&nbsp;animations&nbsp;are&nbsp;really&nbsp;amazing!!!... |
 <!-- guestbook:end -->
 
 <div align="center">
