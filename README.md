@@ -7,23 +7,26 @@
 
 <table width="100%" align="center">
   <tr>
-    <td align="center" valign="top" width="33%">
+    <td align="center" valign="top" width="250">
       <a href="https://jaiminjariwala.netlify.app">
-        <strong>Visit my portfolio<br />website</strong><br /><br />
-        <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/earth-rotating.gif" width="120" height="120" alt="Crayon Earth rotating on its axis" />
+        <strong>Visit my portfolio<br />website</strong>
       </a>
+      <br /><br />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/earth-rotating.gif" width="120" height="120" alt="Crayon Earth rotating on its axis" />
     </td>
-    <td align="center" valign="top" width="33%">
+    <td align="center" valign="top" width="250">
       <a href="https://component-library-six-eta.vercel.app">
-        <strong>Explore my<br />Component Library</strong><br /><br />
-        <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/retro/book.gif" height="120" alt="Component Library" />
+        <strong>Explore my<br />Component Library</strong>
       </a>
+      <br /><br />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/retro/book.gif" height="120" alt="Component Library" />
     </td>
-    <td align="center" valign="top" width="33%">
+    <td align="center" valign="top" width="250">
       <a href="https://github.com/jaiminjariwala/codex-lite/releases/latest">
-        <strong>Try out Codex Lite<br />macOS Desktop app!</strong><br /><br />
-        <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/codex-lite.gif" width="120" height="120" alt="The rotating Codex Lite beach-ball app icon" />
+        <strong>Try out Codex Lite<br />macOS Desktop app!</strong>
       </a>
+      <br /><br />
+      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/codex-lite.gif" width="120" height="120" alt="The rotating Codex Lite beach-ball app icon" />
     </td>
   </tr>
 </table>
