@@ -2,7 +2,7 @@ Heyo 👋
 
 Sign my guestbook by leaving a comment here!
 
-Want your entry shown in your own timezone? Optionally add a separate line like `Timezone: Europe/London` (UK) or `Timezone: America/Los_Angeles` (Pacific). Use an IANA timezone name. GitHub doesn't provide your timezone automatically. If omitted or invalid, the table uses Eastern time, clearly marked as the default—not your location.
+Want your entry shown in your own timezone? Optionally add a separate line like `Timezone: Europe/London` (UK) or `Timezone: America/Los_Angeles` (Pacific). Use an IANA timezone name. GitHub doesn't provide your timezone automatically. If omitted or invalid, the table uses Eastern time (ET). Dates use compact timezone labels such as ET, PT, or BST, on the same line as the time.
 
 <details>
 <summary><strong>Code of Conduct</strong></summary>
@@ -29,7 +29,7 @@ Click **Unsubscribe** in the **Notifications** section on the right side of this
 
 A [GitHub Action](https://github.com/jaiminjariwala/jaiminjariwala/actions/workflows/guestbook.yml) runs whenever a comment on this issue is added, edited, or deleted.
 
-It updates the guestbook table in my [profile README](https://github.com/jaiminjariwala/jaiminjariwala/blob/main/README.md) with the five latest visitor comments. Your GitHub username, profile picture, and the date you posted are captured automatically. Dates use your optional timezone declaration (with daylight-saving time handled automatically), or the labelled Eastern default. Valid timezone declarations are left out of the displayed message. Messages are shown as plain text, up to 240 characters. The original comments remain here even when they leave the latest-five table.
+It updates the guestbook table in my [profile README](https://github.com/jaiminjariwala/jaiminjariwala/blob/main/README.md) with the five latest visitor comments. Your GitHub username, profile picture, and the date you posted are captured automatically. Dates use your optional timezone declaration (with daylight-saving time handled automatically), or Eastern time when none is supplied. Valid timezone declarations are left out of the displayed message. Messages are shown as plain text, up to 240 characters. The original comments remain here even when they leave the latest-five table.
 
 </details>
 

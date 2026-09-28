@@ -15,10 +15,13 @@ function formatDate(createdAt, details) {
     hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true,
   });
   const date = new Date(createdAt);
-  const offset = new Intl.DateTimeFormat('en-US', {timeZone: details.timeZone, timeZoneName: 'shortOffset'})
+  const generic = new Intl.DateTimeFormat('en-US', {timeZone: details.timeZone, timeZoneName: 'shortGeneric'})
     .formatToParts(date).find(part => part.type === 'timeZoneName').value;
+  const zone = /^[A-Z]{2,6}$/.test(generic) ? generic : new Intl.DateTimeFormat('en-GB', {
+    timeZone: details.timeZone, timeZoneName: 'short',
+  }).formatToParts(date).find(part => part.type === 'timeZoneName').value;
   // GitHub strips CSS styles, so nonbreaking spaces keep AM/PM with the time.
-  return `${formatter.format(date).replace(/\s/g, '&nbsp;')}<br /><sub>${details.timeZone} (${offset}${details.supplied ? '' : ', default'})</sub>`;
+  return `${formatter.format(date)} ${zone}`.replace(/\s/g, '&nbsp;');
 }
 
 // Treat visitor messages as untrusted text, never commands or raw Markdown.
@@ -73,14 +76,15 @@ if (process.argv.includes('--test')) {
   assert.ok(row.includes('9/27/2026,&nbsp;8:00:00&nbsp;AM'));
   const timestamp = '2026-09-28T14:39:10Z';
   assert.ok(formatDate(timestamp, entryDetails('Hello')).includes('10:39:10&nbsp;AM'));
-  assert.ok(formatDate(timestamp, entryDetails('Hello')).includes('GMT-4, default'));
+  assert.equal(formatDate(timestamp, entryDetails('Hello')), '9/28/2026,&nbsp;10:39:10&nbsp;AM&nbsp;ET');
   const london = entryDetails('Hello!\nTimezone: Europe/London');
   assert.equal(london.message, 'Hello!');
   assert.ok(formatDate(timestamp, london).includes('3:39:10&nbsp;PM'));
-  assert.ok(formatDate(timestamp, london).includes('Europe/London (GMT+1)'));
+  assert.ok(formatDate(timestamp, london).endsWith('&nbsp;BST'));
   const pacific = entryDetails('Hi\nTimezone: America/Los_Angeles');
   assert.ok(formatDate(timestamp, pacific).includes('7:39:10&nbsp;AM'));
-  assert.ok(formatDate('2026-01-28T14:39:10Z', pacific).includes('GMT-8'));
+  assert.ok(formatDate('2026-01-28T14:39:10Z', pacific).endsWith('&nbsp;PT'));
+  assert.ok(!formatDate(timestamp, london).includes('<br'));
   assert.equal(entryDetails('Timezone: Fake/Zone').supplied, false);
   assert.equal(entryDetails('Timezone: <script>').message, 'Timezone: <script>');
   assert.equal(renderEntries([{user:{login:'bot',type:'Bot'},body:'test'}]),renderEntries([]));
