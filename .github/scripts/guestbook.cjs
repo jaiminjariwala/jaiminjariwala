@@ -47,7 +47,7 @@ function renderEntries(comments) {
   if (!entries.length) return [...header, '| — | — | Be the first to sign the guestbook! |'].join('\n');
   return [...header, ...entries.map(c => {
     const details = entryDetails(c.body);
-    return `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" />&nbsp;${c.user.login}</a> | ${formatDate(c.created_at, details)} | ${messagePreview(details.message)} |`;
+    return `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" />&#8288;&nbsp;${c.user.login.replace(/-/g, '&#8209;')}</a> | ${formatDate(c.created_at, details)} | ${messagePreview(details.message)} |`;
   })].join('\n');
 }
 async function main() {
@@ -80,7 +80,7 @@ if (process.argv.includes('--test')) {
   assert.ok(renderEntries([]).includes('Be the first to sign the guestbook!'));
   const row = renderEntries([{user:{login:'visitor',type:'User'},body:'Hello | <img src=x>\n![x](bad) $HOME `code`',created_at:'2026-09-27T12:00:00Z'}]);
   assert.ok(row.includes('Hello&nbsp;&#124;&nbsp;&lt;img&nbsp;src=x&gt;...'));
-  assert.ok(row.includes('/>&nbsp;visitor'));
+  assert.ok(row.includes('/>&#8288;&nbsp;visitor'));
   assert.equal(messagePreview('Hello\nSecond line'), 'Hello...');
   assert.equal(messagePreview('Hello there'), 'Hello&nbsp;there');
   assert.equal(messagePreview('x'.repeat(100)), 'x'.repeat(45) + '...');
