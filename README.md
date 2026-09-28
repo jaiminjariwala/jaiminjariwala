@@ -38,7 +38,7 @@
 <!-- guestbook:start -->
 | Name | Date | Message |
 |---|---|---|
-| <a href="https://github.com/HetalLad"><img width="24" src="https://github.com/HetalLad.png?size=24" alt="HetalLad" /> HetalLad</a> | 2026-09-28 14:39:10 UTC | Wow those animations are really amazing!!! I am currently working on distributed systems. |
+| <a href="https://github.com/HetalLad"><img width="24" src="https://github.com/HetalLad.png?size=24" alt="HetalLad" /> HetalLad</a> | 9/28/2026, 10:39:10 AM | Wow those animations are really amazing!!! I am currently working on distributed systems. |
 <!-- guestbook:end -->
 
 <div align="center">
