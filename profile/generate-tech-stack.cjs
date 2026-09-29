@@ -2,10 +2,10 @@ const fs=require('node:fs/promises');
 const path=require('node:path');
 const revision='7330accdbc47e2dc0c19789a48533c4a3c50fe58';
 const groups=[
- ['languages','Languages',[['TypeScript','typescript/typescript-original'],['Python','python/python-original'],['Go','go/go-original'],['JavaScript','javascript/javascript-original'],['SQL','@database']]],
+ ['languages','Languages',[['TypeScript','typescript/typescript-original'],['Python','python/python-original'],['Go','go/go-original'],['JavaScript','javascript/javascript-original']]],
  ['frontend','Frontend',[['React.js','react/react-original'],['Next.js','nextjs/nextjs-original'],['Redux','redux/redux-original'],['React Native','react/react-original'],['Electron','electron/electron-original']]],
- ['styling-build','Styling & Build',[['HTML5','html5/html5-original'],['CSS3','css3/css3-original'],['Tailwind CSS','tailwindcss/tailwindcss-original'],['Vite','vitejs/vitejs-original']]],
- ['backend','Backend',[['Node.js','nodejs/nodejs-original'],['Express','express/express-original'],['REST APIs','@api'],['GraphQL','graphql/graphql-plain'],['gRPC','grpc/grpc-original'],['Webhooks','@webhook'],['Kafka','apachekafka/apachekafka-original']]],
+ ['styling-build','Styling & Build',[['HTML5','html5/html5-original'],['CSS3','css3/css3-original'],['Tailwind CSS','tailwindcss/tailwindcss-original']]],
+ ['backend','Backend',[['Node.js','nodejs/nodejs-original'],['Express','express/express-original'],['REST APIs','@api'],['GraphQL','graphql/graphql-plain'],['Kafka','apachekafka/apachekafka-original']]],
  ['databases','Databases',[['MongoDB','mongodb/mongodb-original'],['Redis','redis/redis-original'],['Supabase','supabase/supabase-original'],['PostgreSQL','postgresql/postgresql-original']]],
  ['cloud-devops','Cloud & DevOps',[['AWS','amazonwebservices/amazonwebservices-original-wordmark'],['Docker','docker/docker-original'],['Kubernetes','kubernetes/kubernetes-plain'],['CI/CD','@cycle'],['Linux','linux/linux-original'],['Git','git/git-original'],['Vercel','vercel/vercel-original'],['Netlify','netlify/netlify-original'],['Render','@cloud']]],
 ];
@@ -18,16 +18,18 @@ async function icon(id){
 }
 async function main(){
  const out=path.join(__dirname,'assets','tech-stack'); await fs.mkdir(out,{recursive:true});
- for(const [slug,title,items] of groups){
-  const columns=items.length>7?5:items.length, rows=Math.ceil(items.length/columns), width=960, cell=width/columns, height=rows*130;
+ const width=990, cell=110, rowHeight=108, allTiles=[];
+ for(const [row,[slug,title,items]] of groups.entries()){
   const tiles=await Promise.all(items.map(async([name,id],i)=>{
-   const x=(i%columns)*cell,y=Math.floor(i/columns)*130;
+   const x=(width-items.length*cell)/2+i*cell,y=row*rowHeight;
    const data=Buffer.from(await icon(id)).toString('base64');
    const darkStyle=['Next.js','Express','Kafka','Vercel'].includes(name) ? ' class="mono"' : '';
-   return `<g><rect class="tile" x="${x}" y="${y}" width="${cell}" height="130"/><image${darkStyle} href="data:image/svg+xml;base64,${data}" x="${x+cell/2-30}" y="${y+15}" width="60" height="60"/><text x="${x+cell/2}" y="${y+107}" text-anchor="middle" font-size="${name.length>22?15:18}">${esc(name)}</text></g>`;
+   return `<g><rect class="tile" x="${x}" y="${y}" width="${cell}" height="${rowHeight}"/><image${darkStyle} href="data:image/svg+xml;base64,${data}" x="${x+cell/2-24}" y="${y+12}" width="48" height="48"/><text x="${x+cell/2}" y="${y+87}" text-anchor="middle" font-size="14">${esc(name)}</text></g>`;
   }));
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(title)}"><style>text{font-family:Arial,sans-serif;fill:#24292f}.tile{fill:none;stroke:#d0d7de}@media(prefers-color-scheme:dark){text{fill:#e6edf3}.tile{stroke:#30363d}.mono{filter:invert(1)}}</style>${tiles.join('')}</svg>`;
-  await fs.writeFile(path.join(out,`${slug}.svg`),svg); console.log(slug,items.length);
+  allTiles.push(...tiles); console.log(slug,items.length);
  }
+ const height=groups.length*rowHeight;
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width+2}" height="${height+2}" viewBox="-1 -1 ${width+2} ${height+2}" role="img" aria-label="Technology stack"><style>text{font-family:Arial,sans-serif;fill:#24292f}.tile{fill:none;stroke:#d0d7de}@media(prefers-color-scheme:dark){text{fill:#e6edf3}.tile{stroke:#30363d}.mono{filter:invert(1)}}</style>${allTiles.join('')}</svg>`;
+ await fs.writeFile(path.join(out,'joined-grid.svg'),svg);
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

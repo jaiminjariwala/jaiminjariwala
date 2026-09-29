@@ -6,7 +6,7 @@ const size = 256;
 async function writeGif(name, frames, delays) {
   await sharp(Buffer.concat(frames), {raw:{width:size,height:size*frames.length,channels:4,pageHeight:size}})
     .gif({loop:0,delay:delays,colours:256,effort:8,dither:0}).toFile(path.join(dir,name));
-  // Animated WebP avoids GitHub's grey GIF-player tile and preserves full alpha.
+  // Optional animated WebP export preserves full alpha.
   await sharp(Buffer.concat(frames), {raw:{width:size,height:size*frames.length,channels:4,pageHeight:size}})
     .webp({loop:0,delay:delays,lossless:true,effort:5}).toFile(path.join(dir,name.replace('.gif','.webp')));
 }

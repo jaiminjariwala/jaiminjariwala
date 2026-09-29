@@ -43,12 +43,12 @@ function messagePreview(value) {
 }
 function renderEntries(comments) {
   const entries = comments.filter(c => c.user?.type === 'User' && /^[a-zA-Z0-9-]+$/.test(c.user.login) && c.body?.trim()).slice(-5).reverse();
-  const header = ['| Name | Date | Message |', '|---|---|---|'];
-  if (!entries.length) return [...header, '| — | — | Be the first to sign the guestbook! |'].join('\n');
+  const header = ['<table align="center">', '<thead><tr><th>Name</th><th>Date</th><th>Message</th></tr></thead>', '<tbody>'];
+  if (!entries.length) return [...header, '<tr><td>—</td><td>—</td><td>Be the first to sign the guestbook!</td></tr>', '</tbody></table>'].join('\n');
   return [...header, ...entries.map(c => {
     const details = entryDetails(c.body);
-    return `| <a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" />&#8288;&nbsp;${c.user.login.replace(/-/g, '&#8209;')}</a> | ${formatDate(c.created_at, details)} | ${messagePreview(details.message)} |`;
-  })].join('\n');
+    return `<tr><td><a href="https://github.com/${c.user.login}"><img width="24" src="https://github.com/${c.user.login}.png?size=24" alt="${c.user.login}" />&#8288;&nbsp;${c.user.login.replace(/-/g, '&#8209;')}</a></td><td>${formatDate(c.created_at, details)}</td><td>${messagePreview(details.message)}</td></tr>`;
+  }), '</tbody></table>'].join('\n');
 }
 async function main() {
   const repo = process.env.GH_REPOSITORY;

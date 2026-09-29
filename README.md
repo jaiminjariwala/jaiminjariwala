@@ -5,28 +5,28 @@
   <br /><br />
 </div>
 
-<table width="100%" align="center">
+<table align="center">
   <tr>
-    <td align="center" valign="top" width="250">
+    <td align="center" valign="top" width="190">
       <a href="https://jaiminjariwala.netlify.app">
-        <strong>Visit my portfolio<br />website</strong>
+        <strong>Visit my personal<br />website</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/portfolio-blink.webp" width="120" height="120" alt="A smiling crayon portrait blinking" />
+      <img src="profile/assets/portrait-fast.gif" width="120" alt="A smiling portrait blinking against a softly blurred red background" />
     </td>
-    <td align="center" valign="top" width="250">
+    <td align="center" valign="top" width="190">
       <a href="https://component-library-six-eta.vercel.app">
         <strong>Explore my<br />Component Library</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/component-tree.webp" width="120" height="120" alt="Component Library tree with crayon flecks moving horizontally and vertically" />
+      <img src="profile/assets/library-bag.gif" width="120" alt="Books and a protractor fanning out of a blue backpack" />
     </td>
-    <td align="center" valign="top" width="250">
+    <td align="center" valign="top" width="190">
       <a href="https://github.com/jaiminjariwala/codex-lite/releases/latest">
         <strong>Try out Codex Lite<br />macOS Desktop app!</strong>
       </a>
       <br /><br />
-      <img src="https://raw.githubusercontent.com/jaiminjariwala/jaiminjariwala/main/profile/assets/codex-lite-slow.webp" width="120" height="120" alt="The slowly rotating Codex Lite beach-ball app icon" />
+      <img src="profile/assets/codex-lite-slow.gif" width="120" alt="The slowly rotating Codex Lite beach-ball app icon" />
     </td>
   </tr>
 </table>
@@ -35,21 +35,24 @@
   <a href="https://github.com/jaiminjariwala/jaiminjariwala/issues/1#issuecomment-new"><img src="profile/assets/retro/guestbook.svg" alt="Guestbook (Add a new entry)" /></a>
 </div>
 
+<div align="center">
+
 <!-- guestbook:start -->
-| Name | Date | Message |
-|---|---|---|
-| <a href="https://github.com/mihnea-popescu"><img width="24" src="https://github.com/mihnea-popescu.png?size=24" alt="mihnea-popescu" />&#8288;&nbsp;mihnea&#8209;popescu</a> | 9/28/2026,&nbsp;3:13:47&nbsp;PM&nbsp;ET | Love&nbsp;this&nbsp;new&nbsp;profile!&nbsp;Keep&nbsp;up&nbsp;the&nbsp;good&nbsp;work... |
-| <a href="https://github.com/ari-sax"><img width="24" src="https://github.com/ari-sax.png?size=24" alt="ari-sax" />&#8288;&nbsp;ari&#8209;sax</a> | 9/28/2026,&nbsp;1:19:01&nbsp;PM&nbsp;ET | Yoo!&nbsp;Good&nbsp;stuff!&nbsp;We&nbsp;keep&nbsp;hustling.🙌🏻 |
-| <a href="https://github.com/HetalLad"><img width="24" src="https://github.com/HetalLad.png?size=24" alt="HetalLad" />&#8288;&nbsp;HetalLad</a> | 9/28/2026,&nbsp;10:39:10&nbsp;AM&nbsp;ET | Wow&nbsp;those&nbsp;animations&nbsp;are&nbsp;really&nbsp;amazing!!!... |
+<table align="center">
+<thead><tr><th>Name</th><th>Date</th><th>Message</th></tr></thead>
+<tbody>
+<tr><td><a href="https://github.com/mihnea-popescu"><img width="24" src="https://github.com/mihnea-popescu.png?size=24" alt="mihnea-popescu" />&#8288;&nbsp;mihnea&#8209;popescu</a></td><td>9/28/2026,&nbsp;3:13:47&nbsp;PM&nbsp;ET</td><td>Love&nbsp;this&nbsp;new&nbsp;profile!&nbsp;Keep&nbsp;up&nbsp;the&nbsp;good&nbsp;work...</td></tr>
+<tr><td><a href="https://github.com/ari-sax"><img width="24" src="https://github.com/ari-sax.png?size=24" alt="ari-sax" />&#8288;&nbsp;ari&#8209;sax</a></td><td>9/28/2026,&nbsp;1:19:01&nbsp;PM&nbsp;ET</td><td>Yoo!&nbsp;Good&nbsp;stuff!&nbsp;We&nbsp;keep&nbsp;hustling.🙌🏻</td></tr>
+<tr><td><a href="https://github.com/HetalLad"><img width="24" src="https://github.com/HetalLad.png?size=24" alt="HetalLad" />&#8288;&nbsp;HetalLad</a></td><td>9/28/2026,&nbsp;10:39:10&nbsp;AM&nbsp;ET</td><td>Wow&nbsp;those&nbsp;animations&nbsp;are&nbsp;really&nbsp;amazing!!!...</td></tr>
+</tbody></table>
 <!-- guestbook:end -->
 
+</div>
+
+<br />
+
 <div align="center">
-  <img src="profile/assets/tech-stack/languages.svg" width="100%" alt="Languages: TypeScript, Python, Go, JavaScript, SQL" />
-  <img src="profile/assets/tech-stack/frontend.svg" width="100%" alt="Frontend: React.js, Next.js, Redux, React Native, Electron" />
-  <img src="profile/assets/tech-stack/styling-build.svg" width="100%" alt="Styling and Build: HTML5, CSS3, Tailwind CSS, Vite" />
-  <img src="profile/assets/tech-stack/backend.svg" width="100%" alt="Backend: Node.js, Express, REST APIs, GraphQL, gRPC, Webhooks, Kafka" />
-  <img src="profile/assets/tech-stack/databases.svg" width="100%" alt="Databases: MongoDB, Redis, Supabase, PostgreSQL" />
-  <img src="profile/assets/tech-stack/cloud-devops.svg" width="100%" alt="Cloud and DevOps: AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" />
+  <img src="profile/assets/tech-stack/joined-grid.svg" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" />
 </div>
 
 <!-- coding-time: reserved for verified all-time tracking data -->

@@ -1,5 +1,17 @@
 # Profile card artwork
 
+## September 29 update
+
+The built-in image-generation tool edited the supplied backpack and new portrait. `profile/render-new-cards.cjs` assembles the generated layers into `library-bag.gif` and `portrait-fast.gif` (256 × 256). The existing slow beach ball is retained. The bag and ball have transparent canvases; the portrait intentionally retains the requested softly blurred red backdrop. README embeds specify width only: GitHub adds a gray fallback background when both width and height are supplied.
+
+Bag prompt: preserve the exact blue backpack illustration and colors; produce four transparent animation layers in a 2 × 2 sheet: rear bag, books, protractor, foreground pocket/flap. No background or shadow. The assembler keeps the bag stationary while books fan right and the protractor fans left, then return.
+
+Portrait prompt: preserve the supplied portrait, hair, face, outlines and colors; produce a square 2 × 2 sheet of registered open-eye and closed-eye frames against the same softly blurred red background, with the whole head visible. The assembler swaps only eye patches and uses 1.7/2.1-second open-eye intervals and 110 ms blinks.
+
+The joined tech grid uses one transparent SVG, fixed 110 × 108 cells, 48-pixel icons and 14-pixel labels. Centered group rows share adjoining boundaries without image-line spacing.
+
+## Previous artwork
+
 The built-in image-editing tool prepared the supplied illustrations; `profile/render-card-animations.cjs` assembles the GIFs. All outputs are 256 × 256 and displayed at 120 × 120.
 
 - Portrait prompt: preserve the supplied cartoon and its crayon styling; remove the white spot at the left temple and excess skin outside the left black cheek outline; center on transparent background. Produce registered open-eye and closed-eye frames. The GIF uses only the eye patches from the second frame to prevent body jitter.
