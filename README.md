@@ -55,17 +55,18 @@
   <img src="profile/assets/tech-stack/joined-grid.svg" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" />
 </div>
 
-### 📊 Coding time so far
-
-<!--START_SECTION:waka-->
+<!-- commit-activity:start -->
+### I'm an early 🐤
 
 ```text
-Total Time: 0 secs
-
-No activity tracked
+🌞 Morning     171 commits  ████░░░░░░░░░░░░░░░░░░░░░   17.9%
+🌇 Daytime     334 commits  █████████░░░░░░░░░░░░░░░░   35.0%
+🌆 Evening     323 commits  ████████░░░░░░░░░░░░░░░░░   33.9%
+🌙 Night       126 commits  ███░░░░░░░░░░░░░░░░░░░░░░   13.2%
 ```
 
-<!--END_SECTION:waka-->
+<sub>Public indexed commits across repositories · Eastern time · Morning 6am–noon, daytime noon–6pm, evening 6pm–midnight, night midnight–6am.</sub>
+<!-- commit-activity:end -->
 
 <div align="center">
   <img height="120" alt="Thanks for visiting my profile, see you next time!" width="100%" src="profile/assets/retro/marquee.svg" />
