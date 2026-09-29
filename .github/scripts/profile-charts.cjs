@@ -16,7 +16,7 @@ function languages(totals){
  const palette=['#267f99','#8250df','#15803d','#c026d3','#bc4c00'];
  const height=170+Math.ceil(entries.length/2)*36;
  let x=30;
- let body='<rect class="border" x="1" y="1" width="648" height="'+(height-2)+'" rx="9"/><text class="title" x="30" y="48" font-size="29">Most Used Languages</text><defs><clipPath id="bar"><rect x="30" y="78" width="590" height="15" rx="7"/></clipPath></defs>';
+ let body='<rect class="border" x="1" y="1" width="648" height="'+(height-2)+'" rx="9"/><text class="title" x="30" y="48" font-size="29">Languages by lines of code</text><defs><clipPath id="bar"><rect x="30" y="78" width="590" height="15" rx="7"/></clipPath></defs>';
  entries.forEach(([name,n],i)=>{
   const color=colors[name]||palette[i%palette.length],w=590*n/total;
   body+=`<rect clip-path="url(#bar)" x="${x}" y="78" width="${w}" height="15" fill="${color}"/>`;x+=w;
@@ -24,7 +24,7 @@ function languages(totals){
   body+=`<circle cx="${lx+8}" cy="${ly-6}" r="7" fill="${color}"/><text x="${lx+24}" y="${ly}" font-size="17">${esc(name)} ${(100*n/total).toFixed(2)}%</text>`;
  });
  if(!total)body+='<text x="30" y="130" font-size="18">No public language data yet.</text>';
- body+=`<text class="muted" x="30" y="${height-24}" font-size="13">Code bytes in owned public repositories · forks excluded</text>`;
+ body+=`<text class="muted" x="30" y="${height-24}" font-size="13">Public source code · dependencies, comments and blank lines excluded</text>`;
  return wrap(650,height,body);
 }
 module.exports={commits,languages};

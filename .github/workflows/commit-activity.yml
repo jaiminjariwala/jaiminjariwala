@@ -17,7 +17,11 @@ jobs:
         with:
           ref: main
           persist-credentials: false
-      - name: Refresh public commit activity
+      - name: Test statistics generators
+        run: |
+          node .github/scripts/commit-activity.cjs --test
+          python3 .github/scripts/language-lines.py --test
+      - name: Refresh commit activity and source line counts
         env:
           GH_TOKEN: ${{ github.token }}
         run: node .github/scripts/commit-activity.cjs --publish

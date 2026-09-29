@@ -2,6 +2,7 @@ const fs = require('node:fs/promises');
 const assert = require('node:assert/strict');
 const charts = require('./profile-charts.cjs');
 const {createHash}=require('node:crypto');
+const {spawnSync}=require('node:child_process');
 const repo = 'jaiminjariwala/jaiminjariwala';
 const username = 'jaiminjariwala';
 const zone = 'America/New_York';
@@ -65,18 +66,20 @@ async function collect(start='1970-01-01',end=new Date().toISOString().slice(0,1
 async function main() {
   if(!process.env.GH_TOKEN) throw Error('GH_TOKEN is required');
   const counts=summarize(await collect());
-  const totals={};
+  const repositories=[];
   for(let page=1;;page++) {
     const repos=await api(`users/${username}/repos?type=owner&per_page=100&page=${page}`);
-    for(const r of repos.filter(r=>!r.fork&&!r.private)) {
-      const values=await api(`repos/${r.full_name}/languages`);
-      for(const [name,bytes] of Object.entries(values)) totals[name]=(totals[name]||0)+bytes;
-    }
+    repositories.push(...repos.filter(r=>!r.fork&&!r.private&&r.size>0));
     if(repos.length<100)break;
   }
+  const counted=spawnSync('python3',['.github/scripts/language-lines.py'],{input:JSON.stringify(repositories),encoding:'utf8',maxBuffer:10*1024*1024,timeout:720000});
+  if(counted.stderr)process.stderr.write(counted.stderr);
+  if(counted.status!==0)throw Error('Language line counting failed; keeping existing charts');
+  const {totals}=JSON.parse(counted.stdout);
+  console.log('Source lines:',JSON.stringify(totals));
   const assets={'profile/assets/commit-activity.svg':charts.commits(counts),'profile/assets/most-used-languages.svg':charts.languages(totals)};
   const version=path=>createHash('sha256').update(assets[path]).digest('hex').slice(0,12);
-  const block=`<!-- commit-activity:start -->\n<div align="center">\n  <img src="profile/assets/commit-activity.svg?v=${version('profile/assets/commit-activity.svg')}" width="680" alt="Commit activity by time of day in Eastern time" />\n  <br /><br />\n  <img src="profile/assets/most-used-languages.svg?v=${version('profile/assets/most-used-languages.svg')}" width="560" alt="Most Used Languages by code bytes in owned public repositories, excluding forks" />\n</div>\n<!-- commit-activity:end -->`;
+  const block=`<!-- commit-activity:start -->\n<br />\n<div align="center">\n  <img src="profile/assets/commit-activity.svg?v=${version('profile/assets/commit-activity.svg')}" width="680" alt="Commit activity by time of day in Eastern time" />\n  <br /><br />\n  <img src="profile/assets/most-used-languages.svg?v=${version('profile/assets/most-used-languages.svg')}" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" />\n</div>\n<!-- commit-activity:end -->`;
   if(process.argv.includes('--publish')) {
     for(const [path,content] of Object.entries(assets)) {
       let previous;
