@@ -56,16 +56,11 @@
 </div>
 
 <!-- commit-activity:start -->
-### I'm an early 🐤
-
-```text
-🌞 Morning     171 commits  ████░░░░░░░░░░░░░░░░░░░░░   17.9%
-🌇 Daytime     335 commits  █████████░░░░░░░░░░░░░░░░   35.1%
-🌆 Evening     323 commits  ████████░░░░░░░░░░░░░░░░░   33.8%
-🌙 Night       126 commits  ███░░░░░░░░░░░░░░░░░░░░░░   13.2%
-```
-
-<sub>Public indexed commits across repositories · Eastern time · Morning 6am–noon, daytime noon–6pm, evening 6pm–midnight, night midnight–6am.</sub>
+<div align="center">
+  <img src="profile/assets/commit-activity.svg?v=0a0374d4597e" width="800" alt="Commit activity by time of day in Eastern time" />
+  <br /><br />
+  <img src="profile/assets/most-used-languages.svg?v=2aa5febce976" width="650" alt="Most Used Languages by code bytes in owned public repositories, excluding forks" />
+</div>
 <!-- commit-activity:end -->
 
 <div align="center">

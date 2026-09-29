@@ -1,5 +1,7 @@
 const fs = require('node:fs/promises');
 const assert = require('node:assert/strict');
+const charts = require('./profile-charts.cjs');
+const {createHash}=require('node:crypto');
 const repo = 'jaiminjariwala/jaiminjariwala';
 const username = 'jaiminjariwala';
 const zone = 'America/New_York';
@@ -63,8 +65,26 @@ async function collect(start='1970-01-01',end=new Date().toISOString().slice(0,1
 async function main() {
   if(!process.env.GH_TOKEN) throw Error('GH_TOKEN is required');
   const counts=summarize(await collect());
-  const block=`<!-- commit-activity:start -->\n${render(counts)}\n<!-- commit-activity:end -->`;
+  const totals={};
+  for(let page=1;;page++) {
+    const repos=await api(`users/${username}/repos?type=owner&per_page=100&page=${page}`);
+    for(const r of repos.filter(r=>!r.fork&&!r.private)) {
+      const values=await api(`repos/${r.full_name}/languages`);
+      for(const [name,bytes] of Object.entries(values)) totals[name]=(totals[name]||0)+bytes;
+    }
+    if(repos.length<100)break;
+  }
+  const assets={'profile/assets/commit-activity.svg':charts.commits(counts),'profile/assets/most-used-languages.svg':charts.languages(totals)};
+  const version=path=>createHash('sha256').update(assets[path]).digest('hex').slice(0,12);
+  const block=`<!-- commit-activity:start -->\n<div align="center">\n  <img src="profile/assets/commit-activity.svg?v=${version('profile/assets/commit-activity.svg')}" width="800" alt="Commit activity by time of day in Eastern time" />\n  <br /><br />\n  <img src="profile/assets/most-used-languages.svg?v=${version('profile/assets/most-used-languages.svg')}" width="650" alt="Most Used Languages by code bytes in owned public repositories, excluding forks" />\n</div>\n<!-- commit-activity:end -->`;
   if(process.argv.includes('--publish')) {
+    for(const [path,content] of Object.entries(assets)) {
+      let previous;
+      try {previous=await api(`repos/${repo}/contents/${path}?ref=main`);} catch(e) {if(!e.message.includes('404'))throw e;}
+      const encoded=Buffer.from(content).toString('base64');
+      if(previous?.content.replace(/\s/g,'')===encoded)continue;
+      await api(`repos/${repo}/contents/${path}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Update profile statistics chart',content:encoded,sha:previous?.sha,branch:'main'})});
+    }
     // Read the newest README after fetching stats, preserving guestbook changes.
     const file=await api(`repos/${repo}/contents/README.md?ref=main`);
     const readme=Buffer.from(file.content,'base64').toString('utf8');
@@ -72,6 +92,7 @@ async function main() {
     const updated=readme.replace(marker,()=>block);
     if(updated!==readme) await api(`repos/${repo}/contents/README.md`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'Update public commit activity',content:Buffer.from(updated).toString('base64'),sha:file.sha,branch:'main'})});
   } else {
+    for(const [path,content] of Object.entries(assets)) await fs.writeFile(path,content);
     const readme=await fs.readFile('README.md','utf8');
     if(!marker.test(readme)) throw Error('Missing commit activity markers');
     await fs.writeFile('README.md',readme.replace(marker,()=>block));
@@ -85,5 +106,8 @@ if(process.argv.includes('--test')) {
   assert.deepEqual(summarize([item,item,{...item,sha:'b',repository:{private:true}}]),[0,1,0,0]);
   assert.ok(render([1,2,3,4]).includes('night owl'));
   assert.ok(!render([0,0,0,0]).includes('NaN'));
+  assert.ok(charts.commits([1,2,3,4]).includes('width="800"'));
+  assert.ok(!charts.languages({}).includes('NaN'));
+  assert.ok(charts.languages({'A&B':10}).includes('A&amp;B 100.00%'));
   console.log('Commit activity tests passed');
 } else main().catch(e=>{console.error(e.message);process.exitCode=1;});
