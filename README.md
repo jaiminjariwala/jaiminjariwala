@@ -12,7 +12,7 @@
         <strong>Visit my personal<br />website</strong>
       </a>
       <br /><br />
-      <img src="profile/assets/portrait-transparent.gif" width="120" alt="A smiling cartoon blinking on a transparent background" />
+      <img src="profile/assets/portrait-coastal.gif" width="120" alt="A smiling cartoon in a coastal blue and white striped shirt blinking on a transparent background" />
     </td>
     <td align="center" valign="top" width="190">
       <a href="https://component-library-six-eta.vercel.app">
@@ -55,7 +55,10 @@
   <img src="profile/assets/tech-stack/joined-grid.svg" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" />
 </div>
 
-<!-- coding-time: reserved for verified all-time tracking data -->
+### 📊 Coding time so far
+
+<!--START_SECTION:waka-->
+<!--END_SECTION:waka-->
 
 <div align="center">
   <img height="120" alt="Thanks for visiting my profile, see you next time!" width="100%" src="profile/assets/retro/marquee.svg" />

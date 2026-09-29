@@ -37,7 +37,7 @@ async function main() {
     if(f===0||f===8||f===14) await sharp(frame,{raw:{width:size,height:size,channels:4}}).png().toFile(`/tmp/library-bag-v2-${f}.png`);
   }
   await gif('library-bag-jump.gif',frames,positions.map((_,i)=>i===0?400:40));
-  const portrait=path.join(dir,'portrait-transparent-sheet.png'), p=await sharp(portrait).metadata(), cell=p.width/2;
+  const portrait=path.join(dir,'portrait-coastal-sheet.png'), p=await sharp(portrait).metadata(), cell=p.width/2;
   const panels=await Promise.all([0,1].map(i=>sharp(portrait).extract({left:i*cell,top:0,width:cell,height:cell}).resize(size,size).ensureAlpha().raw().toBuffer()));
   // Use only eyelid patches to keep the rest of the portrait completely stationary.
   const closed=Buffer.from(panels[0]);
@@ -45,7 +45,7 @@ async function main() {
     for(let y=top;y<bottom;y++)for(let x=left;x<right;x++){
       const o=(y*size+x)*4;panels[1].copy(closed,o,o,o+4);
     }
-  await gif('portrait-transparent.gif',[panels[0],closed,panels[0],closed],[1700,110,2100,110]);
+  await gif('portrait-coastal.gif',[panels[0],closed,panels[0],closed],[1700,110,2100,110]);
   await sharp(closed,{raw:{width:size,height:size,channels:4}}).png().toFile('/tmp/portrait-fast-closed.png');
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

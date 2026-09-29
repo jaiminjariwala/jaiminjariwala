@@ -1,5 +1,9 @@
 # Profile card artwork
 
+## Coastal shirt revision
+
+Built-in image editing changed only the shirt to white and muted medium-dark denim blue horizontal stripes (target #38658A), preserving the character, 2 × 2 eye-state registration, and transparent canvas. Prompt: replace bright sky blue with deeper dusty coastal blue; keep white stripes, all facial details, black contours, scale and transparency unchanged. Saved source: `portrait-coastal-sheet.png`; assembled blinking output: `portrait-coastal.gif`.
+
 ## Transparent portrait and jumping books revision
 
 Built-in image editing removed the red background from the portrait sheet, preserving the cartoon and eye states (`portrait-transparent-sheet.png`). Prompt: remove all red surroundings to genuine alpha; preserve the same 2 × 2 layout, character contours, colors, scale and open/closed eyes, without halos or shadows.
