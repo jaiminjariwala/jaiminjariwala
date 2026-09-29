@@ -3,10 +3,10 @@ const style='<style>text{font-family:Arial,sans-serif;fill:#24292f}.title{fill:#
 const wrap=(w,h,body)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${style}${body}</svg>`;
 function commits(counts){
  const total=counts.reduce((a,b)=>a+b,0), title=counts[0]+counts[1]>=counts[2]+counts[3]?"I'm an early 🐤":"I'm a night owl 🦉";
- return wrap(800,270,`<text class="title" x="20" y="36" font-size="28">${esc(title)}</text>`+counts.map((n,i)=>{
+ return wrap(800,230,`<text class="title" x="20" y="36" font-size="28">${esc(title)}</text>`+counts.map((n,i)=>{
   const y=82+i*42,p=total?n/total:0;
   return `<text x="20" y="${y}" font-size="22">${['🌞 Morning','🌇 Daytime','🌆 Evening','🌙 Night'][i]}</text><text x="220" y="${y}" font-size="21">${n} commits</text><rect x="390" y="${y-18}" width="280" height="20" rx="3" fill="none" stroke="#8c959f"/><rect class="bar" x="390" y="${y-18}" width="${280*p}" height="20" rx="3"/><text x="695" y="${y}" font-size="21">${(100*p).toFixed(1)}%</text>`;
- }).join('')+'<text class="muted" x="20" y="252" font-size="14">Public indexed commits · Eastern time · 6am / noon / 6pm / midnight</text>');
+ }).join(''));
 }
 function languages(totals){
  let entries=Object.entries(totals).filter(([,n])=>n>0).sort((a,b)=>b[1]-a[1]);

@@ -29,7 +29,7 @@ function render(counts) {
     const fraction=total ? count/total : 0, filled=Math.round(fraction*25);
     return `${labels[i].padEnd(12)} ${String(count).padStart(5)} commits  ${'█'.repeat(filled)}${'░'.repeat(25-filled)}  ${(fraction*100).toFixed(1).padStart(5)}%`;
   });
-  return `### ${title}\n\n\`\`\`text\n${rows.join('\n')}\n\`\`\`\n\n<sub>Public indexed commits across repositories · Eastern time · Morning 6am–noon, daytime noon–6pm, evening 6pm–midnight, night midnight–6am.</sub>`;
+  return `### ${title}\n\n\`\`\`text\n${rows.join('\n')}\n\`\`\``;
 }
 async function api(endpoint, options={}) {
   const response=await fetch(`https://api.github.com/${endpoint}`,{
@@ -76,7 +76,7 @@ async function main() {
   }
   const assets={'profile/assets/commit-activity.svg':charts.commits(counts),'profile/assets/most-used-languages.svg':charts.languages(totals)};
   const version=path=>createHash('sha256').update(assets[path]).digest('hex').slice(0,12);
-  const block=`<!-- commit-activity:start -->\n<div align="center">\n  <img src="profile/assets/commit-activity.svg?v=${version('profile/assets/commit-activity.svg')}" width="800" alt="Commit activity by time of day in Eastern time" />\n  <br /><br />\n  <img src="profile/assets/most-used-languages.svg?v=${version('profile/assets/most-used-languages.svg')}" width="650" alt="Most Used Languages by code bytes in owned public repositories, excluding forks" />\n</div>\n<!-- commit-activity:end -->`;
+  const block=`<!-- commit-activity:start -->\n<div align="center">\n  <img src="profile/assets/commit-activity.svg?v=${version('profile/assets/commit-activity.svg')}" width="680" alt="Commit activity by time of day in Eastern time" />\n  <br /><br />\n  <img src="profile/assets/most-used-languages.svg?v=${version('profile/assets/most-used-languages.svg')}" width="560" alt="Most Used Languages by code bytes in owned public repositories, excluding forks" />\n</div>\n<!-- commit-activity:end -->`;
   if(process.argv.includes('--publish')) {
     for(const [path,content] of Object.entries(assets)) {
       let previous;
