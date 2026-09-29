@@ -1,5 +1,13 @@
 # Profile card artwork
 
+## Transparent portrait and jumping books revision
+
+Built-in image editing removed the red background from the portrait sheet, preserving the cartoon and eye states (`portrait-transparent-sheet.png`). Prompt: remove all red surroundings to genuine alpha; preserve the same 2 × 2 layout, character contours, colors, scale and open/closed eyes, without halos or shadows.
+
+Built-in image editing separated the yellow and pink notebooks (`separate-books-sheet.png`). Prompt: isolate complete yellow and pink notebooks from the backpack reference into separate transparent square cells, reconstructing obscured portions and preserving the illustration style.
+
+Final assets: `portrait-transparent.gif` and `library-bag-jump.gif`. Yellow translates straight up without rotation; pink rotates right independently; the protractor rotates left. The roughly one-second packing loop uses rapid 40 ms movement steps, a short outward hold and a deeper landing dip behind the foreground pocket. The portrait keeps its faster blink timing. All surrounding canvases are transparent.
+
 ## September 29 update
 
 The built-in image-generation tool edited the supplied backpack and new portrait. `profile/render-new-cards.cjs` assembles the generated layers into `library-bag.gif` and `portrait-fast.gif` (256 × 256). The existing slow beach ball is retained. The bag and ball have transparent canvases; the portrait intentionally retains the requested softly blurred red backdrop. README embeds specify width only: GitHub adds a gray fallback background when both width and height are supplied.

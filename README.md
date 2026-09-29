@@ -12,14 +12,14 @@
         <strong>Visit my personal<br />website</strong>
       </a>
       <br /><br />
-      <img src="profile/assets/portrait-fast.gif" width="120" alt="A smiling portrait blinking against a softly blurred red background" />
+      <img src="profile/assets/portrait-transparent.gif" width="120" alt="A smiling cartoon blinking on a transparent background" />
     </td>
     <td align="center" valign="top" width="190">
       <a href="https://component-library-six-eta.vercel.app">
         <strong>Explore my<br />Component Library</strong>
       </a>
       <br /><br />
-      <img src="profile/assets/library-bag.gif" width="120" alt="Books and a protractor fanning out of a blue backpack" />
+      <img src="profile/assets/library-bag-jump.gif" width="120" alt="Yellow book jumping up, pink book fanning right, and protractor fanning left into and out of a backpack" />
     </td>
     <td align="center" valign="top" width="190">
       <a href="https://github.com/jaiminjariwala/codex-lite/releases/latest">
