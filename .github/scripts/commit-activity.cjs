@@ -33,12 +33,25 @@ function render(counts) {
   return `### ${title}\n\n\`\`\`text\n${rows.join('\n')}\n\`\`\``;
 }
 async function api(endpoint, options={}) {
-  const response=await fetch(`https://api.github.com/${endpoint}`,{
+  for(let attempt=0;attempt<3;attempt++) {
+  let response;
+  try {response=await fetch(`https://api.github.com/${endpoint}`,{
     ...options, signal:AbortSignal.timeout(30000),
     headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${process.env.GH_TOKEN}`,'X-GitHub-Api-Version':'2022-11-28',...options.headers},
-  });
+  });} catch(error) {
+    // Retry read requests only: writes may already have succeeded remotely.
+    if(options.method || attempt===2)throw error;
+    await new Promise(resolve=>setTimeout(resolve,2000*(attempt+1)));
+    continue;
+  }
+  if(response.status>=500&&!options.method&&attempt<2) {
+    await response.text();
+    await new Promise(resolve=>setTimeout(resolve,2000*(attempt+1)));
+    continue;
+  }
   if(!response.ok) throw Error(`GitHub API returned ${response.status}`);
   return response.json();
+  }
 }
 let lastSearch=0;
 async function search(query,page=1) {
