@@ -42,12 +42,16 @@ async function api(endpoint, options={}) {
 }
 let lastSearch=0;
 async function search(query,page=1) {
+  for(let attempt=0;attempt<4;attempt++) {
   // Stay below GitHub's search-specific rate limit.
   await new Promise(resolve=>setTimeout(resolve,Math.max(0,2200-(Date.now()-lastSearch))));
   lastSearch=Date.now();
   const data=await api(`search/commits?q=${encodeURIComponent(query)}&sort=author-date&order=asc&per_page=100&page=${page}`);
-  if(data.incomplete_results) throw Error('GitHub returned incomplete search results; keeping the previous chart');
-  return data;
+  if(!data.incomplete_results) return data;
+  console.warn(`GitHub search was incomplete; retry ${attempt+1}/4`);
+  await new Promise(resolve=>setTimeout(resolve,3000*(attempt+1)));
+  }
+  throw Error('GitHub search remained incomplete after retries; keeping the previous chart');
 }
 async function collect(start='1970-01-01',end=new Date().toISOString().slice(0,10),unbounded=true) {
   const query=`author:${username} is:public${unbounded?'':` author-date:${start}..${end}`}`;
