@@ -2,30 +2,15 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import localFont from "next/font/local";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
 import Navbar from "@/components/Navbar";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
-const headingFont = localFont({
-  src: "../../public/fonts/Graphik_Collection/Graphik Condensed Family/GraphikCondensed-Black-Trial.otf",
-  weight: "900",
-  display: "swap",
-});
-
 const contentGutter = {
   paddingLeft: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
   paddingRight: "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
-};
-
-const highlightStyle = {
-  backgroundColor: "rgb(220, 220, 220)",
-  color: "inherit",
-  borderRadius: 5,
-  boxDecorationBreak: "clone",
-  WebkitBoxDecorationBreak: "clone",
 };
 
 const WASHINGTON_TIME_FORMATTER = new Intl.DateTimeFormat("en-US", {
@@ -83,8 +68,8 @@ const WorkExperienceStack = () => {
                 "clamp(0px, calc((768px - 100vw) * 9999), 20px)",
             }}
           >
-            In Summer 2026, I <mark className="portfolio-highlight" style={highlightStyle}>interned at Amazon as a Design Technologist I
-            (L4) on the Alexa Smart Home UX team.</mark>{" "}I shipped an Echo Show
+            In Summer 2026, I interned at Amazon as a Design Technologist I
+            (L4) on the Alexa Smart Home UX team. I shipped an Echo Show
             Device Starter Kit adopted by 4 teams to build voice-enabled
             prototypes in under 2 hours. Automating AWS setup with Lambda,
             DynamoDB, and Bedrock cut setup from 2+ days to ~90 seconds and
@@ -117,7 +102,7 @@ const WorkExperienceStack = () => {
             style={{ ...contentGutter, marginTop: 28 }}
           >
             <p className="portfolio-paragraph">
-              <mark className="portfolio-highlight" style={highlightStyle}>AI/ML Intern at Logicwind (May 2024 - December 2024).</mark>{" "}Built
+              AI/ML Intern at Logicwind (May 2024 - December 2024). Built
               machine-learning and computer-vision models with PyTorch for
               handwritten-text analysis and road-infrastructure (lanes and
               objects detection) analysis through REST APIs. Reduced
@@ -188,7 +173,7 @@ const ProjectsStack = () => {
       <article className="projects-stack-item">
         <div className="projects-carousel-slide-content mx-auto w-full max-w-[920px]">
           <figure>
-            <h2 className="home-section-heading" style={{ ...headingFont.style, color: "#000" }}>PROJECTS</h2>
+            <h2 className="home-section-heading">Projects</h2>
             <div className="codex-gallery-nav" aria-label="Scroll project media">
               <button
                 type="button"
@@ -454,7 +439,7 @@ const HomePage = () => {
               together in the viewport. */}
           <div id="education" className="w-full">
             <figure data-reveal className="home-education-figure">
-              <h2 className="home-section-heading" style={{ ...headingFont.style, color: "#000" }}>EDUCATION</h2>
+              <h2 className="home-section-heading">Education</h2>
               <div className="home-education-image-frame mobile-full-bleed">
                 <img
                   src={getCloudinaryUrl("IMG_0230_chl99b", 1600)}
@@ -471,9 +456,9 @@ const HomePage = () => {
               style={{ ...contentGutter, marginTop: 28 }}
             >
               <p className="portfolio-paragraph">
-                <mark className="portfolio-highlight" style={highlightStyle}>Pursuing Master&apos;s in Computer Science at The George
+                Pursuing Master&apos;s in Computer Science at The George
                 Washington University, Washington D.C. (August 2025 -
-                Present).</mark>
+                Present).
               </p>
               <p className="portfolio-paragraph" style={{ marginTop: 24 }}>
                 Focusing on Distributed Systems, Software
@@ -489,7 +474,7 @@ const HomePage = () => {
               className="home-education-figure"
               style={{ marginTop: "var(--home-story-gap)" }}
             >
-              <h2 className="home-section-heading" style={{ ...headingFont.style, color: "#000" }}>WORK EXPERIENCE</h2>
+              <h2 className="home-section-heading">Work Experience</h2>
               <Image
                 src="/images/gw-science-engineering-hall-enhanced.png"
                 alt="Science and Engineering Hall at The George Washington University"
@@ -506,9 +491,9 @@ const HomePage = () => {
               style={{ ...contentGutter, marginTop: 28 }}
             >
               <p className="portfolio-paragraph">
-                <mark className="portfolio-highlight" style={highlightStyle}>At present, I am a Graduate Teaching Assistant II for
+                At present, I am a Graduate Teaching Assistant II for
                 Cloud Computing at The George Washington University&apos;s
-                Science and Engineering Hall.</mark>
+                Science and Engineering Hall.
               </p>
               <p className="portfolio-paragraph" style={{ marginTop: 24 }}>
                 I help students debug and deploy full-stack projects on AWS using EC2, S3, IAM,
