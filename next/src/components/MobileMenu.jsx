@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Playfair_Display } from "next/font/google";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -147,6 +148,7 @@ export default function MobileMenu() {
                     {item.label}
                   </a>
                 )}
+                {item.label === "Linkedin" ? <ThemeToggle /> : null}
               </li>
             ))}
           </ul>

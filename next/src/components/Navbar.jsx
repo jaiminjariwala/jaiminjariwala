@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_ITEMS = [
   { label: "me", target: "me" },
@@ -86,6 +87,7 @@ const Navbar = () => {
               </a>
             </li>
           ))}
+          <li><ThemeToggle /></li>
         </ul>
       </nav>
     </div>

@@ -32,7 +32,10 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=localStorage.getItem('portfolio-theme')==='light'?'light':'dark'}catch{}` }} />
+      </head>
       <body className={`${inter.variable} ${shortStack.variable} ${inter.className}`}>
         <ClientShell>
           <main>{children}</main>
