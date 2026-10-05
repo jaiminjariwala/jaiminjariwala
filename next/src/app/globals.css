@@ -867,7 +867,7 @@ a {
   position: relative;
   width: 100%;
   margin: 0;
-  background: #ffffff;
+  background: var(--page-background);
 }
 
 .home-story-copy {
@@ -1766,6 +1766,7 @@ a {
   cursor: pointer;
   transition: background-color 160ms ease, transform 160ms ease;
 }
+.home-page { background: var(--page-background); color: var(--page-foreground); }
 .theme-toggle:hover { background: #8882; transform: rotate(12deg); }
 .theme-toggle:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
 .mobile-menu-list li:last-child { display: flex; align-items: center; gap: 16px; }
