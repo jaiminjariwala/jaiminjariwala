@@ -1782,6 +1782,7 @@ html[data-theme="dark"] section.bg-white { background: #000; color: #fff; }
 html[data-theme="dark"] .inline-gallery-detail h1 { -webkit-text-stroke-color: currentColor; }
 html[data-theme="dark"] .site-navbar-link { -webkit-text-stroke-color: currentColor; }
 html[data-theme="dark"] .custom-cursor { filter: invert(1); }
+html[data-theme="dark"] img[src*="/icons/left-arrow.svg"] { filter: invert(1); }
 html[data-theme="dark"] .desktop-sidebar-link { color: #fff; }
 html[data-theme="dark"] .desktop-sidebar-external,
 html[data-theme="dark"] .projects-embedded-link { color: #9ccbe2; text-decoration-color: currentColor; }
