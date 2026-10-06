@@ -1795,14 +1795,16 @@ html[data-theme="dark"] .custom-cursor[data-surface="dark"]:not(.hand) { filter:
 .project-media { position: relative; }
 .codex-gallery-track { align-items: flex-start; }
 .codex-gallery-track > .project-media:not(.is-expanded) {
-  height: auto;
+  height: min(575px, 57.5vw);
+  width: max-content;
   aspect-ratio: auto;
 }
 .codex-gallery-track > .project-media:not(.is-expanded) > img,
 .codex-gallery-track > .project-media:not(.is-expanded) .codex-gallery-video,
 .codex-gallery-track > .project-media:not(.is-expanded) video {
-  width: 100%;
-  height: auto;
+  width: auto;
+  max-width: none;
+  height: min(575px, 57.5vw);
   object-fit: contain;
 }
 .codex-gallery-nav {
