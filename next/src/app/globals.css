@@ -1789,8 +1789,9 @@ html[data-theme="dark"] .gallery-heading {
 html[data-theme="dark"] .site-navbar-link { -webkit-text-stroke-color: currentColor; }
 html[data-theme="dark"] .custom-cursor { filter: invert(1); }
 html[data-theme="dark"] .custom-cursor.hand { filter: none; }
-html[data-theme="dark"] .custom-cursor.select-black,
-html[data-theme="dark"] .custom-cursor.text { mix-blend-mode: difference; }
+html[data-theme="dark"] .custom-cursor[data-surface="light"]:not(.hand) { filter: none; }
+html[data-theme="dark"] .custom-cursor[data-surface="dark"]:not(.hand) { filter: invert(1); }
+.codex-gallery-item { background: transparent; }
 .project-media { position: relative; }
 .projects-stack-item figure > .project-media { width: 100%; max-width: none; }
 .project-media:fullscreen *, .project-media:fullscreen { cursor: pointer !important; }

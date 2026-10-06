@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 import { animate } from "framer-motion";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
@@ -159,34 +160,36 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
   const mediaRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
   useEffect(() => {
-    const sync = () => setExpanded(document.fullscreenElement === mediaRef.current);
-    document.addEventListener("fullscreenchange", sync);
-    return () => document.removeEventListener("fullscreenchange", sync);
-  }, []);
-  useEffect(() => {
     if (!expanded) return;
-    const escape = event => { if (event.key === "Escape") setExpanded(false); };
+    const previousFocus = document.activeElement;
+    mediaRef.current?.querySelector(".project-media-expand")?.focus();
+    const escape = event => {
+      if (event.key === "Escape") setExpanded(false);
+      if (event.key === "Tab") {
+        const controls = Array.from(mediaRef.current?.querySelectorAll("button, a[href]") || []);
+        const first = controls[0], last = controls[controls.length - 1];
+        if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+        if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+      }
+    };
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", escape);
     return () => {
       document.body.style.overflow = previous;
       window.removeEventListener("keydown", escape);
+      if (previousFocus?.isConnected) previousFocus.focus();
     };
   }, [expanded]);
-  const toggle = async () => {
-    if (document.fullscreenElement === mediaRef.current) await document.exitFullscreen();
-    else if (mediaRef.current.requestFullscreen) await mediaRef.current.requestFullscreen();
-    else setExpanded(value => !value);
-  };
-  return <div ref={mediaRef} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
+  const media = <div ref={mediaRef} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
-    <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => toggle().catch(() => setExpanded(value => !value))}>
+    <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {expanded ? <path d="M20 4l-6 6m0-5v5h5M4 20l6-6m-5 0h5v5" /> : <path d="M14 10l6-6m-5 0h5v5M10 14l-6 6m0-5v5h5" />}
       </svg>
     </button>
   </div>;
+  return expanded ? <><div className="codex-gallery-item project-media-placeholder" />{createPortal(media, document.body)}</> : media;
 };
 
 const ProjectsStack = () => {
