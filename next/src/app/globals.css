@@ -1789,8 +1789,13 @@ html[data-theme="dark"] .gallery-heading {
 html[data-theme="dark"] .site-navbar-link { -webkit-text-stroke-color: currentColor; }
 html[data-theme="dark"] .custom-cursor { filter: invert(1); }
 html[data-theme="dark"] .custom-cursor.hand { filter: none; }
-html[data-theme="dark"] .custom-cursor[data-surface="light"]:not(.hand) { filter: none; }
-html[data-theme="dark"] .custom-cursor[data-surface="dark"]:not(.hand) { filter: invert(1); }
+html[data-theme="dark"] .custom-cursor:not(.hand) {
+  filter: invert(1)
+    drop-shadow(.65px 0 0 #000)
+    drop-shadow(-.65px 0 0 #000)
+    drop-shadow(0 .65px 0 #000)
+    drop-shadow(0 -.65px 0 #000);
+}
 .codex-gallery-item { background: transparent; }
 .project-media { position: relative; }
 .codex-gallery-track { align-items: flex-start; }
