@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { animate } from "framer-motion";
 import { Short_Stack } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import { folders } from "@/components/galleryData";
@@ -13,11 +14,46 @@ const shortStack = Short_Stack({
 });
 
 function GlassFolder({ title, count, images, slug }) {
+  const entranceRef = useRef(null);
+  useEffect(() => {
+    const card = entranceRef.current;
+    if (!card || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let progress = 0;
+    let animation;
+    const render = value => {
+      progress = Math.max(0, Math.min(1, value));
+      const remaining = 1 - progress;
+      card.style.opacity = String(progress);
+      card.style.transform = `scale(${1 - remaining * .25})`;
+      card.style.filter = `blur(${remaining ** 3 * 60}px)`;
+    };
+    render(0);
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        animation?.stop();
+        const siblings = Array.from(card.parentElement.children);
+        animation = animate(progress, entry.isIntersecting ? 1 : 0, {
+          type: "spring", stiffness: 85, damping: 18, mass: 1,
+          delay: entry.isIntersecting ? siblings.indexOf(card) * .12 : 0,
+          onUpdate: render,
+        });
+      });
+    }, { threshold: .15, rootMargin: "0px 0px -8% 0px" });
+    observer.observe(card);
+    return () => {
+      observer.disconnect();
+      animation?.stop();
+      card.style.removeProperty("opacity");
+      card.style.removeProperty("transform");
+      card.style.removeProperty("filter");
+    };
+  }, []);
   const [isHovered, setIsHovered] = useState(false);
   const folderImages = Array.from({ length: 4 }, (_, index) => images[index] ?? null);
 
   return (
     <Link
+      ref={entranceRef}
       href={`/gallery/${slug}`}
       className="gallery-folder-card block w-[162px] shrink-0 cursor-pointer"
     >
