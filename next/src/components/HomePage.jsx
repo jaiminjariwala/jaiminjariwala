@@ -181,11 +181,12 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
       if (previousFocus?.isConnected) previousFocus.focus();
     };
   }, [expanded]);
-  const media = <div ref={mediaRef} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
+  const lightMedia = ["Welcome", "Sign in", "Browser sign-in", "Account chooser", "Dictation setup", "light settings", "Component Library screenshot"].includes(label);
+  const media = <div ref={mediaRef} data-media-tone={lightMedia ? "light" : "dark"} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
     <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        {expanded ? <path d="M20 4l-6 6m0-5v5h5M4 20l6-6m-5 0h5v5" /> : <path d="M14 10l6-6m-5 0h5v5M10 14l-6 6m0-5v5h5" />}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {expanded ? <path d="M21 3l-7 7m0-6v6h6M3 21l7-7m-6 0h6v6" /> : <path d="M14 10l7-7m-7 0h7v7M10 14l-7 7m0-7v7h7" />}
       </svg>
     </button>
   </div>;
