@@ -155,6 +155,40 @@ const ProjectVideo = ({ src, label }) => {
   );
 };
 
+const ProjectMedia = ({ children, className = "", label = "project media" }) => {
+  const mediaRef = useRef(null);
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => {
+    const sync = () => setExpanded(document.fullscreenElement === mediaRef.current);
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+  useEffect(() => {
+    if (!expanded) return;
+    const escape = event => { if (event.key === "Escape") setExpanded(false); };
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", escape);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", escape);
+    };
+  }, [expanded]);
+  const toggle = async () => {
+    if (document.fullscreenElement === mediaRef.current) await document.exitFullscreen();
+    else if (mediaRef.current.requestFullscreen) await mediaRef.current.requestFullscreen();
+    else setExpanded(value => !value);
+  };
+  return <div ref={mediaRef} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
+    {children}
+    <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => toggle().catch(() => setExpanded(value => !value))}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {expanded ? <path d="M20 4l-6 6m0-5v5h5M4 20l6-6m-5 0h5v5" /> : <path d="M14 10l6-6m-5 0h5v5M10 14l-6 6m0-5v5h5" />}
+      </svg>
+    </button>
+  </div>;
+};
+
 const ProjectsStack = () => {
   const codexTrackRef = useRef(null);
   const scrollCodexGallery = (dir) => {
@@ -199,33 +233,45 @@ const ProjectsStack = () => {
             </div>
             <div className="codex-gallery mobile-full-bleed">
               <div className="codex-gallery-track" ref={codexTrackRef}>
-                <div className="codex-gallery-item">
+                {[
+                  ["01-welcome", "Welcome"], ["02-sign-in", "Sign in"],
+                  ["03-browser-sign-in", "Browser sign-in"], ["04-account-chooser", "Account chooser"],
+                  ["05-microphone-permission", "Dictation setup"],
+                ].map(([file, label]) => <ProjectMedia key={file} label={label}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/${file}.png`} alt={`Codex Lite ${label}`} loading="lazy" />
+                </ProjectMedia>)}
+                <ProjectMedia label="first demo">
                   <ProjectVideo src="/media/codex-lite/demo-1.mp4" label="Codex Lite first demo" />
-                </div>
-                <div className="codex-gallery-item">
+                </ProjectMedia>
+                <ProjectMedia label="second demo">
                   <ProjectVideo src="/media/codex-lite/demo-2.mp4" label="Codex Lite second demo" />
-                </div>
-                <div className="codex-gallery-item">
+                </ProjectMedia>
+                <ProjectMedia label="code workspace">
                   <img
                     src="https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/code-workspace.png"
                     alt="Codex Lite chat and code workspace"
                     loading="lazy"
                   />
-                </div>
-                <div className="codex-gallery-item">
+                </ProjectMedia>
+                <ProjectMedia label="browser workspace">
                   <img
                     src="https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/browser-workspace.png"
                     alt="Codex Lite chat alongside the embedded browser"
                     loading="lazy"
                   />
-                </div>
-                <div className="codex-gallery-item codex-gallery-settings">
+                </ProjectMedia>
+                <ProjectMedia className="codex-gallery-settings" label="light settings">
                   <img
-                    src="/media/codex-lite/settings-appearance.png"
-                    alt="Codex Lite dark settings: app icon and local AI"
+                    src="https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/settings-light.png"
+                    alt="Codex Lite light settings"
                     loading="lazy"
                   />
-                </div>
+                </ProjectMedia>
+                <ProjectMedia className="codex-gallery-settings" label="dark settings">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/settings-dark.png" alt="Codex Lite dark settings" loading="lazy" />
+                </ProjectMedia>
               </div>
             </div>
           </figure>
@@ -262,6 +308,7 @@ const ProjectsStack = () => {
       <article id="projects" className="projects-stack-item">
         <div className="projects-carousel-slide-content mx-auto w-full max-w-[920px]">
           <figure>
+            <ProjectMedia label="Component Library screenshot">
             <a
               href="https://component-library-six-eta.vercel.app"
               target="_blank"
@@ -278,6 +325,7 @@ const ProjectsStack = () => {
                 className="block h-auto w-full"
               />
             </a>
+            </ProjectMedia>
           </figure>
           <p className="projects-embedded-desc">
             <span className="experience-emphasis">Open Source Component Library</span>: a component library and playground (Next.js,
