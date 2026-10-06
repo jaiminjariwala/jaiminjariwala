@@ -1859,6 +1859,22 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
   margin-top: calc(var(--home-story-gap) + 32px);
 }
 .project-media-expand:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.project-media-prev, .project-media-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 44px;
+  line-height: 1;
+  padding: 12px;
+}
+.project-media-prev { left: 12px; }
+.project-media-next { right: 12px; }
+.project-media[data-media-tone="light"] .project-media-prev,
+.project-media[data-media-tone="light"] .project-media-next { color: #000; }
 .project-media:fullscreen,
 .project-media.is-expanded {
   position: fixed;

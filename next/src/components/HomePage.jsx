@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { createPortal } from "react-dom";
 import { animate } from "framer-motion";
@@ -156,9 +156,26 @@ const ProjectVideo = ({ src, label }) => {
   );
 };
 
+const MediaGalleryContext = createContext(null);
+const MEDIA_LABELS = ["Welcome", "Sign in", "Browser sign-in", "Account chooser", "Dictation setup", "first demo", "second demo", "code workspace", "browser workspace", "light settings", "dark settings"];
 const ProjectMedia = ({ children, className = "", label = "project media" }) => {
+  const gallery = useContext(MediaGalleryContext);
   const mediaRef = useRef(null);
-  const [expanded, setExpanded] = useState(false);
+  const [standaloneExpanded, setStandaloneExpanded] = useState(false);
+  const expanded = gallery ? gallery.active === label : standaloneExpanded;
+  const setExpanded = useCallback(value => {
+    const next = typeof value === "function" ? value(expanded) : value;
+    if (gallery) gallery.setActive(next ? label : null);
+    else setStandaloneExpanded(next);
+  }, [expanded, gallery]);
+  const touchStart = useRef(null);
+  const localWheelState = useRef({ distance: 0, last: 0 });
+  const wheelState = gallery?.wheelState || localWheelState;
+  const navigate = useCallback(direction => {
+    if (!gallery) return;
+    const index = MEDIA_LABELS.indexOf(label);
+    gallery.setActive(MEDIA_LABELS[(index + direction + MEDIA_LABELS.length) % MEDIA_LABELS.length]);
+  }, [gallery, label]);
   const [mediaTone, setMediaTone] = useState(() => label === "dark settings" ? "dark" : "light");
   const sampleVideoTone = event => {
     const video = event.target;
@@ -182,6 +199,10 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     mediaRef.current?.querySelector(".project-media-expand")?.focus();
     const escape = event => {
       if (event.key === "Escape") setExpanded(false);
+      if (gallery && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+        event.preventDefault();
+        navigate(event.key === "ArrowRight" ? 1 : -1);
+      }
       if (event.key === "Tab") {
         const controls = Array.from(mediaRef.current?.querySelectorAll("button, a[href]") || []);
         const first = controls[0], last = controls[controls.length - 1];
@@ -197,9 +218,32 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
       window.removeEventListener("keydown", escape);
       if (previousFocus?.isConnected) previousFocus.focus();
     };
-  }, [expanded]);
-  const media = <div ref={mediaRef} onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
+  }, [expanded, gallery, navigate, setExpanded]);
+  const media = <div ref={mediaRef}
+    onTouchStart={event => { if (expanded) touchStart.current = [event.touches[0].clientX, event.touches[0].clientY]; }}
+    onTouchEnd={event => {
+      if (!expanded || !touchStart.current) return;
+      const dx = event.changedTouches[0].clientX - touchStart.current[0];
+      const dy = event.changedTouches[0].clientY - touchStart.current[1];
+      touchStart.current = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) navigate(dx < 0 ? 1 : -1);
+    }}
+    onWheel={event => {
+      if (!expanded || !gallery || Math.abs(event.deltaX) < Math.abs(event.deltaY)) return;
+      const now = performance.now();
+      if (now - wheelState.current.last < 600) return;
+      wheelState.current.distance += event.deltaX;
+      if (Math.abs(wheelState.current.distance) > 80) {
+        navigate(wheelState.current.distance > 0 ? 1 : -1);
+        wheelState.current = { distance: 0, last: now };
+      }
+    }}
+    onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
+    {expanded && gallery ? <>
+      <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>‹</button>
+      <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>›</button>
+    </> : null}
     <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {expanded ? <path d="M21 3l-7 7m0-6v6h6M3 21l7-7m-6 0h6v6" /> : <path d="M14 10l7-7m-7 0h7v7M10 14l-7 7m0-7v7h7" />}
@@ -211,6 +255,9 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
 
 const ProjectsStack = () => {
   const codexTrackRef = useRef(null);
+  const [expandedMedia, setExpandedMedia] = useState(null);
+  const wheelState = useRef({ distance: 0, last: 0 });
+  const galleryValue = useMemo(() => ({ active: expandedMedia, setActive: setExpandedMedia, wheelState }), [expandedMedia]);
   const scrollCodexGallery = (dir) => {
     const track = codexTrackRef.current;
     if (!track) return;
@@ -252,6 +299,7 @@ const ProjectsStack = () => {
               </button>
             </div>
             <div className="codex-gallery mobile-full-bleed">
+              <MediaGalleryContext.Provider value={galleryValue}>
               <div className="codex-gallery-track" ref={codexTrackRef}>
                 {[
                   ["01-welcome", "Welcome"], ["02-sign-in", "Sign in"],
@@ -293,6 +341,7 @@ const ProjectsStack = () => {
                   <img src="https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/settings-dark.png" alt="Codex Lite dark settings" loading="lazy" />
                 </ProjectMedia>
               </div>
+              </MediaGalleryContext.Provider>
             </div>
           </figure>
           <p className="projects-embedded-desc">
