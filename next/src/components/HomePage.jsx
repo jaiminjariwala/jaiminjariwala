@@ -384,13 +384,6 @@ const ProjectsStack = () => {
         <div className="projects-carousel-slide-content mx-auto w-full max-w-[920px]">
           <figure>
             <ProjectMedia label="Component Library screenshot">
-            <a
-              href="https://component-library-six-eta.vercel.app"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open the Component Library project"
-              className="mobile-full-bleed block w-full"
-            >
               <Image
                 src="/images/project-1-shot.png"
                 alt="Component Library project interface"
@@ -399,7 +392,6 @@ const ProjectsStack = () => {
                 sizes="(max-width: 767px) 100vw, 920px"
                 className="block h-auto w-full"
               />
-            </a>
             </ProjectMedia>
           </figure>
           <p className="projects-embedded-desc">
