@@ -1797,6 +1797,19 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
     drop-shadow(0 -.65px 0 #000);
 }
 .codex-gallery-item { background: transparent; }
+.codex-gallery { position: relative; }
+.codex-gallery-controls {
+  position: absolute;
+  top: 0;
+  left: max(4vw, calc(50vw - 460px));
+  width: min(920px, 92vw);
+  height: min(575px, 57.5vw);
+  pointer-events: none;
+  z-index: 4;
+}
+.codex-gallery-controls button { pointer-events: auto; }
+.codex-gallery-controls[data-media-tone="light"] button { color: #000; }
+.codex-gallery-controls[data-media-tone="dark"] button { color: #fff; }
 .project-media { position: relative; }
 .codex-gallery-track { align-items: flex-start; }
 .codex-gallery-track > .project-media:not(.is-expanded) {
