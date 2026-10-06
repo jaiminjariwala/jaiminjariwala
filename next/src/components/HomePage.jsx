@@ -2,8 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { animate } from "framer-motion";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
@@ -325,51 +324,59 @@ const HomePage = () => {
     ).matches;
     if (reduceMotion) return undefined;
 
-    gsap.registerPlugin(ScrollTrigger);
-    const scenes = Array.from(root.querySelectorAll(".story-scene, .work-experience-item, .projects-stack-item"));
-    const context = gsap.context(() => {
-      scenes.forEach(scene => {
-        const media = scene.querySelector("figure");
-        const paragraphs = Array.from(scene.querySelectorAll(".portfolio-paragraph, .projects-embedded-desc"));
-        if (!media || !paragraphs.length) return;
-        const copy = paragraphs[0].closest(".home-story-copy") || paragraphs[0];
-        scene.classList.add("story-scene-active");
-        media.classList.add("story-scene-media");
-        copy.classList.add("story-scene-copy");
-        const fits = copy.scrollHeight < window.innerHeight * .7;
-        if (!fits) {
-          scene.classList.remove("story-scene-active");
-          media.classList.remove("story-scene-media");
-          copy.classList.remove("story-scene-copy");
-          gsap.fromTo([media, ...paragraphs], { opacity: 0 }, {
-            opacity: 1, duration: 1, stagger: .2,
-            scrollTrigger: { trigger: scene, start: "top 75%", toggleActions: "play none none reverse" },
-          });
-          return;
-        }
-        const timeline = gsap.timeline({ scrollTrigger: {
-          trigger: scene, start: "top top", end: () => `+=${window.innerHeight * 2.2}`,
-          pin: fits, pinSpacing: true, scrub: .85, invalidateOnRefresh: true,
-        }});
-        timeline.fromTo(media, { opacity: 0, scale: 1.12 }, { opacity: 1, scale: 1, duration: .8 })
-          .to(media, { opacity: 1, duration: .65 })
-          .to(media, { opacity: 0, scale: .95, duration: .65 })
-          .fromTo(paragraphs, { opacity: 0, scale: 1.1 }, {
-            opacity: 1, scale: 1, duration: .9, stagger: .3, ease: "power2.out"
-          }, "-=.3")
-          .to(paragraphs, { opacity: 1, duration: 1 })
-          .to(paragraphs, { opacity: 0, scale: .97, duration: .55, stagger: .12 });
-      });
-    }, root);
-    const refresh = () => ScrollTrigger.refresh();
-    root.querySelectorAll("img").forEach(img => img.addEventListener("load", refresh));
+    root.classList.add("home-reveal-ready");
+    const targets = Array.from(root.querySelectorAll(
+      ".home-section-heading, .home-education-image-frame, #education > figure > img, .work-experience-figure > img, .portfolio-paragraph:not(.home-hero-copy .portfolio-paragraph), .projects-stack figure:not(:has(.home-section-heading)), .codex-gallery, .projects-embedded-desc, .projects-embedded-title"
+    )).filter((el, index, all) => !all.some(other => other !== el && other.contains(el)));
+    const animations = new Map();
+    targets.forEach(el => {
+      el.classList.add("story-motion-beat");
+      el.style.opacity = "0";
+      el.style.transform = "translateY(24px) scale(1.06)";
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const el = entry.target;
+          animations.get(el)?.stop();
+          animations.set(el, animate(el, {
+            opacity: entry.isIntersecting ? 1 : 0,
+            y: entry.isIntersecting ? 0 : 24,
+            scale: entry.isIntersecting ? 1 : 1.06,
+          }, { type: "spring", stiffness: 65, damping: 20, mass: 1 }));
+        });
+      },
+      // Trigger as soon as an element's top clears the bottom ~12% of the
+      // screen, so nothing needs long scrolling before it appears.
+      { rootMargin: "60% 0px -10% 0px", threshold: 0 },
+    );
+
+    const startObserving = () =>
+      targets.forEach((el) => observer.observe(el));
+
+    const onFirstScroll = () => {
+      window.removeEventListener("scroll", onFirstScroll);
+      startObserving();
+    };
+
+    if (window.scrollY > 0) {
+      // Restored mid-page (e.g. back navigation): reveal in place.
+      startObserving();
+    } else {
+      window.addEventListener("scroll", onFirstScroll, { passive: true });
+    }
+
     return () => {
-      context.revert();
-      root.querySelectorAll("img").forEach(img => img.removeEventListener("load", refresh));
-      scenes.forEach(scene => {
-        scene.classList.remove("story-scene-active");
-        scene.querySelectorAll(".story-scene-media, .story-scene-copy").forEach(el => el.classList.remove("story-scene-media", "story-scene-copy"));
+      window.removeEventListener("scroll", onFirstScroll);
+      observer.disconnect();
+      animations.forEach(animation => animation.stop());
+      targets.forEach(el => {
+        el.classList.remove("story-motion-beat");
+        el.style.removeProperty("opacity");
+        el.style.removeProperty("transform");
       });
+      root.classList.remove("home-reveal-ready");
     };
   }, []);
 
@@ -447,7 +454,6 @@ const HomePage = () => {
           {/* Grouped so the sidebar can center the image and its paragraph
               together in the viewport. */}
           <div id="education" className="w-full">
-            <div className="story-scene">
             <figure data-reveal className="home-education-figure">
               <h2 className="home-section-heading">Education</h2>
               <div className="home-education-image-frame mobile-full-bleed">
@@ -478,8 +484,6 @@ const HomePage = () => {
               </p>
             </div>
 
-            </div>
-            <div className="story-scene">
             <figure
               data-reveal
               id="work"
@@ -512,7 +516,6 @@ const HomePage = () => {
                 CloudWatch, CloudTrail, and KMS, including database setup
                 and hosting. I also grade coursework and hold office hours.
               </p>
-            </div>
             </div>
           </div>
 
