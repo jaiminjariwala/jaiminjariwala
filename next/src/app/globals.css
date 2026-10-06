@@ -1845,7 +1845,10 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
 .project-media[data-media-tone="light"] .project-media-expand { color: #000; }
 .project-media[data-media-tone="dark"] .project-media-expand { color: #fff; }
 .project-media.is-expanded .project-media-expand { color: #fff; }
-.project-media-expand svg { width: 28px; height: 28px; }
+.project-media-expand svg { width: 25px; height: 25px; }
+.projects-stack-item + .projects-stack-item {
+  margin-top: calc(var(--home-story-gap) + 32px);
+}
 .project-media-expand:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .project-media:fullscreen,
 .project-media.is-expanded {
