@@ -159,6 +159,23 @@ const ProjectVideo = ({ src, label }) => {
 const ProjectMedia = ({ children, className = "", label = "project media" }) => {
   const mediaRef = useRef(null);
   const [expanded, setExpanded] = useState(false);
+  const [mediaTone, setMediaTone] = useState(() => ["dark settings", "code workspace"].includes(label) ? "dark" : "light");
+  const sampleVideoTone = event => {
+    const video = event.target;
+    if (video.tagName !== "VIDEO" || !video.videoWidth) return;
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 8;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      context.drawImage(video, video.videoWidth * .9, 0, video.videoWidth * .1, video.videoHeight * .1, 0, 0, 8, 8);
+      const pixels = context.getImageData(0, 0, 8, 8).data;
+      let brightness = 0;
+      for (let i = 0; i < pixels.length; i += 4) brightness += .2126 * pixels[i] + .7152 * pixels[i + 1] + .0722 * pixels[i + 2];
+      brightness /= 64;
+      if (brightness > 170) setMediaTone("light");
+      else if (brightness < 100) setMediaTone("dark");
+    } catch { /* Keep the configured contrast if sampling is unavailable. */ }
+  };
   useEffect(() => {
     if (!expanded) return;
     const previousFocus = document.activeElement;
@@ -181,11 +198,10 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
       if (previousFocus?.isConnected) previousFocus.focus();
     };
   }, [expanded]);
-  const lightMedia = ["Welcome", "Sign in", "Browser sign-in", "Account chooser", "Dictation setup", "light settings", "Component Library screenshot"].includes(label);
-  const media = <div ref={mediaRef} data-media-tone={lightMedia ? "light" : "dark"} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
+  const media = <div ref={mediaRef} onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
     <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {expanded ? <path d="M21 3l-7 7m0-6v6h6M3 21l7-7m-6 0h6v6" /> : <path d="M14 10l7-7m-7 0h7v7M10 14l-7 7m0-7v7h7" />}
       </svg>
     </button>
