@@ -167,7 +167,7 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     const next = typeof value === "function" ? value(expanded) : value;
     if (gallery) gallery.setActive(next ? label : null);
     else setStandaloneExpanded(next);
-  }, [expanded, gallery]);
+  }, [expanded, gallery, label]);
   const touchStart = useRef(null);
   const localWheelState = useRef({ distance: 0, last: 0 });
   const wheelState = gallery?.wheelState || localWheelState;
@@ -182,6 +182,9 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     }
   }, [expanded, gallery, label]);
   const [mediaTone, setMediaTone] = useState(() => label === "dark settings" ? "dark" : "light");
+  useEffect(() => {
+    gallery?.setTones(previous => previous[label] === mediaTone ? previous : { ...previous, [label]: mediaTone });
+  }, [gallery, label, mediaTone]);
   const sampleVideoTone = event => {
     const video = event.target;
     if (video.tagName !== "VIDEO" || !video.videoWidth) return;
@@ -240,7 +243,8 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
       wheelState.current.distance += event.deltaX;
       if (Math.abs(wheelState.current.distance) > 80) {
         navigate(wheelState.current.distance > 0 ? 1 : -1);
-        wheelState.current = { distance: 0, last: now };
+        wheelState.current.distance = 0;
+        wheelState.current.last = now;
       }
     }}
     onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
@@ -266,8 +270,9 @@ const ProjectsStack = () => {
   const codexTrackRef = useRef(null);
   const [expandedMedia, setExpandedMedia] = useState(null);
   const [currentMedia, setCurrentMedia] = useState(0);
+  const [mediaTones, setMediaTones] = useState({ "dark settings": "dark" });
   const wheelState = useRef({ distance: 0, last: 0 });
-  const galleryValue = useMemo(() => ({ active: expandedMedia, setActive: setExpandedMedia, wheelState, trackRef: codexTrackRef }), [expandedMedia]);
+  const galleryValue = useMemo(() => ({ active: expandedMedia, setActive: setExpandedMedia, wheelState, trackRef: codexTrackRef, setTones: setMediaTones }), [expandedMedia]);
   const scrollToMedia = direction => {
     const track = codexTrackRef.current;
     const index = Math.max(0, Math.min(MEDIA_LABELS.length - 1, currentMedia + direction));
@@ -333,7 +338,7 @@ const ProjectsStack = () => {
                 </ProjectMedia>
               </div>
               </MediaGalleryContext.Provider>
-              <div className="codex-gallery-controls" data-media-tone={MEDIA_LABELS[currentMedia] === "dark settings" ? "dark" : "light"}>
+              <div className="codex-gallery-controls" data-media-tone={mediaTones[MEDIA_LABELS[currentMedia]] || "light"}>
                 {currentMedia > 0 && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => scrollToMedia(-1)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
                 </button>}
