@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { label: "github", href: "https://github.com/jaiminjariwala" },
   { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
   { label: "linkedin", href: "https://www.linkedin.com/in/jaiminjariwala/" },
+  { label: "gmail", href: "mailto:jaiminjariwala5@gmail.com" },
 ];
 
 const flashIntro = () => {
@@ -79,7 +80,7 @@ const Navbar = () => {
                       }
                     : undefined
                 }
-                {...(item.href
+                {...(item.href && !item.href.startsWith("mailto:")
                   ? { target: "_blank", rel: "noopener noreferrer" }
                   : {})}
               >
