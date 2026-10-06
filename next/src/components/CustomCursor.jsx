@@ -43,6 +43,16 @@ const CustomCursor = () => {
     styleTag.innerHTML = "*, *::before, *::after { cursor: none !important; }";
     document.head.appendChild(styleTag);
     const samples = new Map();
+    let surfaceTimer;
+    let pendingSurface;
+    // A neutral band avoids flipping repeatedly around the same brightness.
+    const classify = brightness => {
+      const current = cursorRef.current?.dataset.surface ||
+        (document.documentElement.dataset.theme === "dark" ? "dark" : "light");
+      if (brightness > 175) return "light";
+      if (brightness < 105) return "dark";
+      return current;
+    };
     const sampleSurface = (element, x, y) => {
       if (element?.tagName === "IMG") {
         const source = element.currentSrc || element.src;
@@ -72,15 +82,23 @@ const CustomCursor = () => {
           const py = (y - rect.top - (rect.height - height) / 2) / height;
           if (px >= 0 && px < 1 && py >= 0 && py < 1) {
             try {
-              const [r, g, b, alpha] = sample.context.getImageData(Math.floor(px * sample.width), Math.floor(py * sample.height), 1, 1).data;
-              if (alpha > 200) return .2126 * r + .7152 * g + .0722 * b > 145 ? "light" : "dark";
+              const left = Math.max(0, Math.floor(px * sample.width) - 2);
+              const top = Math.max(0, Math.floor(py * sample.height) - 2);
+              const pixels = sample.context.getImageData(left, top, Math.min(5, sample.width - left), Math.min(5, sample.height - top)).data;
+              let brightness = 0, count = 0;
+              for (let i = 0; i < pixels.length; i += 4) {
+                if (pixels[i + 3] < 200) continue;
+                brightness += .2126 * pixels[i] + .7152 * pixels[i + 1] + .0722 * pixels[i + 2];
+                count++;
+              }
+              if (count) return classify(brightness / count);
             } catch { /* Fall back if canvas sampling is unavailable. */ }
           }
         }
       }
       for (let node = element; node; node = node.parentElement) {
         const color = getComputedStyle(node).backgroundColor.match(/[\d.]+/g)?.map(Number);
-        if (color && (color.length < 4 || color[3] > .8)) return .2126 * color[0] + .7152 * color[1] + .0722 * color[2] > 145 ? "light" : "dark";
+        if (color && (color.length < 4 || color[3] > .8)) return classify(.2126 * color[0] + .7152 * color[1] + .0722 * color[2]);
       }
       return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
     };
@@ -93,7 +111,20 @@ const CustomCursor = () => {
       const y = event.clientY;
 
       const elementUnderPointer = document.elementFromPoint(x, y);
-      cursor.dataset.surface = sampleSurface(elementUnderPointer, x, y);
+      const surface = sampleSurface(elementUnderPointer, x, y);
+      if (!cursor.dataset.surface) cursor.dataset.surface = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      if (surface === cursor.dataset.surface) {
+        clearTimeout(surfaceTimer);
+        pendingSurface = undefined;
+      } else if (surface !== pendingSurface) {
+        clearTimeout(surfaceTimer);
+        pendingSurface = surface;
+        // Commit only after the new surface has remained stable briefly.
+        surfaceTimer = window.setTimeout(() => {
+          cursor.dataset.surface = surface;
+          pendingSurface = undefined;
+        }, 160);
+      }
       const nextType = getCursorType(elementUnderPointer);
       cursorTypeRef.current = nextType;
       setCursorType(nextType);
@@ -106,6 +137,7 @@ const CustomCursor = () => {
     window.addEventListener("pointermove", onPointerMove, { passive: true });
 
     return () => {
+      clearTimeout(surfaceTimer);
       window.removeEventListener("pointermove", onPointerMove);
       document.head.removeChild(styleTag);
     };
