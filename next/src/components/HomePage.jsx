@@ -241,8 +241,12 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
     {expanded && gallery ? <>
-      <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>‹</button>
-      <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>›</button>
+      <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
+      </button>
+      <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
+      </button>
     </> : null}
     <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
