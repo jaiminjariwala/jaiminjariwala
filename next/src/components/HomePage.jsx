@@ -174,8 +174,13 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
   const navigate = useCallback(direction => {
     if (!gallery) return;
     const index = MEDIA_LABELS.indexOf(label);
-    gallery.setActive(MEDIA_LABELS[(index + direction + MEDIA_LABELS.length) % MEDIA_LABELS.length]);
-  }, [gallery, label]);
+    if (expanded) {
+      gallery.setActive(MEDIA_LABELS[(index + direction + MEDIA_LABELS.length) % MEDIA_LABELS.length]);
+    } else {
+      const target = gallery.trackRef.current?.children[index + direction];
+      if (target) gallery.trackRef.current.scrollTo({ left: target.offsetLeft - gallery.trackRef.current.firstElementChild.offsetLeft, behavior: "smooth" });
+    }
+  }, [expanded, gallery, label]);
   const [mediaTone, setMediaTone] = useState(() => label === "dark settings" ? "dark" : "light");
   const sampleVideoTone = event => {
     const video = event.target;
@@ -240,13 +245,13 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     }}
     onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
-    {expanded && gallery ? <>
-      <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>
+    {gallery ? <>
+      {(expanded || MEDIA_LABELS.indexOf(label) > 0) && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
-      </button>
-      <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>
+      </button>}
+      {(expanded || MEDIA_LABELS.indexOf(label) < MEDIA_LABELS.length - 1) && <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
-      </button>
+      </button>}
     </> : null}
     <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -261,14 +266,7 @@ const ProjectsStack = () => {
   const codexTrackRef = useRef(null);
   const [expandedMedia, setExpandedMedia] = useState(null);
   const wheelState = useRef({ distance: 0, last: 0 });
-  const galleryValue = useMemo(() => ({ active: expandedMedia, setActive: setExpandedMedia, wheelState }), [expandedMedia]);
-  const scrollCodexGallery = (dir) => {
-    const track = codexTrackRef.current;
-    if (!track) return;
-    const item = track.querySelector(".codex-gallery-item");
-    const step = item ? item.getBoundingClientRect().width + 12 : 320;
-    track.scrollBy({ left: dir * step, behavior: "smooth" });
-  };
+  const galleryValue = useMemo(() => ({ active: expandedMedia, setActive: setExpandedMedia, wheelState, trackRef: codexTrackRef }), [expandedMedia]);
   return (
     <section
       data-reveal
@@ -280,28 +278,6 @@ const ProjectsStack = () => {
         <div className="projects-carousel-slide-content mx-auto w-full max-w-[920px]">
           <figure>
             <h2 className="home-section-heading">Projects</h2>
-            <div className="codex-gallery-nav" aria-label="Scroll project media">
-              <button
-                type="button"
-                className="codex-gallery-nav-button"
-                onClick={() => scrollCodexGallery(-1)}
-                aria-label="Show previous project media"
-              >
-                <svg viewBox="0 0 16 12" aria-hidden="true">
-                  <path d="M15 6H1M6 .5 1 6l5 5.5" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                className="codex-gallery-nav-button"
-                onClick={() => scrollCodexGallery(1)}
-                aria-label="Show next project media"
-              >
-                <svg viewBox="0 0 16 12" aria-hidden="true">
-                  <path d="M1 6h14M10 .5 15 6l-5 5.5" />
-                </svg>
-              </button>
-            </div>
             <div className="codex-gallery mobile-full-bleed">
               <MediaGalleryContext.Provider value={galleryValue}>
               <div className="codex-gallery-track" ref={codexTrackRef}>
