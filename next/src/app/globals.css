@@ -1793,6 +1793,23 @@ html[data-theme="dark"] .custom-cursor[data-surface="light"]:not(.hand) { filter
 html[data-theme="dark"] .custom-cursor[data-surface="dark"]:not(.hand) { filter: invert(1); }
 .codex-gallery-item { background: transparent; }
 .project-media { position: relative; }
+.codex-gallery-track { align-items: flex-start; }
+.codex-gallery-track > .project-media:not(.is-expanded) {
+  height: auto;
+  aspect-ratio: auto;
+}
+.codex-gallery-track > .project-media:not(.is-expanded) > img,
+.codex-gallery-track > .project-media:not(.is-expanded) .codex-gallery-video,
+.codex-gallery-track > .project-media:not(.is-expanded) video {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.codex-gallery-nav {
+  width: min(920px, 92vw);
+  margin-left: auto;
+  margin-right: auto;
+}
 .projects-stack-item figure > .project-media { width: 100%; max-width: none; }
 .project-media:fullscreen *, .project-media:fullscreen { cursor: pointer !important; }
 .project-media-expand {
