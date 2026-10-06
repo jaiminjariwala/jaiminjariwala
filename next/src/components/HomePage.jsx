@@ -253,10 +253,10 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     {children}
     {expanded && gallery ? <>
       {MEDIA_LABELS.indexOf(label) > 0 && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
       </button>}
       {MEDIA_LABELS.indexOf(label) < MEDIA_LABELS.length - 1 && <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
       </button>}
     </> : null}
     <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
@@ -342,10 +342,10 @@ const ProjectsStack = () => {
               </MediaGalleryContext.Provider>
               <div className="codex-gallery-controls" data-media-tone={mediaTones[MEDIA_LABELS[currentMedia]] || "light"}>
                 {currentMedia > 0 && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => scrollToMedia(-1)}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
                 </button>}
                 {currentMedia < MEDIA_LABELS.length - 1 && <button type="button" className="project-media-next" aria-label="Next media" onClick={() => scrollToMedia(1)}>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
                 </button>}
               </div>
             </div>

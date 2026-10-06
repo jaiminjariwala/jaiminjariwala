@@ -1890,7 +1890,7 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
 }
 .project-media-prev { left: 12px; }
 .project-media-next { right: 12px; }
-.project-media-prev svg, .project-media-next svg { width: 28px; height: 28px; }
+.project-media-prev svg, .project-media-next svg { width: 23px; height: 23px; }
 .project-media[data-media-tone="light"] .project-media-prev,
 .project-media[data-media-tone="light"] .project-media-next { color: #000; }
 .project-media:fullscreen,
