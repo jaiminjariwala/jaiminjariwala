@@ -174,8 +174,10 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
   const navigate = useCallback(direction => {
     if (!gallery) return;
     const index = MEDIA_LABELS.indexOf(label);
+    const nextIndex = index + direction;
+    if (nextIndex < 0 || nextIndex >= MEDIA_LABELS.length) return;
     if (expanded) {
-      gallery.setActive(MEDIA_LABELS[(index + direction + MEDIA_LABELS.length) % MEDIA_LABELS.length]);
+      gallery.setActive(MEDIA_LABELS[nextIndex]);
     } else {
       const target = gallery.trackRef.current?.children[index + direction];
       if (target) gallery.trackRef.current.scrollTo({ left: target.offsetLeft - gallery.trackRef.current.firstElementChild.offsetLeft, behavior: "smooth" });
@@ -250,10 +252,10 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
     onTimeUpdateCapture={sampleVideoTone} data-media-tone={mediaTone} role={expanded ? "dialog" : undefined} aria-modal={expanded || undefined} aria-label={expanded ? label : undefined} className={`codex-gallery-item cursor-pointer project-media ${className} ${expanded ? "is-expanded" : ""}`}>
     {children}
     {expanded && gallery ? <>
-      {(expanded || MEDIA_LABELS.indexOf(label) > 0) && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>
+      {MEDIA_LABELS.indexOf(label) > 0 && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => navigate(-1)}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
       </button>}
-      {(expanded || MEDIA_LABELS.indexOf(label) < MEDIA_LABELS.length - 1) && <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>
+      {MEDIA_LABELS.indexOf(label) < MEDIA_LABELS.length - 1 && <button type="button" className="project-media-next" aria-label="Next media" onClick={() => navigate(1)}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
       </button>}
     </> : null}
