@@ -107,6 +107,7 @@ export default function MobileMenu() {
         <span aria-hidden="true" />
         <span aria-hidden="true" />
       </button>
+      {isOpen ? <div className="mobile-menu-theme"><ThemeToggle /></div> : null}
 
       {/* Invisible native switch: iOS plays its system haptic tick when it
           toggles, and clicking the wrapping label is the reliable trigger.
@@ -148,7 +149,6 @@ export default function MobileMenu() {
                     {item.label}
                   </a>
                 )}
-                {item.label === "Linkedin" ? <ThemeToggle /> : null}
               </li>
             ))}
           </ul>

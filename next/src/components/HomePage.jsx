@@ -2,6 +2,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { animate } from "framer-motion";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
@@ -313,33 +314,42 @@ const HomePage = () => {
   const mainRef = useRef(null);
   const washingtonTime = useWashingtonTime();
 
-  // Mobile-only: the hero heading and first paragraph show immediately;
-  // everything marked data-reveal stays hidden until the visitor starts
-  // scrolling, then fades up as soon as its top clears the bottom edge.
+  // Independent story beats, spring-settled like the reference's dissolves.
   useLayoutEffect(() => {
     const root = mainRef.current;
     if (!root) return undefined;
 
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (!isMobile || reduceMotion) return undefined;
+    if (reduceMotion) return undefined;
 
     root.classList.add("home-reveal-ready");
-    const targets = Array.from(root.querySelectorAll("[data-reveal]"));
+    const targets = Array.from(root.querySelectorAll(
+      ".home-section-heading, .home-education-image-frame, #education > figure > img, .work-experience-figure, .portfolio-paragraph:not(.home-hero-copy .portfolio-paragraph), .projects-stack figure:not(:has(.home-section-heading)), .codex-gallery, .projects-embedded-desc, .projects-embedded-title"
+    )).filter((el, index, all) => !all.some(other => other !== el && other.contains(el)));
+    const animations = new Map();
+    targets.forEach(el => {
+      el.classList.add("story-motion-beat");
+      el.style.opacity = "0";
+      el.style.transform = "translateY(24px) scale(1.06)";
+    });
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-revealed");
-          observer.unobserve(entry.target);
+          const el = entry.target;
+          animations.get(el)?.stop();
+          animations.set(el, animate(el, {
+            opacity: entry.isIntersecting ? 1 : 0,
+            y: entry.isIntersecting ? 0 : 24,
+            scale: entry.isIntersecting ? 1 : 1.06,
+          }, { type: "spring", stiffness: 65, damping: 20, mass: 1 }));
         });
       },
       // Trigger as soon as an element's top clears the bottom ~12% of the
       // screen, so nothing needs long scrolling before it appears.
-      { rootMargin: "0px 0px -12% 0px", threshold: 0 },
+      { rootMargin: "60% 0px -10% 0px", threshold: 0 },
     );
 
     const startObserving = () =>
@@ -360,6 +370,12 @@ const HomePage = () => {
     return () => {
       window.removeEventListener("scroll", onFirstScroll);
       observer.disconnect();
+      animations.forEach(animation => animation.stop());
+      targets.forEach(el => {
+        el.classList.remove("story-motion-beat");
+        el.style.removeProperty("opacity");
+        el.style.removeProperty("transform");
+      });
       root.classList.remove("home-reveal-ready");
     };
   }, []);
@@ -464,7 +480,7 @@ const HomePage = () => {
                 Focusing on Distributed Systems, Software
                 Security, Systems Engineering I, Software Engineering, Unix
                 Systems Administration, Design and Analysis of Algorithms,
-                Cloud Computing, and Technology Entrepreneurship.
+                Cloud Computing, Database Management Systems, and Technology Entrepreneurship.
               </p>
             </div>
 

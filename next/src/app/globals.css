@@ -1409,19 +1409,18 @@ a {
 /* Mobile-only scroll reveal for the homepage story. The hiding is gated on
    the .home-reveal-ready class, which only JavaScript adds (mobile viewports,
    motion allowed), so content is never hidden without a way to reveal it. */
+.story-motion-beat {
+  transform-origin: center center;
+}
+.mobile-menu-theme {
+  position: fixed;
+  top: calc(18px + env(safe-area-inset-top));
+  left: 66px;
+  z-index: 121;
+  display: none;
+}
 @media (max-width: 767px) {
-  .home-reveal-ready [data-reveal] {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity 520ms ease,
-      transform 520ms ease;
-  }
-
-  .home-reveal-ready [data-reveal].is-revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .mobile-menu-theme { display: block; }
 }
 
 /* ── "My background" wrapper: groups the university figure and the Logicwind
