@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { animate } from "framer-motion";
 import GalleryPage from "@/components/GalleryPage";
 import {
   getCloudinaryUrl,
@@ -62,8 +63,49 @@ const animateWindowScroll = (targetY, duration) =>
   });
 
 function InlineFolderPhotos({ section, onBack }) {
+  const photosRef = useRef(null);
+  useLayoutEffect(() => {
+    const root = photosRef.current;
+    if (!root || prefersReducedMotion()) return;
+    const cards = Array.from(root.querySelectorAll("article"));
+    const states = cards.map(card => ({ card, transform: card.style.transform, progress: 0, animation: null }));
+    const render = (state, value) => {
+      state.progress = Math.max(0, Math.min(1, value));
+      const remaining = 1 - state.progress;
+      state.card.style.opacity = String(state.progress);
+      // Keep each polaroid's original rotation and placement intact.
+      state.card.style.transform = `${state.transform} scale(${1 - remaining * .25})`;
+      state.card.style.filter = `blur(${remaining ** 3 * 60}px)`;
+    };
+    states.forEach(state => render(state, 0));
+    const observer = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting);
+      visible.forEach((entry, index) => {
+        const state = states.find(item => item.card === entry.target);
+        observer.unobserve(state.card);
+        state.animation = animate(state.progress, 1, {
+          type: "spring", stiffness: 85, damping: 18, mass: 1,
+          delay: index * .12, onUpdate: value => render(state, value),
+          onComplete: () => {
+            state.card.style.transform = state.transform;
+            state.card.style.removeProperty("filter");
+          },
+        });
+      });
+    }, { threshold: .05 });
+    states.forEach(state => observer.observe(state.card));
+    return () => {
+      observer.disconnect();
+      states.forEach(state => {
+        state.animation?.stop();
+        state.card.style.transform = state.transform;
+        state.card.style.removeProperty("opacity");
+        state.card.style.removeProperty("filter");
+      });
+    };
+  }, [section.slug]);
   return (
-    <section className="inline-gallery-detail inline-unfold bg-white text-black">
+    <section ref={photosRef} className="inline-gallery-detail inline-unfold bg-white text-black">
       <div
         className="mx-auto w-full max-w-[689px]"
         style={{
