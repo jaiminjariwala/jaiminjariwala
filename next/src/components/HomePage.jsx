@@ -326,7 +326,7 @@ const HomePage = () => {
 
     root.classList.add("home-reveal-ready");
     const targets = Array.from(root.querySelectorAll(
-      ".home-section-heading, .home-education-image-frame, #education > figure > img, .work-experience-figure, .portfolio-paragraph:not(.home-hero-copy .portfolio-paragraph), .projects-stack figure:not(:has(.home-section-heading)), .codex-gallery, .projects-embedded-desc, .projects-embedded-title"
+      ".home-section-heading, .home-education-image-frame, #education > figure > img, .work-experience-figure > img, .portfolio-paragraph:not(.home-hero-copy .portfolio-paragraph), .projects-stack figure:not(:has(.home-section-heading)), .codex-gallery, .projects-embedded-desc, .projects-embedded-title"
     )).filter((el, index, all) => !all.some(other => other !== el && other.contains(el)));
     const animations = new Map();
     targets.forEach(el => {
