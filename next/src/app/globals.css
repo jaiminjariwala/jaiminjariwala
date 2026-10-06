@@ -1801,16 +1801,22 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
 .codex-gallery-track { align-items: flex-start; }
 .codex-gallery-track > .project-media:not(.is-expanded) {
   height: min(575px, 57.5vw);
-  width: max-content;
-  aspect-ratio: auto;
+  width: min(920px, 92vw);
+  aspect-ratio: 16 / 10;
 }
 .codex-gallery-track > .project-media:not(.is-expanded) > img,
 .codex-gallery-track > .project-media:not(.is-expanded) .codex-gallery-video,
 .codex-gallery-track > .project-media:not(.is-expanded) video {
-  width: auto;
-  max-width: none;
+  width: 100%;
+  max-width: 100%;
   height: min(575px, 57.5vw);
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center top;
+}
+.codex-gallery-track {
+  height: calc(min(575px, 57.5vw) + 16px);
+  overflow-y: hidden;
+  box-sizing: border-box;
 }
 .codex-gallery-nav {
   width: min(920px, 92vw);
