@@ -41,6 +41,11 @@ body {
   background: rgb(220, 220, 220);
 }
 
+html[data-theme="dark"] ::selection {
+  background: rgb(204, 204, 204);
+  color: #000;
+}
+
 p,
 .portfolio-paragraph {
   font-family: var(--font-inter), Arial, sans-serif;
