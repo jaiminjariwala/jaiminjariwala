@@ -719,6 +719,15 @@ a {
 .gallery-folder-controls-row {
   display: none;
 }
+.gallery-folder-arrow-controls { display: grid; grid-template-columns: 36px 36px; justify-content: end; gap: 8px; }
+.gallery-folder-arrow-controls button {
+  display: grid; place-items: center; width: 36px; height: 36px;
+  padding: 6px; border: 0; background: transparent; color: #000;
+  box-shadow: none;
+}
+.gallery-folder-arrow-controls svg { width: 23px; height: 23px; }
+.gallery-folder-arrow-controls button[aria-label="Show earlier folders"] { grid-column: 1; grid-row: 1; }
+.gallery-folder-arrow-controls button[aria-label="Show more folders"] { grid-column: 2; grid-row: 1; }
 
 @media (max-width: 767px) {
   .gallery-sun-wrapper {

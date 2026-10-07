@@ -498,30 +498,27 @@ const GalleryPage = () => {
             className="gallery-folder-controls-row"
             aria-label="Gallery folder navigation"
           >
-            <div className="work-experience-controls">
-              <button
+            <div className="gallery-folder-arrow-controls">
+              {!folderScrollState.atStart && <button
                 type="button"
                 data-cursor-type="select-black"
                 aria-label="Show earlier folders"
-                disabled={folderScrollState.atStart}
                 onClick={() => scrollFolders(-1)}
               >
-                <svg viewBox="0 0 16 12" aria-hidden="true">
-                  <path d="M15 6H1M6 .5 1 6l5 5.5" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 12H4m7-7-7 7 7 7" />
                 </svg>
-              </button>
-              <button
-                className={shouldHintNextFolder ? "is-next-hint" : undefined}
+              </button>}
+              {!folderScrollState.atEnd && <button
                 type="button"
                 data-cursor-type="select-black"
                 aria-label="Show more folders"
-                disabled={folderScrollState.atEnd}
                 onClick={() => scrollFolders(1)}
               >
-                <svg viewBox="0 0 16 12" aria-hidden="true">
-                  <path d="M1 6h14M10 .5 15 6l-5 5.5" />
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 12h16m-7-7 7 7-7 7" />
                 </svg>
-              </button>
+              </button>}
             </div>
           </div>
 
