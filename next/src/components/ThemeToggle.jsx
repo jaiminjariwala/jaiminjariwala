@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function ThemeToggle() {
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
   useEffect(() => {
     const sync = () => setDark(document.documentElement.dataset.theme !== "light");
     sync();
@@ -14,7 +14,7 @@ export default function ThemeToggle() {
   const toggle = () => {
     const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = theme;
-    try { localStorage.setItem("portfolio-theme", theme); } catch {}
+    try { sessionStorage.setItem("portfolio-theme", theme); } catch {}
     window.dispatchEvent(new Event("portfolio-theme-change"));
   };
 
