@@ -903,7 +903,8 @@ a {
   }
 
   .home-hero-viewport {
-    padding-top: 0;
+    /* Preserve the former navbar's height and following section gap. */
+    padding-top: calc(102px + var(--home-story-gap));
   }
 
   /* Photo leads the stack on desktop, left-aligned against the column,
