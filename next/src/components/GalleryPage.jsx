@@ -501,7 +501,9 @@ const GalleryPage = () => {
             aria-label="Gallery folder navigation"
           >
             <div className="gallery-folder-arrow-controls">
-              {!folderScrollState.atStart && <button
+              <button
+                className={folderScrollState.atEnd && !folderScrollState.atStart ? "is-visible" : ""}
+                disabled={!folderScrollState.atEnd || folderScrollState.atStart}
                 type="button"
                 data-cursor-type="select-black"
                 aria-label="Show earlier folders"
@@ -510,8 +512,10 @@ const GalleryPage = () => {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M20 12H4m7-7-7 7 7 7" />
                 </svg>
-              </button>}
-              {!folderScrollState.atEnd && <button
+              </button>
+              <button
+                className={!folderScrollState.atEnd ? "is-visible" : ""}
+                disabled={folderScrollState.atEnd}
                 type="button"
                 data-cursor-type="select-black"
                 aria-label="Show more folders"
@@ -520,7 +524,7 @@ const GalleryPage = () => {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M4 12h16m-7-7 7 7-7 7" />
                 </svg>
-              </button>}
+              </button>
             </div>
           </div>
 

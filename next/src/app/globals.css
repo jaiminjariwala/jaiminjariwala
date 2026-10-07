@@ -719,15 +719,19 @@ a {
 .gallery-folder-controls-row {
   display: none;
 }
-.gallery-folder-arrow-controls { display: grid; grid-template-columns: 36px 36px; justify-content: end; gap: 8px; }
+.gallery-folder-arrow-controls { display: grid; grid-template-columns: 36px; justify-content: end; }
 .gallery-folder-arrow-controls button {
   display: grid; place-items: center; width: 36px; height: 36px;
   padding: 6px; border: 0; background: transparent; color: #000;
   box-shadow: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease;
 }
+.gallery-folder-arrow-controls button.is-visible { opacity: 1; pointer-events: auto; }
 .gallery-folder-arrow-controls svg { display: block; width: 23px; height: 23px; overflow: visible; }
 .gallery-folder-arrow-controls button[aria-label="Show earlier folders"] { grid-column: 1; grid-row: 1; }
-.gallery-folder-arrow-controls button[aria-label="Show more folders"] { grid-column: 2; grid-row: 1; }
+.gallery-folder-arrow-controls button[aria-label="Show more folders"] { grid-column: 1; grid-row: 1; }
 
 @media (max-width: 767px) {
   .gallery-sun-wrapper {
@@ -1837,10 +1841,10 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
     drop-shadow(0 -.65px 0 #000);
 }
 .codex-gallery-item { background: transparent; }
-.codex-gallery { position: relative; padding-top: 54px; }
+.codex-gallery { position: relative; padding-top: 0; }
 .codex-gallery-controls {
   position: absolute;
-  top: 54px;
+  top: 0;
   left: max(4vw, calc(50vw - 460px));
   width: min(920px, 92vw);
   height: min(575px, 57.5vw);
@@ -1852,7 +1856,7 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
 .codex-gallery-controls[data-media-tone="dark"] button { color: #fff; }
 .codex-gallery-controls .project-media-prev,
 .codex-gallery-controls .project-media-next {
-  top: -48px;
+  top: -42px;
   left: auto;
   transform: none;
   width: 36px;
@@ -1860,7 +1864,7 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
   padding: 6px;
   color: #000 !important;
 }
-.codex-gallery-controls .project-media-prev { right: 44px; }
+.codex-gallery-controls .project-media-prev { right: 34px; }
 .codex-gallery-controls .project-media-next { right: 0; }
 .project-media { position: relative; }
 .project-media-subtle-border::after {
