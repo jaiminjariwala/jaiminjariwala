@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html body, html body * {
-  font-family: "Angie Sans", Georgia, sans-serif !important;
-}
 .intro-reveal { display: block; }
 .intro-line-mask { display: block; overflow: hidden; }
 .intro-line { display: block; }

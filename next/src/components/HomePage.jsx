@@ -521,10 +521,7 @@ const HomePage = () => {
                   edges like every other homepage image. */}
               <figure className="hero-photo-figure" style={{ margin: 0 }}>
                 <Image
-                  src={getCloudinaryUrl(
-                    "621D5FFE-03CC-4021-8C9D-819EE21214A8_eeeq9l",
-                    800,
-                  )}
+                  src="/images/jaimin-seattle-portrait.png"
                   alt="Jaimin Jariwala portrait"
                   width={1086}
                   height={1448}
