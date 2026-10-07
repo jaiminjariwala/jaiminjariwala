@@ -11,12 +11,11 @@ export default function IntroReveal() {
     let cancelled = false;
     let observer;
     const layout = (play = false) => {
-      element.replaceChildren(...TEXT.split(" ").map(word => {
+      element.replaceChildren(...TEXT.split(" ").flatMap((word, index) => {
         const span = document.createElement("span");
-        span.style.display = "inline-block";
-        span.style.whiteSpace = "pre";
-        span.textContent = word + " ";
-        return span;
+        span.style.whiteSpace = "nowrap";
+        span.textContent = word;
+        return index ? [document.createTextNode(" "), span] : [span];
       }));
       const lines = [];
       let top;
@@ -31,13 +30,15 @@ export default function IntroReveal() {
       element.replaceChildren(...lines.map((words, index) => {
         const mask = document.createElement("span");
         mask.className = "intro-line-mask";
+        mask.setAttribute("aria-hidden", "true");
         const line = document.createElement("span");
         line.className = play ? "intro-line is-entering" : "intro-line";
-        line.style.animationDelay = `${160 + index * 110}ms`;
-        line.textContent = words.join("").trimEnd();
+        line.style.animationDelay = `${index * 110}ms`;
+        line.textContent = words.join(" ");
         mask.append(line);
         return mask;
       }));
+      element.dataset.ready = "true";
     };
     document.fonts.ready.then(() => {
       if (cancelled) return;
@@ -51,7 +52,7 @@ export default function IntroReveal() {
       });
       observer.observe(element);
     });
-    return () => { cancelled = true; observer?.disconnect(); };
+    return () => { cancelled = true; observer?.disconnect(); delete element.dataset.ready; };
   }, []);
   return <span ref={ref} className="intro-highlight-text intro-reveal" aria-label={TEXT}><span aria-hidden="true">{TEXT}</span></span>;
 }

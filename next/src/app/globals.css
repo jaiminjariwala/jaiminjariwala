@@ -2,9 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-.intro-reveal { display: block; }
+.intro-reveal { display: block; visibility: hidden; }
+.intro-reveal[data-ready="true"] { visibility: visible; }
 .intro-line-mask { display: block; overflow: hidden; }
-.intro-line { display: block; }
+.intro-line { display: block; white-space: nowrap; }
 .intro-line.is-entering {
   animation: intro-line-enter 1000ms cubic-bezier(.22, 1, .36, 1) both;
 }
