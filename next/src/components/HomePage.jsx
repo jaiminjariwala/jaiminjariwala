@@ -8,6 +8,7 @@ import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
 import Navbar from "@/components/Navbar";
+import IntroReveal from "@/components/IntroReveal";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
 const contentGutter = {
@@ -509,12 +510,7 @@ const HomePage = () => {
             <div className="home-hero-intro">
               <div className="home-hero-copy w-full">
                 <p className="portfolio-paragraph w-full text-[clamp(21.5px,3vw,26px)] font-normal leading-[1.48] tracking-[-0.01em]">
-                  <span className="intro-highlight-text">
-                    Hello, I am Jaimin Mukesh Jariwala. I am a Software
-                    Engineer who loves building end-to-end products that
-                    people love using and scalable systems that stay
-                    reliable under heavy traffic.
-                  </span>
+                  <IntroReveal />
                 </p>
               </div>
             </div>

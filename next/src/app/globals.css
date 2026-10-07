@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+html body, html body * {
+  font-family: "Angie Sans", Georgia, sans-serif !important;
+}
+.intro-reveal { display: block; }
+.intro-line-mask { display: block; overflow: hidden; }
+.intro-line { display: block; }
+.intro-line.is-entering {
+  animation: intro-line-enter 1000ms cubic-bezier(.22, 1, .36, 1) both;
+}
+@keyframes intro-line-enter {
+  from { transform: translateY(115%) rotate(2deg); }
+  to { transform: translateY(0) rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-line.is-entering { animation: none; }
+}
+
 :root {
   --page-background: #fff;
   --page-foreground: #000;
