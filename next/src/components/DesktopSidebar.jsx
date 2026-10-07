@@ -22,34 +22,23 @@ const SIDEBAR_ITEMS = [
   },
   // Amazon internship: the image plus the starter-kit paragraph under it.
   {
-    label: "amazon",
-    target: "work-experience-2",
-    flashSelector: "#work-experience-2 + p",
+    label: "gallery",
+    target: "gallery",
   },
   // Image-plus-paragraph groups, centered vertically in the viewport.
   { label: "education", target: "education", center: true },
   { label: "work", target: "work", center: true },
   {
-    label: "component library",
-    target: "projects",
-    flashSelector: "#projects .projects-embedded-desc",
-  },
-  {
-    label: "github work",
-    target: "github",
-    flashSelector: "#github-contributions-title",
-  },
-  {
-    label: "codex lite",
+    label: "projects",
     target: "project-2",
     flashSelector: "#project-2 .projects-embedded-desc",
   },
-  // The gallery is all images — nothing textual to flash, so just scroll.
-  { label: "gallery", target: "gallery" },
+  {
+    label: "github", href: "https://github.com/jaiminjariwala",
+  },
+  { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
   { label: "linkedin", href: "https://www.linkedin.com/in/jaiminjariwala/" },
   { label: "gmail", href: "mailto:jaiminjariwala5@gmail.com" },
-  { label: "leetcode", href: "https://leetcode.com/u/jaiminjariwala/" },
-  { label: "github", href: "https://github.com/jaiminjariwala" },
 ];
 
 // Landing position for a section after the jump: enough to clear the

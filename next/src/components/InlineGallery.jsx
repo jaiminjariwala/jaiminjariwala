@@ -139,7 +139,18 @@ function InlineFolderPhotos({ section, onBack }) {
         ) : null}
       </div>
 
-      <div className="inline-gallery-photo-scroll overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <div className="inline-gallery-photo-scroll overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+        onPointerDown={event => {
+          if (event.pointerType !== "mouse" || event.button !== 0) return;
+          event.preventDefault();
+          const track = event.currentTarget;
+          const startX = event.clientX, startScroll = track.scrollLeft;
+          const move = next => { track.scrollLeft = startScroll - (next.clientX - startX); };
+          const stop = () => { window.removeEventListener("pointermove", move); window.removeEventListener("pointerup", stop); window.removeEventListener("pointercancel", stop); };
+          window.addEventListener("pointermove", move);
+          window.addEventListener("pointerup", stop, { once: true });
+          window.addEventListener("pointercancel", stop, { once: true });
+        }}>
         <div className="inline-gallery-photo-row flex w-max items-start">
           {section.photos.map((photo, index) => {
             const publicId = getPhotoId(photo);
