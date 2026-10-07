@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { animate } from "framer-motion";
 import { Short_Stack } from "next/font/google";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/DesktopSidebar";
 import { folders } from "@/components/galleryData";
 
 const shortStack = Short_Stack({

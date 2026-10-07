@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Playfair_Display } from "next/font/google";
-import ThemeToggle from "@/components/ThemeToggle";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -107,7 +106,6 @@ export default function MobileMenu() {
         <span aria-hidden="true" />
         <span aria-hidden="true" />
       </button>
-      {isOpen ? <div className="mobile-menu-theme"><ThemeToggle /></div> : null}
 
       {/* Invisible native switch: iOS plays its system haptic tick when it
           toggles, and clicking the wrapping label is the reliable trigger.

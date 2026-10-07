@@ -34,7 +34,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="light" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: `try{document.documentElement.dataset.theme=sessionStorage.getItem('portfolio-theme')==='dark'?'dark':'light'}catch{}` }} />
       </head>
       <body className={`${inter.variable} ${shortStack.variable} ${inter.className}`}>
         <ClientShell>

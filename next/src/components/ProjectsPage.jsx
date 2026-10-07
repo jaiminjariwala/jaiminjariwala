@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/DesktopSidebar";
 import ProjectsCurl from "@/components/ProjectsCurl";
 
 const ProjectsPage = ({ embedded = false }) => {

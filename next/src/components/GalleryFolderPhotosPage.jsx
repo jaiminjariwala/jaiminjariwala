@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/DesktopSidebar";
 import { getCloudinaryUrl, getPhotoId, getPhotoPosition } from "@/components/galleryData";
 
 const hashText = (value) => {

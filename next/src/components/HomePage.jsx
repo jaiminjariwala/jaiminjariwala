@@ -7,7 +7,7 @@ import { animate } from "framer-motion";
 import GitHubContributions from "@/components/GitHubContributions";
 import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/DesktopSidebar";
 import IntroReveal from "@/components/IntroReveal";
 import { getCloudinaryUrl } from "@/components/galleryData";
 

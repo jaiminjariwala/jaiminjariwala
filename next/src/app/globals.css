@@ -1513,7 +1513,7 @@ a {
   animation: mobile-menu-fade 240ms ease both;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1279px) {
   .mobile-menu-button {
     display: flex;
   }
