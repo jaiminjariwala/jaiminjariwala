@@ -1694,9 +1694,12 @@ a {
 
 @media (min-width: 1280px) {
   .desktop-sidebar-veil {
-    width: 160px;
+    display: none;
+  }
+  .desktop-sidebar {
     background: #fff;
-    pointer-events: auto;
+    padding: 12px 16px;
+    margin-left: -16px;
   }
   .desktop-sidebar-veil > div { display: none; }
   .inline-gallery-photo-row { padding-left: 184px; }
@@ -1843,6 +1846,15 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
 .codex-gallery-controls[data-media-tone="light"] button { color: #000; }
 .codex-gallery-controls[data-media-tone="dark"] button { color: #fff; }
 .project-media { position: relative; }
+.project-media-subtle-border::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 0.5px solid rgb(232, 232, 232);
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 2;
+}
 .codex-gallery-track { align-items: flex-start; }
 .codex-gallery-track > .project-media:not(.is-expanded) {
   height: min(575px, 57.5vw);

@@ -304,7 +304,7 @@ const ProjectsStack = () => {
                   ["01-welcome", "Welcome"], ["02-sign-in", "Sign in"],
                   ["03-browser-sign-in", "Browser sign-in"], ["04-account-chooser", "Account chooser"],
                   ["05-microphone-permission", "Dictation setup"],
-                ].map(([file, label]) => <ProjectMedia key={file} label={label}>
+                ].map(([file, label], index) => <ProjectMedia key={file} label={label} className={index < 4 ? "project-media-subtle-border" : ""}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={`https://raw.githubusercontent.com/jaiminjariwala/codex-lite/main/docs/media/${file}.png`} alt={`Codex Lite ${label}`} loading="lazy" />
                 </ProjectMedia>)}
