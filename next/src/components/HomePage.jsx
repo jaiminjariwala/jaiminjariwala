@@ -260,11 +260,11 @@ const ProjectMedia = ({ children, className = "", label = "project media" }) => 
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7" /></svg>
       </button>}
     </> : null}
-    <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
+    {(expanded || !gallery) && <button type="button" className="project-media-expand" aria-label={`${expanded ? "Exit fullscreen" : "View fullscreen"} ${label}`} onClick={() => setExpanded(value => !value)}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
         {expanded ? <path d="M21 3l-7 7m0-6v6h6M3 21l7-7m-6 0h6v6" /> : <path d="M14 10l7-7m-7 0h7v7M10 14l-7 7m0-7v7h7" />}
       </svg>
-    </button>
+    </button>}
   </div>;
   return expanded ? <><div className="codex-gallery-item project-media-placeholder" />{createPortal(media, document.body)}</> : media;
 };
@@ -342,6 +342,9 @@ const ProjectsStack = () => {
               </div>
               </MediaGalleryContext.Provider>
               <div className="codex-gallery-controls" data-media-tone={mediaTones[MEDIA_LABELS[currentMedia]] || "light"}>
+                <button type="button" className="project-media-expand" aria-label={`View fullscreen ${MEDIA_LABELS[currentMedia]}`} onClick={() => setExpandedMedia(MEDIA_LABELS[currentMedia])}>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M14 10l7-7m-7 0h7v7M10 14l-7 7m0-7v7h7" /></svg>
+                </button>
                 {currentMedia > 0 && <button type="button" className="project-media-prev" aria-label="Previous media" onClick={() => scrollToMedia(-1)}>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 12H4m7-7-7 7 7 7" /></svg>
                 </button>}
