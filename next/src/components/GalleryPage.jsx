@@ -419,8 +419,10 @@ const GalleryPage = () => {
     if (!viewport) return;
 
     if (direction > 0) setShouldHintNextFolder(false);
-    viewport.scrollBy({
-      left: viewport.clientWidth * 0.72 * direction,
+    const cards = viewport.querySelectorAll(".gallery-folder-card");
+    const step = cards.length > 2 ? cards[2].offsetLeft - cards[0].offsetLeft : viewport.clientWidth;
+    viewport.scrollTo({
+      left: Math.max(0, (Math.round(viewport.scrollLeft / step) + direction) * step),
       behavior: "smooth",
     });
   };

@@ -132,6 +132,7 @@ const GitHubContributions = () => {
   });
   const [selectedDate, setSelectedDate] = useState(null);
   const [activeYear, setActiveYear] = useState(null);
+  const [scrollEdges, setScrollEdges] = useState({ start: true, end: false });
   const sectionRef = useRef(null);
   const viewportRef = useRef(null);
   const weeksRef = useRef(null);
@@ -369,6 +370,8 @@ const GitHubContributions = () => {
   }, []);
 
   const handleViewportScroll = () => {
+    const viewport = viewportRef.current;
+    if (viewport) setScrollEdges({ start: viewport.scrollLeft <= 1, end: viewport.scrollLeft >= viewport.scrollWidth - viewport.clientWidth - 1 });
     setSelectedDate(null);
     updateActiveYear();
 
@@ -388,7 +391,7 @@ const GitHubContributions = () => {
     const maxScrollLeft = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
     const targetLeft = Math.min(
       maxScrollLeft,
-      Math.max(0, viewport.scrollLeft + viewport.clientWidth * 0.75 * direction),
+      Math.max(0, viewport.scrollLeft + viewport.clientWidth * direction),
     );
 
     viewport.scrollTo({
@@ -420,10 +423,11 @@ const GitHubContributions = () => {
             data-cursor-type="select-black"
             type="button"
             aria-label="Show earlier contribution history"
+            style={{ visibility: scrollEdges.start ? "hidden" : "visible" }}
             onClick={() => scrollGraph(-1)}
           >
-            <svg viewBox="0 0 16 12" aria-hidden="true">
-              <path d="M15 6H1M6 .5 1 6l5 5.5" />
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 12H4m7-7-7 7 7 7" />
             </svg>
           </button>
           <button
@@ -431,10 +435,11 @@ const GitHubContributions = () => {
             data-cursor-type="select-black"
             type="button"
             aria-label="Show later contribution history"
+            style={{ visibility: scrollEdges.end ? "hidden" : "visible" }}
             onClick={() => scrollGraph(1)}
           >
-            <svg viewBox="0 0 16 12" aria-hidden="true">
-              <path d="M1 6h14M10 .5 15 6l-5 5.5" />
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 12h16m-7-7 7 7-7 7" />
             </svg>
           </button>
         </div>

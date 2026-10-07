@@ -49,14 +49,14 @@
 
 .scrollControl {
   display: grid;
-  width: 16px;
-  height: 12px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   border: 0;
   border-radius: 0;
   place-items: center;
   background: transparent;
-  color: #a7a7a7;
+  color: #000;
   cursor: pointer;
   font: inherit;
   line-height: 1;
@@ -68,13 +68,15 @@
 }
 
 .scrollControl svg {
-  width: 16px;
-  height: 12px;
+  width: 23px;
+  height: 23px;
+  display: block;
+  overflow: visible;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.5;
+  stroke-width: 2.4;
   transition: stroke-width 140ms ease;
 }
 
