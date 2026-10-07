@@ -1708,6 +1708,7 @@ a {
   }
   .desktop-sidebar {
     background: #fff;
+    border-radius: 12px;
     padding: 12px 16px;
     margin-left: -16px;
   }
@@ -1742,12 +1743,6 @@ a {
     text-decoration-color 350ms ease;
 }
 
-/* While an opened photo folder sits behind the sidebar, the teal links go
-   black for readability, easing back once the photos close or scroll away. */
-.desktop-sidebar.is-over-photos .desktop-sidebar-external {
-  color: #000000;
-  text-decoration-color: #000000;
-}
 
 /* Selection-style text flash: measured gray strips sit BEHIND the text
    (negative z-index inside the flashed element's own stacking context), one
