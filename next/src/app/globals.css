@@ -1837,10 +1837,10 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
     drop-shadow(0 -.65px 0 #000);
 }
 .codex-gallery-item { background: transparent; }
-.codex-gallery { position: relative; }
+.codex-gallery { position: relative; padding-top: 54px; }
 .codex-gallery-controls {
   position: absolute;
-  top: 0;
+  top: 54px;
   left: max(4vw, calc(50vw - 460px));
   width: min(920px, 92vw);
   height: min(575px, 57.5vw);
@@ -1850,6 +1850,18 @@ html[data-theme="dark"] .custom-cursor:not(.hand) {
 .codex-gallery-controls button { pointer-events: auto; }
 .codex-gallery-controls[data-media-tone="light"] button { color: #000; }
 .codex-gallery-controls[data-media-tone="dark"] button { color: #fff; }
+.codex-gallery-controls .project-media-prev,
+.codex-gallery-controls .project-media-next {
+  top: -48px;
+  left: auto;
+  transform: none;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  color: #000 !important;
+}
+.codex-gallery-controls .project-media-prev { right: 44px; }
+.codex-gallery-controls .project-media-next { right: 0; }
 .project-media { position: relative; }
 .project-media-subtle-border::after {
   content: "";
