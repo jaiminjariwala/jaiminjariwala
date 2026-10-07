@@ -1056,7 +1056,7 @@ a {
   display: flex;
   gap: 12px;
   overflow-x: auto;
-  scroll-snap-type: x proximity;
+  scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   /* Side padding centers the first item in the viewport like the Amazon
      photo; scrolling moves everything left from there. */
@@ -1082,6 +1082,7 @@ a {
   background: #f2f2f2;
   /* Center each photo in the viewport when it snaps into place. */
   scroll-snap-align: center;
+  scroll-snap-stop: always;
   margin: 0;
 }
 
