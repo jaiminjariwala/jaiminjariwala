@@ -33,14 +33,14 @@ function render(counts) {
   return `### ${title}\n\n\`\`\`text\n${rows.join('\n')}\n\`\`\``;
 }
 async function api(endpoint, options={}) {
-  for(let attempt=0;attempt<3;attempt++) {
+  for(let attempt=0;attempt<4;attempt++) {
   let response;
   try {response=await fetch(`https://api.github.com/${endpoint}`,{
     ...options, signal:AbortSignal.timeout(30000),
     headers:{Accept:'application/vnd.github+json',Authorization:`Bearer ${process.env.GH_TOKEN}`,'X-GitHub-Api-Version':'2022-11-28',...options.headers},
   });} catch(error) {
     // Retry read requests only: writes may already have succeeded remotely.
-    if(options.method || attempt===2)throw error;
+    if(options.method || attempt===3)throw error;
     await new Promise(resolve=>setTimeout(resolve,2000*(attempt+1)));
     continue;
   }
@@ -49,7 +49,25 @@ async function api(endpoint, options={}) {
     await new Promise(resolve=>setTimeout(resolve,2000*(attempt+1)));
     continue;
   }
-  if(!response.ok) throw Error(`GitHub API returned ${response.status}`);
+  if(!response.ok) {
+    const body=await response.text();
+    let message;
+    try { message=JSON.parse(body).message; } catch { message='No API error message'; }
+    const remaining=response.headers.get('x-ratelimit-remaining');
+    const retryAfter=response.headers.get('retry-after');
+    const limited=response.status===429 || (response.status===403 && (remaining==='0' || retryAfter || /rate limit|abuse/i.test(message)));
+    if(limited && !options.method && attempt<3) {
+      const reset=Number(response.headers.get('x-ratelimit-reset'))*1000;
+      const delay=retryAfter ? Number(retryAfter)*1000 : remaining==='0' && reset ? Math.max(1000,reset-Date.now()+1000) : 60000*(attempt+1);
+      // Do not silently wait past the workflow's overall time budget.
+      if(delay<=180000) {
+        console.warn(`GitHub ${endpoint.split('?')[0]} rate limited; retrying in ${Math.ceil(delay/1000)}s`);
+        await new Promise(resolve=>setTimeout(resolve,delay));
+        continue;
+      }
+    }
+    throw Error(`GitHub API returned ${response.status} for ${endpoint.split('?')[0]}: ${message} (remaining=${remaining ?? 'unknown'})`);
+  }
   return response.json();
   }
 }
@@ -57,7 +75,7 @@ let lastSearch=0;
 async function search(query,page=1) {
   for(let attempt=0;attempt<4;attempt++) {
   // Stay below GitHub's search-specific rate limit.
-  await new Promise(resolve=>setTimeout(resolve,Math.max(0,2200-(Date.now()-lastSearch))));
+  await new Promise(resolve=>setTimeout(resolve,Math.max(0,6500-(Date.now()-lastSearch))));
   lastSearch=Date.now();
   const data=await api(`search/commits?q=${encodeURIComponent(query)}&sort=author-date&order=asc&per_page=100&page=${page}`);
   if(!data.incomplete_results) return data;
