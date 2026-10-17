@@ -58,9 +58,9 @@
 <!-- commit-activity:start -->
 <br />
 <div align="center">
-  <img src="profile/assets/commit-activity.svg?v=7feb80476b0e" width="680" alt="Commit activity by time of day in Eastern time" />
+  <img src="profile/assets/commit-activity.svg?v=fd969064f047" width="680" alt="Commit activity by time of day in Eastern time" />
   <br /><br />
-  <img src="profile/assets/most-used-languages.svg?v=e4c0187ef186" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" />
+  <img src="profile/assets/most-used-languages.svg?v=d0ab0510fc6d" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" />
 </div>
 <!-- commit-activity:end -->
 
