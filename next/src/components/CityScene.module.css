@@ -1,6 +1,6 @@
 .scene { width: min(1100px, calc(100% - 40px)); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 165px; gap: 28px; align-items: center; }
-.visual { position: relative; background: #fff; transition: background 220ms ease; min-width: 0; }
-.dark { background: #07130e; }
+.visual { position: relative; background: transparent; min-width: 0; overflow: visible; }
+.dark { background: transparent; }
 .canvas { display: block; width: 100%; aspect-ratio: 4 / 3; }
 .source { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .details { font-size: 15px; line-height: 1.4; color: #757575; }

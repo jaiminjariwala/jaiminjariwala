@@ -3,14 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./CityScene.module.css";
 
-const weatherLabel = code => code === 0 ? "Clear" : code <= 3 ? "Cloudy" : code <= 48 ? "Fog" : code <= 67 ? "Rain" : code <= 77 ? "Snow" : code <= 82 ? "Showers" : code <= 86 ? "Snow showers" : "Thunderstorms";
 
 export default function CityScene() {
-  const rootRef = useRef(null), canvasRef = useRef(null), videoRef = useRef(null);
-  const [density, setDensity] = useState(80);
-  const [backdrop, setBackdrop] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [blocked, setBlocked] = useState(false);
+  const rootRef = useRef(null), canvasRef = useRef(null);
   const [failed, setFailed] = useState(false);
   const [clock, setClock] = useState("");
   const [weather, setWeather] = useState(null);
@@ -38,20 +33,35 @@ export default function CityScene() {
   }, []);
 
   useEffect(() => {
-    const video = videoRef.current, canvas = canvasRef.current;
+    const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    const sample = document.createElement("canvas");
-    const sampleContext = sample.getContext("2d", { willReadFrequently: true });
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    let frame, visible = false, last = 0, alive = true;
+    const controller = new AbortController();
+    let pixels, columns, rows, fps, count;
+    let frame, visible = false, last = 0, previous = 0, elapsed = 0, alive = true;
+    fetch("/media/city/georgetown-frames.bin", { signal: controller.signal }).then(response => {
+      if (!response.ok) throw new Error("Scene unavailable");
+      return response.arrayBuffer();
+    }).then(buffer => {
+      const header = new DataView(buffer);
+      columns = header.getUint32(0, true); rows = header.getUint32(4, true);
+      fps = header.getUint32(8, true); count = header.getUint32(12, true);
+      if (!columns || !rows || !fps || count < 2 || buffer.byteLength !== 16 + columns * rows * 3 * count) throw new Error("Invalid scene frames");
+      pixels = new Uint8Array(buffer, 16);
+    }).catch(() => { if (alive) setFailed(true); });
     const draw = now => {
       if (!alive) return;
-      if (visible && video.readyState >= 2 && now - last >= 66) {
+      const delta = previous ? Math.min(now - previous, 100) : 0;
+      previous = now;
+      if (visible && !document.hidden && !motion.matches && pixels) elapsed += delta;
+      if (visible && pixels && now - last >= 50) {
         last = now;
-        const columns = density, rows = Math.round(columns * video.videoHeight / video.videoWidth);
-        sample.width = columns; sample.height = rows;
-        sampleContext.drawImage(video, 0, 0, columns, rows);
-        const pixels = sampleContext.getImageData(0, 0, columns, rows).data;
+        // Triangle wave: 0…last…0. Quarter speed, no jump to frame zero.
+        const end = count - 1;
+        const phase = (elapsed / 1000 * fps * .25) % (2 * end);
+        const position = phase <= end ? phase : 2 * end - phase;
+        const first = Math.floor(position), second = Math.min(first + 1, end), mix = position - first;
+        const frameSize = columns * rows * 3;
         const width = canvas.clientWidth, height = width * rows / columns;
         const ratio = Math.min(devicePixelRatio || 1, 2);
         if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
@@ -60,56 +70,47 @@ export default function CityScene() {
         context.setTransform(ratio, 0, 0, ratio, 0, 0);
         context.clearRect(0, 0, width, height);
         const step = width / columns;
+        // Backdrop ends at the outer dot centers, never through their circles.
+        // Perimeter circles complete its scalloped silhouette instead of a
+        // rectangular CSS background clipping the outside dots flat.
+        context.fillStyle = "#07130e";
+        context.fillRect(step / 2, step / 2, width - step, height - step);
         for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
-          const i = (y * columns + x) * 4;
-          context.fillStyle = `rgb(${pixels[i]},${pixels[i + 1]},${pixels[i + 2]})`;
+          if (x !== 0 && y !== 0 && x !== columns - 1 && y !== rows - 1) continue;
+          context.beginPath(); context.arc((x + .5) * step, (y + .5) * step, step * .46, 0, Math.PI * 2); context.fill();
+        }
+        for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
+          const i = (y * columns + x) * 3;
+          const a = first * frameSize + i, b = second * frameSize + i;
+          const color = channel => Math.round(pixels[a + channel] * (1 - mix) + pixels[b + channel] * mix);
+          context.fillStyle = `rgb(${color(0)},${color(1)},${color(2)})`;
           context.beginPath(); context.arc((x + .5) * step, (y + .5) * step, step * .46, 0, Math.PI * 2); context.fill();
         }
       }
       frame = requestAnimationFrame(draw);
     };
-    const sync = () => {
-      if (visible && !paused && !document.hidden && !motion.matches) video.play().then(() => { if (alive) setBlocked(false); }).catch(() => { if (alive) setBlocked(true); });
-      else video.pause();
-    };
-    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }, { threshold: .05 });
+    const observer = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; }, { threshold: .05 });
     observer.observe(rootRef.current);
-    video.addEventListener("loadeddata", sync);
-    document.addEventListener("visibilitychange", sync);
-    motion.addEventListener("change", sync);
     frame = requestAnimationFrame(draw);
     return () => {
-      alive = false; cancelAnimationFrame(frame); observer.disconnect(); video.pause();
-      video.removeEventListener("loadeddata", sync); document.removeEventListener("visibilitychange", sync); motion.removeEventListener("change", sync);
+      alive = false; controller.abort(); cancelAnimationFrame(frame); observer.disconnect();
     };
-  }, [density, paused]);
-
-  const togglePlayback = () => {
-    if (blocked) videoRef.current.play().then(() => { setBlocked(false); setPaused(false); }).catch(() => setBlocked(true));
-    else setPaused(value => !value);
-  };
+  }, []);
 
   return <section ref={rootRef} className={styles.scene} aria-label="Georgetown recorded city scene with current Washington DC weather">
-    <div className={`${styles.visual} ${backdrop ? styles.dark : ""}`}>
-      <video ref={videoRef} className={styles.source} src="/media/city/georgetown.mp4" poster="/media/city/georgetown-poster.png" muted loop playsInline preload="auto" aria-hidden="true" onError={() => setFailed(true)} />
+    <div className={`${styles.visual} ${styles.dark}`}>
       <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Moving colored dots depicting Jaimin’s recorded Georgetown street footage" />
       {failed && <p className={styles.error}>The recorded scene could not load. Please refresh to try again.</p>}
     </div>
     <div className={styles.details}>
       <p className={styles.location}>Georgetown<br />Washington, D.C.</p>
       <p className={styles.note}>Recorded footage · by Jaimin</p>
-      <div className={styles.controls}>
-        <button type="button" onClick={togglePlayback}>{blocked || paused ? "Play" : "Pause"} <span aria-hidden="true">{blocked || paused ? "▷" : "Ⅱ"}</span></button>
-        <button type="button" onClick={() => setDensity(value => value === 80 ? 112 : value === 112 ? 56 : 80)}>Dots <span>{density}</span></button>
-        <button type="button" aria-pressed={backdrop} onClick={() => setBackdrop(value => !value)}>Backdrop <span aria-hidden="true">{backdrop ? "◼" : "□"}</span></button>
-      </div>
       <p className={styles.note}>{clock || "Washington local time"} ET</p>
       <div className={styles.weather} aria-label="Current Washington DC weather, separate from recorded footage">
         <span>Current weather</span>
-        {weather && <><span>{weatherLabel(weather.code)} · {Math.round(weather.temperature)}°F</span><span>Wind {Math.round(weather.wind)} mph</span></>}
+        {weather && <><span>{weather.description} · {Math.round(weather.temperature)}°F</span><span>Wind {Math.round(weather.wind)} mph</span></>}
         {weatherError ? <span>{weather ? "Update unavailable; showing last result" : "Temporarily unavailable"}</span> : !weather && <span>Loading…</span>}
       </div>
-      <a className={styles.credit} href="https://open-meteo.com/" target="_blank" rel="noreferrer">Weather by Open-Meteo</a>
     </div>
   </section>;
 }
