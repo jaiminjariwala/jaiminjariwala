@@ -9,6 +9,7 @@ import InlineGallery from "@/components/InlineGallery";
 import MobileMenu from "@/components/MobileMenu";
 import Navbar from "@/components/DesktopSidebar";
 import IntroReveal from "@/components/IntroReveal";
+import CityScene from "@/components/CityScene";
 import { getCloudinaryUrl } from "@/components/galleryData";
 
 const contentGutter = {
@@ -547,6 +548,8 @@ const HomePage = () => {
           </div>
 
         </div>
+
+        <CityScene />
 
         <section
           data-reveal
