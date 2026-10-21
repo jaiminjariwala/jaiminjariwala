@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./CityScene.module.css";
+import { COLUMNS, ROWS, composeStreetFrame } from "./cityAnimation";
 
 
 export default function CityScene() {
@@ -36,32 +37,27 @@ export default function CityScene() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    const controller = new AbortController();
-    let pixels, columns, rows, fps, count;
+    const columns = COLUMNS, rows = ROWS;
+    const plate = new Image(), car = new Image();
+    const scene = document.createElement("canvas");
+    scene.width = columns * 4; scene.height = rows * 4;
+    const sceneContext = scene.getContext("2d", { willReadFrequently: true });
+    const sample = document.createElement("canvas"); sample.width = columns; sample.height = rows;
+    const sampleContext = sample.getContext("2d", { willReadFrequently: true });
+    let ready = false;
     let frame, visible = false, last = 0, previous = 0, elapsed = 0, alive = true;
-    fetch("/media/city/georgetown-frames.bin", { signal: controller.signal }).then(response => {
-      if (!response.ok) throw new Error("Scene unavailable");
-      return response.arrayBuffer();
-    }).then(buffer => {
-      const header = new DataView(buffer);
-      columns = header.getUint32(0, true); rows = header.getUint32(4, true);
-      fps = header.getUint32(8, true); count = header.getUint32(12, true);
-      if (!columns || !rows || !fps || count < 2 || buffer.byteLength !== 16 + columns * rows * 3 * count) throw new Error("Invalid scene frames");
-      pixels = new Uint8Array(buffer, 16);
-    }).catch(() => { if (alive) setFailed(true); });
+    plate.src = "/media/city/dc-street-plate.png"; car.src = "/media/city/dc-sedan.png";
+    Promise.all([plate.decode(), car.decode()]).then(() => { ready = true; }).catch(() => { if (alive) setFailed(true); });
     const draw = now => {
       if (!alive) return;
       const delta = previous ? Math.min(now - previous, 100) : 0;
       previous = now;
-      if (visible && !document.hidden && !motion.matches && pixels) elapsed += delta;
-      if (visible && pixels && now - last >= 50) {
+      if (visible && !document.hidden && !motion.matches && ready) elapsed += delta;
+      if (visible && ready && now - last >= 50) {
         last = now;
-        // Triangle wave: 0…last…0. Quarter speed, no jump to frame zero.
-        const end = count - 1;
-        const phase = (elapsed / 1000 * fps * .25) % (2 * end);
-        const position = phase <= end ? phase : 2 * end - phase;
-        const first = Math.floor(position), second = Math.min(first + 1, end), mix = position - first;
-        const frameSize = columns * rows * 3;
+        composeStreetFrame(sceneContext, plate, car, elapsed / 1000, scene.width, scene.height);
+        sampleContext.drawImage(scene, 0, 0, columns, rows);
+        const pixels = sampleContext.getImageData(0, 0, columns, rows).data;
         const width = canvas.clientWidth, height = width * rows / columns;
         const ratio = Math.min(devicePixelRatio || 1, 2);
         if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {
@@ -80,10 +76,8 @@ export default function CityScene() {
           context.beginPath(); context.arc((x + .5) * step, (y + .5) * step, step * .46, 0, Math.PI * 2); context.fill();
         }
         for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
-          const i = (y * columns + x) * 3;
-          const a = first * frameSize + i, b = second * frameSize + i;
-          const color = channel => Math.round(pixels[a + channel] * (1 - mix) + pixels[b + channel] * mix);
-          context.fillStyle = `rgb(${color(0)},${color(1)},${color(2)})`;
+          const i = (y * columns + x) * 4;
+          context.fillStyle = `rgb(${pixels[i]},${pixels[i + 1]},${pixels[i + 2]})`;
           context.beginPath(); context.arc((x + .5) * step, (y + .5) * step, step * .46, 0, Math.PI * 2); context.fill();
         }
       }
@@ -93,18 +87,18 @@ export default function CityScene() {
     observer.observe(rootRef.current);
     frame = requestAnimationFrame(draw);
     return () => {
-      alive = false; controller.abort(); cancelAnimationFrame(frame); observer.disconnect();
+      alive = false; cancelAnimationFrame(frame); observer.disconnect();
     };
   }, []);
 
-  return <section ref={rootRef} className={styles.scene} aria-label="Georgetown recorded city scene with current Washington DC weather">
+  return <section ref={rootRef} className={styles.scene} aria-label="Animated Washington DC photograph with current local weather">
     <div className={`${styles.visual} ${styles.dark}`}>
-      <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Moving colored dots depicting Jaimin’s recorded Georgetown street footage" />
-      {failed && <p className={styles.error}>The recorded scene could not load. Please refresh to try again.</p>}
+      <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Animated dot scene of Washington DC: passing cars in the second lane and gently moving tree leaves" />
+      {failed && <p className={styles.error}>The scene could not load. Please refresh to try again.</p>}
     </div>
     <div className={styles.details}>
-      <p className={styles.location}>Georgetown<br />Washington, D.C.</p>
-      <p className={styles.note}>Recorded footage · by Jaimin</p>
+      <p className={styles.location}>Washington, D.C.</p>
+      <p className={styles.note}>Animated photograph · simulated motion</p>
       <p className={styles.note}>{clock || "Washington local time"} ET</p>
       <div className={styles.weather} aria-label="Current Washington DC weather, separate from recorded footage">
         <span>Current weather</span>
