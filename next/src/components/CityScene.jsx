@@ -39,7 +39,7 @@ export default function CityScene() {
     const sample = document.createElement("canvas"); sample.width = columns; sample.height = rows;
     const sampleContext = sample.getContext("2d", { willReadFrequently: true });
     let ready = false;
-    let hover = 0, hoverX = .5, hoverY = .5;
+    let hover = 0;
     let frame, visible = false, last = 0, previous = 0, elapsed = 0, alive = true;
     plate.src = "/media/city/dc-street-plate.png"; car.src = "/media/city/dc-sedan.png";
     Promise.all([plate.decode(), car.decode()]).then(() => { ready = true; }).catch(() => { if (alive) setFailed(true); });
@@ -63,8 +63,8 @@ export default function CityScene() {
         const step = width / columns;
         const pointer = pointerRef.current;
         hover += ((pointer.active && !motion.matches ? 1 : 0) - hover) * .22;
-        hoverX += (pointer.x - hoverX) * .35;
-        hoverY += (pointer.y - hoverY) * .35;
+        const hoverColumn = Math.max(0, Math.min(columns - 1, Math.floor(pointer.x * columns)));
+        const hoverRow = Math.max(0, Math.min(rows - 1, Math.floor(pointer.y * rows)));
         // Backdrop ends at the outer dot centers, never through their circles.
         // Perimeter circles complete its scalloped silhouette instead of a
         // rectangular CSS background clipping the outside dots flat.
@@ -78,10 +78,16 @@ export default function CityScene() {
           const i = (y * columns + x) * 4;
           context.fillStyle = `rgb(${pixels[i]},${pixels[i + 1]},${pixels[i + 2]})`;
           const centerX = (x + .5) * step, centerY = (y + .5) * step;
-          const distance = Math.hypot(centerX - hoverX * width, centerY - hoverY * height);
-          const influence = Math.exp(-Math.pow(distance / (step * 1.35), 2));
-          const radius = Math.min(step * .46 * (1 + hover * influence * .95), centerX, width - centerX, centerY, height - centerY);
+          const radius = step * .46;
           context.beginPath(); context.arc(centerX, centerY, radius, 0, Math.PI * 2); context.fill();
+        }
+        // Paint just the selected dot last, above its unchanged neighbors.
+        if (hover > .001) {
+          const i = (hoverRow * columns + hoverColumn) * 4;
+          const x = (hoverColumn + .5) * step, y = (hoverRow + .5) * step;
+          const radius = Math.min(step * .46 * (1 + hover * .95), x, width - x, y, height - y);
+          context.fillStyle = `rgb(${pixels[i]},${pixels[i + 1]},${pixels[i + 2]})`;
+          context.beginPath(); context.arc(x, y, radius, 0, Math.PI * 2); context.fill();
         }
       }
       frame = requestAnimationFrame(draw);
