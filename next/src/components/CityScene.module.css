@@ -1,4 +1,5 @@
-.scene { width: min(1100px, calc(100% - 40px)); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 165px; gap: 28px; align-items: center; }
+.scene { position: relative; width: min(907px, calc(100% - 426px)); margin: 0 auto; }
+.details { position: absolute; left: calc(100% + 28px); top: 50%; transform: translateY(-50%); width: 165px; }
 .visual { position: relative; background: transparent; min-width: 0; overflow: visible; }
 .dark { background: transparent; }
 .canvas { display: block; width: 100%; aspect-ratio: 56 / 38; }
@@ -13,8 +14,8 @@
 .credit { display: inline-block; color: #777; font-size: 11px; margin-top: 14px; text-decoration: underline; }
 .error { position: absolute; inset: 20px; background: #fff; color: #333; }
 @media (max-width: 767px) {
-  .scene { grid-template-columns: 1fr; width: calc(100% - 32px); gap: 18px; }
-  .details { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+  .scene { width: calc(100% - 32px); }
+  .details { position: static; transform: none; width: 100%; margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
   .controls { grid-column: 2; grid-row: 1 / 4; margin: 0; align-content: start; }
   .note { margin: 0; }
   .weather { grid-column: 1 / -1; }
