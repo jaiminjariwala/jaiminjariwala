@@ -7,6 +7,7 @@ import { composeStreetFrame } from "./cityAnimation";
 
 export default function CityScene() {
   const rootRef = useRef(null), canvasRef = useRef(null);
+  const pointerRef = useRef({ x: .5, y: .5, active: false });
   const [failed, setFailed] = useState(false);
   const [density, setDensity] = useState(56);
   const [weather, setWeather] = useState(null);
@@ -38,6 +39,7 @@ export default function CityScene() {
     const sample = document.createElement("canvas"); sample.width = columns; sample.height = rows;
     const sampleContext = sample.getContext("2d", { willReadFrequently: true });
     let ready = false;
+    let hover = 0, hoverX = .5, hoverY = .5;
     let frame, visible = false, last = 0, previous = 0, elapsed = 0, alive = true;
     plate.src = "/media/city/dc-street-plate.png"; car.src = "/media/city/dc-sedan.png";
     Promise.all([plate.decode(), car.decode()]).then(() => { ready = true; }).catch(() => { if (alive) setFailed(true); });
@@ -59,6 +61,10 @@ export default function CityScene() {
         context.setTransform(ratio, 0, 0, ratio, 0, 0);
         context.clearRect(0, 0, width, height);
         const step = width / columns;
+        const pointer = pointerRef.current;
+        hover += ((pointer.active && !motion.matches ? 1 : 0) - hover) * .22;
+        hoverX += (pointer.x - hoverX) * .35;
+        hoverY += (pointer.y - hoverY) * .35;
         // Backdrop ends at the outer dot centers, never through their circles.
         // Perimeter circles complete its scalloped silhouette instead of a
         // rectangular CSS background clipping the outside dots flat.
@@ -71,7 +77,11 @@ export default function CityScene() {
         for (let y = 0; y < rows; y++) for (let x = 0; x < columns; x++) {
           const i = (y * columns + x) * 4;
           context.fillStyle = `rgb(${pixels[i]},${pixels[i + 1]},${pixels[i + 2]})`;
-          context.beginPath(); context.arc((x + .5) * step, (y + .5) * step, step * .46, 0, Math.PI * 2); context.fill();
+          const centerX = (x + .5) * step, centerY = (y + .5) * step;
+          const distance = Math.hypot(centerX - hoverX * width, centerY - hoverY * height);
+          const influence = Math.exp(-Math.pow(distance / (step * 1.35), 2));
+          const radius = Math.min(step * .46 * (1 + hover * influence * .95), centerX, width - centerX, centerY, height - centerY);
+          context.beginPath(); context.arc(centerX, centerY, radius, 0, Math.PI * 2); context.fill();
         }
       }
       frame = requestAnimationFrame(draw);
@@ -86,7 +96,14 @@ export default function CityScene() {
 
   return <section ref={rootRef} className={styles.scene} aria-label="Animated Washington DC photograph with current local weather">
     <div className={`${styles.visual} ${styles.dark}`}>
-      <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Animated Washington DC dot scene with multi-lane traffic, cyclists, pedestrians, swaying leaves and a traffic-signal countdown" />
+      <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Animated Washington DC dot scene with multi-lane traffic, cyclists, pedestrians, swaying leaves and a traffic-signal countdown"
+        onPointerMove={event => {
+          if (event.pointerType === "touch") return;
+          const rect = event.currentTarget.getBoundingClientRect();
+          pointerRef.current = { x: (event.clientX - rect.left) / rect.width, y: (event.clientY - rect.top) / rect.height, active: true };
+        }}
+        onPointerLeave={() => { pointerRef.current.active = false; }}
+        onPointerCancel={() => { pointerRef.current.active = false; }} />
       {failed && <p className={styles.error}>The scene could not load. Please refresh to try again.</p>}
     </div>
     <div className={styles.details}>
