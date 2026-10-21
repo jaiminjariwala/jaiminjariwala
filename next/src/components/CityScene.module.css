@@ -4,8 +4,11 @@
 .dark { background: transparent; }
 .canvas { display: block; width: 100%; aspect-ratio: 56 / 38; }
 .source { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-.details { font-size: 15px; line-height: 1.4; color: #757575; }
-.location { color: #333; margin: 0 0 8px; }
+.details { font-size: 16px; line-height: 1.25; color: #777; }
+.location { color: inherit; margin: 0 0 12px; }
+.metrics { display: grid; grid-template-columns: 1fr auto; gap: 2px 18px; margin: 0; }
+.metrics dt, .metrics dd { margin: 0; }
+.metrics dd { text-align: right; font-variant-numeric: tabular-nums; }
 .note { margin: 8px 0 18px; font-size: 12px; }
 .controls { display: grid; gap: 12px; margin: 22px 0; }
 .controls button { display: flex; justify-content: space-between; align-items: center; border: 0; background: transparent; padding: 0; color: #444; font: inherit; cursor: pointer; }
@@ -15,7 +18,7 @@
 .error { position: absolute; inset: 20px; background: #fff; color: #333; }
 @media (max-width: 767px) {
   .scene { width: calc(100% - 32px); }
-  .details { position: static; transform: none; width: 100%; margin-top: 18px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; }
+  .details { position: static; transform: none; width: 165px; margin: 18px 0 0 auto; }
   .controls { grid-column: 2; grid-row: 1 / 4; margin: 0; align-content: start; }
   .note { margin: 0; }
   .weather { grid-column: 1 / -1; }

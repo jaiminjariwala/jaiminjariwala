@@ -8,16 +8,8 @@ import { COLUMNS, ROWS, composeStreetFrame } from "./cityAnimation";
 export default function CityScene() {
   const rootRef = useRef(null), canvasRef = useRef(null);
   const [failed, setFailed] = useState(false);
-  const [clock, setClock] = useState("");
   const [weather, setWeather] = useState(null);
   const [weatherError, setWeatherError] = useState(false);
-
-  useEffect(() => {
-    const update = () => setClock(new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(new Date()));
-    update();
-    const timer = setInterval(update, 30000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -97,14 +89,12 @@ export default function CityScene() {
       {failed && <p className={styles.error}>The scene could not load. Please refresh to try again.</p>}
     </div>
     <div className={styles.details}>
-      <p className={styles.location}>Washington, D.C.</p>
-      <p className={styles.note}>Animated photograph · simulated motion</p>
-      <p className={styles.note}>{clock || "Washington local time"} ET</p>
-      <div className={styles.weather} aria-label="Current Washington DC weather, separate from recorded footage">
-        <span>Current weather</span>
-        {weather && <><span>{weather.description} · {Math.round(weather.temperature)}°F</span><span>Wind {Math.round(weather.wind)} mph</span></>}
-        {weatherError ? <span>{weather ? "Update unavailable; showing last result" : "Temporarily unavailable"}</span> : !weather && <span>Loading…</span>}
-      </div>
+      <p className={styles.location}>Washington D.C.<br /><span title="Illustrative summer scene timestamp, not the weather observation time">7/6, 9:45 AM</span></p>
+      <dl className={styles.metrics}>
+        <dt>Wind</dt><dd title={weatherError ? "Weather update unavailable" : "Current Washington DC wind"}>{weather ? `${Math.round(weather.wind)} mph` : "—"}</dd>
+        <dt>Cars</dt><dd title="Six simulated cars in the animation, not a live traffic count">6</dd>
+        <dt>People</dt><dd title="Five simulated pedestrians in the animation, not a live count">5</dd>
+      </dl>
     </div>
   </section>;
 }
