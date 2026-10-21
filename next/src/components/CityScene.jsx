@@ -93,7 +93,7 @@ export default function CityScene() {
 
   return <section ref={rootRef} className={styles.scene} aria-label="Animated Washington DC photograph with current local weather">
     <div className={`${styles.visual} ${styles.dark}`}>
-      <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Animated dot scene of Washington DC: passing cars in the second lane and gently moving tree leaves" />
+      <canvas ref={canvasRef} className={styles.canvas} role="img" aria-label="Animated Washington DC dot scene with multi-lane traffic, cyclists, pedestrians, swaying leaves and a traffic-signal countdown" />
       {failed && <p className={styles.error}>The scene could not load. Please refresh to try again.</p>}
     </div>
     <div className={styles.details}>
