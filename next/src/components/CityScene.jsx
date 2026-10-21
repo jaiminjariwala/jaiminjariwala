@@ -2,12 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 import styles from "./CityScene.module.css";
-import { COLUMNS, ROWS, composeStreetFrame } from "./cityAnimation";
+import { composeStreetFrame } from "./cityAnimation";
 
 
 export default function CityScene() {
   const rootRef = useRef(null), canvasRef = useRef(null);
   const [failed, setFailed] = useState(false);
+  const [density, setDensity] = useState(56);
   const [weather, setWeather] = useState(null);
   const [weatherError, setWeatherError] = useState(false);
 
@@ -29,7 +30,7 @@ export default function CityScene() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     const motion = matchMedia("(prefers-reduced-motion: reduce)");
-    const columns = COLUMNS, rows = ROWS;
+    const columns = density, rows = Math.round(density * 38 / 56);
     const plate = new Image(), car = new Image();
     const scene = document.createElement("canvas");
     scene.width = columns * 4; scene.height = rows * 4;
@@ -81,7 +82,7 @@ export default function CityScene() {
     return () => {
       alive = false; cancelAnimationFrame(frame); observer.disconnect();
     };
-  }, []);
+  }, [density]);
 
   return <section ref={rootRef} className={styles.scene} aria-label="Animated Washington DC photograph with current local weather">
     <div className={`${styles.visual} ${styles.dark}`}>
@@ -95,6 +96,9 @@ export default function CityScene() {
         <dt>Cars</dt><dd title="Six simulated cars in the animation, not a live traffic count">6</dd>
         <dt>People</dt><dd title="Five simulated pedestrians in the animation, not a live count">5</dd>
       </dl>
+      <button type="button" className={styles.dotsButton} aria-label={`Dot density ${density}. Change dot size`} onClick={() => setDensity(value => value === 56 ? 80 : value === 80 ? 112 : 56)}>
+        <span>Dots</span><span>{density} ↻</span>
+      </button>
     </div>
   </section>;
 }
