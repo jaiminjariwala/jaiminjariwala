@@ -6,13 +6,14 @@ export const LOOP_SECONDS = 48;
 export function carPosition(seconds, index, lane = 2) {
   const progress = ((seconds / LOOP_SECONDS + index / 3 + (lane === 3 ? .09 : .24)) % 1 + 1) % 1;
   // Perspective accelerates apparent motion toward the camera.
-  const distance = progress ** 2;
+  const distance = progress ** 3;
+  const groundDepth = 1.9 * distance;
   return {
-    x: lane === 3 ? .473 + .43 * distance : .447 + .18 * distance,
-    bottom: .475 + .82 * distance,
-    // Stronger depth scaling: tiny at the vanishing point, increasingly
-    // larger near the camera. Position/lane paths remain unchanged.
-    width: .0025 + .34 * distance ** 1.45,
+    x: lane === 3 ? .473 + .5244 * groundDepth : .447 + .2195 * groundDepth,
+    bottom: .475 + groundDepth,
+    // Calibrated to the parked minivan: at ground y=.67, a moving sedan
+    // is about .127 of frame width. All lanes share this road-plane scale.
+    width: .006 + .62 * groundDepth,
     opacity: Math.min(1, progress * 16),
     progress,
     lane,
@@ -86,9 +87,10 @@ export function composeStreetFrame(context, plate, car, seconds, width, height) 
     context.restore();
   }
   for (let index = 0; index < 2; index++) {
-    const p = ((seconds / 64 + index / 2 + .18) % 1), d = p * p;
+    const p = ((seconds / 64 + index / 2 + .18) % 1), d = p ** 3;
+    const depth = 1.9 * d;
     context.save(); context.globalAlpha = Math.min(1, p * 16);
-    drawCyclist(context, (.432 - .16 * d) * width, (.49 + .66 * d) * height, (.008 + .105 * d) * height, seconds * 1.4 + index);
+    drawCyclist(context, (.432 - .2424 * depth) * width, (.475 + depth) * height, (.006 + .72 * depth) * height, seconds * 1.4 + index);
     context.restore();
   }
   // Replace the static orange signal with a slow 24-to-0 countdown.

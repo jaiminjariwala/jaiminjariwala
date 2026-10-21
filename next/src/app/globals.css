@@ -53,12 +53,13 @@ body {
 
 /* Text selection highlight: light gray instead of the browser default. */
 ::selection {
-  background: rgb(220, 220, 220);
+  background: rgb(232, 247, 212);
+  color: rgb(60, 117, 31);
 }
 
 html[data-theme="dark"] ::selection {
-  background: rgb(204, 204, 204);
-  color: #000;
+  background: rgb(232, 247, 212);
+  color: rgb(60, 117, 31);
 }
 
 p,
