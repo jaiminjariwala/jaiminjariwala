@@ -10,7 +10,9 @@ export function carPosition(seconds, index, lane = 2) {
   return {
     x: lane === 3 ? .473 + .43 * distance : .447 + .18 * distance,
     bottom: .475 + .82 * distance,
-    width: .008 + .31 * distance,
+    // Stronger depth scaling: tiny at the vanishing point, increasingly
+    // larger near the camera. Position/lane paths remain unchanged.
+    width: .0025 + .34 * distance ** 1.45,
     opacity: Math.min(1, progress * 16),
     progress,
     lane,
