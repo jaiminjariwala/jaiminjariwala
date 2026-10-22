@@ -6,6 +6,10 @@ import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import { outlineMask, polygonPath, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeometry";
 
+function ExternalArrow() {
+  return <svg className={styles.externalArrow} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg>;
+}
+
 function StampRim({lobes=8}) {
   const crease=useId();
   const outline=polygonPath(scallopedOutline(200,200,200/lobes));
@@ -158,7 +162,7 @@ export default function PortfolioV2() {
           <header><h1>Jaimin Mukesh Jariwala</h1></header>
           <p>I'm a software engineer who loves building cool products that people love using and systems that don't break under heavy traffic. I like building the infrastructure and owning the entire product development lifecycle.</p>
           <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><button onClick={()=>navigate("gallery")}><span className={styles.exploreLabel}>Travel</span></button><button onClick={()=>navigate("experience")}><span className={styles.exploreLabel}>Experience</span></button><button onClick={()=>navigate("education")}><span className={styles.exploreLabel}>Education</span></button></nav>
-          <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala">GitHub ↗</a><a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn ↗</a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
+          <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow/></a><a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
           {emailCopyError&&<p className={styles.copyError} role="status">{emailCopyError}</p>}
         </>}
         {page==="gallery"&&<PortfolioV2Gallery/>}

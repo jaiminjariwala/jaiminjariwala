@@ -110,6 +110,8 @@
 .introPage .introSocials{font-size:18px;font-weight:400;color:#777773}
 .introSocials .copyEmail{border:0;background:none;padding:0;min-width:92px;text-align:left;font:inherit;font-weight:400;color:#555;transition:color .15s}
 .introSocials .copyEmail:hover{color:#aaa}
+.introSocials a{display:inline-flex;align-items:center;gap:6px}
+.externalArrow{width:.85em;height:.85em;flex:none}
 .introPage .copyError{font-size:14px;color:#777;margin-top:12px}
 .experience .experienceTeam{display:inline}
 .educationMeta{text-align:right;flex-shrink:0}
