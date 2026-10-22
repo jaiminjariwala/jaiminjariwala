@@ -5,7 +5,7 @@ import { clipHalfPlane, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeo
 import styles from "./PortfolioV2.module.css";
 import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
-import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon } from "./paperDragGeometry.mjs";
+import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK } from "./paperDragGeometry.mjs";
 
 // Keep enough material in the resting curl to show its rounded face on phones.
 function restingPaperK(width){
@@ -14,11 +14,9 @@ function restingPaperK(width){
 }
 
 function openPaperK(s){
-  if(s.originX===undefined)return -s.height*.48;
-  const nx=-Math.cos(s.restAngle),ny=Math.sin(s.restAngle);
-  const bottom=document.querySelector('[data-portfolio-paper]')?.getBoundingClientRect().bottom+window.scrollY||s.height;
-  const reach=Math.max(...[[16,16],[s.width-16,16],[16,bottom],[s.width-16,bottom]].map(([x,y])=>(x-s.originX)*nx+(y-s.originY)*ny));
-  return s.width-32-Math.max(100,reach-100)*Math.SQRT2;
+  const inset=s.width<640?12:16;
+  const bottom=Math.max(s.height,document.querySelector('[data-portfolio-paper]')?.getBoundingClientRect().bottom+window.scrollY||0);
+  return paperOpenK(s.width,bottom,s.originX??s.width-inset,s.originY??inset,s.restAngle??RESTING_PAPER_ANGLE,inset);
 }
 
 // The page is rolled about a diagonal axis, not warped as a flat triangle.
@@ -318,9 +316,9 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       const dpr=Math.min(window.devicePixelRatio||1,2);
       canvas.current.width=s.width*dpr;canvas.current.height=s.height*dpr;
       canvas.current.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
-      s.k=s.target=s.open?-s.height*.48:restingPaperK(s.width);
-      s.velocity=0;s.plush=0;
       s.angle=s.targetAngle=RESTING_PAPER_ANGLE;s.angularVelocity=0;
+      s.k=s.target=s.open?openPaperK(s):restingPaperK(s.width);
+      s.velocity=0;s.plush=0;
       render();
     };
     resize();window.addEventListener("resize",resize);window.addEventListener("scroll",render,{passive:true});
@@ -402,7 +400,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const s=state.current;
     if(!s.dragging)return;
     s.dragging=false;s.moved=true;
-    s.target=open?-s.height*.48:restingPaperK(s.width);
+    s.target=open?openPaperK(s):restingPaperK(s.width);
     s.targetAngle=nearestPaperAngle(s.restAngle??RESTING_PAPER_ANGLE,s.angle);
     animate();
   };

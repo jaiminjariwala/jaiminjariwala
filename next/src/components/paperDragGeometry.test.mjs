@@ -1,7 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {paperReleaseOpens} from './paperMotion.mjs';
-import {paperDragPose,stationaryPaperPolygon,RESTING_PAPER_ANGLE,nearestPaperAngle,paperRollGrabPolygon} from './paperDragGeometry.mjs';
+import {paperDragPose,stationaryPaperPolygon,RESTING_PAPER_ANGLE,nearestPaperAngle,paperRollGrabPolygon,paperOpenK} from './paperDragGeometry.mjs';
+
+test('fully open roll clears every corner on desktop and mobile for all grab edges',()=>{
+  for(const [w,h,inset] of [[1494,1664,16],[1300,900,16],[390,844,12]]){
+    for(const [x,y,angle] of [[w-inset,inset,RESTING_PAPER_ANGLE],[inset,h/2,Math.PI],[w-inset,h/2,0],[w/2,inset,Math.PI/2],[w/2,h-inset,-Math.PI/2]]){
+      const distance=(w-inset*2-paperOpenK(w,h,x,y,angle,inset))/Math.SQRT2;
+      for(const [cx,cy] of [[inset,inset],[w-inset,inset],[inset,h-inset],[w-inset,h-inset]]){
+        const depth=(cx-x)*-Math.cos(angle)+(cy-y)*Math.sin(angle);
+        assert.ok(distance-depth>=99.999,'roll and shadow must clear all stamps');
+      }
+    }
+  }
+});
 
 test('sideways steering changes the roll angle, not only its travel',()=>{
   const left=paperDragPose(300,RESTING_PAPER_ANGLE,-300,0);

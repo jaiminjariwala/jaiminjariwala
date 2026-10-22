@@ -1,5 +1,13 @@
 export const RESTING_PAPER_ANGLE = Math.PI / 4;
 
+export function paperOpenK(width, height, originX, originY, angle, inset=16) {
+  const nx=-Math.cos(angle),ny=Math.sin(angle);
+  const reach=Math.max(...[[inset,inset],[width-inset,inset],[inset,height-inset],[width-inset,height-inset]].map(([x,y])=>(x-originX)*nx+(y-originY)*ny));
+  // Clear the farthest corner, including the cylinder and its shadow. A
+  // viewport-height fraction leaves the bottom-left stamps under the roll.
+  return width-inset*2-(Math.max(0,reach)+100)*Math.SQRT2;
+}
+
 export function paperDragPose(startDistance, startAngle, dx, dy, {gain=.65,stopAtOrigin=false}={}) {
   // Preserve both pointer components: sliding sideways rotates the roll axis
   // instead of projecting every gesture onto one fixed diagonal.
