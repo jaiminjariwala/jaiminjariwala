@@ -1,0 +1,4 @@
+Tool: built-in image generation/editing
+Source: user-supplied Snoopy illustration
+
+Use case: background-extraction. Edit target: the supplied Snoopy illustration. Remove only the flat gray background and excess empty space, producing a transparent-background cutout of the complete existing Snoopy character carrying the brown briefcase and wearing the blue/red tie. Preserve the exact original pose, linework, black outlines, white body fill, colors, briefcase, facial features, and small existing printed mark. Do not redesign, add elements, redraw creatively, or remove any part of the figure. Center the full cutout with a small transparent margin, suitable for placing inside a white postage stamp.
