@@ -115,6 +115,9 @@
 /* Paint selection on inline text, not the block's line-break gutters. */
 .introText{contain:paint}
 .introText::selection{background:transparent;color:inherit}
+.introSocials a:hover{text-decoration:none}
+.introSocials .inlineLink{background-size:0 6px;padding-bottom:0}
+.introSocials a:hover .inlineLink{background-size:100% 6px}
 .introText span::selection{background:rgb(34,84,245);color:#fff}
 .introPage .copyError{font-size:14px;color:#777;margin-top:12px}
 .experience .experienceTeam{display:inline}
@@ -124,7 +127,7 @@
 .experienceTeam:before{content:" · "}
 @media(max-width:760px){.experience .experienceTeam{display:block}.experienceTeam:before{content:none}}
 @media(max-width:760px){.experiencePage .experience{font-size:18px}}
-.inlineLink,.exploreLabel,.pageNavigation button[aria-current=page]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23e5e5e5' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")}
+.inlineLink,.exploreLabel,.pageNavigation button[aria-current=page],.introSocials a:hover .inlineLink{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23e5e5e5' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")}
 .inlineLink:hover,.introExplore button:hover .exploreLabel,.pageNavigation button[aria-current=page]:hover{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23777777' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")}
 .photoPrint{filter:blur(var(--entrance-blur,0px)) drop-shadow(0 1px 1px #00000018) drop-shadow(0 3px 5px #0000000d)}
 @media(max-width:760px){.introPage h1{font-size:32px}.introPage .introExplore h2{font-size:31px}.introPage .introExplore button{font-size:30px!important}.introPage .introExplore button span{font-size:14px}.introPage .introSocials{font-size:17px}}

@@ -162,7 +162,7 @@ export default function PortfolioV2() {
           <header><h1>Jaimin Mukesh Jariwala</h1></header>
           <p className={styles.introText}><span>I'm a software engineer who loves building cool products that people love using and systems that don't break under heavy traffic. I like building the infrastructure and owning the entire product development lifecycle.</span></p>
           <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><button onClick={()=>navigate("gallery")}><span className={styles.exploreLabel}>Travel</span></button><button onClick={()=>navigate("experience")}><span className={styles.exploreLabel}>Experience</span></button><button onClick={()=>navigate("education")}><span className={styles.exploreLabel}>Education</span></button></nav>
-          <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow/></a><a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
+          <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala"><span className={styles.inlineLink}>GitHub</span><ExternalArrow/></a><a href="https://www.linkedin.com/in/jaiminjariwala/"><span className={styles.inlineLink}>LinkedIn</span><ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
           {emailCopyError&&<p className={styles.copyError} role="status">{emailCopyError}</p>}
         </>}
         {page==="gallery"&&<PortfolioV2Gallery/>}
