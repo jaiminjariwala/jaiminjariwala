@@ -157,7 +157,10 @@ struct MeshOutput { @builtin(position) position:vec4f, @location(0) original:vec
   let q=max(0.00000001,1.0-k*s/radius);theta=-log(q)/k;
   let scale=radius/(1.0+k*k);
   x=-scale*(k*(1.0-q*cos(theta))+q*sin(theta))-offset*sin(theta);
-  z=scale*(1.0-q*cos(theta)-k*q*sin(theta))+4.0*(p.thicknessGu+p.offset)*p.gu-offset*cos(theta);
+  // All sheets meet the receiver at one contact point. A constant stack
+  // lift here projects separated colored edges onto otherwise flat paper.
+  let contactLift=smoothstep(0.0,p.gu*2.0,max(0.0,distance));
+  z=scale*(1.0-q*cos(theta)-k*q*sin(theta))+(4.0*(p.thicknessGu+p.offset)*p.gu-offset*cos(theta))*contactLift;
  }
  // Smoothly droop the free material toward the receiver in world-space Z.
  // Shared by the visible mesh and its shadow mesh, never a screen offset.
@@ -166,7 +169,7 @@ struct MeshOutput { @builtin(position) position:vec4f, @location(0) original:vec
   z-=min(p.tipAngle*p.gu,max(0.0,z-p.gu*0.35))*tipProgress;
  }
  if(p.rollAngle>0.0001 && distance<0.0){
-  x=-distance;z=f32(${r}u-layer)*(p.thicknessGu+p.offset)*p.gu;theta=0.0;
+  x=-distance;z=0.0;theta=0.0;
  }
  let original=midpoint-u*distance+v*tangent;
  // Map the lifted material to the wave field using the curl-compensated
@@ -241,12 +244,6 @@ struct MeshOutput { @builtin(position) position:vec4f, @location(0) original:vec
  // lifts away. The free flap retains its original material silhouette.
  let contactSpan=max(p.gu*0.5,p.thicknessGu*p.gu*4.0);
  if(materialDepth<=contactSpan){alpha=min(alpha,coverage(o.world.xy));}
- // Subpixel coverage at the shared attachment can expose the colored
- // undersheets as isolated diagonal hairlines beside the white face.
- // Bury only their contact edge; retain full color on the lifted curl.
- if(o.layer<${r}u){
-  alpha*=smoothstep(p.pixelSize*2.0,max(p.gu*0.65,p.pixelSize*4.0),materialDepth);
- }
  // Preserve the complete material silhouette, including perimeter contacts.
  // Normal-based fading would erase the nearly horizontal start of a roll.
  if(alpha<0.001){discard;}
@@ -356,7 +353,9 @@ struct ShadowOutput { @builtin(position) position:vec4f, @location(0) uv:vec2f }
  // strength or adding another rendering pass.
  let seam=exp(-0.5*pow(creaseDistance/max(p.pixelSize,p.gu*p.contactShadowSoftnessGu),2.0))*onPaper;
  let broad=mask/weight*castStrength;
- let contactShadow=p.contactShadowStrength*(contact*(0.008/0.03)+seam*(0.022/0.03));
+ // The rolled mesh already supplies a physical caster. A synthetic line
+ // along the mathematical crease draws a phantom diagonal on flat paper.
+ let contactShadow=select(p.contactShadowStrength*(contact*(0.008/0.03)+seam*(0.022/0.03)),0.0,p.rollAngle>0.0001);
  let shadow=(1.0-(1.0-broad)*(1.0-contactShadow))*receiverSide;
  return vec4f(0,0,0,shadow*receiverCoverage);
 }
