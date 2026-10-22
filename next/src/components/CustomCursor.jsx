@@ -2,9 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const CURSOR_TILT_DEG = -14;
+const CURSOR_TILT_DEG = 0;
 
-const getCursorType = (element) => {
+const getCursorType = (element, pressed=false) => {
+  const draggable=element?.closest('[data-paper-roll-handle], [data-paper-edge], [data-paper-ink], [data-cursor-type="grab"]');
+  if (
+    document.documentElement.hasAttribute("data-paper-dragging") ||
+    document.querySelector('[data-paper-ink][data-dragging="true"]') ||
+    (pressed&&draggable)
+  ) {
+    return "glove-grip";
+  }
+
+  if(draggable)return "glove-open";
+
   if (!element) return "select-black";
 
   if (element.closest('[data-cursor-type="select-black"]')) {
@@ -21,11 +32,7 @@ const getCursorType = (element) => {
 
   if (isInteractive) return "hand";
 
-  const isTextual =
-    element.matches("p, h1, h2, h3, h4, h5, h6, span, li, strong, em, b, i") ||
-    element.closest("p, h1, h2, h3, h4, h5, h6, span, li, strong, em, b, i");
-
-  return isTextual ? "text" : "select-black";
+  return "select-black";
 };
 
 const CustomCursor = () => {
@@ -36,12 +43,7 @@ const CustomCursor = () => {
   useEffect(() => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
-    document.documentElement.style.setProperty("cursor", "none", "important");
-    document.body.style.setProperty("cursor", "none", "important");
-
-    const styleTag = document.createElement("style");
-    styleTag.innerHTML = "*, *::before, *::after { cursor: none !important; }";
-    document.head.appendChild(styleTag);
+    document.documentElement.setAttribute("data-custom-cursor-active", "");
 
     const onPointerMove = (event) => {
       const cursor = cursorRef.current;
@@ -51,7 +53,7 @@ const CustomCursor = () => {
       const y = event.clientY;
 
       const elementUnderPointer = document.elementFromPoint(x, y);
-      const nextType = getCursorType(elementUnderPointer);
+      const nextType = getCursorType(elementUnderPointer,(event.buttons&1)!==0);
       cursorTypeRef.current = nextType;
       setCursorType(nextType);
 
@@ -61,10 +63,16 @@ const CustomCursor = () => {
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("pointerdown", onPointerMove, { passive: true });
+    window.addEventListener("pointerup", onPointerMove, { passive: true });
+    window.addEventListener("pointercancel", onPointerMove, { passive: true });
 
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
-      document.head.removeChild(styleTag);
+      window.removeEventListener("pointerdown", onPointerMove);
+      window.removeEventListener("pointerup", onPointerMove);
+      window.removeEventListener("pointercancel", onPointerMove);
+      document.documentElement.removeAttribute("data-custom-cursor-active");
     };
   }, []);
 
