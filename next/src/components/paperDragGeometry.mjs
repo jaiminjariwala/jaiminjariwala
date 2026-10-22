@@ -1,11 +1,12 @@
 export const RESTING_PAPER_ANGLE = Math.PI / 4;
 
-export function paperOpenK(width, height, originX, originY, angle, inset=16) {
+export function paperOpenK(width, height, originX, originY, angle, inset=16, {bounds,clearance=100}={}) {
   const nx=-Math.cos(angle),ny=Math.sin(angle);
-  const reach=Math.max(...[[inset,inset],[width-inset,inset],[inset,height-inset],[width-inset,height-inset]].map(([x,y])=>(x-originX)*nx+(y-originY)*ny));
-  // Clear the farthest corner, including the cylinder and its shadow. A
-  // viewport-height fraction leaves the bottom-left stamps under the roll.
-  return width-inset*2-(Math.max(0,reach)+100)*Math.SQRT2;
+  const {left,top,right,bottom}=bounds??{left:inset,top:inset,right:width-inset,bottom:height-inset};
+  const reach=Math.max(...[[left,top],[right,top],[left,bottom],[right,bottom]].map(([x,y])=>(x-originX)*nx+(y-originY)*ny));
+  // Stop at the collection's farthest stamp, not the empty page beneath it.
+  // Keep only the clearance needed for the cylinder and its soft shadow.
+  return width-inset*2-(Math.max(0,reach)+clearance)*Math.SQRT2;
 }
 
 export function paperDragPose(startDistance, startAngle, dx, dy, {gain=.65,stopAtOrigin=false}={}) {

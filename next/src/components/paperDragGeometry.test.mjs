@@ -15,6 +15,17 @@ test('fully open roll clears every corner on desktop and mobile for all grab edg
   }
 });
 
+test('collection stop follows the stamp corner instead of empty viewport space',()=>{
+  const bounds={left:145,top:100,right:1335,bottom:675};
+  const args=[1493,1112,1477,16,RESTING_PAPER_ANGLE,16];
+  const stop=paperOpenK(...args,{bounds,clearance:160});
+  const distance=(1493-32-stop)/Math.SQRT2;
+  const busCornerDepth=(bounds.left-1477)*-Math.cos(RESTING_PAPER_ANGLE)+(bounds.bottom-16)*Math.sin(RESTING_PAPER_ANGLE);
+  assert.ok(Math.abs(distance-busCornerDepth-160)<1e-8);
+  assert.ok(stop>paperOpenK(...args),'stop must be earlier than the viewport corner');
+  assert.equal(stop,paperOpenK(1493,2000,1477,16,RESTING_PAPER_ANGLE,16,{bounds,clearance:160}));
+});
+
 test('sideways steering changes the roll angle, not only its travel',()=>{
   const left=paperDragPose(300,RESTING_PAPER_ANGLE,-300,0);
   const down=paperDragPose(300,RESTING_PAPER_ANGLE,0,300);

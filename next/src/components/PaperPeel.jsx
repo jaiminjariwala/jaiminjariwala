@@ -15,8 +15,14 @@ function restingPaperK(width){
 
 function openPaperK(s){
   const inset=s.width<640?12:16;
-  const bottom=Math.max(s.height,document.querySelector('[data-portfolio-paper]')?.getBoundingClientRect().bottom+window.scrollY||0);
-  return paperOpenK(s.width,bottom,s.originX??s.width-inset,s.originY??inset,s.restAngle??RESTING_PAPER_ANGLE,inset);
+  const stamps=Array.from(document.querySelectorAll('[aria-label="Stamp collection"] button'),stamp=>stamp.getBoundingClientRect());
+  const bounds=stamps.length?{
+    left:Math.min(...stamps.map(r=>r.left)),right:Math.max(...stamps.map(r=>r.right)),
+    top:Math.min(...stamps.map(r=>r.top))+window.scrollY,bottom:Math.max(...stamps.map(r=>r.bottom))+window.scrollY,
+  }:undefined;
+  // The visible cylinder reaches back from its mathematical crease. Leave
+  // room for that face so the stop clears the stamp rim, not only its center.
+  return paperOpenK(s.width,s.height,s.originX??s.width-inset,s.originY??inset,s.restAngle??RESTING_PAPER_ANGLE,inset,{bounds,clearance:bounds?160:100});
 }
 
 // The page is rolled about a diagonal axis, not warped as a flat triangle.
