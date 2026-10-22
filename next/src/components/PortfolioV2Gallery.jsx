@@ -51,7 +51,7 @@ export default function PortfolioV2Gallery(){
   const section=getSectionBySlug(slug);
   const openFolder=value=>{setSlug(value);window.scrollTo({top:0,behavior:'instant'});};
   if(section)return <>
-    <header><button className={styles.galleryBack} onClick={()=>openFolder(null)}>← Back</button><h1>{section.title}</h1><div className={styles.galleryDate}>{section.dateRange} · {section.photos.length} photos</div></header>
+    <header><button className={styles.galleryBack} onClick={()=>openFolder(null)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m11 5-7 7 7 7M4 12h16"/></svg>Back</button><h1>{section.title}</h1><div className={styles.galleryDate}>{section.dateRange} · {section.photos.length} photos</div></header>
     <PhotoStrip key={section.slug||section.title} section={section}/>
   </>;
   return <>
