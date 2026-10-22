@@ -241,6 +241,12 @@ struct MeshOutput { @builtin(position) position:vec4f, @location(0) original:vec
  // lifts away. The free flap retains its original material silhouette.
  let contactSpan=max(p.gu*0.5,p.thicknessGu*p.gu*4.0);
  if(materialDepth<=contactSpan){alpha=min(alpha,coverage(o.world.xy));}
+ // Subpixel coverage at the shared attachment can expose the colored
+ // undersheets as isolated diagonal hairlines beside the white face.
+ // Bury only their contact edge; retain full color on the lifted curl.
+ if(o.layer<${r}u){
+  alpha*=smoothstep(p.pixelSize*2.0,max(p.gu*0.65,p.pixelSize*4.0),materialDepth);
+ }
  // Preserve the complete material silhouette, including perimeter contacts.
  // Normal-based fading would erase the nearly horizontal start of a roll.
  if(alpha<0.001){discard;}

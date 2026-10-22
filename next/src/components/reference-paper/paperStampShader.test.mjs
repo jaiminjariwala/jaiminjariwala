@@ -31,6 +31,13 @@ test('mobile tip droop changes world depth rather than the camera tilt',()=>{
   assert.ok(!peel.includes('mobile?12:'));
 });
 
+test('colored undersheets do not leave a hairline at the white attachment',()=>{
+  const source=readFileSync(new URL('./pageEngine.js',import.meta.url),'utf8');
+  assert.ok(source.includes('if(o.layer<${r}u){'));
+  assert.ok(source.includes('alpha*=smoothstep(p.pixelSize*2.0,max(p.gu*0.65,p.pixelSize*4.0),materialDepth)'));
+  assert.ok(source.indexOf('alpha*=smoothstep(p.pixelSize*2.0')<source.indexOf('if(alpha<0.001){discard;}'));
+});
+
 test('stamp capture resets absolute offsets and restores visibility only on the clone',()=>{
   const source=readFileSync(new URL('../PaperPeel.jsx',import.meta.url),'utf8');
   assert.ok(source.includes("position:'relative',top:'0px',left:'0px'"));
