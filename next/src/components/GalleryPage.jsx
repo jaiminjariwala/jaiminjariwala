@@ -30,12 +30,15 @@ export function GlassFolder({ title, count, images, slug, onOpen }) {
     render(0);
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
+        if(!entry.isIntersecting)return;
+        observer.unobserve(card);
         animation?.stop();
         const siblings = Array.from(card.parentElement.children);
-        animation = animate(progress, entry.isIntersecting ? 1 : 0, {
+        animation = animate(progress, 1, {
           type: "spring", stiffness: 85, damping: 18, mass: 1,
           delay: entry.isIntersecting ? siblings.indexOf(card) * .12 : 0,
           onUpdate: render,
+          onComplete:()=>{card.style.removeProperty('opacity');card.style.removeProperty('transform');card.style.removeProperty('filter');},
         });
       });
     }, { threshold: .15, rootMargin: "0px 0px -8% 0px" });

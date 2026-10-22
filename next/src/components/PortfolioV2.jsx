@@ -179,7 +179,7 @@ export default function PortfolioV2() {
     </div></div>
     <PaperPeel variant={page} open={collection} onOpenChange={next=>{if(!navigation.current)setCollection(next);}} onSettled={paperSettled} onContentReady={paperContentReady} onClipChange={(clip,progress)=>{
       if(paper.current){
-        paper.current.style.clipPath=clip;
+        if(paper.current.style.clipPath!==clip)paper.current.style.clipPath=clip;
         const article=paper.current.querySelector("article");
         if(article)article.style.visibility=progress>=.999?"hidden":"";
       }

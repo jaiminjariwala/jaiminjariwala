@@ -46,3 +46,23 @@ test('stamp capture resets absolute offsets and restores visibility only on the 
   assert.ok(source.includes("transition:'none',opacity:'1'"));
   assert.ok(source.includes("if(stamp)stamp.style.opacity=''"));
 });
+
+test('mobile scroll keeps document clipping and the GPU viewport stable',()=>{
+  const peel=readFileSync(new URL('../PaperPeel.jsx',import.meta.url),'utf8');
+  const engine=readFileSync(new URL('./pageEngine.js',import.meta.url),'utf8');
+  assert.ok(peel.includes('stationaryPaperPolygon(w,paperHeight,right,s.originY??inset'));
+  assert.ok(!peel.includes('p.y+window.scrollY-inset'));
+  assert.ok(peel.includes("s.width===window.innerWidth&&s.height&&window.matchMedia('(pointer: coarse)').matches"));
+  assert.ok(peel.includes('viewportHeight:()=>state.current.height'));
+  assert.ok(engine.includes('r.viewportHeight?.()??innerHeight'));
+  assert.ok(peel.includes('if(state.current.dragging||state.current.open)update()'));
+});
+
+test('photos reveal once and avoid filter churn on touch devices',()=>{
+  const entrance=readFileSync(new URL('../usePhotoEntrance.js',import.meta.url),'utf8');
+  const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(entrance.includes('if(!entry.isIntersecting)continue'));
+  assert.ok(entrance.includes('observer.unobserve(card)'));
+  assert.ok(entrance.includes('if(!touch)card.style.setProperty'));
+  assert.ok(css.includes('@media(hover:none) and (pointer:coarse){.photoPrint{filter:none;transition:none}'));
+});

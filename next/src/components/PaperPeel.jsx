@@ -33,6 +33,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const gpuCanvas = useRef(null);
   const gpu = useRef(null);
   const handle = useRef(null);
+  const refreshInk = useRef(null);
+  const inkDirty = useRef(false);
   const settings = useRef({ ...referenceMath.GPU_PAPER_DEFAULTS });
   const state = useRef({ width: 0, height: 0, k: 0, target: 0, velocity: 0, angle: RESTING_PAPER_ANGLE, targetAngle: RESTING_PAPER_ANGLE, angularVelocity: 0, plush: 0, dt: 1/60, lastTime: 0, reducedMotion: false, dragging: false, raf: 0, moved: false });
   const callbacks = useRef({ onOpenChange, onClipChange, onSettled, onContentReady });
@@ -62,10 +64,13 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const foldDistance=Math.max(.001,(w-2*inset-k)/Math.SQRT2);
     // Two rasterizers must overlap slightly at the attachment: two separately
     // antialiased half-coverage edges otherwise reveal the white receiver.
-    const remaining = stationaryPaperPolygon(w,100000,right,top,Math.max(0,foldDistance-2),angle);
+    const paperHeight=Math.max(h,document.querySelector('[data-portfolio-paper]')?.offsetHeight||h)+inset;
+    // The DOM clip belongs to document space. Recomputing it in viewport
+    // coordinates on scroll made Safari repeatedly re-rasterize the mask.
+    const remaining = stationaryPaperPolygon(w,paperHeight,right,s.originY??inset,Math.max(0,foldDistance-2),angle);
     const grab=paperRollGrabPolygon(w,h,right,top,foldDistance,angle);
     if(handle.current)handle.current.style.clipPath=grab.length>=3?`polygon(${grab.map(p=>`${p.x}px ${p.y}px`).join(',')})`:'polygon(0 0,0 0,0 0)';
-    const clip=`polygon(${remaining.map(p=>`${p.x-inset}px ${p.y+window.scrollY-inset}px`).join(",")})`;
+    const clip=`polygon(${remaining.map(p=>`${(p.x-inset).toFixed(2)}px ${(p.y-inset).toFixed(2)}px`).join(",")})`;
     if(gpu.current&&!gpu.current.failed){
       // Keep the DOM cut edge on the last completed GPU pose. The renderer
       // drops submissions when its queue is full; moving the DOM anyway
@@ -200,7 +205,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // Exactly five sheets: front white, blue, green, red, and one white
     // backing tip. Mesh layers are stored from the backing to the front.
     const colors=variant==="gallery"?['#ffffff','#e63a3b','#5ac561','#2050eb','#ffffff']:['#ffffff','#37af73','#007dfe','#c19f85','#ffffff'];
-    import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,surfaceInk:true,staticPose:true,settings:()=>settings.current})).then(engine=>{
+    import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,surfaceInk:true,staticPose:true,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
       if(cancelled){engine.dispose();return;}
       gpu.current=engine;
       state.current.paintPending=false;
@@ -221,6 +226,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // mesh then bends and depth-tests it along with the paper, not as an
     // independently floating DOM overlay. The stationary part stays in DOM.
     const update=async()=>{
+      inkDirty.current=false;
       const current=++revision;
       try{
         await document.fonts.ready;
@@ -272,7 +278,14 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       }
     };
     let refreshTimer;
-    const schedule=()=>{clearTimeout(refreshTimer);refreshTimer=setTimeout(update,350);};
+    refreshInk.current=update;
+    const schedule=()=>{
+      inkDirty.current=true;
+      clearTimeout(refreshTimer);
+      // Do not rasterize/upload the entire photo strip while a native
+      // horizontal swipe is running. Refresh only when a roll needs ink.
+      refreshTimer=setTimeout(()=>{if(state.current.dragging||state.current.open)update();},350);
+    };
     const paper=stamp.closest('[data-portfolio-paper]');
     const observer=new MutationObserver(schedule);
     observer.observe(paper,{subtree:true,characterData:true,childList:true});
@@ -280,7 +293,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     paper.addEventListener('scroll',schedule,true);
     window.addEventListener('resize',schedule);
     update();
-    return()=>{cancelled=true;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);window.removeEventListener('resize',schedule);};
+    return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);window.removeEventListener('resize',schedule);};
   },[render]);
 
   const animate = useCallback(() => {
@@ -317,7 +330,11 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   useEffect(()=>{
     const resize=()=>{
       const s=state.current;
-      s.width=window.innerWidth;s.height=window.innerHeight;
+      // iOS toolbar expansion changes height during ordinary scrolling.
+      // Keep the existing drawing buffer and pose until the width changes.
+      if(s.width===window.innerWidth&&s.height&&window.matchMedia('(pointer: coarse)').matches){render();return;}
+      s.width=window.innerWidth;
+      s.height=window.matchMedia('(pointer: coarse)').matches?Math.max(window.innerHeight,window.screen.height):window.innerHeight;
       s.reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const dpr=Math.min(window.devicePixelRatio||1,2);
       canvas.current.width=s.width*dpr;canvas.current.height=s.height*dpr;
@@ -334,6 +351,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   useEffect(()=>{
     const s=state.current;
     s.open=open;
+    if(open&&inkDirty.current)refreshInk.current?.();
     if(!s.width)return;
     if(s.dragging)return;
     s.target=open?openPaperK(s):restingPaperK(s.width);
@@ -350,6 +368,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
 
   const pointerDown=event=>{
     const s=state.current;
+    if(inkDirty.current)refreshInk.current?.();
     if(event.currentTarget.dataset.paperEdge){
       const edge=event.currentTarget.dataset.paperEdge;
       const inset=s.width<640?12:16;
@@ -415,7 +434,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const clear=()=>{
       document.documentElement.removeAttribute('data-paper-dragging');
       const s=state.current;
-      if(s.dragging){s.dragging=false;s.moved=true;s.target=s.open?-s.height*.48:restingPaperK(s.width);s.targetAngle=nearestPaperAngle(RESTING_PAPER_ANGLE,s.angle);animate();}
+      if(s.dragging){s.dragging=false;s.moved=true;s.target=s.open?openPaperK(s):restingPaperK(s.width);s.targetAngle=nearestPaperAngle(RESTING_PAPER_ANGLE,s.angle);animate();}
     };
     window.addEventListener('blur',clear);
     return()=>{window.removeEventListener('blur',clear);state.current.dragging=false;document.documentElement.removeAttribute('data-paper-dragging');};
