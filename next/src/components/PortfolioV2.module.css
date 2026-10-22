@@ -112,6 +112,10 @@
 .introSocials .copyEmail:hover{color:#aaa}
 .introSocials a{display:inline-flex;align-items:center;gap:6px}
 .externalArrow{width:.85em;height:.85em;flex:none}
+/* Paint selection on inline text, not the block's line-break gutters. */
+.introText{contain:paint}
+.introText::selection{background:transparent;color:inherit}
+.introText span::selection{background:rgb(34,84,245);color:#fff}
 .introPage .copyError{font-size:14px;color:#777;margin-top:12px}
 .experience .experienceTeam{display:inline}
 .educationMeta{text-align:right;flex-shrink:0}
