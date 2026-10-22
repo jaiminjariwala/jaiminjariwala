@@ -79,7 +79,7 @@
 .folderGrid :global(.gallery-folder-card){width:130px!important;flex:0 0 130px;margin:0!important;text-decoration:none!important}
 .folderGrid :global(.gallery-folder-visual){zoom:.7}
 .folderGrid :global(.gallery-folder-meta){text-decoration:none!important}
-.folderGrid :global(.gallery-folder-title){font-size:18px!important;position:relative;top:8px}
+.folderGrid :global(.gallery-folder-title){font-size:18px!important;position:relative;top:8px;white-space:nowrap}
 .folderGrid :global(.gallery-folder-count){font-size:15px!important}
 .galleryBack{padding:0;background:none;border:0;font-size:15px!important;color:#858582!important;margin:0 0 14px;display:block;line-height:1.3}
 .galleryDate{font-size:15px;color:#858582;margin-top:6px}
