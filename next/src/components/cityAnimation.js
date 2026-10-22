@@ -37,19 +37,34 @@ function drawPerson(context, x, bottom, size, phase, shirt) {
 }
 
 function drawCyclist(context, x, bottom, size, phase) {
-  context.save(); context.strokeStyle = "#242a2d"; context.lineWidth = size * .045;
-  const wheel = size * .18;
-  for (const offset of [-.28, .28]) {
-    context.beginPath(); context.arc(x + offset * size, bottom - wheel, wheel, 0, Math.PI * 2); context.stroke();
-    context.beginPath(); context.moveTo(x + offset * size, bottom - wheel); context.lineTo(x + offset * size + Math.cos(phase) * wheel, bottom - wheel + Math.sin(phase) * wheel); context.stroke();
+  // Head-on view: wheels overlap along the direction of travel, rather
+  // than showing the side-on triangular frame of a crossing bicycle.
+  context.save(); context.lineCap = "round"; context.lineJoin = "round";
+  const sway = Math.sin(phase) * size * .008;
+  const center = x + sway;
+  context.fillStyle = "#202426";
+  context.beginPath(); context.ellipse(center, bottom - size * .16, size * .025, size * .16, 0, 0, Math.PI * 2); context.fill();
+  context.strokeStyle = "#858b8d"; context.lineWidth = size * .012;
+  context.beginPath(); context.moveTo(center, bottom - size * .30); context.lineTo(center, bottom - size * .02); context.stroke();
+  context.strokeStyle = "#963b35"; context.lineWidth = size * .026;
+  context.beginPath(); context.moveTo(center, bottom - size * .17); context.lineTo(center, bottom - size * .48); context.stroke();
+  context.strokeStyle = "#34383a"; context.lineWidth = size * .045;
+  for (const side of [-1, 1]) {
+    const pedal = Math.sin(phase + (side === 1 ? Math.PI : 0)) * size * .07;
+    context.beginPath(); context.moveTo(center + side * size * .055, bottom - size * .48); context.lineTo(center + side * size * .09, bottom - size * .34 + pedal); context.lineTo(center + side * size * .045, bottom - size * .20 + pedal); context.stroke();
   }
-  context.strokeStyle = "#a52d2c";
-  context.beginPath(); context.moveTo(x - .28 * size, bottom - wheel); context.lineTo(x, bottom - .48 * size); context.lineTo(x + .28 * size, bottom - wheel); context.lineTo(x - .28 * size, bottom - wheel); context.stroke();
-  context.fillStyle = "#b88a70"; context.beginPath(); context.arc(x + size * .05, bottom - size * .95, size * .08, 0, Math.PI * 2); context.fill();
-  context.strokeStyle = "#526b87"; context.lineWidth = size * .13;
-  context.beginPath(); context.moveTo(x + size * .04, bottom - size * .82); context.lineTo(x - size * .11, bottom - size * .54); context.stroke();
-  context.strokeStyle = "#282b30"; context.lineWidth = size * .065;
-  context.beginPath(); context.moveTo(x - size * .11, bottom - size * .54); context.lineTo(x + Math.sin(phase) * size * .14, bottom - size * .18); context.stroke();
+  context.fillStyle = "#526b87";
+  context.beginPath(); context.ellipse(center, bottom - size * .62, size * .105, size * .17, 0, 0, Math.PI * 2); context.fill();
+  context.strokeStyle = "#b88a70"; context.lineWidth = size * .035;
+  for (const side of [-1, 1]) {
+    context.beginPath(); context.moveTo(center + side * size * .08, bottom - size * .72); context.lineTo(center + side * size * .15, bottom - size * .56); context.lineTo(center + side * size * .12, bottom - size * .47); context.stroke();
+  }
+  context.strokeStyle = "#303638"; context.lineWidth = size * .025;
+  context.beginPath(); context.moveTo(center - size * .14, bottom - size * .47); context.lineTo(center + size * .14, bottom - size * .47); context.stroke();
+  context.fillStyle = "#b88a70";
+  context.beginPath(); context.ellipse(center, bottom - size * .85, size * .06, size * .075, 0, 0, Math.PI * 2); context.fill();
+  context.fillStyle = "#d5d8d5";
+  context.beginPath(); context.ellipse(center, bottom - size * .915, size * .073, size * .035, 0, Math.PI, Math.PI * 2); context.fill();
   context.restore();
 }
 

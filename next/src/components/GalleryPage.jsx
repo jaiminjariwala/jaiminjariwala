@@ -13,7 +13,7 @@ const shortStack = Short_Stack({
   weight: "400",
 });
 
-function GlassFolder({ title, count, images, slug }) {
+export function GlassFolder({ title, count, images, slug, onOpen }) {
   const entranceRef = useRef(null);
   useEffect(() => {
     const card = entranceRef.current;
@@ -55,6 +55,7 @@ function GlassFolder({ title, count, images, slug }) {
     <Link
       ref={entranceRef}
       href={`/gallery/${slug}`}
+      onClick={onOpen ? event => { event.preventDefault(); onOpen(slug); } : undefined}
       className="gallery-folder-card block w-[162px] shrink-0 cursor-pointer"
     >
       <div
