@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
 import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
+import {paperViewportWidth} from './paperLayout.mjs';
 import { outlineMask, polygonPath, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeometry";
 
 function ExternalArrow() {
@@ -126,7 +127,7 @@ export default function PortfolioV2() {
       const box=entries[0].borderBoxSize[0];
       setPaperMask(outlineMask(box.inlineSize,box.blockSize,PAGE_SCALLOP_PERIOD));
       const inset=window.innerWidth<760?12:16;
-      setCollectionMask(outlineMask(window.innerWidth-inset*2,window.innerHeight-inset*2,PAGE_SCALLOP_PERIOD));
+      setCollectionMask(outlineMask(paperViewportWidth(window.innerWidth)-inset*2,window.innerHeight-inset*2,PAGE_SCALLOP_PERIOD));
     });
     if(paper.current)observer.observe(paper.current);
     const tick=()=>setClock(new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}).replace(/\s?[AP]M/,""));

@@ -7,6 +7,7 @@ import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
 import {paperScrollY} from './paperScroll.mjs';
+import {paperViewportWidth} from './paperLayout.mjs';
 import {preventPaperNativeTouch} from './paperTouch.mjs';
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
@@ -255,7 +256,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         if(cancelled||current!==revision)return;
         const paper=stamp.closest('[data-portfolio-paper]');
         const ink=document.createElement('canvas');
-        ink.width=window.innerWidth;
+        ink.width=paperViewportWidth(window.innerWidth);
         ink.height=Math.max(window.innerHeight,paper.offsetHeight)+(window.innerWidth<640?12:16);
         const ctx=ink.getContext('2d');
         const width=stamp.offsetWidth,height=stamp.offsetHeight;
@@ -360,12 +361,13 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       const s=state.current;
       // iOS toolbar expansion changes height during ordinary scrolling.
       // Keep the existing drawing buffer and pose until the width changes.
-      if(s.width===window.innerWidth&&s.height&&window.matchMedia('(pointer: coarse)').matches){render();return;}
-      s.width=window.innerWidth;
+      if(s.width===paperViewportWidth(window.innerWidth)&&s.height&&window.matchMedia('(pointer: coarse)').matches){render();return;}
+      s.width=paperViewportWidth(window.innerWidth);
       s.height=window.matchMedia('(pointer: coarse)').matches?Math.max(window.innerHeight,window.screen.height):window.innerHeight;
       s.reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const dpr=Math.min(window.devicePixelRatio||1,2);
       canvas.current.width=s.width*dpr;canvas.current.height=s.height*dpr;
+      canvas.current.style.width=`${s.width}px`;
       canvas.current.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
       s.angle=s.targetAngle=RESTING_PAPER_ANGLE;s.angularVelocity=0;
       s.k=s.target=s.open?openPaperK(s):restingPaperK(s.width);

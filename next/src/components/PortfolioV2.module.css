@@ -80,6 +80,14 @@
 .pageNavigation button{padding:0;background:none;border:0;color:inherit}
 .pageNavigation button[aria-current=page]{color:#282826}
 .site{--ink:rgb(32,32,32)}
+/* Leave the reference's open desktop gutter, including every paper layer. */
+@media(min-width:761px){
+ .site{padding-right:7vw}
+ .collection,.backingShadow{right:7vw}
+ .paperEdgeright{right:calc(7vw - 6px)}
+ .paperEdgetop,.paperEdgebottom{right:calc(7vw + 16px)}
+ .article{--col-width:calc(round(down,((min(1920px,93vw + 16px) - 13 * var(--gu)) / 10) / var(--gu),1) * var(--gu))}
+}
 .article{color:var(--ink)}
 .experiencePage .experience{font-size:20px;line-height:1.4118}
 .experiencePage .experience strong{color:var(--ink)}
@@ -102,12 +110,12 @@
 .galleryBack svg{width:18px;height:18px;flex:none}
 .galleryDate{font-size:15px;color:#858582;margin-top:6px}
 .photoGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
-.photoGrid{display:flex;flex-wrap:nowrap;gap:28px;overflow-x:auto;padding:25px 32px 35px;align-items:flex-start;width:calc(100vw - 32px);margin-left:calc(-1 * (2 * var(--gu) + 3 * (var(--col-width) + var(--gu))));overscroll-behavior-x:contain;scrollbar-width:none}
+.photoGrid{display:flex;flex-wrap:nowrap;gap:28px;overflow-x:auto;padding:25px 32px 35px;align-items:flex-start;width:calc(93vw - 16px);margin-left:calc(-1 * (2 * var(--gu) + 3 * (var(--col-width) + var(--gu))));overscroll-behavior-x:contain;scrollbar-width:none}
 .photoGrid::-webkit-scrollbar{display:none}
 .photoGrid,.photoGrid a{cursor:grab;user-select:none;-webkit-user-select:none}
 .photoGrid[data-dragging=true],.photoGrid[data-dragging=true] a{cursor:grabbing}
 .photoGrid:focus-visible{outline:2px solid #2c65d0;outline-offset:-4px}
-@media(min-width:1920px){.photoGrid{margin-left:calc(-1 * ((100vw - 1920px) / 2 + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu))))}}
+@media(min-width:1920px){.article{margin-left:calc(max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu)))}.photoGrid{margin-left:calc(-1 * (max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu))))}}
 @media(max-width:760px){.photoGrid{width:calc(100vw - 24px);margin-left:-25px;padding-left:25px;padding-right:25px}}
 .photoPrint{position:relative;display:block;flex:0 0 220px;width:220px;aspect-ratio:4/5;padding:17px 17px 22px;background:none;transform:rotate(-2deg);transition:transform .2s;filter:drop-shadow(0 1px 1px #00000018) drop-shadow(0 3px 5px #0000000d)}
 .photoRim{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
