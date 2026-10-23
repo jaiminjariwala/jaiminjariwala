@@ -30,7 +30,7 @@ export const portfolioProjects=[
   },
   {
     id:'url-shortener',title:'URL Shortener',
-    description:'A Go backend project that makes the request path visible. PostgreSQL stores each short link, Redis caches repeat lookups, and a shared rate limiter controls requests. The dashboard traces real cache hits, misses, and database reads so I can understand what each request actually does.',
+    description:'A Go backend project that makes the request path visible. PostgreSQL stores each short link, Redis caches repeat lookups, and a shared rate limiter controls requests. The dashboard traces real cache hits, misses, and database reads.',
     note:'A local backend lab. Screenshot timings are individual observations, not a performance benchmark.',
     links:[{label:'GitHub',href:'https://github.com/jaiminjariwala/go-backend-mastery/tree/main/15-url-shortener'}],
     aspect:'4 / 5',

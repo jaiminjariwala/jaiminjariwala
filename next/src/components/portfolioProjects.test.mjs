@@ -18,6 +18,7 @@ test('all three projects use existing local media with real source links',()=>{
   }
   assert.equal(portfolioProjects[0].media.filter(m=>m.type==='video').length,2);
   assert.equal(portfolioProjects[2].links.length,1,'local-only shortener must not advertise a deployed service');
+  assert.ok(!portfolioProjects[2].description.includes('so I can understand what each request actually does'));
 });
 
 test('Projects uses the existing roll navigation while Skills stays upcoming',()=>{
