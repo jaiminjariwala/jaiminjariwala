@@ -18,6 +18,9 @@ export function GlassFolder({ title, count, images, slug, onOpen }) {
   useEffect(() => {
     const card = entranceRef.current;
     if (!card || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Keep every phone-width folder visible before it enters the scrollport.
+    // A delayed opacity/blur entrance can look like a swipe reached blank space.
+    if(window.matchMedia('(max-width: 760px)').matches)return;
     let progress = 0;
     let animation;
     const render = value => {

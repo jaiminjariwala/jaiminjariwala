@@ -86,7 +86,10 @@
 .experiencePage .experience>div{padding:24px 0}
 .experiencePage .experience>div:first-child{padding-top:0}
 .experiencePage .experience time{font-size:.94em}
-.folderGrid{display:flex;flex-wrap:nowrap;gap:28px;padding:100px 12px 25px;overflow-x:auto;align-items:flex-start}
+.folderGrid{display:flex;flex-wrap:nowrap;gap:28px;padding:100px 12px 25px;overflow-x:auto;align-items:flex-start;min-width:0;max-width:100%;width:100%;touch-action:pan-x pan-y pinch-zoom;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.folderGrid,.folderGrid a{user-select:none;-webkit-user-select:none;cursor:grab}
+.folderGrid[data-dragging=true],.folderGrid[data-dragging=true] a{cursor:grabbing}
+.folderGrid:focus-visible{outline:2px solid #2c65d0;outline-offset:-3px}
 .folderGrid :global(.gallery-folder-card){width:130px!important;flex:0 0 130px;margin:0!important;text-decoration:none!important}
 .folderGrid :global(.gallery-folder-visual){zoom:.7}
 .folderGrid :global(.gallery-folder-meta){text-decoration:none!important}
