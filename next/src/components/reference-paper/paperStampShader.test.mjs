@@ -66,3 +66,10 @@ test('photos reveal once and avoid filter churn on touch devices',()=>{
   assert.ok(entrance.includes('if(!touch)card.style.setProperty'));
   assert.ok(css.includes('@media(hover:none) and (pointer:coarse){.photoPrint{filter:none;transition:none}'));
 });
+
+test('photo sizing reserves the full scalloped frame on mobile',()=>{
+  const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(css.includes('.photoPrint img{position:absolute;left:17px;top:17px;'));
+  assert.ok(css.includes('.photoPrint{flex-basis:180px;width:180px;padding:15px 15px 20px}'));
+  assert.ok(css.includes('height:calc(100% - 35px)'));
+});

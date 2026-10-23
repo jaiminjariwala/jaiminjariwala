@@ -106,7 +106,10 @@
 .photoRim{position:absolute;inset:0;width:100%;height:100%;z-index:-1}
 .photoPrint:nth-child(even){transform:rotate(2deg)}
 @media(hover:hover) and (pointer:fine){.photoPrint:hover{transform:rotate(0) translateY(-3px)}}
-.photoPrint img{display:block;width:100%;height:100%;object-fit:cover}
+.photoPrint img{position:absolute;left:17px;top:17px;display:block;width:calc(100% - 34px);height:calc(100% - 39px);object-fit:cover}
+/* Keep the photograph inside the paper, independent of Safari's intrinsic
+   image sizing. Only the frame determines the card's 4:5 aspect ratio. */
+@media(max-width:760px){.photoPrint{flex-basis:180px;width:180px;padding:15px 15px 20px}.photoPrint img{left:15px;top:15px;width:calc(100% - 30px);height:calc(100% - 35px)}}
 @media(max-width:760px){.folderGrid{gap:80px 25px;padding-top:85px}.folderGrid :global(.gallery-folder-card){width:150px!important}.folderGrid :global(.gallery-folder-visual){zoom:.8}.folderGrid :global(.gallery-folder-title){font-size:16px!important}.folderGrid :global(.gallery-folder-count){font-size:14px!important}.introExplore button span{font-size:12px}.experiencePage .experience>div{flex-wrap:wrap;gap:7px}.photoGrid{gap:18px}.introSocials,.pageNavigation{font-size:15px;gap:19px}}
 @media(max-width:390px){.folderGrid{grid-template-columns:1fr}}
 
