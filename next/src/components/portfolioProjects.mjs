@@ -7,8 +7,8 @@ export const portfolioProjects=[
     note:'An independent project, not an OpenAI product.',
     links:[{label:'GitHub',href:'https://github.com/jaiminjariwala/codex-lite'},{label:'Download for macOS',href:'https://github.com/jaiminjariwala/codex-lite/releases/latest'}],
     media:[
-      {type:'video',src:'/media/codex-lite/demo-1.mp4',poster:'/media/codex-lite/code-workspace.png',label:'Demo 1'},
-      {type:'video',src:'/media/codex-lite/demo-2.mp4',poster:'/media/codex-lite/browser-workspace.png',label:'Demo 2'},
+      {type:'video',src:'/media/codex-lite/demo-1.mp4',poster:'/media/codex-lite/code-workspace.png',label:'Demo 1',aspect:'1920 / 1128'},
+      {type:'video',src:'/media/codex-lite/demo-2.mp4',poster:'/media/codex-lite/browser-workspace.png',label:'Demo 2',aspect:'1920 / 1128'},
       codexImage('code-workspace','Code workspace'),
       codexImage('browser-workspace','Browser workspace'),
       codexImage('01-welcome','Welcome'),

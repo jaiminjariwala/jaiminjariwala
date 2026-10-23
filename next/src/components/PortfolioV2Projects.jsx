@@ -1,7 +1,8 @@
 "use client";
 
 import {useEffect,useRef,useState} from 'react';
-import {polygonPath,scallopedOutline} from './paperGeometry';
+import {projectFramePath} from './projectMedia.mjs';
+import ProjectVideoPlayer from './ProjectVideoPlayer';
 import {portfolioProjects} from './portfolioProjects.mjs';
 import styles from './PortfolioV2.module.css';
 
@@ -11,13 +12,13 @@ function Arrow({back=false}){
 
 function ProjectGallery({project}){
   const [index,setIndex]=useState(0);
-  const [outline,setOutline]=useState({width:720,height:480,path:polygonPath(scallopedOutline(720,480,24))});
+  const [outline,setOutline]=useState({width:720,height:480,path:projectFramePath(720,480)});
   const frame=useRef(null),rail=useRef(null);
   const item=project.media[index];
   useEffect(()=>{
     const observer=new ResizeObserver(([entry])=>{
       const {inlineSize:width,blockSize:height}=entry.borderBoxSize[0];
-      if(width>0&&height>0)setOutline({width,height,path:polygonPath(scallopedOutline(width,height,24))});
+      if(width>0&&height>0)setOutline({width,height,path:projectFramePath(width,height)});
     });
     observer.observe(frame.current);
     return()=>observer.disconnect();
@@ -30,9 +31,9 @@ function ProjectGallery({project}){
   };
   return <figure className={styles.projectGallery} aria-label={`${project.title} screenshots and videos`}>
     <div ref={frame} className={styles.projectMediaFrame}>
-      <svg className={styles.projectMediaRim} viewBox={`0 0 ${outline.width} ${outline.height}`} preserveAspectRatio="none" aria-hidden="true"><path d={outline.path} fill="white" stroke="#dededb" strokeWidth=".7" vectorEffect="non-scaling-stroke"/></svg>
-      <div className={styles.projectMediaStage} style={{aspectRatio:project.aspect||'16 / 10'}}>
-        {item.type==='video'?<video key={item.src} src={item.src} poster={item.poster} controls playsInline preload="none" aria-label={`${project.title}: ${item.label}`}/>:<a href={item.src} target="_blank" rel="noreferrer" aria-label={`View ${project.title}: ${item.label} full size`}><img key={item.src} src={item.src} alt={`${project.title}: ${item.label}`} loading="lazy"/></a>}
+      <svg className={styles.projectMediaRim} viewBox={`0 0 ${outline.width} ${outline.height}`} preserveAspectRatio="none" aria-hidden="true"><path d={outline.path} fill="#f8f8f7"/></svg>
+      <div className={styles.projectMediaStage} style={{aspectRatio:item.aspect||project.aspect||'16 / 10'}}>
+        {item.type==='video'?<ProjectVideoPlayer key={item.src} item={item} title={project.title}/>:<a href={item.src} target="_blank" rel="noreferrer" aria-label={`View ${project.title}: ${item.label} full size`}><img key={item.src} src={item.src} alt={`${project.title}: ${item.label}`} loading="lazy"/></a>}
       </div>
     </div>
     <figcaption className={styles.projectMediaCaption}>
