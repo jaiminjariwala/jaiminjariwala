@@ -6,6 +6,7 @@ import styles from "./PortfolioV2.module.css";
 import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
+import {paperScrollY} from './paperScroll.mjs';
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
 const PAPER_COLORS={
@@ -61,7 +62,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const inset = w < 640 ? 12 : 16;
     // The paper's corner belongs to the document, not the viewport. Scrolling
     // changes its screen position, never the amount of material being rolled.
-    const right = s.originX??w-inset, top = (s.originY??inset)-window.scrollY;
+    const right = s.originX??w-inset, top = (s.originY??inset)-paperScrollY();
     ctx.clearRect(0, 0, w, h);
     const closedK = restingPaperK(w);
     const openK=openPaperK(s);
@@ -105,7 +106,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       const bend=referenceMath.rollBendAtDistance(foldDistance,frame.gu,materialSettings,beyond);
       const length=Math.max(.001,foldDistance+referenceMath.projectBend(foldDistance,bend)[0]);
       s.paintPending=true;
-      const paintedScroll=window.scrollY;
+      const paintedScroll=paperScrollY();
       // Reveal incoming DOM content before the GPU presents a receding roll.
       // Waiting for GPU completion here leaves the newly uncovered band white.
       // Rolling away is the opposite: retain the old flat pixels until done.
@@ -116,7 +117,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         s.paintPending=false;
         callbacks.current.onClipChange(clip,progress);
         if(s.k===k&&s.angle===angle)notifySettled();
-        if(s.k!==k||s.angle!==angle||window.scrollY!==paintedScroll)render();
+        if(s.k!==k||s.angle!==angle||paperScrollY()!==paintedScroll)render();
       }).catch(()=>{s.paintPending=false;});
       const stamp=document.querySelector('[data-paper-stamp]');
       if(stamp)stamp.style.opacity='';
@@ -150,7 +151,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     layers.forEach(({ color, shift }, index) => {
       // All sheets share one roll axis. Moving each crease independently
       // caused different turn phases and exposed broad wedges of color.
-      const line = k+window.scrollY;
+      const line = k+paperScrollY();
       const maxDepth=Math.max(0,(right-top-line)/root2);
       const radius=23.1+maxDepth*.012;
       const pitch=.014;
@@ -213,7 +214,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // Compile both palettes once. Changing pages must not destroy the GPU
     // device, rebuild its pipelines, or fall back to canvas mid-unroll.
     const colors=colorsFor(variantRef.current);
-    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
+    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportTop:paperScrollY,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
       if(cancelled){engine.dispose();return null;}
       gpu.current=engine;
       engine.setColors(colorsFor(variantRef.current));
