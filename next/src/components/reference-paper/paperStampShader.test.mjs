@@ -86,6 +86,13 @@ test('photo sizing reserves the full scalloped frame on mobile',()=>{
   assert.ok(css.includes('height:calc(100% - 35px)'));
 });
 
+test('photo scallops keep a stamp-like thin outline on desktop and mobile',()=>{
+  const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(css.includes('.photoRim path{stroke:#dededb;stroke-width:.7;vector-effect:non-scaling-stroke}'));
+  assert.ok(css.includes('.photoRim{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible}'));
+  assert.ok(!css.includes('.photoRim path{stroke:#ececec;stroke-width:.5}'));
+});
+
 test('page changes reuse the GPU renderer instead of resetting the animation',()=>{
   const source=readFileSync(new URL('../PaperPeel.jsx',import.meta.url),'utf8');
   const render=source.slice(source.indexOf('const render = useCallback'),source.indexOf('useEffect(()=>{',source.indexOf('const render = useCallback')));
