@@ -62,6 +62,12 @@ html[data-theme="dark"] ::selection {
   color: #fff;
 }
 
+/* Suppress browser refresh only while a paper handle owns the gesture. */
+html[data-paper-dragging],
+html[data-paper-dragging] body {
+  overscroll-behavior-y: none;
+}
+
 p,
 .portfolio-paragraph {
   font-family: var(--font-inter), Arial, sans-serif;

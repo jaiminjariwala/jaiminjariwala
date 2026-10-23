@@ -7,6 +7,7 @@ import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
 import {paperScrollY} from './paperScroll.mjs';
+import {preventPaperNativeTouch} from './paperTouch.mjs';
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
 const PAPER_COLORS={
@@ -463,7 +464,22 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     return()=>window.removeEventListener('keydown',close,true);
   },[open]);
 
+  useEffect(()=>{
+    // Native non-passive listeners are needed here in Safari in addition
+    // to touch-action:none. Do not claim touches elsewhere on the page.
+    const targets=[handle.current,...document.querySelectorAll('[data-paper-edge]')].filter(Boolean);
+    const start=event=>preventPaperNativeTouch(event);
+    const move=event=>{if(state.current.dragging)preventPaperNativeTouch(event);};
+    for(const target of targets){
+      target.addEventListener('touchstart',start,{passive:false});
+      target.addEventListener('touchmove',move,{passive:false});
+    }
+    return()=>{for(const target of targets){target.removeEventListener('touchstart',start);target.removeEventListener('touchmove',move);}};
+  },[open]);
+
   const pointerDown=event=>{
+    if(event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
+    if(event.pointerType==='touch'&&event.cancelable)event.preventDefault();
     const s=state.current;
     if(inkDirty.current)refreshInk.current?.();
     if(event.currentTarget.dataset.paperEdge){
@@ -488,6 +504,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const pointerMove=event=>{
     const s=state.current;
     if(!s.dragging||event.pointerId!==s.pointerId)return;
+    if(event.pointerType==='touch'&&event.cancelable)event.preventDefault();
     const dx=event.clientX-s.startX,dy=event.clientY-s.startY;
     s.moved ||= Math.hypot(dx,dy)>5;
     const inset=s.width<640?12:16;
@@ -508,7 +525,13 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const pose=paperDragPose((s.width-inset*2-s.startK)/Math.SQRT2,s.startAngle,dx,dy,s.dragOptions);
     const intent=Math.max(openPaperK(s),Math.min(s.width-70,s.width-inset*2-pose.distance*Math.SQRT2));
     s.dragging=false;
-    if(!s.moved)return;
+    if(!s.moved){
+      // Claimed touch gestures do not generate the compatibility click.
+      // Activate taps here and suppress any browser that still sends one.
+      if(event.pointerType==='touch'&&event.currentTarget===handle.current){s.moved=true;callbacks.current.onOpenChange(!open);}
+      else if(event.currentTarget.dataset.paperEdge){s.target=open?openPaperK(s):restingPaperK(s.width);animate();}
+      return;
+    }
     const resting=restingPaperK(s.width);
     const shouldOpen=paperReleaseOpens(open,intent,resting,openPaperK(s));
     callbacks.current.onOpenChange(shouldOpen);
