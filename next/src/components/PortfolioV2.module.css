@@ -170,3 +170,10 @@
 .photoPrint{isolation:isolate;-webkit-tap-highlight-color:transparent}
 @media(hover:none) and (pointer:coarse){.photoPrint{filter:none;transition:none}.photoRim{filter:none}}
 @media(max-width:760px){.introPage h1{font-size:32px}.introPage .introExplore h2{font-size:31px}.introPage .introExplore button{font-size:30px!important}.introPage .introExplore button span{font-size:14px}.introPage .introSocials{font-size:17px}}
+/* Widen every section together, without changing the paper or mobile grid. */
+@media(min-width:761px){
+ .article{--article-left:calc(2 * var(--gu) + 3 * (var(--col-width) + var(--gu)));--article-width:calc(5 * var(--col-width) + 4 * var(--gu) + 96px);margin-left:var(--article-left);width:min(var(--article-width),calc(93vw - 48px - var(--article-left)))}
+}
+@media(min-width:1920px){
+ .article{--article-left:calc(max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu)));--article-width:calc(4 * var(--col-width) + 3 * var(--gu) + 96px)}
+}
