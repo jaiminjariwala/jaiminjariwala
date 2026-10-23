@@ -3,12 +3,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {withSurfaceStamp} from './paperStampShader.mjs';
 
-test('stamp hover flattens its crease and adds the reference lift shadow',()=>{
-  const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
-  assert.ok(css.includes('button.stamp:hover .stampCrease,button.homeStamp:hover .stampCrease{opacity:0}'));
-  assert.ok(css.includes('filter:drop-shadow(0 3px 3px #00000030)'));
-  assert.ok(css.includes('button.stamp:hover,button.homeStamp:hover{transform:rotate(0) translateY(-2px)}'));
-  assert.ok(css.includes('@media(prefers-reduced-motion:reduce)'));
+test('stamp hover uses shared surface deformation instead of a lifted flat image',()=>{
+  const source=readFileSync(new URL('../StickerButton.jsx',import.meta.url),'utf8');
+  assert.ok(source.includes('<feDisplacementMap in="SourceGraphic"'));
+  assert.ok(source.includes('stepBuckle(s.position,s.velocity,s.target'));
 });
 
 test('refresh waits for the real curl instead of flashing the fallback renderer',()=>{

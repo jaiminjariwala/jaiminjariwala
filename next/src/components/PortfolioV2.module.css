@@ -25,17 +25,9 @@
 /* Broad six-lobe paper edges, with diffuse contact shading rather than a
    hard outline. The crease is a wide tonal fold, never a dark center line. */
 .stamp .stampRim,.homeStamp .stampRim{filter:drop-shadow(0 .6px .8px #00000015) drop-shadow(0 1.8px 2.2px #00000010)}
-.stampCrease{pointer-events:none;transition:opacity 240ms cubic-bezier(.2,.7,.25,1)}
-.stamp .stampRim,.homeStamp .stampRim{transition:filter 240ms cubic-bezier(.2,.7,.25,1)}
-@media(hover:hover) and (pointer:fine){
- button.stamp:hover,button.homeStamp:hover{transform:rotate(0) translateY(-2px)}
- button.stamp:hover .stampCrease,button.homeStamp:hover .stampCrease{opacity:0}
- button.stamp:hover .stampRim,button.homeStamp:hover .stampRim{filter:drop-shadow(0 3px 3px #00000030)}
-}
-button.stamp:focus-visible,button.homeStamp:focus-visible{transform:rotate(0) translateY(-2px)}
-button.stamp:focus-visible .stampCrease,button.homeStamp:focus-visible .stampCrease{opacity:0}
-button.stamp:focus-visible .stampRim,button.homeStamp:focus-visible .stampRim{filter:drop-shadow(0 3px 3px #00000030)}
-@media(prefers-reduced-motion:reduce){.stamp,.homeStamp,.stamp .stampRim,.homeStamp .stampRim,.stampCrease{transition:none}}
+.stamp[data-sticker-buckle] .stampRim,.homeStamp[data-sticker-buckle] .stampRim{filter:none;transition:none}
+.site button[data-sticker-buckle]{user-select:none;-webkit-user-select:none}
+.stamp>svg.stickerFilterDefs,.homeStamp>svg.stickerFilterDefs{position:absolute;inset:auto;left:0;top:0;width:0;height:0;overflow:hidden;pointer-events:none}
 .stamp .experienceArtwork,.homeStamp .experienceArtwork{left:13%;top:10%;width:74%;height:80%;object-fit:contain;mix-blend-mode:normal}
 .stamp>.educationArtwork,.homeStamp>.educationArtwork{position:absolute;inset:12%;width:76%;height:76%;overflow:hidden}
 .rocketStamp{transform:rotate(0)}
