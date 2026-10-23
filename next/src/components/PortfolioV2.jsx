@@ -147,11 +147,11 @@ export default function PortfolioV2() {
     <div className={styles.backingShadow} aria-hidden="true"><div className={styles.backingPaper} style={{maskImage:paperMask,maskSize:"100% 100%"}}/></div>
     <section className={`${styles.collection} ${collection || peel>0?styles.collectionVisible:""}`} style={{maskImage:collectionMask,maskSize:"100% 100%"}} aria-label="Stamp collection" aria-hidden={!collection} inert={!collection?true:undefined}>
       <div className={styles.stampGrid}>
-        <button className={`${styles.stamp} ${styles.carStamp}`} aria-label="Open travel" onClick={()=>navigate("gallery")}><StampRim/><StampArt kind="car"/></button>
-        <button className={`${styles.stamp} ${styles.rocketStamp}`} aria-label="Open introduction" onClick={()=>navigate("intro")}><StampRim lobes={6}/><span className={styles.stampTime}>{clock}<span>DC</span></span><StampArt kind="rocket"/><span className={styles.signature}>Jaimin<span>:)</span></span></button>
-        <button className={`${styles.stamp} ${styles.workStamp}`} aria-label="Open experience" onClick={()=>navigate("experience")}><StampRim/><StampArt kind="experience"/></button>
-        <button className={styles.stamp} aria-label="Open education" onClick={()=>navigate("education")}><StampRim/><StampArt kind="education"/></button>
-        {[5,6].map(n=><div key={n} className={`${styles.stamp} ${styles.locked}`} aria-label={`Stamp ${n}, coming later`}><StampRim/><StampArt/></div>)}
+        <figure className={styles.stampItem} data-stamp-item><button className={`${styles.stamp} ${styles.carStamp}`} aria-label="Open travel" onClick={()=>navigate("gallery")}><StampRim/><StampArt kind="car"/></button><figcaption>Travel</figcaption></figure>
+        <figure className={styles.stampItem} data-stamp-item><button className={`${styles.stamp} ${styles.rocketStamp}`} aria-label="Open introduction" onClick={()=>navigate("intro")}><StampRim lobes={6}/><span className={styles.stampTime}>{clock}<span>DC</span></span><StampArt kind="rocket"/><span className={styles.signature}>Jaimin<span>:)</span></span></button><figcaption>About</figcaption></figure>
+        <figure className={styles.stampItem} data-stamp-item><button className={`${styles.stamp} ${styles.workStamp}`} aria-label="Open experience" onClick={()=>navigate("experience")}><StampRim/><StampArt kind="experience"/></button><figcaption>Work</figcaption></figure>
+        <figure className={styles.stampItem} data-stamp-item><button className={styles.stamp} aria-label="Open education" onClick={()=>navigate("education")}><StampRim/><StampArt kind="education"/></button><figcaption>Education</figcaption></figure>
+        {["Projects","Skills"].map(title=><figure key={title} className={styles.stampItem} data-stamp-item><div className={`${styles.stamp} ${styles.locked}`} aria-label={`${title} (adding soon)`}><StampRim/><span className={styles.comingSoon}>{title}<small>(adding soon)</small></span></div></figure>)}
       </div>
     </section>
 

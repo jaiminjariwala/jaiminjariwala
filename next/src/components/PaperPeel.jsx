@@ -15,7 +15,7 @@ function restingPaperK(width){
 
 function openPaperK(s){
   const inset=s.width<640?12:16;
-  const stamps=Array.from(document.querySelectorAll('[aria-label="Stamp collection"] button'),stamp=>stamp.getBoundingClientRect());
+  const stamps=Array.from(document.querySelectorAll('[aria-label="Stamp collection"] [data-stamp-item]'),stamp=>stamp.getBoundingClientRect());
   const bounds=stamps.length?{
     left:Math.min(...stamps.map(r=>r.left)),right:Math.max(...stamps.map(r=>r.right)),
     top:Math.min(...stamps.map(r=>r.top))+window.scrollY,bottom:Math.max(...stamps.map(r=>r.bottom))+window.scrollY,
