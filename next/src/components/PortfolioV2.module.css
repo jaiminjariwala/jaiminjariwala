@@ -123,6 +123,9 @@
 /* Give the introduction's signposts a little more presence. */
 .folderGrid :global(.gallery-folder-card){width:130px!important}
 @media(max-width:760px){.folderGrid{gap:24px;padding-top:80px}.folderGrid :global(.gallery-folder-visual){zoom:.7}}
+/* Keep mobile captions in normal flow: the old top offset moved the city
+   into the count, whose inherited negative margin tightened it further. */
+@media(max-width:760px){.folderGrid :global(.gallery-folder-title){position:static;top:auto;margin:14px 0 0!important;line-height:1.35}.folderGrid :global(.gallery-folder-count){margin:6px 0 0!important;line-height:1.3}}
 .introPage h1{font-size:38px;line-height:1.08;letter-spacing:-.045em;-webkit-text-stroke:.9px currentColor}
 .introPage .introExplore h2{font-size:34px;-webkit-text-stroke:.65px currentColor}
 .introPage .introExplore button{font-size:33px!important;-webkit-text-stroke:.65px currentColor}
