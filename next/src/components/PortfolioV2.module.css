@@ -179,3 +179,45 @@
 @media(min-width:1920px){
  .article{--article-left:calc(max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu)));--article-width:calc(4 * var(--col-width) + 3 * var(--gu) + 96px)}
 }
+
+/* Project media shares the stamp paper, with enough inset for every scallop. */
+.stamp .projectsArtwork,.homeStamp .projectsArtwork{position:absolute;inset:8%;width:84%;height:84%;pointer-events:none}
+.article .projectEntry{margin-top:68px}
+.article .projectEntry+.projectEntry{border-top:1px solid #eee;padding-top:56px;margin-top:66px}
+.article .projectEntry h2{font-family:"V2 James Hand",cursive;font-size:32px;line-height:1.2;letter-spacing:-.035em;-webkit-text-stroke:.35px currentColor;margin:0 0 26px}
+.projectLinks{display:flex;flex-wrap:wrap;gap:12px 24px;font-size:16px;color:#777773;margin-top:24px}
+.projectLinks a{display:inline-flex;align-items:center;gap:6px}
+.projectLinks a:hover{text-decoration:none}
+.projectLinks svg{width:.9em;height:.9em}
+.projectGallery{margin:34px 0 0;min-width:0}
+.projectMediaFrame{position:relative;isolation:isolate;padding:26px;filter:drop-shadow(0 1px 1px #00000014) drop-shadow(0 3px 5px #00000008)}
+.projectMediaRim{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible}
+.projectMediaStage{width:100%;background:#fafaf9;overflow:hidden}
+.projectMediaStage>a{display:block;width:100%;height:100%;cursor:zoom-in}
+.projectMediaStage img,.projectMediaStage video{display:block;width:100%;height:100%;object-fit:contain}
+.projectMediaCaption{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:18px 0 0;font-size:14px;line-height:1.4;color:#858582}
+.projectMediaCaption>a{white-space:nowrap}
+.projectMediaControls{display:flex;align-items:center;gap:10px;flex:none;font-size:13px;font-variant-numeric:tabular-nums}
+.projectMediaControls button{display:grid;place-items:center;border:0;background:none;padding:5px;color:#777773}
+.projectMediaControls button:disabled{opacity:.28;cursor:default}
+.projectMediaControls svg{width:20px;height:20px}
+.projectThumbnails{position:relative;display:flex;gap:12px;overflow-x:auto;overscroll-behavior-x:contain;padding:18px 3px 12px;scrollbar-width:thin;scrollbar-color:#dededb transparent}
+.projectThumbnails button{display:flex;flex:0 0 100px;flex-direction:column;gap:8px;min-width:0;padding:0 0 4px;border:0;border-bottom:2px solid transparent;background:none;text-align:left;font-size:11px;line-height:1.35;color:#858582}
+.projectThumbnails button[aria-pressed=true]{border-bottom-color:#777773;color:#282826}
+.projectThumbnailImage{position:relative;display:block;width:100%;aspect-ratio:16/10;border:1px solid #eee;overflow:hidden;background:#fafaf9}
+.projectThumbnailImage img{width:100%;height:100%;object-fit:contain;display:block}
+.projectThumbnailImage svg{position:absolute;left:calc(50% - 12px);top:calc(50% - 12px);width:24px;height:24px;color:#555;filter:drop-shadow(0 0 3px white)}
+.article p.projectNote{margin:20px 0 0;font-size:14px;line-height:1.5;color:#858582}
+@media(max-width:760px){
+ .article .projectEntry{margin-top:48px}
+ .article .projectEntry+.projectEntry{margin-top:46px;padding-top:38px}
+ .article .projectEntry h2{font-size:28px;margin-bottom:22px}
+ .projectLinks{font-size:14px;gap:12px 20px;margin-top:20px}
+ .projectGallery{margin-top:28px}
+ .projectMediaFrame{padding:19px;filter:none}
+ .projectMediaCaption{font-size:12px;margin-top:14px;align-items:flex-start}
+ .projectMediaControls{gap:5px;font-size:11px}
+ .projectThumbnails{gap:10px;padding-top:14px}
+ .projectThumbnails button{flex-basis:84px}
+ .article p.projectNote{font-size:12px}
+}

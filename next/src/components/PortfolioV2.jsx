@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
+import PortfolioV2Projects from "./PortfolioV2Projects";
 import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from './StickerButton';
@@ -50,6 +51,12 @@ function StampArt({ kind }) {
   </svg>;
   if(kind==="experience")return <img className={`${styles.stampArtwork} ${styles.experienceArtwork}`} src="/v2-reference/snoopy-experience.png" alt="" aria-hidden="true"/>;
   if(kind==="education")return <svg className={styles.educationArtwork} viewBox="100 190 560 330" aria-hidden="true"><image href="/v2-reference/education-school-bus.png" width="736" height="736"/></svg>;
+  if(kind==="projects")return <svg className={styles.projectsArtwork} viewBox="0 0 200 200" aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
+    <path d="m34 65 2-22q0-8 9-8l37-1 17 15 54-1q10 0 10 11l3 85q0 9-9 10l-113 1q-9-1-10-11Z" fill="#ffd54b" stroke="#e6b52d" strokeWidth="2"/>
+    <path d="m44 49 101 3-2 83-102-2Z" fill="#fffefa" stroke="#e5e2d8" strokeWidth="2"/>
+    <path d="m37 72 126 1 7 74q1 10-10 11l-118 1q-10 0-10-11Z" fill="#f9cf43" stroke="#e6b52d" strokeWidth="2"/>
+    <g stroke="#125cd6" strokeWidth="5"><path d="m80 94-19 18 19 17m42-34 19 17-19 18m-14-40-13 45"/></g>
+  </svg>;
   return <span className={styles.question}>?</span>;
 }
 
@@ -67,7 +74,7 @@ export default function PortfolioV2() {
   const heading=useRef(null);
   const navigation=useRef(null);
   const rolledOpen=useRef(false);
-  const activeArt=page==="gallery"?"car":page==="experience"?"experience":page==="education"?"education":"rocket";
+  const activeArt=page==="gallery"?"car":page==="experience"?"experience":page==="education"?"education":page==="projects"?"projects":"rocket";
 
   const copyEmail=async()=>{
     try{
@@ -150,21 +157,23 @@ export default function PortfolioV2() {
         <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.rocketStamp}`} aria-label="Open introduction" onClick={()=>navigate("intro")}><StampRim lobes={6}/><span className={styles.stampTime}>{clock}<span>DC</span></span><StampArt kind="rocket"/><span className={styles.signature}>Jaimin<span>:)</span></span></StickerButton><figcaption>About</figcaption></figure>
         <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.workStamp}`} aria-label="Open experience" onClick={()=>navigate("experience")}><StampRim/><StampArt kind="experience"/></StickerButton><figcaption>Work</figcaption></figure>
         <figure className={styles.stampItem} data-stamp-item><StickerButton className={styles.stamp} aria-label="Open education" onClick={()=>navigate("education")}><StampRim/><StampArt kind="education"/></StickerButton><figcaption>Education</figcaption></figure>
-        {["Projects","Skills"].map(title=><figure key={title} className={styles.stampItem} data-stamp-item><div className={`${styles.stamp} ${styles.locked}`} aria-label={`${title} (adding soon)`}><StampRim/><span className={styles.comingSoon}>{title}<small>(adding soon)</small></span></div></figure>)}
+        <figure className={styles.stampItem} data-stamp-item><StickerButton className={styles.stamp} aria-label="Open projects" onClick={()=>navigate("projects")}><StampRim/><StampArt kind="projects"/></StickerButton><figcaption>Projects</figcaption></figure>
+        <figure className={styles.stampItem} data-stamp-item><div className={`${styles.stamp} ${styles.locked}`} aria-label="Skills (adding soon)"><StampRim/><span className={styles.comingSoon}>Skills<small>(adding soon)</small></span></div></figure>
       </div>
     </section>
 
     <div className={styles.paperShadow}><div ref={paper} data-portfolio-paper className={styles.paper} style={{maskImage:paperMask}} inert={collection?true:undefined}>
       <StickerButton data-paper-stamp className={`${styles.homeStamp} ${page==="intro"?styles.rocketStamp:""}`} aria-label="Choose a stamp" onClick={revealCollection}><StampRim lobes={page==="intro"?6:8}/>{page==="intro"&&<span className={styles.stampTime}>{clock}<span>DC</span></span>}<StampArt kind={activeArt}/>{page==="intro"&&<span className={styles.signature}>Jaimin<span>:)</span></span>}</StickerButton>
-      <article ref={heading} tabIndex={-1} className={`${styles.article} ${page==="intro"?styles.introPage:page==="experience"||page==="education"?styles.experiencePage:""}`} aria-label={page==="intro"?"Introduction":page==="gallery"?"Travel":page==="education"?"Education":"Experience"} key={page}>
+      <article ref={heading} tabIndex={-1} className={`${styles.article} ${page==="intro"?styles.introPage:page==="experience"||page==="education"?styles.experiencePage:""}`} aria-label={page==="intro"?"Introduction":page==="gallery"?"Travel":page==="education"?"Education":page==="projects"?"Projects":"Experience"} key={page}>
         {page==="intro"&&<>
           <header><h1>Jaimin Mukesh Jariwala</h1></header>
           <p className={styles.introText}><span>I'm a software engineer who loves building cool products that people love using and systems that don't break under heavy traffic. I like building the infrastructure and owning the entire product development lifecycle.</span></p>
-          <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><button onClick={()=>navigate("gallery")}><span className={styles.exploreLabel}>Travel</span></button><button onClick={()=>navigate("experience")}><span className={styles.exploreLabel}>Experience</span></button><button onClick={()=>navigate("education")}><span className={styles.exploreLabel}>Education</span></button></nav>
+          <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><button onClick={()=>navigate("gallery")}><span className={styles.exploreLabel}>Travel</span></button><button onClick={()=>navigate("experience")}><span className={styles.exploreLabel}>Experience</span></button><button onClick={()=>navigate("education")}><span className={styles.exploreLabel}>Education</span></button><button onClick={()=>navigate("projects")}><span className={styles.exploreLabel}>Projects</span></button></nav>
           <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala"><span className={styles.inlineLink}>GitHub</span><ExternalArrow/></a><a href="https://www.linkedin.com/in/jaiminjariwala/"><span className={styles.inlineLink}>LinkedIn</span><ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
           {emailCopyError&&<p className={styles.copyError} role="status">{emailCopyError}</p>}
         </>}
         {page==="gallery"&&<PortfolioV2Gallery/>}
+        {page==="projects"&&<PortfolioV2Projects/>}
         {page==="experience"&&<>
           <header><h1>Experience</h1></header>
           <div className={styles.experience}>{experience.map(([company,role,date,subjects,team])=><div key={company}><div><strong>{company}</strong><span>{role}{team&&<span className={styles.experienceTeam}>{team}</span>}</span>{subjects?.map(subject=><span key={subject}>· {subject}</span>)}</div><time>{date}</time></div>)}</div>
@@ -173,7 +182,7 @@ export default function PortfolioV2() {
           <header><h1>Education</h1></header>
           <div className={styles.experience}>{education.map(([university,degree,date,grade,award,location])=><div key={university}><div><strong>{university}</strong><span>{degree}</span><span>{grade}</span>{award&&<span>{award}</span>}</div><div className={styles.educationMeta}><span>{location}</span><time>{date}</time></div></div>)}</div>
         </>}
-        {page!=="intro"&&<nav className={styles.pageNavigation} aria-label="Portfolio pages"><button onClick={()=>navigate("intro")}>Introduction</button><button onClick={()=>navigate("gallery")} aria-current={page==="gallery"?"page":undefined}>Travel</button><button onClick={()=>navigate("experience")} aria-current={page==="experience"?"page":undefined}>Experience</button><button onClick={()=>navigate("education")} aria-current={page==="education"?"page":undefined}>Education</button></nav>}
+        {page!=="intro"&&<nav className={styles.pageNavigation} aria-label="Portfolio pages"><button onClick={()=>navigate("intro")}>Introduction</button><button onClick={()=>navigate("gallery")} aria-current={page==="gallery"?"page":undefined}>Travel</button><button onClick={()=>navigate("experience")} aria-current={page==="experience"?"page":undefined}>Experience</button><button onClick={()=>navigate("education")} aria-current={page==="education"?"page":undefined}>Education</button><button onClick={()=>navigate("projects")} aria-current={page==="projects"?"page":undefined}>Projects</button></nav>}
       </article>
     </div></div>
     <PaperPeel variant={page} open={collection} onOpenChange={next=>{if(!navigation.current)setCollection(next);}} onSettled={paperSettled} onContentReady={paperContentReady} onClipChange={(clip,progress)=>{
