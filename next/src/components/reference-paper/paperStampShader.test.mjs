@@ -73,3 +73,17 @@ test('photo sizing reserves the full scalloped frame on mobile',()=>{
   assert.ok(css.includes('.photoPrint{flex-basis:180px;width:180px;padding:15px 15px 20px}'));
   assert.ok(css.includes('height:calc(100% - 35px)'));
 });
+
+test('page changes reuse the GPU renderer instead of resetting the animation',()=>{
+  const source=readFileSync(new URL('../PaperPeel.jsx',import.meta.url),'utf8');
+  const render=source.slice(source.indexOf('const render = useCallback'),source.indexOf('useEffect(()=>{',source.indexOf('const render = useCallback')));
+  assert.ok(render.includes('variantRef.current'));
+  assert.ok(render.includes('}, []);'));
+  assert.ok(source.includes('palettes:Object.values(PAPER_COLORS)'));
+  assert.ok(source.includes('gpu.current?.setColors(colorsFor(variant))'));
+  assert.ok(source.includes('const engine=await engineReady.current'));
+  const upload=source.indexOf('engine.updateUndersideInk(ink);');
+  const ready=source.indexOf('callbacks.current.onContentReady?.(variant);',upload);
+  assert.ok(upload>=0&&ready>upload);
+  assert.ok(source.slice(upload,ready).includes('await engine.whenIdle();'));
+});

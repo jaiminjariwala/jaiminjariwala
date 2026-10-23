@@ -8,6 +8,12 @@ import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotio
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
+const PAPER_COLORS={
+  standard:['#ffffff','#37af73','#007dfe','#c19f85','#ffffff'],
+  gallery:['#ffffff','#e63a3b','#5ac561','#2050eb','#ffffff'],
+};
+const colorsFor=variant=>variant==='gallery'?PAPER_COLORS.gallery:PAPER_COLORS.standard;
+
 function openPaperK(s){
   const inset=s.width<640?12:16;
   const stamps=Array.from(document.querySelectorAll('[aria-label="Stamp collection"] [data-stamp-item]'),stamp=>stamp.getBoundingClientRect());
@@ -27,9 +33,14 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const canvas = useRef(null);
   const gpuCanvas = useRef(null);
   const gpu = useRef(null);
+  const engineReady = useRef(Promise.resolve(null));
+  const variantRef = useRef(variant);
+  variantRef.current=variant;
   const handle = useRef(null);
   const refreshInk = useRef(null);
   const inkDirty = useRef(false);
+  const hintGlove = useRef(null);
+  const hintSeen = useRef(false);
   const settings = useRef({ ...referenceMath.GPU_PAPER_DEFAULTS });
   const state = useRef({ width: 0, height: 0, k: 0, target: 0, velocity: 0, angle: RESTING_PAPER_ANGLE, targetAngle: RESTING_PAPER_ANGLE, angularVelocity: 0, plush: 0, dt: 1/60, lastTime: 0, reducedMotion: false, dragging: false, raf: 0, moved: false });
   const callbacks = useRef({ onOpenChange, onClipChange, onSettled, onContentReady });
@@ -39,8 +50,6 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const s=state.current;
     if(!s.dragging&&s.k===s.target&&s.angle===s.targetAngle&&s.velocity===0&&s.angularVelocity===0){
       callbacks.current.onSettled?.(s.open);
-  const hintGlove = useRef(null);
-  const hintSeen = useRef(false);
     }
   };
 
@@ -125,7 +134,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     };
 
     const root2=Math.SQRT2;
-    const layers = variant==="gallery"?[
+    const layers = variantRef.current==="gallery"?[
       {color:"#ffffff",shift:-18},
       {color:"#e63a3b",shift:-13.5},
       {color:"#5ac561",shift:-9},
@@ -195,25 +204,35 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       canvas.current.style.setProperty("--tip-y",`${Math.max(0,tip.y)}px`);
     }
     notifySettled();
-  }, [variant]);
+  }, []);
 
   useEffect(()=>{
     let cancelled=false;
     // Exactly five sheets: front white, blue, green, red, and one white
     // backing tip. Mesh layers are stored from the backing to the front.
-    const colors=variant==="gallery"?['#ffffff','#e63a3b','#5ac561','#2050eb','#ffffff']:['#ffffff','#37af73','#007dfe','#c19f85','#ffffff'];
-    import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,surfaceInk:true,staticPose:true,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
-      if(cancelled){engine.dispose();return;}
+    // Compile both palettes once. Changing pages must not destroy the GPU
+    // device, rebuild its pipelines, or fall back to canvas mid-unroll.
+    const colors=colorsFor(variantRef.current);
+    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
+      if(cancelled){engine.dispose();return null;}
       gpu.current=engine;
+      engine.setColors(colorsFor(variantRef.current));
       state.current.paintPending=false;
       if(state.current.ink)engine.updateUndersideInk(state.current.ink);
       gpuCanvas.current.dataset.renderer='reference-webgpu';
       render();
+      return engine;
     }).catch(error=>{
       if(gpuCanvas.current){gpuCanvas.current.dataset.renderer='canvas-fallback';gpuCanvas.current.dataset.rendererError=error.message;}
+      return null;
     });
     return()=>{cancelled=true;gpu.current?.dispose();gpu.current=null;};
   },[render]);
+
+  useEffect(()=>{
+    gpu.current?.setColors(colorsFor(variant));
+    render();
+  },[variant,render]);
 
   useEffect(()=>{
     let cancelled=false, revision=0;
@@ -266,8 +285,18 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
           ctx.restore();
         }
         state.current.ink=ink;
-        gpu.current?.updateUndersideInk(ink);
-        render();
+        const engine=await engineReady.current;
+        if(cancelled||current!==revision)return;
+        if(engine&&!engine.failed){
+          // Finish the previous submission before replacing the ink texture,
+          // then present one incoming-page frame before starting its unroll.
+          await engine.whenIdle();
+          if(cancelled||current!==revision)return;
+          engine.updateUndersideInk(ink);
+          render();
+          await engine.whenIdle();
+          if(cancelled||current!==revision)return;
+        }else{render();}
         callbacks.current.onContentReady?.(variant);
       }catch(error){
         console.warn('Paper stamp texture could not be prepared',error);
@@ -291,7 +320,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     window.addEventListener('resize',schedule);
     update();
     return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);window.removeEventListener('resize',schedule);};
-  },[render]);
+  },[variant,render]);
 
   const animate = useCallback(() => {
     const s=state.current;
@@ -356,35 +385,6 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     animate();
   },[open,animate]);
 
-  useEffect(()=>{
-    if(!open)return;
-    const close=event=>{if(event.key==='Escape'&&!document.querySelector('[aria-modal="true"]'))callbacks.current.onOpenChange(false);};
-    window.addEventListener('keydown',close,true);
-    return()=>window.removeEventListener('keydown',close,true);
-  },[open]);
-
-  const pointerDown=event=>{
-    const s=state.current;
-    if(inkDirty.current)refreshInk.current?.();
-    if(event.currentTarget.dataset.paperEdge){
-      const edge=event.currentTarget.dataset.paperEdge;
-      const inset=s.width<640?12:16;
-      const origins={left:[inset,event.clientY+window.scrollY,Math.PI],right:[s.width-inset,event.clientY+window.scrollY,0],top:[event.clientX,inset,Math.PI/2],bottom:[event.clientX,document.querySelector('[data-portfolio-paper]').getBoundingClientRect().bottom+window.scrollY,-Math.PI/2]};
-      const [x,y,angle]=origins[edge];
-      s.originX=x;s.originY=y;s.restAngle=angle;
-      s.k=s.width-2*inset-2*Math.SQRT2;
-      s.angle=s.targetAngle=angle;
-    }
-    document.documentElement.setAttribute('data-paper-dragging','');
-    s.dragging=true;s.moved=false;s.startX=event.clientX;s.startY=event.clientY;s.startK=s.k;
-    s.pointerId=event.pointerId;
-    s.dragOptions={gain:open?2:.65,stopAtOrigin:open};
-    s.startAngle=s.angle;
-    s.targetAngle=s.angle;
-    s.target=s.k;s.velocity*=.35;
-    event.currentTarget.setPointerCapture(event.pointerId);
-    animate();
-  };
   useEffect(()=>{
     let storage;
     try{storage=window.localStorage;}catch{/* Continue with in-memory tracking. */}
@@ -455,6 +455,35 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     };
   },[open,animate]);
 
+  useEffect(()=>{
+    if(!open)return;
+    const close=event=>{if(event.key==='Escape'&&!document.querySelector('[aria-modal="true"]'))callbacks.current.onOpenChange(false);};
+    window.addEventListener('keydown',close,true);
+    return()=>window.removeEventListener('keydown',close,true);
+  },[open]);
+
+  const pointerDown=event=>{
+    const s=state.current;
+    if(inkDirty.current)refreshInk.current?.();
+    if(event.currentTarget.dataset.paperEdge){
+      const edge=event.currentTarget.dataset.paperEdge;
+      const inset=s.width<640?12:16;
+      const origins={left:[inset,event.clientY+window.scrollY,Math.PI],right:[s.width-inset,event.clientY+window.scrollY,0],top:[event.clientX,inset,Math.PI/2],bottom:[event.clientX,document.querySelector('[data-portfolio-paper]').getBoundingClientRect().bottom+window.scrollY,-Math.PI/2]};
+      const [x,y,angle]=origins[edge];
+      s.originX=x;s.originY=y;s.restAngle=angle;
+      s.k=s.width-2*inset-2*Math.SQRT2;
+      s.angle=s.targetAngle=angle;
+    }
+    document.documentElement.setAttribute('data-paper-dragging','');
+    s.dragging=true;s.moved=false;s.startX=event.clientX;s.startY=event.clientY;s.startK=s.k;
+    s.pointerId=event.pointerId;
+    s.dragOptions={gain:open?2:.65,stopAtOrigin:open};
+    s.startAngle=s.angle;
+    s.targetAngle=s.angle;
+    s.target=s.k;s.velocity*=.35;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    animate();
+  };
   const pointerMove=event=>{
     const s=state.current;
     if(!s.dragging||event.pointerId!==s.pointerId)return;
@@ -511,7 +540,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     {!open&&['left','right','top','bottom'].map(edge=><div key={edge} data-paper-edge={edge} className={`${styles.paperEdge} ${styles[`paperEdge${edge}`]}`} aria-hidden="true" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag}/>)}
     <canvas ref={canvas} className={styles.peelCanvas} aria-hidden="true"/>
     <canvas ref={gpuCanvas} className={styles.peelCanvas} style={{visibility:'hidden',zIndex:7}} aria-hidden="true"/>
+    <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
     <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{inset:0,width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
   </>;
 }
-    <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
