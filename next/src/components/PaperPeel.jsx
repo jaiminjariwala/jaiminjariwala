@@ -7,6 +7,7 @@ import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
 import {paperViewportWidth} from './paperLayout.mjs';
+import {drawStampArrival} from './stampArrival.mjs';
 import {preventPaperNativeTouch} from './paperTouch.mjs';
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
@@ -44,6 +45,9 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const inkDirty = useRef(false);
   const hintGlove = useRef(null);
   const hintSeen = useRef(false);
+  const arrivalCanvas=useRef(null);
+  const arrivalRaf=useRef(0);
+  const startStampArrival=useRef(null);
   const settings = useRef({ ...referenceMath.GPU_PAPER_DEFAULTS });
   const state = useRef({ width: 0, height: 0, k: 0, target: 0, velocity: 0, angle: RESTING_PAPER_ANGLE, targetAngle: RESTING_PAPER_ANGLE, angularVelocity: 0, plush: 0, dt: 1/60, lastTime: 0, reducedMotion: false, dragging: false, raf: 0, moved: false });
   const callbacks = useRef({ onOpenChange, onClipChange, onSettled, onContentReady });
@@ -68,6 +72,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const closedK = restingPaperK(w);
     const openK=openPaperK(s);
     const progress = Math.max(0, Math.min(1, (closedK - k) / (closedK - openK)));
+    if(s.arrivalPending&&progress<.7)startStampArrival.current?.();
     const angle=gpu.current&&!gpu.current.failed?s.angle:RESTING_PAPER_ANGLE;
     const foldDistance=Math.max(.001,(w-2*inset-k)/Math.SQRT2);
     // Two rasterizers must overlap slightly at the attachment: two separately
@@ -135,13 +140,13 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         if(s.k!==k||s.angle!==angle)render();
       }).catch(()=>{s.paintPending=false;});
       const stamp=document.querySelector('[data-paper-stamp]');
-      if(stamp)stamp.style.opacity='';
+      if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
       return;
     }
     canvas.current.style.visibility='visible';
     callbacks.current.onClipChange(clip,progress);
     const stamp=document.querySelector('[data-paper-stamp]');
-    if(stamp)stamp.style.opacity='';
+    if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
     const period = PAGE_SCALLOP_PERIOD;
     const base = scallopedOutline(w - inset * 2, paperHeight-inset, period).map(p => ({ x: p.x + inset, y: p.y + inset }));
     const trace = points => {
@@ -305,6 +310,12 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
           }
           ctx.restore();
         }
+        state.current.stampSnapshot={image,width,height,x:paperBounds.left+window.scrollX+stamp.offsetLeft,y:paperBounds.top+window.scrollY+stamp.offsetTop,rotation:Math.atan2(matrix.b,matrix.a)};
+        const plain=document.createElement('canvas');plain.width=ink.width;plain.height=ink.height;
+        const plainCtx=plain.getContext('2d');plainCtx.drawImage(ink,0,0);
+        const snapshot=state.current.stampSnapshot;
+        plainCtx.clearRect(snapshot.x-25,snapshot.y-25,width+50,height+50);
+        state.current.inkWithoutStamp=plain;
         state.current.ink=ink;
         const engine=await engineReady.current;
         if(cancelled||current!==revision)return;
@@ -313,7 +324,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
           // then present one incoming-page frame before starting its unroll.
           await engine.whenIdle();
           if(cancelled||current!==revision)return;
-          engine.updateUndersideInk(ink);
+          engine.updateUndersideInk(state.current.arrivalActive?plain:ink);
           render();
           await engine.whenIdle();
           if(cancelled||current!==revision)return;
@@ -342,6 +353,37 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     update();
     return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);window.removeEventListener('resize',schedule);};
   },[variant,render]);
+
+  const finishStampArrival=()=>{
+    const s=state.current;
+    cancelAnimationFrame(arrivalRaf.current);arrivalRaf.current=0;
+    s.arrivalPending=false;s.arrivalActive=false;
+    const stamp=document.querySelector('[data-paper-stamp]');
+    if(stamp)stamp.style.opacity='';
+    if(arrivalCanvas.current)arrivalCanvas.current.style.visibility='hidden';
+    if(s.ink&&gpu.current&&!gpu.current.failed)gpu.current.updateUndersideInk(s.ink);
+    render();
+  };
+  startStampArrival.current=()=>{
+    const s=state.current,snapshot=s.stampSnapshot,overlay=arrivalCanvas.current;
+    s.arrivalPending=false;
+    if(!snapshot||!overlay){finishStampArrival();return;}
+    const {image,width,height,x,y,rotation}=snapshot;
+    const dpr=Math.min(window.devicePixelRatio||1,2),margin=width*.8+25;
+    overlay.width=Math.ceil((width+margin+30)*dpr);overlay.height=Math.ceil((height+60)*dpr);
+    Object.assign(overlay.style,{left:`${x-margin}px`,top:`${y-30}px`,width:`${width+margin+30}px`,height:`${height+60}px`,visibility:'visible'});
+    const ctx=overlay.getContext('2d'),began=performance.now();
+    const tick=now=>{
+      ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,overlay.width/dpr,overlay.height/dpr);
+      ctx.save();ctx.translate(margin,30);
+      const pose=drawStampArrival(ctx,image,width,height,now-began,rotation);
+      ctx.restore();
+      if(pose.done){finishStampArrival();return;}
+      arrivalRaf.current=requestAnimationFrame(tick);
+    };
+    arrivalRaf.current=requestAnimationFrame(tick);
+  };
+  useEffect(()=>()=>{cancelAnimationFrame(arrivalRaf.current);},[]);
 
   const animate = useCallback(() => {
     const s=state.current;
@@ -398,7 +440,14 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
 
   useEffect(()=>{
     const s=state.current;
+    const wasOpen=s.open;
     s.open=open;
+    if(open&&s.arrivalActive)finishStampArrival();
+    if(wasOpen&&!open&&!s.reducedMotion&&s.stampSnapshot&&gpu.current&&!gpu.current.failed){
+      s.arrivalActive=true;s.arrivalPending=true;
+      document.querySelector('[data-paper-stamp]')?.style.setProperty('opacity','0');
+      gpu.current.updateUndersideInk(s.inkWithoutStamp);
+    }
     if(open&&inkDirty.current)refreshInk.current?.();
     if(!s.width)return;
     if(s.dragging)return;
@@ -501,6 +550,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     if(event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
     if(event.pointerType==='touch'&&event.cancelable)event.preventDefault();
     const s=state.current;
+    if(s.arrivalActive)finishStampArrival();
     if(inkDirty.current)refreshInk.current?.();
     if(event.currentTarget.dataset.paperEdge){
       const edge=event.currentTarget.dataset.paperEdge;
@@ -584,6 +634,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     {!open&&['left','right','top','bottom'].map(edge=><div key={edge} data-paper-edge={edge} className={`${styles.paperEdge} ${styles[`paperEdge${edge}`]}`} aria-hidden="true" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag}/>)}
     <canvas ref={canvas} className={styles.peelCanvas} style={{visibility:'hidden'}} aria-hidden="true"/>
     <canvas ref={gpuCanvas} className={styles.peelCanvas} style={{visibility:'hidden',opacity:0,zIndex:7}} aria-hidden="true"/>
+    <canvas ref={arrivalCanvas} data-stamp-arrival className={styles.stampArrival} aria-hidden="true"/>
     <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
     <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{position:'absolute',inset:'0 auto auto 0',width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
   </>;

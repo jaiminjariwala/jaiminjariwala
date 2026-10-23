@@ -71,6 +71,7 @@ button.stamp:focus-visible .stampRim,button.homeStamp:focus-visible .stampRim{fi
 .rollHintGlove{position:fixed;left:0;top:0;width:34px;height:34px;z-index:10;pointer-events:none;opacity:0;will-change:transform,opacity}
 .rollHintGlove img{position:absolute;inset:0;width:100%;height:100%;display:block}
 .peelCanvas{position:absolute;inset:0 auto auto 0}
+.stampArrival{position:absolute;left:0;top:0;width:0;height:0;z-index:8;pointer-events:none;visibility:hidden;filter:drop-shadow(0 4px 4px #00000024)}
 .rollHintGlove img:last-child{opacity:0}
 @media(prefers-reduced-motion:reduce){.rollHintGlove{display:none}}
 .stampGrid{align-items:start}

@@ -114,7 +114,7 @@ test('page changes reuse the GPU renderer instead of resetting the animation',()
   assert.ok(source.includes('palettes:Object.values(PAPER_COLORS)'));
   assert.ok(source.includes('gpu.current?.setColors(colorsFor(variant))'));
   assert.ok(source.includes('const engine=await engineReady.current'));
-  const upload=source.indexOf('engine.updateUndersideInk(ink);');
+  const upload=source.indexOf('engine.updateUndersideInk(state.current.arrivalActive?plain:ink);');
   const ready=source.indexOf('callbacks.current.onContentReady?.(variant);',upload);
   assert.ok(upload>=0&&ready>upload);
   assert.ok(source.slice(upload,ready).includes('await engine.whenIdle();'));
