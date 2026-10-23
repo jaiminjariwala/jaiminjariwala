@@ -81,9 +81,9 @@ test('photos reveal once and avoid filter churn on touch devices',()=>{
 
 test('photo sizing reserves the full scalloped frame on mobile',()=>{
   const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
-  assert.ok(css.includes('.photoPrint img{position:absolute;left:17px;top:17px;'));
-  assert.ok(css.includes('.photoPrint{flex-basis:180px;width:180px;padding:15px 15px 20px}'));
-  assert.ok(css.includes('height:calc(100% - 35px)'));
+  assert.ok(css.includes('.photoPrint img{position:absolute;left:22px;top:22px;'));
+  assert.ok(css.includes('.photoPrint{flex-basis:180px;width:180px;padding:19px 19px 24px}'));
+  assert.ok(css.includes('height:calc(100% - 43px)'));
 });
 
 test('photo scallops keep a stamp-like thin outline on desktop and mobile',()=>{

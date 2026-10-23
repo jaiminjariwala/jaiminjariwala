@@ -117,15 +117,15 @@
 .photoGrid:focus-visible{outline:2px solid #2c65d0;outline-offset:-4px}
 @media(min-width:1920px){.article{margin-left:calc(max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu)))}.photoGrid{margin-left:calc(-1 * (max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu))))}}
 @media(max-width:760px){.photoGrid{width:calc(100vw - 24px);margin-left:-25px;padding-left:25px;padding-right:25px}}
-.photoPrint{position:relative;display:block;flex:0 0 220px;width:220px;aspect-ratio:4/5;padding:17px 17px 22px;background:none;transform:rotate(-2deg);transition:transform .2s;filter:drop-shadow(0 1px 1px #00000018) drop-shadow(0 3px 5px #0000000d)}
+.photoPrint{position:relative;display:block;flex:0 0 220px;width:220px;aspect-ratio:4/5;padding:22px 22px 27px;background:none;transform:rotate(-2deg);transition:transform .2s;filter:drop-shadow(0 1px 1px #00000018) drop-shadow(0 3px 5px #0000000d)}
 .photoRim{position:absolute;inset:0;width:100%;height:100%;z-index:-1;overflow:visible}
 .photoRim path{stroke:#dededb;stroke-width:.7;vector-effect:non-scaling-stroke}
 .photoPrint:nth-child(even){transform:rotate(2deg)}
 @media(hover:hover) and (pointer:fine){.photoPrint:hover{transform:rotate(0) translateY(-3px)}}
-.photoPrint img{position:absolute;left:17px;top:17px;display:block;width:calc(100% - 34px);height:calc(100% - 39px);object-fit:cover}
+.photoPrint img{position:absolute;left:22px;top:22px;display:block;width:calc(100% - 44px);height:calc(100% - 49px);object-fit:cover}
 /* Keep the photograph inside the paper, independent of Safari's intrinsic
    image sizing. Only the frame determines the card's 4:5 aspect ratio. */
-@media(max-width:760px){.photoPrint{flex-basis:180px;width:180px;padding:15px 15px 20px}.photoPrint img{left:15px;top:15px;width:calc(100% - 30px);height:calc(100% - 35px)}}
+@media(max-width:760px){.photoPrint{flex-basis:180px;width:180px;padding:19px 19px 24px}.photoPrint img{left:19px;top:19px;width:calc(100% - 38px);height:calc(100% - 43px)}}
 @media(max-width:760px){.folderGrid{gap:80px 25px;padding-top:85px}.folderGrid :global(.gallery-folder-card){width:150px!important}.folderGrid :global(.gallery-folder-visual){zoom:.8}.folderGrid :global(.gallery-folder-title){font-size:16px!important}.folderGrid :global(.gallery-folder-count){font-size:14px!important}.introExplore button span{font-size:12px}.experiencePage .experience>div{flex-wrap:wrap;gap:7px}.photoGrid{gap:18px}.introSocials,.pageNavigation{font-size:15px;gap:19px}}
 @media(max-width:390px){.folderGrid{grid-template-columns:1fr}}
 
