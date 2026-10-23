@@ -5,13 +5,7 @@ import { clipHalfPlane, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeo
 import styles from "./PortfolioV2.module.css";
 import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
-import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK } from "./paperDragGeometry.mjs";
-
-// Keep enough material in the resting curl to show its rounded face on phones.
-function restingPaperK(width){
-  const mobile=width<640;
-  return width-(mobile?24:32)-(mobile?Math.min(160,Math.max(120,width*.36)):Math.min(180,width*.17));
-}
+import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
 function openPaperK(s){
   const inset=s.width<640?12:16;

@@ -1,5 +1,13 @@
 export const RESTING_PAPER_ANGLE = Math.PI / 4;
 
+export function restingPaperK(width){
+  const mobile=width<640;
+  // More material in the mobile dog-ear reveals a broad rounded face and
+  // several scallops, rather than a narrow ribbon tucked against the corner.
+  const pull=mobile?Math.min(200,Math.max(160,width*.48)):Math.min(180,width*.17);
+  return width-(mobile?24:32)-pull;
+}
+
 export function paperOpenK(width, height, originX, originY, angle, inset=16, {bounds,clearance=100}={}) {
   const nx=-Math.cos(angle),ny=Math.sin(angle);
   const {left,top,right,bottom}=bounds??{left:inset,top:inset,right:width-inset,bottom:height-inset};

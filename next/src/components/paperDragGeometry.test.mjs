@@ -1,7 +1,19 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {paperReleaseOpens} from './paperMotion.mjs';
-import {paperDragPose,stationaryPaperPolygon,RESTING_PAPER_ANGLE,nearestPaperAngle,paperRollGrabPolygon,paperOpenK} from './paperDragGeometry.mjs';
+import {paperDragPose,stationaryPaperPolygon,RESTING_PAPER_ANGLE,nearestPaperAngle,paperRollGrabPolygon,paperOpenK,restingPaperK} from './paperDragGeometry.mjs';
+
+test('mobile resting dog-ear has a deeper fold without changing desktop geometry',()=>{
+  for(const width of [320,375,390,393,430]){
+    const pull=width-24-restingPaperK(width);
+    const oldPull=Math.min(160,Math.max(120,width*.36));
+    assert.ok(pull>=160&&pull<=200);
+    assert.ok(pull-oldPull>=40);
+  }
+  for(const width of [768,1280,1493]){
+    assert.equal(restingPaperK(width),width-32-Math.min(180,width*.17));
+  }
+});
 
 test('fully open roll clears every corner on desktop and mobile for all grab edges',()=>{
   for(const [w,h,inset] of [[1494,1664,16],[1300,900,16],[390,844,12]]){
