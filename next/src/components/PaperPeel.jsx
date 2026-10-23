@@ -5,6 +5,7 @@ import { clipHalfPlane, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeo
 import styles from "./PortfolioV2.module.css";
 import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
+import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
 
 function openPaperK(s){
@@ -38,6 +39,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const s=state.current;
     if(!s.dragging&&s.k===s.target&&s.angle===s.targetAngle&&s.velocity===0&&s.angularVelocity===0){
       callbacks.current.onSettled?.(s.open);
+  const hintGlove = useRef(null);
+  const hintSeen = useRef(false);
     }
   };
 
@@ -382,6 +385,76 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     event.currentTarget.setPointerCapture(event.pointerId);
     animate();
   };
+  useEffect(()=>{
+    let storage;
+    try{storage=window.localStorage;}catch{/* Continue with in-memory tracking. */}
+    if(open||hintSeen.current||paperHintSeen(storage)||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    let timer,raf=0,stopped=false,running=false,retries=0;
+    const glove=hintGlove.current;
+    const images=glove?.querySelectorAll('img');
+    if(!glove||images.length!==2)return;
+    const dismiss=(restore=true)=>{
+      if(stopped)return;
+      stopped=true;
+      clearTimeout(timer);cancelAnimationFrame(raf);
+      glove.style.opacity='0';
+      if(running){
+        const s=state.current;
+        s.hintActive=false;
+        if(restore&&!s.dragging&&!s.open){s.target=restingPaperK(s.width);animate();}
+      }
+    };
+    const interact=()=>{
+      hintSeen.current=true;rememberPaperHint(storage);dismiss();
+    };
+    const visibility=()=>{if(document.hidden&&running)dismiss();};
+    const viewportWidth=window.innerWidth;
+    const resize=()=>{if(window.innerWidth!==viewportWidth)interact();};
+    const start=()=>{
+      const s=state.current;
+      if(stopped||s.open||s.dragging||window.scrollY>8)return;
+      if(document.hidden){timer=setTimeout(start,250);return;}
+      // Let the real curl and its printed texture finish initializing first.
+      if((!s.width||s.paintPending||!gpu.current)&&retries++<16){timer=setTimeout(start,200);return;}
+      running=true;s.hintActive=true;
+      hintSeen.current=true;rememberPaperHint(storage);
+      const closed=restingPaperK(s.width),pull=paperHintPull(s.width,closed,openPaperK(s));
+      const inset=s.width<640?12:16;
+      const cornerReach=s.width-inset*2-closed;
+      const x=s.width-inset-cornerReach*.35,y=inset+cornerReach*.35;
+      const began=performance.now();
+      const tick=now=>{
+        if(stopped)return;
+        const pose=paperHintPose(now-began);
+        const target=closed-pull*pose.pull;
+        if(Math.abs(s.target-target)>.01){s.target=target;animate();}
+        // Follow the actual spring pose, not a separate pretend drag.
+        const travel=Math.max(0,(closed-s.k)/2);
+        glove.style.transform=`translate3d(${x-travel-17}px,${y+travel-17}px,0) scale(${.85+.15*pose.opacity})`;
+        glove.style.opacity=String(pose.opacity);
+        images[0].style.opacity=String(1-pose.grip);
+        images[1].style.opacity=String(pose.grip);
+        if(pose.done){dismiss();return;}
+        raf=requestAnimationFrame(tick);
+      };
+      raf=requestAnimationFrame(tick);
+    };
+    timer=setTimeout(start,1400);
+    window.addEventListener('pointerdown',interact,{capture:true,passive:true});
+    window.addEventListener('keydown',interact,{capture:true});
+    window.addEventListener('scroll',interact,{passive:true});
+    window.addEventListener('resize',resize,{passive:true});
+    document.addEventListener('visibilitychange',visibility);
+    return()=>{
+      dismiss(false);
+      window.removeEventListener('pointerdown',interact,true);
+      window.removeEventListener('keydown',interact,true);
+      window.removeEventListener('scroll',interact);
+      window.removeEventListener('resize',resize);
+      document.removeEventListener('visibilitychange',visibility);
+    };
+  },[open,animate]);
+
   const pointerMove=event=>{
     const s=state.current;
     if(!s.dragging||event.pointerId!==s.pointerId)return;
@@ -441,3 +514,4 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{inset:0,width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
   </>;
 }
+    <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
