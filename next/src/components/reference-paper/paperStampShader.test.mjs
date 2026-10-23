@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {withSurfaceStamp} from './paperStampShader.mjs';
 
+test('refresh waits for the real curl instead of flashing the fallback renderer',()=>{
+  const source=readFileSync(new URL('../PaperPeel.jsx',import.meta.url),'utf8');
+  assert.ok(source.includes("const rendererStatus = useRef('pending')"));
+  const pending=source.indexOf("if(rendererStatus.current==='pending')return;");
+  assert.ok(pending>0&&pending<source.indexOf('engine.paint(frame'));
+  assert.ok(source.indexOf("gpuCanvas.current.style.opacity='1'")>source.indexOf('engine.whenIdle().then('));
+  assert.ok(source.includes("rendererStatus.current='fallback'"));
+  assert.ok(source.includes("style={{visibility:'hidden',opacity:0,zIndex:7}}"));
+});
+
 test('stationary and rolled stamp ink share one mesh without blanking the article',()=>{
   const source=readFileSync(new URL('./pageEngine.js',import.meta.url),'utf8');
   const patched=withSurfaceStamp(source);

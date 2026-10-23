@@ -37,6 +37,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const gpuCanvas = useRef(null);
   const gpu = useRef(null);
   const engineReady = useRef(Promise.resolve(null));
+  const rendererStatus = useRef('pending');
   const variantRef = useRef(variant);
   variantRef.current=variant;
   const handle = useRef(null);
@@ -80,7 +81,11 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const grab=paperRollGrabPolygon(w,h,right,top,foldDistance,angle);
     if(handle.current)handle.current.style.clipPath=grab.length>=3?`polygon(${grab.map(p=>`${p.x}px ${p.y}px`).join(',')})`:'polygon(0 0,0 0,0 0)';
     const clip=`polygon(${remaining.map(p=>`${(p.x-inset).toFixed(2)}px ${(p.y-inset).toFixed(2)}px`).join(",")})`;
+    // Do not flash the approximate 2D curl while GPU pipelines compile.
+    // Keep the flat paper intact until the first real curl frame is ready.
+    if(rendererStatus.current==='pending')return;
     if(gpu.current&&!gpu.current.failed){
+      canvas.current.style.visibility='hidden';
       // Keep the DOM cut edge on the last completed GPU pose. The renderer
       // drops submissions when its queue is full; moving the DOM anyway
       // exposes a diagonal seam until the pointer stops and it catches up.
@@ -118,6 +123,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         if(gpu.current!==engine)return;
         s.paintPending=false;
         callbacks.current.onClipChange(clip,progress);
+        if(gpuCanvas.current)gpuCanvas.current.style.opacity='1';
         if(s.k===k&&s.angle===angle)notifySettled();
         if(s.k!==k||s.angle!==angle||paperScrollY()!==paintedScroll)render();
       }).catch(()=>{s.paintPending=false;});
@@ -125,6 +131,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       if(stamp)stamp.style.opacity='';
       return;
     }
+    canvas.current.style.visibility='visible';
     callbacks.current.onClipChange(clip,progress);
     const stamp=document.querySelector('[data-paper-stamp]');
     if(stamp)stamp.style.opacity='';
@@ -219,6 +226,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportTop:paperScrollY,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
       if(cancelled){engine.dispose();return null;}
       gpu.current=engine;
+      rendererStatus.current='gpu';
       engine.setColors(colorsFor(variantRef.current));
       state.current.paintPending=false;
       if(state.current.ink)engine.updateUndersideInk(state.current.ink);
@@ -226,10 +234,13 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       render();
       return engine;
     }).catch(error=>{
+      if(cancelled)return null;
+      rendererStatus.current='fallback';
       if(gpuCanvas.current){gpuCanvas.current.dataset.renderer='canvas-fallback';gpuCanvas.current.dataset.rendererError=error.message;}
+      render();
       return null;
     });
-    return()=>{cancelled=true;gpu.current?.dispose();gpu.current=null;};
+    return()=>{cancelled=true;gpu.current?.dispose();gpu.current=null;rendererStatus.current='pending';};
   },[render]);
 
   useEffect(()=>{
@@ -564,8 +575,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
 
   return <>
     {!open&&['left','right','top','bottom'].map(edge=><div key={edge} data-paper-edge={edge} className={`${styles.paperEdge} ${styles[`paperEdge${edge}`]}`} aria-hidden="true" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag}/>)}
-    <canvas ref={canvas} className={styles.peelCanvas} aria-hidden="true"/>
-    <canvas ref={gpuCanvas} className={styles.peelCanvas} style={{visibility:'hidden',zIndex:7}} aria-hidden="true"/>
+    <canvas ref={canvas} className={styles.peelCanvas} style={{visibility:'hidden'}} aria-hidden="true"/>
+    <canvas ref={gpuCanvas} className={styles.peelCanvas} style={{visibility:'hidden',opacity:0,zIndex:7}} aria-hidden="true"/>
     <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
     <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{inset:0,width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
   </>;
