@@ -63,10 +63,15 @@ test('mobile scroll keeps document clipping and the GPU viewport stable',()=>{
   assert.ok(peel.includes('stationaryPaperPolygon(w,paperHeight,right,s.originY??inset'));
   assert.ok(!peel.includes('p.y+window.scrollY-inset'));
   assert.ok(peel.includes("s.width===paperViewportWidth(window.innerWidth)&&s.height&&window.matchMedia('(pointer: coarse)').matches"));
-  assert.ok(peel.includes('viewportHeight:()=>state.current.height'));
+  assert.ok(peel.includes('viewportHeight:()=>state.current.renderHeight'));
   assert.ok(engine.includes('r.viewportHeight?.()??innerHeight'));
   assert.ok(engine.includes('r.viewportTop?.()??scrollY'));
-  assert.ok(peel.includes('viewportTop:paperScrollY'));
+  assert.ok(peel.includes('viewportTop:()=>0'));
+  assert.ok(!peel.includes('paperScrollY()'));
+  assert.ok(!peel.includes('window.addEventListener("scroll",render'));
+  const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(css.includes('.peelCanvas{position:absolute;inset:0 auto auto 0}'));
+  assert.ok(peel.includes("position:'absolute',inset:'0 auto auto 0'"));
   assert.ok(peel.includes('if(state.current.dragging||state.current.open)update()'));
 });
 

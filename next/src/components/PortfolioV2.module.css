@@ -60,6 +60,7 @@
 .article:focus{outline:none}
 .rollHintGlove{position:fixed;left:0;top:0;width:34px;height:34px;z-index:10;pointer-events:none;opacity:0;will-change:transform,opacity}
 .rollHintGlove img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.peelCanvas{position:absolute;inset:0 auto auto 0}
 .rollHintGlove img:last-child{opacity:0}
 @media(prefers-reduced-motion:reduce){.rollHintGlove{display:none}}
 .stampGrid{align-items:start}

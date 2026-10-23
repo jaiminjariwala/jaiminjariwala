@@ -6,7 +6,6 @@ import styles from "./PortfolioV2.module.css";
 import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.mjs";
-import {paperScrollY} from './paperScroll.mjs';
 import {paperViewportWidth} from './paperLayout.mjs';
 import {preventPaperNativeTouch} from './paperTouch.mjs';
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
@@ -63,10 +62,9 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     if (!ctx || !s.width) return;
     const { width: w, height: h, k } = s;
     const inset = w < 640 ? 12 : 16;
-    // The paper's corner belongs to the document, not the viewport. Scrolling
-    // changes its screen position, never the amount of material being rolled.
-    const right = s.originX??w-inset, top = (s.originY??inset)-paperScrollY();
-    ctx.clearRect(0, 0, w, h);
+    // Render in document space. Native scrolling now moves the paper, curl
+    // and grab region together, without waiting for a JS/GPU scroll frame.
+    const right = s.originX??w-inset, top = s.originY??inset;
     const closedK = restingPaperK(w);
     const openK=openPaperK(s);
     const progress = Math.max(0, Math.min(1, (closedK - k) / (closedK - openK)));
@@ -75,10 +73,20 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // Two rasterizers must overlap slightly at the attachment: two separately
     // antialiased half-coverage edges otherwise reveal the white receiver.
     const paperHeight=Math.max(h,document.querySelector('[data-portfolio-paper]')?.offsetHeight||h)+inset;
+    s.renderHeight=paperHeight;
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const bufferHeight=Math.ceil(paperHeight*dpr);
+    if(canvas.current.height!==bufferHeight){
+      canvas.current.height=bufferHeight;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+    }
+    canvas.current.style.height=`${paperHeight}px`;
+    if(handle.current){handle.current.style.width=`${w}px`;handle.current.style.height=`${paperHeight}px`;}
+    ctx.clearRect(0,0,w,paperHeight);
     // The DOM clip belongs to document space. Recomputing it in viewport
     // coordinates on scroll made Safari repeatedly re-rasterize the mask.
     const remaining = stationaryPaperPolygon(w,paperHeight,right,s.originY??inset,Math.max(0,foldDistance-2),angle);
-    const grab=paperRollGrabPolygon(w,h,right,top,foldDistance,angle);
+    const grab=paperRollGrabPolygon(w,paperHeight,right,top,foldDistance,angle);
     if(handle.current)handle.current.style.clipPath=grab.length>=3?`polygon(${grab.map(p=>`${p.x}px ${p.y}px`).join(',')})`:'polygon(0 0,0 0,0 0)';
     const clip=`polygon(${remaining.map(p=>`${(p.x-inset).toFixed(2)}px ${(p.y-inset).toFixed(2)}px`).join(",")})`;
     // Do not flash the approximate 2D curl while GPU pipelines compile.
@@ -113,7 +121,6 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       const bend=referenceMath.rollBendAtDistance(foldDistance,frame.gu,materialSettings,beyond);
       const length=Math.max(.001,foldDistance+referenceMath.projectBend(foldDistance,bend)[0]);
       s.paintPending=true;
-      const paintedScroll=paperScrollY();
       // Reveal incoming DOM content before the GPU presents a receding roll.
       // Waiting for GPU completion here leaves the newly uncovered band white.
       // Rolling away is the opposite: retain the old flat pixels until done.
@@ -125,7 +132,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         callbacks.current.onClipChange(clip,progress);
         if(gpuCanvas.current)gpuCanvas.current.style.opacity='1';
         if(s.k===k&&s.angle===angle)notifySettled();
-        if(s.k!==k||s.angle!==angle||paperScrollY()!==paintedScroll)render();
+        if(s.k!==k||s.angle!==angle)render();
       }).catch(()=>{s.paintPending=false;});
       const stamp=document.querySelector('[data-paper-stamp]');
       if(stamp)stamp.style.opacity='';
@@ -136,7 +143,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const stamp=document.querySelector('[data-paper-stamp]');
     if(stamp)stamp.style.opacity='';
     const period = PAGE_SCALLOP_PERIOD;
-    const base = scallopedOutline(w - inset * 2, h + 200, period).map(p => ({ x: p.x + inset, y: p.y + top }));
+    const base = scallopedOutline(w - inset * 2, paperHeight-inset, period).map(p => ({ x: p.x + inset, y: p.y + inset }));
     const trace = points => {
       if (!points.length) return;
       ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
@@ -160,7 +167,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     layers.forEach(({ color, shift }, index) => {
       // All sheets share one roll axis. Moving each crease independently
       // caused different turn phases and exposed broad wedges of color.
-      const line = k+paperScrollY();
+      const line = k;
       const maxDepth=Math.max(0,(right-top-line)/root2);
       const radius=23.1+maxDepth*.012;
       const pitch=.014;
@@ -223,7 +230,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // Compile both palettes once. Changing pages must not destroy the GPU
     // device, rebuild its pipelines, or fall back to canvas mid-unroll.
     const colors=colorsFor(variantRef.current);
-    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportTop:paperScrollY,viewportHeight:()=>state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
+    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportTop:()=>0,viewportHeight:()=>state.current.renderHeight||state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
       if(cancelled){engine.dispose();return null;}
       gpu.current=engine;
       rendererStatus.current='gpu';
@@ -385,8 +392,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       s.velocity=0;s.plush=0;
       render();
     };
-    resize();window.addEventListener("resize",resize);window.addEventListener("scroll",render,{passive:true});
-    return()=>{window.removeEventListener("resize",resize);window.removeEventListener("scroll",render);cancelAnimationFrame(state.current.raf);state.current.raf=0;};
+    resize();window.addEventListener("resize",resize);
+    return()=>{window.removeEventListener("resize",resize);cancelAnimationFrame(state.current.raf);state.current.raf=0;};
   },[render]);
 
   useEffect(()=>{
@@ -578,6 +585,6 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     <canvas ref={canvas} className={styles.peelCanvas} style={{visibility:'hidden'}} aria-hidden="true"/>
     <canvas ref={gpuCanvas} className={styles.peelCanvas} style={{visibility:'hidden',opacity:0,zIndex:7}} aria-hidden="true"/>
     <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
-    <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{inset:0,width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
+    <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{position:'absolute',inset:'0 auto auto 0',width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
   </>;
 }
