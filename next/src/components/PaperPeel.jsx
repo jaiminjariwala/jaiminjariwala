@@ -349,9 +349,10 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     observer.observe(paper,{subtree:true,characterData:true,childList:true});
     paper.addEventListener('load',schedule,true);
     paper.addEventListener('scroll',schedule,true);
+    paper.addEventListener('sticker-surface-change',schedule,true);
     window.addEventListener('resize',schedule);
     update();
-    return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);window.removeEventListener('resize',schedule);};
+    return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);paper.removeEventListener('sticker-surface-change',schedule,true);window.removeEventListener('resize',schedule);};
   },[variant,render]);
 
   const finishStampArrival=()=>{

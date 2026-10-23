@@ -1,13 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {buckleProfile,buckleAppearance,buckleMap,stepBuckle} from './stickerBuckle.mjs';
+import {buckleField,buckleAppearance,buckleMap,stepBuckle} from './stickerBuckle.mjs';
 
-test('the diagonal ridge displaces artwork locally rather than translating the whole sticker',()=>{
-  assert.ok(Math.abs(buckleProfile(.58).r-.5)>.3);
-  assert.ok(Math.abs(buckleProfile(.58).g-.5)>.1);
-  assert.ok(Math.abs(buckleProfile(0).r-.5)<.00001);
-  assert.ok(Math.abs(buckleProfile(1).r-.5)<.00001);
+test('the saddle field bends vertically with no horizontal ridge distortion',()=>{
+  assert.equal(buckleField(0,0).r,.5);
+  assert.equal(buckleField(0,0).g,.625);
+  assert.equal(buckleField(1,0).g,.375);
+  assert.equal(buckleField(0,1).g,.375);
+  assert.equal(buckleField(1,1).g,.625);
+  assert.equal(buckleField(.5,.5).g,.5);
+  assert.ok(Math.abs(buckleField(4.5/24,.5/24).g-.6015625)<.00001);
   assert.ok(buckleMap('displacement').startsWith('data:image/svg+xml,'));
 });
 test('hover flattens geometry and shading together while developing the silhouette shadow',()=>{
@@ -16,8 +19,13 @@ test('hover flattens geometry and shading together while developing the silhouet
   assert.ok(flat.blur>rest.blur);assert.ok(flat.opacity>rest.opacity);
 });
 test('resting fold matches the reference soft low-contrast lighting instead of a dark stripe',()=>{
-  for(let t=0;t<=1;t+=.002)assert.ok(buckleProfile(t).shade>=.9199);
-  assert.ok(buckleAppearance(1).scale<=.045);
+  const light=decodeURIComponent(buckleMap('shading'));
+  assert.ok(light.includes('rgb(93%,93%,93%)'));
+  assert.ok(light.includes('offset=".43"'));assert.ok(light.includes('offset=".52"'));
+  const rest=buckleAppearance(1,200),hover=buckleAppearance(0,200);
+  assert.equal(rest.scale,24);assert.equal(rest.blur,1.05);assert.equal(hover.blur,3.05);
+  assert.ok(rest.pose.includes('rotateX(4.375deg) rotateY(-6.125deg)'));
+  assert.ok(hover.pose.includes('rotateX(0deg) rotateY(0deg)'));
 });
 test('the deformation spring is frame-rate independent and reverses continuously',()=>{
   const sample=hz=>{let p=1,v=0;for(let i=0;i<hz/2;i++){const s=stepBuckle(p,v,0,1/hz);p=s.position;v=s.velocity;}return p;};
