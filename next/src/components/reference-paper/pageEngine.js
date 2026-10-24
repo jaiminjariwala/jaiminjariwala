@@ -1,7 +1,7 @@
 /* Third-party jm.sv public paper renderer. Local reference comparison only.
  * Source URLs and provenance: PORTFOLIO-V2.md. Review permissions before release. */
 import math from './paperMath';
-import {withSurfaceStamp} from './paperStampShader.mjs';
+import {withSurfaceStamp} from './paperStampShader.ts';
 const moduleExports={};
 const register=(items)=>{for(let i=0;i<items.length;i+=3)moduleExports[items[i]]=items[i+2];};
 const e={s:register,i(id){if(id===798840)return math;if(id===786450)return {gpuPaperStore:{get:()=>math.GPU_PAPER_DEFAULTS}};if(id===27170)return {sitePaperSettings:settings=>settings};throw new Error('Unsupported reference module '+id);},A:()=>import('./gpuKernel').then(module=>module.default)};
