@@ -31,6 +31,8 @@
 .stickerSurface{transform-origin:35% 65%;will-change:transform}
 .stamp>svg.stickerFilterDefs,.homeStamp>svg.stickerFilterDefs{position:absolute;inset:auto;left:0;top:0;width:0;height:0;overflow:hidden;pointer-events:none}
 .stamp .experienceArtwork,.homeStamp .experienceArtwork{left:13%;top:10%;width:74%;height:80%;object-fit:contain;mix-blend-mode:normal}
+.stamp.skillsStamp{transform:none}
+.stamp .skillsArtwork{left:10%;top:10%;width:80%;height:80%;object-fit:contain;mix-blend-mode:normal}
 .stamp .educationArtwork,.homeStamp .educationArtwork{position:absolute;inset:12%;width:76%;height:76%;overflow:hidden}
 .rocketStamp{transform:rotate(0)}
 .rocketStamp .stampCrease{opacity:.45}
@@ -78,12 +80,12 @@
 .rollHintGlove img:last-child{opacity:0}
 @media(prefers-reduced-motion:reduce){.rollHintGlove{display:none}}
 .stampGrid{align-items:start}
-.stampItem{margin:0;display:flex;flex-direction:column;align-items:center;gap:16px}
-.stampItem figcaption{font-size:18px;line-height:1.3;color:#777;text-align:center}
-.comingSoon{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;font-family:"V2 James Hand",cursive;font-size:32px;color:#666}
-.comingSoon small{font-family:var(--font-inter),Arial,sans-serif;font-size:14px;line-height:1.3;white-space:nowrap}
-.stampItem .locked{opacity:.65}
-@media(max-width:760px){.stampItem{gap:13px}.stampItem figcaption{font-size:16px}.comingSoon{font-size:26px;gap:6px}.comingSoon small{font-size:12px}}
+.stampItem{margin:0;display:flex;justify-content:center}
+/* A roomy, centered stack on phones; desktop keeps its three-column grid. */
+@media(max-width:760px){
+ .stampGrid{grid-template-columns:minmax(0,1fr);padding:0 28px;gap:44px;margin:90px auto 80px}
+ .stampGrid .stamp{width:min(62vw,260px);height:min(62vw,260px)}
+}
 .inlineLink{border-bottom:0}
 .inlineLink,.exploreLabel,.pageNavigation a[aria-current=page]{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23c7c7c3' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");background-size:100% 6px;background-repeat:no-repeat;background-position:left bottom;padding-bottom:4px;text-decoration:none!important;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .article .introExplore{margin-top:68px}
@@ -94,6 +96,7 @@
 .pageNavigation{margin-top:55px;padding-top:24px;border-top:1px solid #eee}
 .pageNavigation a{padding:0;background:none;border:0;color:inherit}
 .pageNavigation a[aria-current=page]{color:#282826}
+.introExplore a,.pageNavigation a,.galleryBack{text-decoration:none!important}
 .site{--ink:rgb(32,32,32)}
 /* Leave the reference's open desktop gutter, including every paper layer. */
 @media(min-width:761px){
@@ -189,8 +192,9 @@
  .article{--article-left:calc(max(0px,(93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu)));--article-width:calc(4 * var(--col-width) + 3 * var(--gu) + 96px)}
 }
 
-/* Project media shares the stamp paper, with enough inset for every scallop. */
-.stamp .projectsArtwork,.homeStamp .projectsArtwork{position:absolute;inset:8%;width:84%;height:84%;pointer-events:none}
+/* Original folder illustration, on white stamp paper with a rightward tilt. */
+.stamp.projectsStamp,.homeStamp.projectsStamp{transform:rotate(4deg)}
+.stamp .projectsArtwork,.homeStamp .projectsArtwork{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .article .projectEntry{margin-top:68px}
 .article .projectEntry+.projectEntry{border-top:1px solid #eee;padding-top:56px;margin-top:66px}
 .article .projectEntry h2{font-family:"V2 James Hand",cursive;font-size:32px;line-height:1.2;letter-spacing:-.035em;-webkit-text-stroke:.35px currentColor;margin:0 0 26px}
@@ -251,5 +255,3 @@
  .projectThumbnails button{flex-basis:84px}
  .article p.projectNote{font-size:12px}
 }
-
-.introExplore a,.pageNavigation a,.galleryBack{text-decoration:none!important}

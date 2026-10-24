@@ -29,6 +29,35 @@ test('Projects uses the existing roll navigation while Skills stays upcoming',()
   assert.ok(!source.includes('Projects (adding soon)'));
 });
 
+test('Projects restores the original folder drawing in lavender on both stamp sizes',()=>{
+  const source=readFileSync(new URL('./PortfolioV2.jsx',import.meta.url),'utf8');
+  const css=readFileSync(new URL('./PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(source.includes('if(kind==="projects")return <svg className={styles.projectsArtwork} viewBox="0 0 200 200"'));
+  assert.ok(source.includes('fill="#c9bdf8" stroke="#9e89d8"'));
+  assert.ok(source.includes('fill="#b8a5ee" stroke="#9e89d8"'));
+  assert.ok(source.includes('<g stroke="#125cd6" strokeWidth="5">'));
+  assert.ok(source.includes('m80 94-19 18 19 17m42-34 19 17-19 18m-14-40-13 45'));
+  assert.ok(css.includes('.stamp .projectsArtwork,.homeStamp .projectsArtwork{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}'));
+  assert.ok(!source.includes('src="/images/projects-computer-red.png"'));
+});
+
+test('Projects keeps its white scalloped paper without a noisy or colored border',()=>{
+  const source=readFileSync(new URL('./PortfolioV2.jsx',import.meta.url),'utf8');
+  const css=readFileSync(new URL('./PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(source.includes('<StampRim/><StampArt kind="projects"/>'));
+  assert.ok(!source.includes('projectsStampMask'));
+  assert.ok(!css.includes('background:#e11931'));
+  assert.ok(!source.includes('stampArtworkEdge'),'do not apply the textured fade to Projects');
+});
+
+test('Projects stamps tilt right without changing the other stamp rotations',()=>{
+  const source=readFileSync(new URL('./PortfolioV2.jsx',import.meta.url),'utf8');
+  const css=readFileSync(new URL('./PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(source.includes('className={`${styles.stamp} ${styles.projectsStamp}`} aria-label="Open projects"'));
+  assert.ok(source.includes('page==="projects"?styles.projectsStamp:""'));
+  assert.ok(css.includes('.stamp.projectsStamp,.homeStamp.projectsStamp{transform:rotate(4deg)}'));
+});
+
 test('project galleries preserve mobile framing and avoid automatic video playback',()=>{
   const source=readFileSync(new URL('./PortfolioV2Projects.jsx',import.meta.url),'utf8');
   const player=readFileSync(new URL('./ProjectVideoPlayer.jsx',import.meta.url),'utf8');

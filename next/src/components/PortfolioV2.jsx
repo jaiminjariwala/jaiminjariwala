@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
 import PortfolioV2Projects from "./PortfolioV2Projects";
 import styles from "./PortfolioV2.module.css";
@@ -51,11 +52,12 @@ function StampArt({ kind }) {
     </g>
   </svg>;
   if(kind==="experience")return <img className={`${styles.stampArtwork} ${styles.experienceArtwork}`} src="/v2-reference/snoopy-experience.png" alt="" aria-hidden="true"/>;
+  if(kind==="skills")return <Image className={`${styles.stampArtwork} ${styles.skillsArtwork}`} src="/images/skills-pencil-transparent.png" width={400} height={400} sizes="(max-width: 760px) 50vw, 183px" alt="" aria-hidden="true"/>;
   if(kind==="education")return <svg className={styles.educationArtwork} viewBox="100 190 560 330" aria-hidden="true"><image href="/v2-reference/education-school-bus.png" width="736" height="736"/></svg>;
   if(kind==="projects")return <svg className={styles.projectsArtwork} viewBox="0 0 200 200" aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
-    <path d="m34 65 2-22q0-8 9-8l37-1 17 15 54-1q10 0 10 11l3 85q0 9-9 10l-113 1q-9-1-10-11Z" fill="#ffd54b" stroke="#e6b52d" strokeWidth="2"/>
+    <path d="m34 65 2-22q0-8 9-8l37-1 17 15 54-1q10 0 10 11l3 85q0 9-9 10l-113 1q-9-1-10-11Z" fill="#c9bdf8" stroke="#9e89d8" strokeWidth="2"/>
     <path d="m44 49 101 3-2 83-102-2Z" fill="#fffefa" stroke="#e5e2d8" strokeWidth="2"/>
-    <path d="m37 72 126 1 7 74q1 10-10 11l-118 1q-10 0-10-11Z" fill="#f9cf43" stroke="#e6b52d" strokeWidth="2"/>
+    <path d="m37 72 126 1 7 74q1 10-10 11l-118 1q-10 0-10-11Z" fill="#b8a5ee" stroke="#9e89d8" strokeWidth="2"/>
     <g stroke="#125cd6" strokeWidth="5"><path d="m80 94-19 18 19 17m42-34 19 17-19 18m-14-40-13 45"/></g>
   </svg>;
   return <span className={styles.question}>?</span>;
@@ -165,17 +167,17 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
     <div className={styles.backingShadow} aria-hidden="true"><div className={styles.backingPaper} style={{maskImage:paperMask,maskSize:"100% 100%"}}/></div>
     <section className={`${styles.collection} ${collection || peel>0?styles.collectionVisible:""}`} style={{maskImage:collectionMask,maskSize:"100% 100%"}} aria-label="Stamp collection" aria-hidden={!collection} inert={!collection?true:undefined}>
       <div className={styles.stampGrid}>
-        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.carStamp}`} aria-label="Open travel" onClick={()=>navigate("gallery")}><StampRim/><StampArt kind="car"/></StickerButton><figcaption>Travel</figcaption></figure>
-        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.rocketStamp}`} aria-label="Open introduction" onClick={()=>navigate("intro")}><StampRim lobes={6}/><span className={styles.stampTime}>{clock}<span>DC</span></span><StampArt kind="rocket"/><span className={styles.signature}>Jaimin<span>:)</span></span></StickerButton><figcaption>About</figcaption></figure>
-        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.workStamp}`} aria-label="Open experience" onClick={()=>navigate("experience")}><StampRim/><StampArt kind="experience"/></StickerButton><figcaption>Work</figcaption></figure>
-        <figure className={styles.stampItem} data-stamp-item><StickerButton className={styles.stamp} aria-label="Open education" onClick={()=>navigate("education")}><StampRim/><StampArt kind="education"/></StickerButton><figcaption>Education</figcaption></figure>
-        <figure className={styles.stampItem} data-stamp-item><StickerButton className={styles.stamp} aria-label="Open projects" onClick={()=>navigate("projects")}><StampRim/><StampArt kind="projects"/></StickerButton><figcaption>Projects</figcaption></figure>
-        <figure className={styles.stampItem} data-stamp-item><div className={`${styles.stamp} ${styles.locked}`} aria-label="Skills (adding soon)"><StampRim/><span className={styles.comingSoon}>Skills<small>(adding soon)</small></span></div></figure>
+        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.carStamp}`} aria-label="Open travel" onClick={()=>navigate("gallery")}><StampRim/><StampArt kind="car"/></StickerButton></figure>
+        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.rocketStamp}`} aria-label="Open introduction" onClick={()=>navigate("intro")}><StampRim lobes={6}/><span className={styles.stampTime}>{clock}<span>DC</span></span><StampArt kind="rocket"/><span className={styles.signature}>Jaimin<span>:)</span></span></StickerButton></figure>
+        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.workStamp}`} aria-label="Open experience" onClick={()=>navigate("experience")}><StampRim/><StampArt kind="experience"/></StickerButton></figure>
+        <figure className={styles.stampItem} data-stamp-item><StickerButton className={styles.stamp} aria-label="Open education" onClick={()=>navigate("education")}><StampRim/><StampArt kind="education"/></StickerButton></figure>
+        <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.projectsStamp}`} aria-label="Open projects" onClick={()=>navigate("projects")}><StampRim/><StampArt kind="projects"/></StickerButton></figure>
+        <figure className={styles.stampItem} data-stamp-item><div className={`${styles.stamp} ${styles.skillsStamp}`} aria-label="Skills (adding soon)"><StampRim/><StampArt kind="skills"/></div></figure>
       </div>
     </section>
 
     <div className={styles.paperShadow}><div ref={paper} data-portfolio-paper className={styles.paper} style={{maskImage:paperMask}} inert={collection?true:undefined}>
-      <StickerButton data-paper-stamp className={`${styles.homeStamp} ${page==="intro"?styles.rocketStamp:""}`} aria-label="Choose a stamp" onClick={revealCollection}><StampRim lobes={page==="intro"?6:8}/>{page==="intro"&&<span className={styles.stampTime}>{clock}<span>DC</span></span>}<StampArt kind={activeArt}/>{page==="intro"&&<span className={styles.signature}>Jaimin<span>:)</span></span>}</StickerButton>
+      <StickerButton data-paper-stamp className={`${styles.homeStamp} ${page==="intro"?styles.rocketStamp:page==="projects"?styles.projectsStamp:""}`} aria-label="Choose a stamp" onClick={revealCollection}><StampRim lobes={page==="intro"?6:8}/>{page==="intro"&&<span className={styles.stampTime}>{clock}<span>DC</span></span>}<StampArt kind={activeArt}/>{page==="intro"&&<span className={styles.signature}>Jaimin<span>:)</span></span>}</StickerButton>
       <article ref={heading} tabIndex={-1} className={`${styles.article} ${page==="intro"?styles.introPage:page==="experience"||page==="education"?styles.experiencePage:""}`} aria-label={page==="intro"?"Introduction":page==="gallery"?"Travel":page==="education"?"Education":page==="projects"?"Projects":"Experience"} key={page}>
         {page==="intro"&&<>
           <header><h1>Jaimin Mukesh Jariwala</h1></header>
