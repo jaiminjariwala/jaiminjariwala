@@ -78,7 +78,7 @@ test('mobile scroll keeps document clipping and the GPU viewport stable',()=>{
   const css=readFileSync(new URL('../PortfolioV2.module.css',import.meta.url),'utf8');
   assert.ok(css.includes('.peelCanvas{position:absolute;inset:0 auto auto 0}'));
   assert.ok(peel.includes("position:'absolute',inset:'0 auto auto 0'"));
-  assert.ok(peel.includes('if(state.current.dragging||state.current.open)update()'));
+  assert.ok(peel.includes('if(!state.current.raf&&(state.current.dragging||state.current.open))update()'));
 });
 
 test('photos reveal once and avoid filter churn on touch devices',()=>{

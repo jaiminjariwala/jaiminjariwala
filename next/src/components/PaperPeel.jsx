@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import { clipHalfPlane, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeometry";
+import { clipHalfPlane, sheetOutline, PAGE_SCALLOP_PERIOD } from "./paperGeometry";
 import styles from "./PortfolioV2.module.css";
 import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.mjs";
@@ -9,21 +9,27 @@ import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./pap
 import {paperViewportWidth} from './paperLayout.mjs';
 import {drawStampArrival} from './stampArrival.mjs';
 import {preventPaperNativeTouch} from './paperTouch.mjs';
-import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK } from "./paperDragGeometry.mjs";
+import {cachedStamp,paperRasterHeight,stampAtPoint,visibleStampBounds} from './paperMobile.mjs';
+import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK, paperDragUpperK } from "./paperDragGeometry.mjs";
 
 const PAPER_COLORS={
   standard:['#ffffff','#37af73','#007dfe','#c19f85','#ffffff'],
   gallery:['#ffffff','#e63a3b','#5ac561','#2050eb','#ffffff'],
 };
 const colorsFor=variant=>variant==='gallery'?PAPER_COLORS.gallery:PAPER_COLORS.standard;
+const stampLabels={intro:'Open introduction',gallery:'Open travel',experience:'Open experience',education:'Open education',projects:'Open projects'};
 
 function openPaperK(s){
   const inset=s.width<640?12:16;
-  const stamps=Array.from(document.querySelectorAll('[aria-label="Stamp collection"] [data-stamp-item]'),stamp=>stamp.getBoundingClientRect());
-  const bounds=stamps.length?{
-    left:Math.min(...stamps.map(r=>r.left)),right:Math.max(...stamps.map(r=>r.right)),
-    top:Math.min(...stamps.map(r=>r.top))+window.scrollY,bottom:Math.max(...stamps.map(r=>r.bottom))+window.scrollY,
-  }:undefined;
+  if(!s.collectionBounds){
+    const stamps=Array.from(document.querySelectorAll('[aria-label="Stamp collection"] [data-stamp-item]'),stamp=>stamp.getBoundingClientRect());
+    const viewport=document.querySelector('[aria-label="Stamp collection"]')?.getBoundingClientRect();
+    s.collectionBounds=visibleStampBounds(stamps,{
+      left:Math.max(0,viewport?.left??0),right:Math.min(s.width,viewport?.right??s.width),
+      top:Math.max(0,viewport?.top??0),bottom:Math.min(window.innerHeight,viewport?.bottom??window.innerHeight),
+    },window.scrollY);
+  }
+  const bounds=s.collectionBounds;
   // The visible cylinder reaches back from its mathematical crease. Leave
   // room for that face so the stop clears the stamp rim, not only its center.
   return paperOpenK(s.width,s.height,s.originX??s.width-inset,s.originY??inset,s.restAngle??RESTING_PAPER_ANGLE,inset,{bounds,clearance:bounds?160:100});
@@ -43,6 +49,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const handle = useRef(null);
   const refreshInk = useRef(null);
   const inkDirty = useRef(false);
+  const stampCache=useRef(new Map());
+  const fontCss=useRef(null);
   const hintGlove = useRef(null);
   const hintSeen = useRef(false);
   const arrivalCanvas=useRef(null);
@@ -52,6 +60,48 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const state = useRef({ width: 0, height: 0, k: 0, target: 0, velocity: 0, angle: RESTING_PAPER_ANGLE, targetAngle: RESTING_PAPER_ANGLE, angularVelocity: 0, plush: 0, dt: 1/60, lastTime: 0, reducedMotion: false, dragging: false, raf: 0, moved: false });
   const callbacks = useRef({ onOpenChange, onClipChange, onSettled, onContentReady });
   useEffect(() => { callbacks.current = { onOpenChange, onClipChange, onSettled, onContentReady }; });
+
+  const stampImage=useCallback((kind,stamp)=>{
+    const minute=kind==='intro'?Math.floor(Date.now()/60000):0;
+    const key=`${kind}:${window.innerWidth}:${minute}`;
+    if(stampCache.current.size>10)stampCache.current.delete(stampCache.current.keys().next().value);
+    return cachedStamp(stampCache.current,key,async()=>{
+      await document.fonts.ready;
+      const {toCanvas,getFontEmbedCSS}=await import('html-to-image');
+      const intro=document.querySelector(`[aria-label="${stampLabels.intro}"]`);
+      fontCss.current??=getFontEmbedCSS(intro||stamp).catch(error=>{fontCss.current=null;throw error;});
+      const fontEmbedCSS=await fontCss.current;
+      // Hidden collection stamps can be prepared offscreen without revealing
+      // the collection or capturing its inherited visibility:hidden styles.
+      const host=document.createElement('div'),source=stamp.cloneNode(true);
+      host.setAttribute('aria-hidden','true');host.inert=true;
+      host.className=document.querySelector('[data-portfolio-paper]').closest(`.${styles.site}`).className;
+      Object.assign(host.style,{position:'fixed',left:'-10000px',top:'0',width:`${stamp.offsetWidth}px`,height:`${stamp.offsetHeight}px`,padding:'0',minHeight:'0',visibility:'visible',pointerEvents:'none'});
+      Object.assign(source.style,{position:'relative',width:`${stamp.offsetWidth}px`,height:`${stamp.offsetHeight}px`,left:'0',top:'0',visibility:'visible'});
+      host.append(source);document.body.append(host);
+      try{
+        return await toCanvas(source,{fontEmbedCSS,pixelRatio:window.innerWidth<=760?1.5:2,style:{position:'relative',top:'0px',left:'0px',right:'auto',bottom:'auto',margin:'0px',transform:'none',transition:'none',opacity:'1'},skipAutoScale:true});
+      }finally{host.remove();}
+    });
+  },[]);
+
+  useEffect(()=>{
+    let cancelled=false,timer,idle;
+    const queue=['experience','gallery','education','projects'];
+    const schedule=()=>{
+      if(cancelled||!queue.length)return;
+      if(window.requestIdleCallback)idle=window.requestIdleCallback(prepare,{timeout:1500});
+      else timer=setTimeout(prepare,150);
+    };
+    const prepare=()=>{
+      if(cancelled)return;
+      if(state.current.dragging||state.current.raf){timer=setTimeout(schedule,150);return;}
+      const kind=queue.shift(),stamp=document.querySelector(`[aria-label="${stampLabels[kind]}"]`);
+      (stamp?stampImage(kind,stamp):Promise.resolve()).catch(()=>{}).finally(schedule);
+    };
+    schedule();
+    return()=>{cancelled=true;clearTimeout(timer);if(idle&&window.cancelIdleCallback)window.cancelIdleCallback(idle);};
+  },[stampImage]);
 
   const notifySettled=()=>{
     const s=state.current;
@@ -66,34 +116,49 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     if (!ctx || !s.width) return;
     const { width: w, height: h, k } = s;
     const inset = w < 640 ? 12 : 16;
+    const mobileSheet=window.innerWidth<=760,horizontalInset=mobileSheet?0:inset;
     // Render in document space. Native scrolling now moves the paper, curl
     // and grab region together, without waiting for a JS/GPU scroll frame.
     const right = s.originX??w-inset, top = s.originY??inset;
-    const closedK = restingPaperK(w);
+    const closedK = restingPaperK(w,window.innerWidth);
     const openK=openPaperK(s);
     const progress = Math.max(0, Math.min(1, (closedK - k) / (closedK - openK)));
     if(s.arrivalPending&&progress<.7)startStampArrival.current?.();
     const angle=gpu.current&&!gpu.current.failed?s.angle:RESTING_PAPER_ANGLE;
     const foldDistance=Math.max(.001,(w-2*inset-k)/Math.SQRT2);
+    s.flatMobile=mobileSheet&&!s.open&&!s.dragging&&k===closedK;
+    if(s.flatMobile){
+      // No synthetic .001-distance GPU bend at rest: it retains the stack's
+      // contact lift and shadow even though the phone page should be flat.
+      canvas.current.style.visibility='hidden';
+      gpu.current?.clear();
+      if(gpuCanvas.current){gpuCanvas.current.style.visibility='hidden';gpuCanvas.current.style.opacity='0';}
+      if(handle.current)handle.current.style.clipPath='polygon(0 0,0 0,0 0)';
+      callbacks.current.onClipChange('none',0);
+      const stamp=document.querySelector('[data-paper-stamp]');
+      if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
+      notifySettled();
+      return;
+    }
     // Two rasterizers must overlap slightly at the attachment: two separately
     // antialiased half-coverage edges otherwise reveal the white receiver.
     const paperHeight=Math.max(h,document.querySelector('[data-portfolio-paper]')?.offsetHeight||h)+inset;
-    s.renderHeight=paperHeight;
-    const dpr=Math.min(window.devicePixelRatio||1,2);
-    const bufferHeight=Math.ceil(paperHeight*dpr);
+    s.renderHeight=paperRasterHeight(w,paperHeight,h,s.fullRaster);
+    const dpr=Math.min(window.devicePixelRatio||1,mobileSheet?1.25:2);
+    const bufferHeight=Math.ceil(s.renderHeight*dpr);
     if(canvas.current.height!==bufferHeight){
       canvas.current.height=bufferHeight;
       ctx.setTransform(dpr,0,0,dpr,0,0);
     }
-    canvas.current.style.height=`${paperHeight}px`;
+    canvas.current.style.height=`${s.renderHeight}px`;
     if(handle.current){handle.current.style.width=`${w}px`;handle.current.style.height=`${paperHeight}px`;}
-    ctx.clearRect(0,0,w,paperHeight);
+    ctx.clearRect(0,0,w,s.renderHeight);
     // The DOM clip belongs to document space. Recomputing it in viewport
     // coordinates on scroll made Safari repeatedly re-rasterize the mask.
     const remaining = stationaryPaperPolygon(w,paperHeight,right,s.originY??inset,Math.max(0,foldDistance-2),angle);
     const grab=paperRollGrabPolygon(w,paperHeight,right,top,foldDistance,angle);
     if(handle.current)handle.current.style.clipPath=grab.length>=3?`polygon(${grab.map(p=>`${p.x}px ${p.y}px`).join(',')})`:'polygon(0 0,0 0,0 0)';
-    const clip=`polygon(${remaining.map(p=>`${(p.x-inset).toFixed(2)}px ${(p.y-inset).toFixed(2)}px`).join(",")})`;
+    const clip=`polygon(${remaining.map(p=>`${(p.x-horizontalInset).toFixed(2)}px ${(p.y-inset).toFixed(2)}px`).join(",")})`;
     // Do not flash the approximate 2D curl while GPU pipelines compile.
     // Keep the flat paper intact until the first real curl frame is ready.
     if(rendererStatus.current==='pending')return;
@@ -104,9 +169,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       // exposes a diagonal seam until the pointer stops and it catches up.
       if(s.paintPending)return;
       const engine=gpu.current;
-      const element=document.querySelector('[data-portfolio-paper]');
       const radius=PAGE_SCALLOP_PERIOD/2;
-      const frame={docW:w,docH:Math.max(h,element?.offsetHeight||h)+inset,gu:15.4,left:inset+radius,right:w-inset-radius,top:inset+radius,amp:radius,sideAmp:radius,period:PAGE_SCALLOP_PERIOD};
+      const frame={docW:w,docH:paperHeight,gu:15.4,left:mobileSheet?0:inset+radius,right:mobileSheet?w:w-inset-radius,top:inset+radius,amp:radius,sideAmp:mobileSheet?0:radius,period:PAGE_SCALLOP_PERIOD};
       const materialSettings=settings.current;
       // A very small, speed-dependent compression makes the roll feel padded
       // in motion, then returns to the exact resting radius and shadow shape.
@@ -134,6 +198,9 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       engine.whenIdle().then(()=>{
         if(gpu.current!==engine)return;
         s.paintPending=false;
+        // A completed older GPU submission must not restore its last fold
+        // over the already-flat DOM page.
+        if(s.flatMobile){notifySettled();return;}
         callbacks.current.onClipChange(clip,progress);
         if(gpuCanvas.current)gpuCanvas.current.style.opacity='1';
         if(s.k===k&&s.angle===angle)notifySettled();
@@ -148,7 +215,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const stamp=document.querySelector('[data-paper-stamp]');
     if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
     const period = PAGE_SCALLOP_PERIOD;
-    const base = scallopedOutline(w - inset * 2, paperHeight-inset, period).map(p => ({ x: p.x + inset, y: p.y + inset }));
+    const base = sheetOutline(w-horizontalInset*2,paperHeight-inset,period,!mobileSheet).map(p=>({x:p.x+horizontalInset,y:p.y+inset}));
     const trace = points => {
       if (!points.length) return;
       ctx.beginPath(); ctx.moveTo(points[0].x, points[0].y);
@@ -235,7 +302,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // Compile both palettes once. Changing pages must not destroy the GPU
     // device, rebuild its pipelines, or fall back to canvas mid-unroll.
     const colors=colorsFor(variantRef.current);
-    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,viewportTop:()=>0,viewportHeight:()=>state.current.renderHeight||state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
+    engineReady.current=import('./reference-paper/pageEngine').then(({createPageEngine})=>createPageEngine(gpuCanvas.current,{colors,palettes:Object.values(PAPER_COLORS),surfaceInk:true,staticPose:true,pixelRatio:Math.min(window.devicePixelRatio||1,window.innerWidth<=760?1.25:2),viewportTop:()=>0,viewportHeight:()=>state.current.renderHeight||state.current.height||window.innerHeight,settings:()=>settings.current})).then(engine=>{
       if(cancelled){engine.dispose();return null;}
       gpu.current=engine;
       rendererStatus.current='gpu';
@@ -268,19 +335,19 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // mesh then bends and depth-tests it along with the paper, not as an
     // independently floating DOM overlay. The stationary part stays in DOM.
     const update=async()=>{
+      const began=performance.now();
       inkDirty.current=false;
       const current=++revision;
       try{
-        await document.fonts.ready;
         const {toCanvas}=await import('html-to-image');
         // html-to-image preserves absolute top/left unless explicitly reset.
         // Those page offsets cropped the stamp inside its own 160px texture.
-        const image=await toCanvas(stamp,{pixelRatio:2,style:{position:'relative',top:'0px',left:'0px',right:'auto',bottom:'auto',margin:'0px',transform:'none',transition:'none',opacity:'1'},skipAutoScale:true});
+        const image=await stampImage(variant,stamp);
         if(cancelled||current!==revision)return;
         const paper=stamp.closest('[data-portfolio-paper]');
         const ink=document.createElement('canvas');
         ink.width=paperViewportWidth(window.innerWidth);
-        ink.height=Math.max(window.innerHeight,paper.offsetHeight)+(window.innerWidth<640?12:16);
+        ink.height=Math.ceil(paperRasterHeight(window.innerWidth,Math.max(window.innerHeight,paper.offsetHeight)+(window.innerWidth<=760?12:16),state.current.height||window.innerHeight));
         const ctx=ink.getContext('2d');
         const width=stamp.offsetWidth,height=stamp.offsetHeight;
         const paperBounds=paper.getBoundingClientRect();
@@ -294,9 +361,9 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         // start of the bend looks like a separate strip across the last photo.
         for(const source of paper.querySelectorAll('[data-paper-ink]')){
           const bounds=source.getBoundingClientRect();
-          const cards=Array.from(source.children).filter(card=>{const box=card.getBoundingClientRect();return box.right>bounds.left&&box.left<bounds.right;});
+          const cards=Array.from(source.children).filter(card=>{const box=card.getBoundingClientRect();return box.right>bounds.left&&box.left<bounds.right&&box.top+window.scrollY<ink.height&&box.bottom+window.scrollY>0;});
           const prints=await Promise.all(cards.map(async card=>({card,image:await toCanvas(card,{
-            pixelRatio:1,skipAutoScale:true,
+            pixelRatio:1,skipAutoScale:true,fontEmbedCSS:await fontCss.current,
             style:{position:'relative',left:'0px',top:'0px',transform:'none',scale:'1',opacity:'1',filter:'none','--entrance-blur':'0px'},
           })})));
           if(cancelled||current!==revision)return;
@@ -329,6 +396,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
           await engine.whenIdle();
           if(cancelled||current!==revision)return;
         }else{render();}
+        paper.dataset.paperPreparationMs=String(Math.round(performance.now()-began));
         callbacks.current.onContentReady?.(variant);
       }catch(error){
         console.warn('Paper stamp texture could not be prepared',error);
@@ -342,7 +410,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       clearTimeout(refreshTimer);
       // Do not rasterize/upload the entire photo strip while a native
       // horizontal swipe is running. Refresh only when a roll needs ink.
-      refreshTimer=setTimeout(()=>{if(state.current.dragging||state.current.open)update();},350);
+      refreshTimer=setTimeout(()=>{if(!state.current.raf&&(state.current.dragging||state.current.open))update();},350);
     };
     const paper=stamp.closest('[data-portfolio-paper]');
     const observer=new MutationObserver(schedule);
@@ -353,7 +421,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     window.addEventListener('resize',schedule);
     update();
     return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);paper.removeEventListener('sticker-surface-change',schedule,true);window.removeEventListener('resize',schedule);};
-  },[variant,render]);
+  },[variant,render,stampImage]);
 
   const finishStampArrival=()=>{
     const s=state.current;
@@ -402,13 +470,17 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         const spring=stepPaperSpring(s.k,s.velocity,s.target,s.dt,s.dragging);
         s.k=spring.position;s.velocity=spring.velocity;
         const lower=openPaperK(s);
-        const upper=s.dragging?s.width-70:restingPaperK(s.width);
+        const upper=s.dragging?paperDragUpperK(s.width,window.innerWidth):restingPaperK(s.width,window.innerWidth);
         if(s.k<lower||s.k>upper){s.k=Math.max(lower,Math.min(upper,s.k));s.velocity=0;}
         const compression=Math.min(1,Math.abs(s.velocity)/1800);
         s.plush+=(compression-s.plush)*(1-Math.exp(-9*s.dt));
-        if(isPaperSettled(s.k,s.velocity,s.target)){
-          s.k=s.target;s.velocity=0;
-          if(!s.dragging&&!s.open&&s.originX!==undefined){delete s.originX;delete s.originY;delete s.restAngle;s.angle=s.targetAngle=RESTING_PAPER_ANGLE;s.angularVelocity=0;}
+      }
+      if(isPaperSettled(s.k,s.velocity,s.target,{flatLanding:window.innerWidth<=760&&!s.open&&!s.dragging&&s.target===restingPaperK(s.width,window.innerWidth)})){
+        s.k=s.target;s.velocity=0;
+        if(!s.dragging&&!s.open&&!s.hintActive){
+          if(s.originX!==undefined){delete s.originX;delete s.originY;delete s.restAngle;s.angle=s.targetAngle=RESTING_PAPER_ANGLE;s.angularVelocity=0;}
+          s.fullRaster=false;
+          if(window.innerWidth<=760)s.plush=0;
         }
       }
       render();
@@ -424,6 +496,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       // Keep the existing drawing buffer and pose until the width changes.
       if(s.width===paperViewportWidth(window.innerWidth)&&s.height&&window.matchMedia('(pointer: coarse)').matches){render();return;}
       s.width=paperViewportWidth(window.innerWidth);
+      s.collectionBounds=null;
       s.height=window.matchMedia('(pointer: coarse)').matches?Math.max(window.innerHeight,window.screen.height):window.innerHeight;
       s.reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const dpr=Math.min(window.devicePixelRatio||1,2);
@@ -431,7 +504,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       canvas.current.style.width=`${s.width}px`;
       canvas.current.getContext("2d").setTransform(dpr,0,0,dpr,0,0);
       s.angle=s.targetAngle=RESTING_PAPER_ANGLE;s.angularVelocity=0;
-      s.k=s.target=s.open?openPaperK(s):restingPaperK(s.width);
+      s.k=s.target=s.open?openPaperK(s):restingPaperK(s.width,window.innerWidth);
       s.velocity=0;s.plush=0;
       render();
     };
@@ -443,6 +516,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const s=state.current;
     const wasOpen=s.open;
     s.open=open;
+    s.collectionBounds=null;
     if(open&&s.arrivalActive)finishStampArrival();
     if(wasOpen&&!open&&!s.reducedMotion&&s.stampSnapshot&&gpu.current&&!gpu.current.failed){
       s.arrivalActive=true;s.arrivalPending=true;
@@ -452,7 +526,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     if(open&&inkDirty.current)refreshInk.current?.();
     if(!s.width)return;
     if(s.dragging)return;
-    s.target=open?openPaperK(s):restingPaperK(s.width);
+    s.target=open?openPaperK(s):restingPaperK(s.width,window.innerWidth);
     s.targetAngle=nearestPaperAngle(s.restAngle??RESTING_PAPER_ANGLE,s.angle);
     animate();
   },[open,animate]);
@@ -473,7 +547,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       if(running){
         const s=state.current;
         s.hintActive=false;
-        if(restore&&!s.dragging&&!s.open){s.target=restingPaperK(s.width);animate();}
+        if(restore&&!s.dragging&&!s.open){s.target=restingPaperK(s.width,window.innerWidth);animate();}
       }
     };
     const interact=()=>{
@@ -490,10 +564,17 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       if((!s.width||s.paintPending||!gpu.current)&&retries++<16){timer=setTimeout(start,200);return;}
       running=true;s.hintActive=true;
       hintSeen.current=true;rememberPaperHint(storage);
-      const closed=restingPaperK(s.width),pull=paperHintPull(s.width,closed,openPaperK(s));
       const inset=s.width<640?12:16;
+      const mobile=window.innerWidth<=760;
+      if(mobile){
+        // With no corner dog-ear, demonstrate the same partial tug from the
+        // visible top-center grip rather than an empty top-right corner.
+        s.originX=s.width/2;s.originY=inset;s.restAngle=Math.PI/2;
+        s.angle=s.targetAngle=Math.PI/2;s.collectionBounds=null;
+      }
+      const closed=restingPaperK(s.width,window.innerWidth),pull=paperHintPull(s.width,closed,openPaperK(s));
       const cornerReach=s.width-inset*2-closed;
-      const x=s.width-inset-cornerReach*.35,y=inset+cornerReach*.35;
+      const x=mobile?s.width/2:s.width-inset-cornerReach*.35,y=mobile?inset:inset+cornerReach*.35;
       const began=performance.now();
       const tick=now=>{
         if(stopped)return;
@@ -501,8 +582,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         const target=closed-pull*pose.pull;
         if(Math.abs(s.target-target)>.01){s.target=target;animate();}
         // Follow the actual spring pose, not a separate pretend drag.
-        const travel=Math.max(0,(closed-s.k)/2);
-        glove.style.transform=`translate3d(${x-travel-17}px,${y+travel-17}px,0) scale(${.85+.15*pose.opacity})`;
+        const travel=Math.max(0,(closed-s.k)/(mobile?Math.SQRT2:2));
+        glove.style.transform=`translate3d(${x-(mobile?0:travel)-17}px,${y+travel-17}px,0) scale(${.85+.15*pose.opacity})`;
         glove.style.opacity=String(pose.opacity);
         images[0].style.opacity=String(1-pose.grip);
         images[1].style.opacity=String(pose.grip);
@@ -551,6 +632,21 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     if(event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
     if(event.pointerType==='touch'&&event.cancelable)event.preventDefault();
     const s=state.current;
+    // A steered roll can leave its broad grab strip over an exposed stamp.
+    // Route a genuine tap to that stamp instead of swallowing it as a drag.
+    if(open&&event.currentTarget===handle.current){
+      const stamp=stampAtPoint(Array.from(document.querySelectorAll('[aria-label="Stamp collection"] [data-stamp-item] button')),event.clientX,event.clientY);
+      if(stamp){
+        event.preventDefault();
+        s.pointerId=event.pointerId;s.stampTap={stamp,x:event.clientX,y:event.clientY};s.moved=true;
+        event.currentTarget.setPointerCapture(event.pointerId);
+        return;
+      }
+    }
+    s.collectionBounds=null;
+    // A bottom-edge grab can start far below the first viewport. Preserve
+    // that rare gesture; normal top/corner navigation uses the small buffer.
+    s.fullRaster=event.currentTarget.dataset.paperEdge==='bottom';
     if(s.arrivalActive)finishStampArrival();
     if(inkDirty.current)refreshInk.current?.();
     if(event.currentTarget.dataset.paperEdge){
@@ -574,19 +670,28 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   };
   const pointerMove=event=>{
     const s=state.current;
+    if(s.stampTap&&event.pointerId===s.pointerId){
+      if(Math.hypot(event.clientX-s.stampTap.x,event.clientY-s.stampTap.y)>8)s.stampTap.cancelled=true;
+      return;
+    }
     if(!s.dragging||event.pointerId!==s.pointerId)return;
     if(event.pointerType==='touch'&&event.cancelable)event.preventDefault();
     const dx=event.clientX-s.startX,dy=event.clientY-s.startY;
     s.moved ||= Math.hypot(dx,dy)>5;
     const inset=s.width<640?12:16;
     const pose=paperDragPose((s.width-inset*2-s.startK)/Math.SQRT2,s.startAngle,dx,dy,s.dragOptions);
-    s.target=Math.max(openPaperK(s),Math.min(s.width-70,s.width-inset*2-pose.distance*Math.SQRT2));
+    s.target=Math.max(openPaperK(s),Math.min(paperDragUpperK(s.width,window.innerWidth),s.width-inset*2-pose.distance*Math.SQRT2));
     s.targetAngle=nearestPaperAngle(pose.angle,s.angle);
     animate();
   };
   const pointerUp=event=>{
     const s=state.current;
     if(event.pointerId!==s.pointerId)return;
+    if(s.stampTap){
+      const tap=s.stampTap;s.stampTap=null;
+      if(!tap.cancelled&&Math.hypot(event.clientX-tap.x,event.clientY-tap.y)<=8&&tap.stamp.isConnected)tap.stamp.click();
+      return;
+    }
     document.documentElement.removeAttribute('data-paper-dragging');
     if(!s.dragging)return;
     const dx=event.clientX-s.startX,dy=event.clientY-s.startY;
@@ -594,16 +699,16 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     // The last pointerup can arrive beyond the last coalesced move event.
     const inset=s.width<640?12:16;
     const pose=paperDragPose((s.width-inset*2-s.startK)/Math.SQRT2,s.startAngle,dx,dy,s.dragOptions);
-    const intent=Math.max(openPaperK(s),Math.min(s.width-70,s.width-inset*2-pose.distance*Math.SQRT2));
+    const intent=Math.max(openPaperK(s),Math.min(paperDragUpperK(s.width,window.innerWidth),s.width-inset*2-pose.distance*Math.SQRT2));
     s.dragging=false;
     if(!s.moved){
       // Claimed touch gestures do not generate the compatibility click.
       // Activate taps here and suppress any browser that still sends one.
       if(event.pointerType==='touch'&&event.currentTarget===handle.current){s.moved=true;callbacks.current.onOpenChange(!open);}
-      else if(event.currentTarget.dataset.paperEdge){s.target=open?openPaperK(s):restingPaperK(s.width);animate();}
+      else if(event.currentTarget.dataset.paperEdge){s.target=open?openPaperK(s):restingPaperK(s.width,window.innerWidth);animate();}
       return;
     }
-    const resting=restingPaperK(s.width);
+    const resting=restingPaperK(s.width,window.innerWidth);
     const shouldOpen=paperReleaseOpens(open,intent,resting,openPaperK(s));
     callbacks.current.onOpenChange(shouldOpen);
     s.target=shouldOpen?openPaperK(s):resting;
@@ -614,9 +719,10 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const cancelDrag=()=>{
     document.documentElement.removeAttribute('data-paper-dragging');
     const s=state.current;
+    s.stampTap=null;
     if(!s.dragging)return;
     s.dragging=false;s.moved=true;
-    s.target=open?openPaperK(s):restingPaperK(s.width);
+    s.target=open?openPaperK(s):restingPaperK(s.width,window.innerWidth);
     s.targetAngle=nearestPaperAngle(s.restAngle??RESTING_PAPER_ANGLE,s.angle);
     animate();
   };
@@ -625,7 +731,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     const clear=()=>{
       document.documentElement.removeAttribute('data-paper-dragging');
       const s=state.current;
-      if(s.dragging){s.dragging=false;s.moved=true;s.target=s.open?openPaperK(s):restingPaperK(s.width);s.targetAngle=nearestPaperAngle(RESTING_PAPER_ANGLE,s.angle);animate();}
+      if(s.dragging){s.dragging=false;s.moved=true;s.target=s.open?openPaperK(s):restingPaperK(s.width,window.innerWidth);s.targetAngle=nearestPaperAngle(RESTING_PAPER_ANGLE,s.angle);animate();}
     };
     window.addEventListener('blur',clear);
     return()=>{window.removeEventListener('blur',clear);state.current.dragging=false;document.documentElement.removeAttribute('data-paper-dragging');};

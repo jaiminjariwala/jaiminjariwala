@@ -30,8 +30,23 @@ export function polygonPath(points) {
   return points.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(2)},${p.y.toFixed(2)}`).join(" ") + " Z";
 }
 
-export function outlineMask(width, height, period) {
-  const path = polygonPath(scallopedOutline(width, height, period));
+// Phone sheets have straight sides; the small stickers keep all four rims.
+export function sheetOutline(width,height,period=24,sideScallops=true){
+  if(sideScallops)return scallopedOutline(width,height,period);
+  const count=Math.max(2,Math.round(width/period)),step=width/count,radius=step/2,points=[];
+  for(let i=0;i<count;i++)for(let n=0;n<=12;n++){
+    const angle=Math.PI+n*Math.PI/12;
+    points.push({x:(i+.5)*step+Math.cos(angle)*radius,y:radius+Math.sin(angle)*radius});
+  }
+  for(let i=count-1;i>=0;i--)for(let n=0;n<=12;n++){
+    const angle=n*Math.PI/12;
+    points.push({x:(i+.5)*step+Math.cos(angle)*radius,y:height-radius+Math.sin(angle)*radius});
+  }
+  return points;
+}
+
+export function outlineMask(width, height, period, sideScallops=true) {
+  const path = polygonPath(sheetOutline(width, height, period,sideScallops));
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}"><path fill="white" d="${path}"/></svg>`;
   return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }

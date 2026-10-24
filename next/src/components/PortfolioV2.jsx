@@ -91,9 +91,11 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
   useEffect(()=>()=>clearTimeout(copyReset.current),[]);
 
   const navigate=next=>{
-    if(navigation.current)return;
+    // The latest selection wins, including taps while a previous unroll is
+    // finishing. Never silently discard a real stamp/navigation activation.
     window.scrollTo({top:0,behavior:"instant"});
     if(next===page){
+      navigation.current=null;
       setCollection(false);
       return;
     }
@@ -126,10 +128,12 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
     const transition=navigation.current;
     if(transition?.phase==="preparing"&&transition.destination===readyPage){
       transition.phase="unrolling";
+      rolledOpen.current=false;
       setCollection(false);
     }
   };
   const revealCollection=()=>{
+    navigation.current=null;
     window.scrollTo({top:0,behavior:"instant"});
     setCollection(true);
   };
@@ -137,9 +141,10 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
   useEffect(()=>{
     const observer=new ResizeObserver(entries=>{
       const box=entries[0].borderBoxSize[0];
-      setPaperMask(outlineMask(box.inlineSize,box.blockSize,PAGE_SCALLOP_PERIOD));
-      const inset=window.innerWidth<760?12:16;
-      setCollectionMask(outlineMask(paperViewportWidth(window.innerWidth)-inset*2,window.innerHeight-inset*2,PAGE_SCALLOP_PERIOD));
+      const mobile=window.innerWidth<=760;
+      setPaperMask(outlineMask(box.inlineSize,box.blockSize,PAGE_SCALLOP_PERIOD,!mobile));
+      const inset=mobile?12:16;
+      setCollectionMask(outlineMask(paperViewportWidth(window.innerWidth)-(mobile?0:inset*2),window.innerHeight-inset*2,PAGE_SCALLOP_PERIOD,!mobile));
     });
     if(paper.current)observer.observe(paper.current);
     const tick=()=>setClock(new Date().toLocaleTimeString("en-US",{timeZone:"America/New_York",hour:"numeric",minute:"2-digit"}).replace(/\s?[AP]M/,""));
@@ -192,7 +197,7 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
         {page!=="intro"&&<nav className={styles.pageNavigation} aria-label="Portfolio pages"><a href={sectionPaths.intro} onClick={event=>followSectionLink(event,"intro")}>Introduction</a><a href={sectionPaths.gallery} onClick={event=>followSectionLink(event,"gallery")} aria-current={page==="gallery"?"page":undefined}>Travel</a><a href={sectionPaths.experience} onClick={event=>followSectionLink(event,"experience")} aria-current={page==="experience"?"page":undefined}>Experience</a><a href={sectionPaths.education} onClick={event=>followSectionLink(event,"education")} aria-current={page==="education"?"page":undefined}>Education</a><a href={sectionPaths.projects} onClick={event=>followSectionLink(event,"projects")} aria-current={page==="projects"?"page":undefined}>Projects</a></nav>}
       </article>
     </div></div>
-    <PaperPeel variant={page} open={collection} onOpenChange={next=>{if(!navigation.current)setCollection(next);}} onSettled={paperSettled} onContentReady={paperContentReady} onClipChange={(clip,progress)=>{
+    <PaperPeel variant={page} open={collection} onOpenChange={next=>{navigation.current=null;setCollection(next);}} onSettled={paperSettled} onContentReady={paperContentReady} onClipChange={(clip,progress)=>{
       if(paper.current){
         if(paper.current.style.clipPath!==clip)paper.current.style.clipPath=clip;
         const article=paper.current.querySelector("article");

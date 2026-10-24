@@ -1,18 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {paperReleaseOpens} from './paperMotion.mjs';
-import {paperDragPose,stationaryPaperPolygon,RESTING_PAPER_ANGLE,nearestPaperAngle,paperRollGrabPolygon,paperOpenK,restingPaperK} from './paperDragGeometry.mjs';
+import {paperDragPose,stationaryPaperPolygon,RESTING_PAPER_ANGLE,nearestPaperAngle,paperRollGrabPolygon,paperOpenK,restingPaperK,paperDragUpperK} from './paperDragGeometry.mjs';
 
-test('mobile resting dog-ear has a deeper fold without changing desktop geometry',()=>{
-  for(const width of [320,375,390,393,430]){
-    const pull=width-24-restingPaperK(width);
-    const oldPull=Math.min(160,Math.max(120,width*.36));
-    assert.ok(pull>=160&&pull<=200);
-    assert.ok(pull-oldPull>=40);
+test('mobile finishes flat without a dog-ear while desktop keeps its corner curl',()=>{
+  for(const width of [320,375,390,393,430,640,700,760]){
+    const inset=width<640?12:16;
+    assert.equal((width-2*inset-restingPaperK(width))/Math.SQRT2,0);
+    assert.equal(paperDragUpperK(width),restingPaperK(width),'dragging can reach the flat mobile endpoint');
   }
   for(const width of [768,1280,1493]){
     assert.equal(restingPaperK(width),width-32-Math.min(180,width*.17));
+    assert.equal(paperDragUpperK(width),width-70);
   }
+  const narrowDesktopPaper=768*.93+16;
+  assert.equal(restingPaperK(narrowDesktopPaper,768),narrowDesktopPaper-32-Math.min(180,narrowDesktopPaper*.17),'a desktop gutter must not misclassify a narrow desktop window as a phone');
+  assert.equal(paperDragUpperK(narrowDesktopPaper,768),narrowDesktopPaper-70);
 });
 
 test('fully open roll clears every corner on desktop and mobile for all grab edges',()=>{

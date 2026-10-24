@@ -60,6 +60,15 @@
 .paperEdgeright{right:10px;top:30px;bottom:30px;width:22px}
 .paperEdgetop{top:10px;left:32px;right:32px;height:22px}
 .paperEdgebottom{bottom:10px;left:32px;right:32px;height:22px}
+@media(max-width:760px){
+ .site{padding:12px 0;background-image:none}
+ .collection{inset:12px 0}
+ .backingShadow{inset:12px 0;filter:none}
+ .paperEdgeleft,.paperEdgeright{display:none}
+ .paperEdgetop{left:0;right:0;height:30px}
+ .paperEdgetop:after{content:"";position:absolute;top:15px;left:calc(50% - 18px);width:36px;height:3px;background:#dededb;border-radius:4px;pointer-events:none}
+ .paperEdgebottom{left:0;right:0}
+}
 
 .article:focus{outline:none}
 .rollHintGlove{position:fixed;left:0;top:0;width:34px;height:34px;z-index:10;pointer-events:none;opacity:0;will-change:transform,opacity}

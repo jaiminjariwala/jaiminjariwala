@@ -54,3 +54,20 @@ test('a long frame stays finite and does not jump to the destination', () => {
   assert.ok(Number.isFinite(result.position) && Number.isFinite(result.velocity));
   assert.ok(result.position > 0);
 });
+
+test('a flat phone landing ends below a pixel instead of waiting through a visible tail',()=>{
+  assert.equal(isPaperSettled(365.4,6,366),false,'desktop keeps its original precise settle');
+  assert.equal(isPaperSettled(365.4,6,366,{flatLanding:true}),true);
+  assert.equal(isPaperSettled(364,20,366,{flatLanding:true}),false,'a visible fold still animates');
+  for(const fps of [30,60,120]){
+    let position=-1200,velocity=0,finished=false;
+    for(let frame=0;frame<fps*1.2;frame++){
+      ({position,velocity}=stepPaperSpring(position,velocity,366,1/fps));
+      if(isPaperSettled(position,velocity,366,{flatLanding:true})){
+        assert.ok(Math.abs(position-366)<=.75);
+        finished=true;break;
+      }
+    }
+    assert.ok(finished,`flat landing at ${fps}fps must not linger near the top`);
+  }
+});

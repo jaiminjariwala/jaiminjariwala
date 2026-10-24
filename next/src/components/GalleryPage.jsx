@@ -61,7 +61,7 @@ export function GlassFolder({ title, count, images, slug, onOpen }) {
     <Link
       ref={entranceRef}
       href={`/gallery/${slug}`}
-      onClick={onOpen ? event => { event.preventDefault(); onOpen(slug); } : undefined}
+      onClick={onOpen ? event => { if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault(); onOpen(slug); } : undefined}
       className="gallery-folder-card block w-[162px] shrink-0 cursor-pointer"
     >
       <div

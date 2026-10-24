@@ -19,7 +19,11 @@ export function stepPaperSpring(position, velocity, target, seconds, dragging = 
   };
 }
 
-export function isPaperSettled(position, velocity, target) {
+export function isPaperSettled(position, velocity, target, {flatLanding=false}={}) {
+  // The final fraction of a CSS pixel has no visible roll material left.
+  // End a flat mobile landing here instead of waiting through the spring's
+  // asymptotic tail and keeping a tiny shaded strip parked at the top.
+  if(flatLanding&&Math.abs(position-target)<=.75)return true;
   return Math.abs(position - target) < PAPER_MOTION.positionEpsilon &&
     Math.abs(velocity) < PAPER_MOTION.velocityEpsilon;
 }

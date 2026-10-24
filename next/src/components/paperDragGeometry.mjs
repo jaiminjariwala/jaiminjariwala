@@ -1,11 +1,14 @@
 export const RESTING_PAPER_ANGLE = Math.PI / 4;
 
-export function restingPaperK(width){
-  const mobile=width<640;
-  // More material in the mobile dog-ear reveals a broad rounded face and
-  // several scallops, rather than a narrow ribbon tucked against the corner.
-  const pull=mobile?Math.min(200,Math.max(160,width*.48)):Math.min(180,width*.17);
-  return width-(mobile?24:32)-pull;
+export function restingPaperK(width,viewportWidth=width){
+  // Phone sheets finish completely flat. A top/edge drag must not stop at
+  // the old dog-ear depth and then jump back to a diagonal corner pose.
+  if(viewportWidth<=760)return width-(width<640?24:32);
+  return width-32-Math.min(180,width*.17);
+}
+
+export function paperDragUpperK(width,viewportWidth=width){
+  return viewportWidth<=760?restingPaperK(width,viewportWidth):width-70;
 }
 
 export function paperOpenK(width, height, originX, originY, angle, inset=16, {bounds,clearance=100}={}) {
