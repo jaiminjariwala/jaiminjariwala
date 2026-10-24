@@ -171,12 +171,12 @@
 .introText::selection{background:transparent;color:inherit}
 .introText span::selection{background:rgb(34,84,245);color:#fff}
 .introPage .copyError{font-size:14px;color:#777;margin-top:12px}
-.experience .experienceTeam{display:inline}
+.experience .experienceTeam{display:block}
+.experience .degreeContinuation{display:inline}
+@media(min-width:761px){.experience .degreeContinuation{display:block}}
 .educationMeta{text-align:right;flex-shrink:0}
 .educationMeta>span{font-size:.94em}
 @media(max-width:760px){.educationMeta{text-align:left}}
-.experienceTeam:before{content:" · "}
-@media(max-width:760px){.experience .experienceTeam{display:block}.experienceTeam:before{content:none}}
 @media(max-width:760px){.experiencePage .experience{font-size:18px}}
 .inlineLink,.exploreLabel,.pageNavigation a[aria-current=page],.introSocials a:hover .inlineLink{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23e5e5e5' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")}
 .inlineLink:hover,.introExplore a:hover .exploreLabel,.pageNavigation a[aria-current=page]:hover{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23777777' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E")}
