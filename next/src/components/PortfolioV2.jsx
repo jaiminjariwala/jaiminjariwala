@@ -7,6 +7,7 @@ import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from './StickerButton';
 import {paperViewportWidth} from './paperLayout.mjs';
+import {sectionPaths} from '@/lib/siteSeo.mjs';
 import { outlineMask, polygonPath, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeometry";
 
 function ExternalArrow() {
@@ -60,10 +61,10 @@ function StampArt({ kind }) {
   return <span className={styles.question}>?</span>;
 }
 
-export default function PortfolioV2() {
+export default function PortfolioV2({initialPage="intro",initialGallerySlug=null}) {
   const [collection,setCollection]=useState(false);
   const [peel,setPeel]=useState(0);
-  const [page,setPage]=useState("intro");
+  const [page,setPage]=useState(initialPage);
   const [paperMask,setPaperMask]=useState();
   const [collectionMask,setCollectionMask]=useState();
   const [clock,setClock]=useState("");
@@ -103,6 +104,12 @@ export default function PortfolioV2() {
     }else{
       setCollection(true);
     }
+  };
+  const followSectionLink=(event,next)=>{
+    // Keep browser-native new-tab gestures. Ordinary activations retain the
+    // paper transition; every href is also a real server-rendered page.
+    if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
+    event.preventDefault();navigate(next);
   };
   const paperSettled=isOpen=>{
     rolledOpen.current=isOpen;
@@ -167,12 +174,12 @@ export default function PortfolioV2() {
       <article ref={heading} tabIndex={-1} className={`${styles.article} ${page==="intro"?styles.introPage:page==="experience"||page==="education"?styles.experiencePage:""}`} aria-label={page==="intro"?"Introduction":page==="gallery"?"Travel":page==="education"?"Education":page==="projects"?"Projects":"Experience"} key={page}>
         {page==="intro"&&<>
           <header><h1>Jaimin Mukesh Jariwala</h1></header>
-          <p className={styles.introText}><span>I'm a software engineer who loves building cool products that people love using and systems that don't break under heavy traffic. I like building the infrastructure and owning the entire product development lifecycle.</span></p>
-          <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><button onClick={()=>navigate("gallery")}><span className={styles.exploreLabel}>Travel</span></button><button onClick={()=>navigate("experience")}><span className={styles.exploreLabel}>Experience</span></button><button onClick={()=>navigate("education")}><span className={styles.exploreLabel}>Education</span></button><button onClick={()=>navigate("projects")}><span className={styles.exploreLabel}>Projects</span></button></nav>
+          <p className={styles.introText}><span>I'm Jaimin Jariwala, a software engineer who loves building cool products that people love using and systems that don't break under heavy traffic. I like building the infrastructure and owning the entire product development lifecycle.</span></p>
+          <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><a href={sectionPaths.gallery} onClick={event=>followSectionLink(event,"gallery")}><span className={styles.exploreLabel}>Travel</span></a><a href={sectionPaths.experience} onClick={event=>followSectionLink(event,"experience")}><span className={styles.exploreLabel}>Experience</span></a><a href={sectionPaths.education} onClick={event=>followSectionLink(event,"education")}><span className={styles.exploreLabel}>Education</span></a><a href={sectionPaths.projects} onClick={event=>followSectionLink(event,"projects")}><span className={styles.exploreLabel}>Projects</span></a></nav>
           <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala"><span className={styles.inlineLink}>GitHub</span><ExternalArrow/></a><a href="https://www.linkedin.com/in/jaiminjariwala/"><span className={styles.inlineLink}>LinkedIn</span><ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
           {emailCopyError&&<p className={styles.copyError} role="status">{emailCopyError}</p>}
         </>}
-        {page==="gallery"&&<PortfolioV2Gallery/>}
+        {page==="gallery"&&<PortfolioV2Gallery initialSlug={initialGallerySlug}/>}
         {page==="projects"&&<PortfolioV2Projects/>}
         {page==="experience"&&<>
           <header><h1>Experience</h1></header>
@@ -182,7 +189,7 @@ export default function PortfolioV2() {
           <header><h1>Education</h1></header>
           <div className={styles.experience}>{education.map(([university,degree,date,grade,award,location])=><div key={university}><div><strong>{university}</strong><span>{degree}</span><span>{grade}</span>{award&&<span>{award}</span>}</div><div className={styles.educationMeta}><span>{location}</span><time>{date}</time></div></div>)}</div>
         </>}
-        {page!=="intro"&&<nav className={styles.pageNavigation} aria-label="Portfolio pages"><button onClick={()=>navigate("intro")}>Introduction</button><button onClick={()=>navigate("gallery")} aria-current={page==="gallery"?"page":undefined}>Travel</button><button onClick={()=>navigate("experience")} aria-current={page==="experience"?"page":undefined}>Experience</button><button onClick={()=>navigate("education")} aria-current={page==="education"?"page":undefined}>Education</button><button onClick={()=>navigate("projects")} aria-current={page==="projects"?"page":undefined}>Projects</button></nav>}
+        {page!=="intro"&&<nav className={styles.pageNavigation} aria-label="Portfolio pages"><a href={sectionPaths.intro} onClick={event=>followSectionLink(event,"intro")}>Introduction</a><a href={sectionPaths.gallery} onClick={event=>followSectionLink(event,"gallery")} aria-current={page==="gallery"?"page":undefined}>Travel</a><a href={sectionPaths.experience} onClick={event=>followSectionLink(event,"experience")} aria-current={page==="experience"?"page":undefined}>Experience</a><a href={sectionPaths.education} onClick={event=>followSectionLink(event,"education")} aria-current={page==="education"?"page":undefined}>Education</a><a href={sectionPaths.projects} onClick={event=>followSectionLink(event,"projects")} aria-current={page==="projects"?"page":undefined}>Projects</a></nav>}
       </article>
     </div></div>
     <PaperPeel variant={page} open={collection} onOpenChange={next=>{if(!navigation.current)setCollection(next);}} onSettled={paperSettled} onContentReady={paperContentReady} onClipChange={(clip,progress)=>{

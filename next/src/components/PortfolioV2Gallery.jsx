@@ -23,13 +23,13 @@ function PhotoStrip({section}){
   </div>;
 }
 
-export default function PortfolioV2Gallery(){
-  const [slug,setSlug]=useState(null);
+export default function PortfolioV2Gallery({initialSlug=null}){
+  const [slug,setSlug]=useState(initialSlug);
   const drag=useHorizontalDrag();
   const section=getSectionBySlug(slug);
   const openFolder=value=>{setSlug(value);window.scrollTo({top:0,behavior:'instant'});};
   if(section)return <>
-    <header><button className={styles.galleryBack} onClick={()=>openFolder(null)}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m11 5-7 7 7 7M4 12h16"/></svg>Back</button><h1>{section.title}</h1><div className={styles.galleryDate}>{section.dateRange} · {section.photos.length} photos</div></header>
+    <header><a href="/gallery" className={styles.galleryBack} onClick={event=>{if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;event.preventDefault();openFolder(null);}}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m11 5-7 7 7 7M4 12h16"/></svg>Back</a><h1>{section.title}</h1><div className={styles.galleryDate}>{section.dateRange} · {section.photos.length} photos</div></header>
     <PhotoStrip key={section.slug||section.title} section={section}/>
   </>;
   return <>
