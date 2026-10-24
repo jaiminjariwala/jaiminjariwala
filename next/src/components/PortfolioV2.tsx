@@ -36,6 +36,12 @@ const education: [string,string,string,string,string|null,string][] = [
   ["Parul University", "Bachelor of Technology in Computer Science and Engineering", "Sep 2020–May 2024", "CGPA: 8.57 / 10", null, "Gujarat, India"],
 ];
 
+function EducationDegree({degree}:{degree:string}) {
+  const continuation=" and Engineering";
+  if(!degree.endsWith(continuation))return <span>{degree}</span>;
+  return <span>{degree.slice(0,-continuation.length)}<span className={styles.degreeContinuation}>{continuation}</span></span>;
+}
+
 function StampArt({ kind }:{kind:StampKind}) {
   if (kind === "car") return <img className={styles.stampArtwork} src="/v2-reference/brownstone-art.png" alt="" aria-hidden="true"/>;
   if (kind === "rocket") return <svg className={styles.rocketArtwork} viewBox="0 0 200 200" aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -192,11 +198,11 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
         {page==="projects"&&<PortfolioV2Projects/>}
         {page==="experience"&&<>
           <header><h1>Experience</h1></header>
-          <div className={styles.experience}>{experience.map(([company,role,date,subjects,team])=><div key={company}><div><strong>{company}</strong><span>{role}{team&&<span className={styles.experienceTeam}>{team}</span>}</span>{subjects?.map(subject=><span key={subject}>· {subject}</span>)}</div><time>{date}</time></div>)}</div>
+          <div className={styles.experience}>{experience.map(([company,role,date,subjects,team])=><div key={company}><div><strong>{company}</strong><span>{role}</span>{team&&<span className={styles.experienceTeam}>· {team}</span>}{subjects?.map(subject=><span key={subject}>· {subject}</span>)}</div><time>{date}</time></div>)}</div>
         </>}
         {page==="education"&&<>
           <header><h1>Education</h1></header>
-          <div className={styles.experience}>{education.map(([university,degree,date,grade,award,location])=><div key={university}><div><strong>{university}</strong><span>{degree}</span><span>{grade}</span>{award&&<span>{award}</span>}</div><div className={styles.educationMeta}><span>{location}</span><time>{date}</time></div></div>)}</div>
+          <div className={styles.experience}>{education.map(([university,degree,date,grade,award,location])=><div key={university}><div><strong>{university}</strong><EducationDegree degree={degree}/><span>{grade}</span>{award&&<span>{award}</span>}</div><div className={styles.educationMeta}><span>{location}</span><time>{date}</time></div></div>)}</div>
         </>}
         {page!=="intro"&&<nav className={styles.pageNavigation} aria-label="Portfolio pages"><a href={sectionPaths.intro} onClick={event=>followSectionLink(event,"intro")}>Introduction</a><a href={sectionPaths.gallery} onClick={event=>followSectionLink(event,"gallery")} aria-current={page==="gallery"?"page":undefined}>Travel</a><a href={sectionPaths.experience} onClick={event=>followSectionLink(event,"experience")} aria-current={page==="experience"?"page":undefined}>Experience</a><a href={sectionPaths.education} onClick={event=>followSectionLink(event,"education")} aria-current={page==="education"?"page":undefined}>Education</a><a href={sectionPaths.projects} onClick={event=>followSectionLink(event,"projects")} aria-current={page==="projects"?"page":undefined}>Projects</a></nav>}
       </article>
