@@ -20,15 +20,15 @@ Canonical public site: https://jaiminjariwala.netlify.app/
 5. Keep the portfolio link and name consistent on the existing GitHub and LinkedIn profiles. Earn relevant links by publishing real project documentation and useful work; do not buy ranking promises.
 6. Monitor the actual queries `Jaimin Jariwala`, `Jaimin Mukesh Jariwala`, and `jaiminjariwala` in Search Console. `Jaimin` alone is much broader and competes with unrelated people and meanings.
 
-The domain, external accounts, and search-console submissions were not changed by this implementation. If moving to a custom domain later, update the canonical source in `src/lib/siteSeo.mjs`, configure permanent redirects from the old host, and submit the new property/sitemap.
+The domain, external accounts, and search-console submissions were not changed by this implementation. If moving to a custom domain later, update the canonical source in `src/lib/siteSeo.ts`, configure permanent redirects from the old host, and submit the new property/sitemap.
 
 ## Verification
 
 ```sh
-node --test src/lib/siteSeo.test.mjs
+npx tsx --test src/lib/siteSeo.test.ts
 npm run build
 npm run start -- --port 3010
-node scripts/check-seo.mjs http://127.0.0.1:3010
+npm run test:seo -- http://127.0.0.1:3010
 ```
 
 The integration check requests ordinary HTML without a browser or JavaScript execution. It checks all nine indexable pages, unique metadata, canonicals, crawlable links, JSON-LD, sitemap, robots, share-image dimensions, and real 404/noindex behavior.

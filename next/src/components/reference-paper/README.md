@@ -10,4 +10,4 @@ Retrieved October 21, 2026:
 
 The thin export registry preserves the served modules' export declarations without using `eval` or sharing the app's bundler runtime. All rendering runs locally. These modules do not fetch reference-site code at runtime.
 
-`PaperPeel.jsx` owns this portfolio's interaction, clipping, bounded open position, reverse drag, resize handling, and fallback renderer. The original reference engine supplies the GPU mesh, surface lighting, contact shadow, and cast-shadow passes. A Canvas 2D fallback remains for browsers without WebGPU.
+`PaperPeel.tsx` owns this portfolio's interaction, clipping, bounded open position, reverse drag, resize handling, and fallback renderer. The original reference engine supplies the GPU mesh, surface lighting, contact shadow, and cast-shadow passes. A Canvas 2D fallback remains for browsers without WebGPU.
