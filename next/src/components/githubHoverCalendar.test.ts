@@ -25,6 +25,16 @@ test('history is sorted without mutating input and crosses year boundaries in UT
   assert.equal(days[0].date,'2026-01-02');
 });
 
+test('full history retains both endpoints and missing days across multiple years',()=>{
+  const days=[{date:'2024-10-01',count:5,level:2},{date:'2026-11-04',count:9,level:3}];
+  const weeks=compactContributionWeeks(days,'all');
+  assert.equal(weeks.length,110);
+  assert.equal(weeks[0][2]?.date,'2024-10-01');
+  assert.equal(weeks.at(-1)?.[3]?.date,'2026-11-04');
+  assert.equal(weeks.flat().filter(Boolean).length,2);
+  assert.deepEqual(weeks.at(-1)?.slice(4),[null,null,null]);
+});
+
 test('hover requests coalesce, retry failures, and cache the real response',async t=>{
   const original=globalThis.fetch;t.after(()=>{globalThis.fetch=original;});
   let calls=0;
