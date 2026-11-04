@@ -9,6 +9,7 @@ import PortfolioV2Projects from "./PortfolioV2Projects";
 import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from './StickerButton';
+import GitHubHoverCard from './GitHubHoverCard';
 import {paperViewportWidth} from './paperLayout.ts';
 import {sectionPaths} from '@/lib/siteSeo.ts';
 import { outlineMask, polygonPath, scallopedOutline, PAGE_SCALLOP_PERIOD } from "./paperGeometry";
@@ -191,7 +192,7 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
           <header><h1>Jaimin Mukesh Jariwala</h1></header>
           <p className={styles.introText}><span>I&apos;m Jaimin Jariwala, a software engineer who loves building cool products that people love using and systems that don&apos;t break under heavy traffic. I like building the infrastructure and owning the entire product development lifecycle.</span></p>
           <nav className={styles.introExplore} aria-label="Explore portfolio"><h2>Explore</h2><a href={sectionPaths.gallery} onClick={event=>followSectionLink(event,"gallery")}><span className={styles.exploreLabel}>Travel</span></a><a href={sectionPaths.experience} onClick={event=>followSectionLink(event,"experience")}><span className={styles.exploreLabel}>Experience</span></a><a href={sectionPaths.education} onClick={event=>followSectionLink(event,"education")}><span className={styles.exploreLabel}>Education</span></a><a href={sectionPaths.projects} onClick={event=>followSectionLink(event,"projects")}><span className={styles.exploreLabel}>Projects</span></a></nav>
-          <div className={styles.introSocials}><a href="https://github.com/jaiminjariwala"><span className={styles.inlineLink}>GitHub</span><ExternalArrow/></a><a href="https://www.linkedin.com/in/jaiminjariwala/"><span className={styles.inlineLink}>LinkedIn</span><ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
+          <div className={styles.introSocials}><GitHubHoverCard><a href="https://github.com/jaiminjariwala"><span className={styles.inlineLink}>GitHub</span><ExternalArrow/></a></GitHubHoverCard><a href="https://www.linkedin.com/in/jaiminjariwala/"><span className={styles.inlineLink}>LinkedIn</span><ExternalArrow/></a><button type="button" className={styles.copyEmail} onClick={copyEmail} aria-live="polite">{emailCopied?"Copied!":"Copy email"}</button></div>
           {emailCopyError&&<p className={styles.copyError} role="status">{emailCopyError}</p>}
         </>}
         {page==="gallery"&&<PortfolioV2Gallery initialSlug={initialGallerySlug}/>}

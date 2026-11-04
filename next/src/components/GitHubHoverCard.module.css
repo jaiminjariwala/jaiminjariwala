@@ -1,0 +1,17 @@
+.anchor{position:relative;display:inline-flex;isolation:isolate}
+.card{position:absolute;left:50%;bottom:calc(100% + 12px);z-index:30;display:block;width:320px;max-width:calc(100vw - 32px);padding:14px;background:#fff;color:#242424;border:1px solid #ededeb;border-radius:12px;box-shadow:0 2px 3px #0000000d,0 8px 24px #0000000b;font-family:var(--font-inter),Arial,sans-serif;font-size:13px;line-height:1.4;font-weight:400;transform-origin:50% 100%;margin-left:-160px;text-align:left;cursor:default;-webkit-text-stroke:0;letter-spacing:normal}
+.card:after{content:"";position:absolute;left:0;right:0;top:100%;height:16px}
+.card[data-below]{top:calc(100% + 12px);bottom:auto;transform-origin:50% 0}
+.card[data-below]:after{top:auto;bottom:100%}
+.calendarReveal{display:block;overflow:hidden}
+.calendar{display:block;width:100%;height:135px;overflow:visible}
+.calendar text{font-size:9px;fill:#999;font-family:inherit}
+.profile{display:flex;gap:10px;align-items:flex-start;padding-top:6px}
+.profile img{display:block;flex:none;width:40px;height:40px;object-fit:cover;border-radius:50%}
+.identity,.name,.description{display:block}
+.name{font-weight:600;line-height:18px}
+.handle{font-size:11px;font-weight:400;color:#999;margin-left:4px}
+.description{margin-top:3px;font-size:12px;line-height:17px}
+.unavailable{display:flex;align-items:center;height:100%;font-size:12px;color:#777}
+@media(max-width:760px){.card{left:0;margin-left:0;width:288px}}
+@media(prefers-reduced-motion:reduce){.card{will-change:auto}}
