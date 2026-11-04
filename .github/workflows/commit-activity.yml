@@ -1,4 +1,4 @@
-name: Update commit activity
+name: Update profile language statistics
 on:
   workflow_dispatch:
   schedule:
@@ -21,7 +21,7 @@ jobs:
         run: |
           node .github/scripts/commit-activity.cjs --test
           python3 .github/scripts/language-lines.py --test
-      - name: Refresh commit activity and source line counts
+      - name: Refresh source line counts
         env:
           GH_TOKEN: ${{ github.token }}
         run: node .github/scripts/commit-activity.cjs --publish

@@ -1,14 +1,9 @@
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-const style='<style>text{font-family:Arial,sans-serif;fill:#24292f}.title{fill:#3182ed;font-weight:700}.muted{fill:#656d76}.bar{fill:#24292f}.border{stroke:#d0d7de;fill:none}@media(prefers-color-scheme:dark){text{fill:#e6edf3}.muted{fill:#9198a1}.bar{fill:#e6edf3}.border{stroke:#3d444d}}</style>';
-const wrap=(w,h,body)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${style}${body}</svg>`;
-function commits(counts){
- const total=counts.reduce((a,b)=>a+b,0), title=counts[0]+counts[1]>=counts[2]+counts[3]?"I'm an early 🐤":"I'm a night owl 🦉";
- return wrap(800,230,`<text class="title" x="20" y="36" font-size="28">${esc(title)}</text>`+counts.map((n,i)=>{
-  const y=82+i*42,p=total?n/total:0;
-  return `<text x="20" y="${y}" font-size="22">${['🌞 Morning','🌇 Daytime','🌆 Evening','🌙 Night'][i]}</text><text x="220" y="${y}" font-size="21">${n} commits</text><rect x="390" y="${y-18}" width="280" height="20" rx="3" fill="none" stroke="#8c959f"/><rect class="bar" x="390" y="${y-18}" width="${280*p}" height="20" rx="3"/><text x="695" y="${y}" font-size="21">${(100*p).toFixed(1)}%</text>`;
- }).join(''));
-}
-function languages(totals){
+// GitHub selects the variant using its page theme. SVG media queries can follow
+// Safari's system preference instead, making a light GitHub page unreadable.
+const style=(theme='light')=>`<style>text{font-family:Arial,sans-serif;fill:${theme==='dark'?'#e6edf3':'#24292f'}}.title{fill:#3182ed;font-weight:700}.muted{fill:${theme==='dark'?'#9198a1':'#656d76'}}.border{stroke:${theme==='dark'?'#3d444d':'#d0d7de'};fill:none}</style>`;
+const wrap=(w,h,body,theme)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">${style(theme)}${body}</svg>`;
+function languages(totals,theme='light'){
  let entries=Object.entries(totals).filter(([,n])=>n>0).sort((a,b)=>b[1]-a[1]);
  const total=entries.reduce((s,[,n])=>s+n,0);
  if(entries.length>10) entries=[...entries.slice(0,9),['Other',entries.slice(9).reduce((s,[,n])=>s+n,0)]];
@@ -25,6 +20,6 @@ function languages(totals){
  });
  if(!total)body+='<text x="30" y="130" font-size="18">No public language data yet.</text>';
  body+=`<text class="muted" x="30" y="${height-24}" font-size="13">Public source code · dependencies, comments and blank lines excluded</text>`;
- return wrap(650,height,body);
+ return wrap(650,height,body,theme);
 }
-module.exports={commits,languages};
+module.exports={languages,style};

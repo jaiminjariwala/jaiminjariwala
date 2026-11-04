@@ -52,15 +52,15 @@
 <br />
 
 <div align="center">
-  <img src="profile/assets/tech-stack/joined-grid.svg" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" />
+  <a href="profile/assets/tech-stack/joined-grid.svg?v=23381ff69d98#gh-light-mode-only"><img src="profile/assets/tech-stack/joined-grid.svg?v=23381ff69d98#gh-light-mode-only" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" /></a>
+  <a href="profile/assets/tech-stack/joined-grid-dark.svg?v=8985c9bcb689#gh-dark-mode-only"><img src="profile/assets/tech-stack/joined-grid-dark.svg?v=8985c9bcb689#gh-dark-mode-only" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" /></a>
 </div>
 
 <!-- commit-activity:start -->
 <br />
 <div align="center">
-  <img src="profile/assets/commit-activity.svg?v=7f7ad7b20274" width="680" alt="Commit activity by time of day in Eastern time" />
-  <br /><br />
-  <img src="profile/assets/most-used-languages.svg?v=01fb598609f2" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" />
+  <a href="profile/assets/most-used-languages.svg?v=824dc8961a5f#gh-light-mode-only"><img src="profile/assets/most-used-languages.svg?v=824dc8961a5f#gh-light-mode-only" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" /></a>
+  <a href="profile/assets/most-used-languages-dark.svg?v=688dcab674ae#gh-dark-mode-only"><img src="profile/assets/most-used-languages-dark.svg?v=688dcab674ae#gh-dark-mode-only" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" /></a>
 </div>
 <!-- commit-activity:end -->
 
