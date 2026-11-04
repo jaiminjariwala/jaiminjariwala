@@ -4,14 +4,16 @@
 .card[data-below]{top:calc(100% + 12px);bottom:auto;transform-origin:50% 0}
 .card[data-below]:after{top:auto;bottom:100%}
 .calendarReveal{display:block;overflow:hidden}
-.calendar{display:block;width:100%;height:135px;overflow:visible}
-.calendar text{font-size:9px;fill:#999;font-family:inherit}
+.calendarScroll{display:block;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x;scrollbar-width:thin;scrollbar-color:#d5d5d3 transparent;cursor:grab;outline-offset:-2px}
+.calendarScroll:active{cursor:grabbing}
+.calendar{display:block;max-width:none;height:135px;overflow:visible;user-select:none}
+.calendar text{font-size:11px;fill:#777;font-family:inherit}
 .profile{display:flex;gap:10px;align-items:flex-start;padding-top:6px}
 .profile img{display:block;flex:none;width:40px;height:40px;object-fit:cover;border-radius:50%}
 .identity,.name,.description{display:block}
-.name{font-weight:600;line-height:18px}
-.handle{font-size:11px;font-weight:400;color:#999;margin-left:4px}
-.description{margin-top:3px;font-size:12px;line-height:17px}
+.name{font-size:14px;font-weight:600;line-height:20px}
+.handle{font-size:12px;font-weight:400;color:#777;margin-left:4px}
+.description{margin-top:3px;font-size:13px;line-height:18px}
 .unavailable{display:flex;align-items:center;height:100%;font-size:12px;color:#777}
 @media(max-width:760px){.card{left:0;margin-left:0;width:288px}}
 @media(prefers-reduced-motion:reduce){.card{will-change:auto}}

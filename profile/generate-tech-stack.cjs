@@ -11,6 +11,7 @@ const groups=[
 ];
 const paths={database:'M4 6c0-5 16-5 16 0s-16 5-16 0v12c0 5 16 5 16 0V6M4 12c0 5 16 5 16 0',api:'m8 6-6 6 6 6m8-12 6 6-6 6m-3-14-2 16',webhook:'M7 7a4 4 0 1 1 7 2l-3 6m4 4a4 4 0 1 0 2-7H9M5 14a4 4 0 1 0 5 6L6 9',key:'M10 14a6 6 0 1 1 4-4l-9 9H2v-3l8-8',cycle:'M20 8a9 9 0 0 0-16-2L2 9m0-6v6h6m-4 7a9 9 0 0 0 16 2l2-3m0 6v-6h-6',cloud:'M7 19h12a4 4 0 0 0 0-8 7 7 0 0 0-13-2 5 5 0 0 0 1 10Z',brain:'M12 3v18M12 5C3-2 0 10 6 11c-8 5 0 14 6 7m0-13c9-7 12 5 6 6 8 5 0 14-6 7M6 7l6 3 6-3M6 16l6-3 6 3',audio:'M3 10v4m4-8v12m5-16v20m5-16v12m4-8v4',tree:'M12 3v9M4 21v-9h16v9M9 3h6v5H9ZM1 17h6v5H1Zm8 0h6v5H9Zm8 0h6v5h-6Z',boxes:'M2 3h8v8H2Zm12 0h8v8h-8ZM2 15h8v8H2Zm12 0h8v8h-8Z',system:'M8 2h8v6H8ZM2 16h8v6H2Zm12 0h8v6h-8ZM12 8v4H6v4m6-4h6v4'};
 const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const style=(theme='light')=>`<style>text{font-family:Arial,sans-serif;fill:${theme==='dark'?'#e6edf3':'#24292f'}}.tile{fill:none;stroke:${theme==='dark'?'#30363d':'#d0d7de'}}${theme==='dark'?'.mono{filter:invert(1)}':''}</style>`;
 async function icon(id){
  if(id.startsWith('@')) return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="${paths[id.slice(1)]}" fill="none" stroke="#4776cc" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
  const url=id==='ollama/ollama-original' ? 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/ollama.svg' : `https://raw.githubusercontent.com/devicons/devicon/${revision}/icons/${id}.svg`;
@@ -29,7 +30,10 @@ async function main(){
   allTiles.push(...tiles); console.log(slug,items.length);
  }
  const height=groups.length*rowHeight;
- const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width+2}" height="${height+2}" viewBox="-1 -1 ${width+2} ${height+2}" role="img" aria-label="Technology stack"><style>text{font-family:Arial,sans-serif;fill:#24292f}.tile{fill:none;stroke:#d0d7de}@media(prefers-color-scheme:dark){text{fill:#e6edf3}.tile{stroke:#30363d}.mono{filter:invert(1)}}</style>${allTiles.join('')}</svg>`;
- await fs.writeFile(path.join(out,'joined-grid.svg'),svg);
+ for(const theme of ['light','dark']){
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width+2}" height="${height+2}" viewBox="-1 -1 ${width+2} ${height+2}" role="img" aria-label="Technology stack">${style(theme)}${allTiles.join('')}</svg>`;
+  await fs.writeFile(path.join(out,theme==='dark'?'joined-grid-dark.svg':'joined-grid.svg'),svg);
+ }
 }
-main().catch(e=>{console.error(e);process.exitCode=1;});
+module.exports={style};
+if(require.main===module)main().catch(e=>{console.error(e);process.exitCode=1;});

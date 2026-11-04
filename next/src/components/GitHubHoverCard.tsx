@@ -1,6 +1,6 @@
 "use client";
 
-import {cloneElement,useEffect,useId,useRef,useState} from 'react';
+import {cloneElement,useEffect,useId,useLayoutEffect,useRef,useState} from 'react';
 import type {ReactElement} from 'react';
 import {AnimatePresence,motion,useReducedMotion} from 'framer-motion';
 import type {ContributionsPayload} from '@/types/api';
@@ -16,12 +16,20 @@ export default function GitHubHoverCard({children}:{children:ReactElement<{'aria
   const [failed,setFailed]=useState(false);
   const [below,setBelow]=useState(false);
   const root=useRef<HTMLSpanElement>(null);
+  const calendarScroll=useRef<HTMLSpanElement>(null);
+  const drag=useRef<{id:number;x:number;scrollLeft:number}|null>(null);
   const hovered=useRef(false),focused=useRef(false);
   const closeTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
   const openTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
   const reduced=useReducedMotion();
   const id=useId();
-  const weeks=compactContributionWeeks(data?.contributions??[]);
+  const weeks=compactContributionWeeks(data?.contributions??[],'all');
+  const calendarWidth=Math.max(269,weeks.length*16-3);
+  const animatedFrom=Math.max(0,weeks.length-19);
+
+  useLayoutEffect(()=>{
+    if(open&&calendarScroll.current)calendarScroll.current.scrollLeft=calendarScroll.current.scrollWidth;
+  },[open,data]);
 
   useEffect(()=>{
     let active=true;
@@ -33,7 +41,7 @@ export default function GitHubHoverCard({children}:{children:ReactElement<{'aria
   useEffect(()=>{
     if(!open)return;
     const dismiss=(event:KeyboardEvent)=>{
-      if(event.key==='Escape'){clearTimeout(closeTimer.current);clearTimeout(openTimer.current);setOpen(false);}
+      if(event.key==='Escape'){clearTimeout(closeTimer.current);clearTimeout(openTimer.current);focused.current=false;drag.current=null;setOpen(false);}
     };
     window.addEventListener('keydown',dismiss);
     return()=>window.removeEventListener('keydown',dismiss);
@@ -62,29 +70,43 @@ export default function GitHubHoverCard({children}:{children:ReactElement<{'aria
         animate={{opacity:1,y:0,scale:1,filter:'blur(0px)'}}
         exit={{opacity:0,y:4,scale:.98,filter:reduced?'none':'blur(6px)'}}
         transition={{duration:reduced?0:.18,ease:[.22,1,.36,1]}}>
-        <motion.span className={styles.calendarReveal} initial={{height:0}} animate={{height:140}}
+        <motion.span className={styles.calendarReveal} initial={{height:0}} animate={{height:150}}
           transition={{duration:reduced?0:.34,delay:reduced?0:.07,ease:[.22,1,.36,1]}}>
-          {failed&&!data?<span className={styles.unavailable}>GitHub activity is temporarily unavailable.</span>:<svg className={styles.calendar} viewBox="0 0 269 135" role="img" aria-label={data?'Recent GitHub contributions':'Loading GitHub contributions'}>
+          {failed&&!data?<span className={styles.unavailable}>GitHub activity is temporarily unavailable.</span>:<span ref={calendarScroll} className={styles.calendarScroll} tabIndex={0} role="region" aria-label="GitHub contribution history. Scroll horizontally or drag to explore."
+            onKeyDown={event=>{
+              const viewport=event.currentTarget;
+              const next={ArrowLeft:viewport.scrollLeft-64,ArrowRight:viewport.scrollLeft+64,Home:0,End:viewport.scrollWidth,PageUp:viewport.scrollLeft-viewport.clientWidth,PageDown:viewport.scrollLeft+viewport.clientWidth}[event.key];
+              if(next!==undefined){event.preventDefault();viewport.scrollLeft=next;}
+            }}
+            onPointerDown={event=>{
+              if(event.pointerType==='touch'||event.button!==0)return;
+              drag.current={id:event.pointerId,x:event.clientX,scrollLeft:event.currentTarget.scrollLeft};
+              event.currentTarget.setPointerCapture(event.pointerId);event.preventDefault();
+            }}
+            onPointerMove={event=>{if(drag.current?.id===event.pointerId)event.currentTarget.scrollLeft=drag.current.scrollLeft+drag.current.x-event.clientX;}}
+            onPointerUp={event=>{drag.current=null;if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);}}
+            onPointerCancel={()=>{drag.current=null;}} onLostPointerCapture={()=>{drag.current=null;}}
+            onWheel={event=>{if(event.shiftKey&&event.deltaX===0){event.currentTarget.scrollLeft+=event.deltaY;event.preventDefault();}}}>
+          <svg className={styles.calendar} width={calendarWidth} viewBox={`0 0 ${calendarWidth} 135`} role="img" aria-label={data?'GitHub contributions':'Loading GitHub contributions'}>
             {weeks.map((week,column)=>{
               const first=week.find(day=>day!==null);
               const previous=weeks[column-1]?.find(day=>day!==null);
               return <g key={column}>
-                {first&&(column===0||first.date.slice(0,7)!==previous?.date.slice(0,7))&&column<16&&<text x={column*16} y="10">{monthFormatter.format(new Date(`${first.date}T00:00:00Z`))}</text>}
-                {week.map((day,row)=>day&&<motion.rect key={day.date} x={column*16} y={23+row*16} width="13" height="13" rx="3"
+                {first&&(column===0||first.date.slice(0,7)!==previous?.date.slice(0,7))&&column<weeks.length-2&&<text x={column*16} y="12">{monthFormatter.format(new Date(`${first.date}T00:00:00Z`))}</text>}
+                {week.map((day,row)=>day&&(column<animatedFrom?<rect key={day.date} x={column*16} y={23+row*16} width="13" height="13" rx="3" fill={colors[Math.max(0,Math.min(4,day.level))]} stroke="#00000008" strokeWidth=".6"><title>{day.count} contributions on {day.date}</title></rect>:<motion.rect key={day.date} x={column*16} y={23+row*16} width="13" height="13" rx="3"
                   fill={colors[Math.max(0,Math.min(4,day.level))]} stroke="#00000008" strokeWidth=".6"
                   initial={{opacity:0,scale:.65,filter:reduced?'none':'blur(2px)'}} animate={{opacity:1,scale:1,filter:'blur(0px)'}}
-                  transition={{duration:reduced?0:.24,delay:reduced?0:.12+column*.018+row*.008}}>
+                  transition={{duration:reduced?0:.24,delay:reduced?0:.12+(column-animatedFrom)*.018+row*.008}}>
                   <title>{day.count} contributions on {day.date}</title>
-                </motion.rect>)}
+                </motion.rect>))}
               </g>;
             })}
             {!data&&Array.from({length:17},(_,column)=>Array.from({length:7},(_,row)=><rect key={`${column}-${row}`} x={column*16} y={23+row*16} width="13" height="13" rx="3" fill={colors[0]}/>))}
-          </svg>}
+          </svg></span>}
         </motion.span>
         <span className={styles.profile}>
-          {/* Same local portrait used by the previous portfolio. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/images/my-profile-1.png" width="40" height="40" alt=""/>
+          <img src="https://avatars.githubusercontent.com/u/157014747?v=4&s=80" width="40" height="40" alt=""/>
           <span className={styles.identity}><span className={styles.name}>Jaimin <span className={styles.handle}>jaiminjariwala</span></span><span className={styles.description}>Software engineer. Building products and tools.</span></span>
         </span>
       </motion.span>}
