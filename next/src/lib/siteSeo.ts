@@ -5,7 +5,7 @@ export const HOME_TITLE='Jaimin Jariwala — Software Engineer';
 export const SITE_DESCRIPTION='Jaimin Jariwala is a software engineer building desktop apps, web experiences, and backend systems. Explore his projects, experience, education, and travels.';
 export const sectionPaths={intro:'/',gallery:'/gallery',experience:'/experience',education:'/education',projects:'/projects'};
 export type PortfolioSection=keyof typeof sectionPaths;
-export type StampKind='car'|'rocket'|'experience'|'education'|'projects'|'skills';
+export type StampKind='car'|'rocket'|'experience'|'education'|'projects';
 export const sectionDescriptions={
   projects:'Software projects by Jaimin Jariwala: Codex Lite for macOS, an open-source component library, and a Go URL shortener with PostgreSQL and Redis.',
   experience:'Explore Jaimin Jariwala’s software engineering and AI/ML experience at Amazon, Logicwind, and The George Washington University.',

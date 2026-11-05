@@ -21,11 +21,10 @@ test('all three projects use existing local media with real source links',()=>{
   assert.ok(!portfolioProjects[2].description.includes('so I can understand what each request actually does'));
 });
 
-test('Projects uses the existing roll navigation while Skills stays upcoming',()=>{
+test('Projects uses the existing roll navigation',()=>{
   const source=readFileSync(new URL('./PortfolioV2.tsx',import.meta.url),'utf8');
   assert.ok(source.includes('aria-label="Open projects" onClick={()=>navigate("projects")}'));
   assert.ok(source.includes('{page==="projects"&&<PortfolioV2Projects/>}'));
-  assert.ok(source.includes('aria-label="Skills (adding soon)"'));
   assert.ok(!source.includes('Projects (adding soon)'));
 });
 

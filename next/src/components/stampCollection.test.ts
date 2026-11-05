@@ -13,10 +13,11 @@ test('the mobile collection uses one centered column with larger, spaced stamps'
 });
 
 test('collection captions are removed while every stamp keeps its accessible name',()=>{
-  assert.equal((collection.match(/data-stamp-item/g)||[]).length,6);
+  assert.equal((collection.match(/data-stamp-item/g)||[]).length,5);
   assert.ok(!collection.includes('<figcaption>'));
   assert.ok(!collection.includes('comingSoon'));
-  for(const label of ['Open travel','Open introduction','Open experience','Open education','Open projects','Skills (adding soon)']){
+  for(const label of ['Open travel','Open introduction','Open experience','Open education','Open projects']){
     assert.ok(collection.includes(`aria-label="${label}"`),label);
   }
+  assert.ok(!collection.includes('Skills'));
 });
