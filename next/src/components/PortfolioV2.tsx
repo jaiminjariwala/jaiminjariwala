@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 import type {MouseEvent} from 'react';
 import type {PortfolioSection,StampKind} from '@/lib/siteSeo';
-import Image from "next/image";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
 import PortfolioV2Projects from "./PortfolioV2Projects";
 import styles from "./PortfolioV2.module.css";
@@ -61,7 +60,6 @@ function StampArt({ kind }:{kind:StampKind}) {
     </g>
   </svg>;
   if(kind==="experience")return <img className={`${styles.stampArtwork} ${styles.experienceArtwork}`} src="/v2-reference/snoopy-experience.png" alt="" aria-hidden="true"/>;
-  if(kind==="skills")return <Image className={`${styles.stampArtwork} ${styles.skillsArtwork}`} src="/images/skills-pencil-transparent.png" width={400} height={400} sizes="(max-width: 760px) 50vw, 183px" alt="" aria-hidden="true"/>;
   if(kind==="education")return <svg className={styles.educationArtwork} viewBox="100 190 560 330" aria-hidden="true"><image href="/v2-reference/education-school-bus.png" width="736" height="736"/></svg>;
   if(kind==="projects")return <svg className={styles.projectsArtwork} viewBox="0 0 200 200" aria-hidden="true" fill="none" strokeLinecap="round" strokeLinejoin="round">
     <path d="m34 65 2-22q0-8 9-8l37-1 17 15 54-1q10 0 10 11l3 85q0 9-9 10l-113 1q-9-1-10-11Z" fill="#c9bdf8" stroke="#9e89d8" strokeWidth="2"/>
@@ -181,7 +179,6 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
         <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.workStamp}`} aria-label="Open experience" onClick={()=>navigate("experience")}><StampRim/><StampArt kind="experience"/></StickerButton></figure>
         <figure className={styles.stampItem} data-stamp-item><StickerButton className={styles.stamp} aria-label="Open education" onClick={()=>navigate("education")}><StampRim/><StampArt kind="education"/></StickerButton></figure>
         <figure className={styles.stampItem} data-stamp-item><StickerButton className={`${styles.stamp} ${styles.projectsStamp}`} aria-label="Open projects" onClick={()=>navigate("projects")}><StampRim/><StampArt kind="projects"/></StickerButton></figure>
-        <figure className={styles.stampItem} data-stamp-item><div className={`${styles.stamp} ${styles.skillsStamp}`} aria-label="Skills (adding soon)"><StampRim/><StampArt kind="skills"/></div></figure>
       </div>
     </section>
 

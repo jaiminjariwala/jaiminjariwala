@@ -31,8 +31,6 @@
 .stickerSurface{transform-origin:35% 65%;will-change:transform}
 .stamp>svg.stickerFilterDefs,.homeStamp>svg.stickerFilterDefs{position:absolute;inset:auto;left:0;top:0;width:0;height:0;overflow:hidden;pointer-events:none}
 .stamp .experienceArtwork,.homeStamp .experienceArtwork{left:13%;top:10%;width:74%;height:80%;object-fit:contain;mix-blend-mode:normal}
-.stamp.skillsStamp{transform:none}
-.stamp .skillsArtwork{left:10%;top:10%;width:80%;height:80%;object-fit:contain;mix-blend-mode:normal}
 .stamp .educationArtwork,.homeStamp .educationArtwork{position:absolute;inset:12%;width:76%;height:76%;overflow:hidden}
 .rocketStamp{transform:rotate(0)}
 .rocketStamp .stampCrease{opacity:.45}
