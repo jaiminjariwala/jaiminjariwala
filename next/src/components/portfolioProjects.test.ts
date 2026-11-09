@@ -171,7 +171,7 @@ test("project paper uses inward semicircular cutouts at both phone and desktop s
     assert.ok(!/NaN|Infinity/.test(path));
     assert.equal(
       (path.match(/ A/g) || []).length,
-      2 * Math.round(width / 16) + 2 * Math.round(height / 16),
+      2 * Math.round(width / 24) + 2 * Math.round(height / 24),
     );
     assert.ok(
       !path.includes(" 0 0 1 "),

@@ -1825,6 +1825,7 @@
   height: 100%;
   z-index: -1;
   overflow: visible;
+  filter: drop-shadow(0 1px 1px #00000014);
 }
 .projectMediaStage {
   width: 100%;
