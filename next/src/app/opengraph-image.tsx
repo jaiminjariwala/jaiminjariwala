@@ -1,6 +1,6 @@
 import {ImageResponse} from 'next/og';
 
-export const alt='Jaimin Jariwala — Software Engineer';
+export const alt='Jaimin Jariwala';
 export const size={width:1200,height:630};
 export const contentType='image/png';
 
@@ -11,7 +11,7 @@ export default function Image(){
         <div style={{display:'flex',fontSize:24,color:'#72726e'}}>jaiminjariwala.netlify.app</div>
         <div style={{display:'flex',flexDirection:'column',gap:14}}>
           <div style={{display:'flex',fontSize:76,fontWeight:700,letterSpacing:-4}}>Jaimin Jariwala</div>
-          <div style={{display:'flex',fontSize:36,color:'#666663'}}>Software Engineer</div>
+          <div style={{display:'flex',fontSize:32,color:'#666663'}}>Software Engineer, prev intern @amazon, cs @gw</div>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:16,fontSize:23}}>
           <div style={{width:20,height:20,background:'#2050eb',borderRadius:5}}/>

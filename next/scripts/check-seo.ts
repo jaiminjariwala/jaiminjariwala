@@ -11,7 +11,7 @@ for(const [path,content] of pages){
   const title=html.match(/<title>([^<]+)<\/title>/)?.[1];
   const description=html.match(/<meta name="description" content="([^"]+)"/ )?.[1];
   assert.ok(title?.includes('Jaimin Jariwala'),`${path}: branded title`);
-  assert.ok(description&&description.length>70,`${path}: useful description`);
+  assert.ok(description&&description.length>(path==='/'?20:70),`${path}: useful description`);
   assert.ok(!titles.has(title),`${path}: unique title`);titles.add(title);
   assert.ok(!descriptions.has(description),`${path}: unique description`);descriptions.add(description);
   assert.ok(html.includes(content),`${path}: content must exist before JavaScript`);
@@ -24,12 +24,21 @@ for(const [path,content] of pages){
   const graphs=[...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(match=>JSON.parse(match[1]));
   assert.ok(graphs.some(graph=>graph['@graph']?.some((node:Record<string,unknown>)=>node['@type']==='Person')),`${path}: person identity`);
   if(path==='/'){
+    assert.equal(title,'Jaimin Jariwala');
+    assert.equal(description,'Software Engineer, prev intern @amazon, cs @gw');
+    assert.ok(html.includes('href="/favicon-192.png"'),'raster favicon declared in server-rendered head');
     assert.ok(graphs.some(graph=>graph['@type']==='ProfilePage'));
     for(const href of ['/projects','/gallery','/experience','/education'])assert.ok(html.includes(`href="${href}"`),`crawlable ${href}`);
   }
   console.log(`PASS ${path}: SSR content, metadata, canonical, structured data`);
 }
 const robots=await fetch(`${base}/robots.txt`);
+const favicon=await fetch(`${base}/favicon-192.png`),iconBytes=Buffer.from(await favicon.arrayBuffer());
+assert.equal(favicon.status,200);
+assert.ok(favicon.headers.get('content-type')?.includes('image/png'));
+assert.equal(iconBytes.readUInt32BE(16),192);assert.equal(iconBytes.readUInt32BE(20),192);
+const ico=await fetch(`${base}/favicon.ico`),icoBytes=Buffer.from(await ico.arrayBuffer());
+assert.equal(ico.status,200);assert.equal(icoBytes.readUInt16LE(2),1);assert.equal(icoBytes.readUInt16LE(4),4);
 assert.equal(robots.status,200);
 assert.ok((await robots.text()).includes(`Sitemap: ${SITE_URL}/sitemap.xml`));
 const sitemap=await fetch(`${base}/sitemap.xml`),xml=await sitemap.text();
