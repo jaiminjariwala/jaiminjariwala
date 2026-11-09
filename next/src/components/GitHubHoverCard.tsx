@@ -107,7 +107,7 @@ export default function GitHubHoverCard({children}:{children:ReactElement<{'aria
         <span className={styles.profile}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="https://avatars.githubusercontent.com/u/157014747?v=4&s=80" width="40" height="40" alt=""/>
-          <span className={styles.identity}><span className={styles.name}>Jaimin <span className={styles.handle}>jaiminjariwala</span></span><span className={styles.description}>Software engineer. Building cool products and scalable systems.</span></span>
+          <span className={styles.identity}><span className={styles.name}>Jaimin <span className={styles.handle}>jaiminjariwala</span></span><span className={styles.description}>Software Engineer. Building cool products and scalable systems.</span></span>
         </span>
       </motion.span>}
     </AnimatePresence>

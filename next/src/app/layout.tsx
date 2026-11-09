@@ -23,6 +23,7 @@ export const metadata:Metadata = {
   title:{default:HOME_TITLE,template:`%s | ${SITE_NAME}`},
   description:SITE_DESCRIPTION,
   applicationName:SITE_NAME,
+  icons:{icon:[{url:'/favicon.ico',sizes:'16x16 32x32 48x48 64x64',type:'image/x-icon'},{url:'/favicon-192.png',sizes:'192x192',type:'image/png'}],apple:{url:'/apple-touch-icon.png',sizes:'180x180',type:'image/png'}},
   authors:[{name:SITE_NAME,url:SITE_URL}],
   creator:SITE_NAME,
   robots:isDeployPreview()?{index:false,follow:false}:{index:true,follow:true,googleBot:{index:true,follow:true,'max-image-preview':'large','max-snippet':-1,'max-video-preview':-1}},

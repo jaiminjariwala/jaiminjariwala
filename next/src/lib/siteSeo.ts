@@ -1,8 +1,8 @@
 import type {Metadata,MetadataRoute} from 'next';
 export const SITE_URL='https://jaiminjariwala.netlify.app';
 export const SITE_NAME='Jaimin Jariwala';
-export const HOME_TITLE='Jaimin Jariwala — Software Engineer';
-export const SITE_DESCRIPTION='Jaimin Jariwala is a software engineer building desktop apps, web experiences, and backend systems. Explore his projects, experience, education, and travels.';
+export const HOME_TITLE='Jaimin Jariwala';
+export const SITE_DESCRIPTION='Software Engineer, prev intern @amazon, cs @gw';
 export const sectionPaths={intro:'/',gallery:'/gallery',experience:'/experience',education:'/education',projects:'/projects'};
 export type PortfolioSection=keyof typeof sectionPaths;
 export type StampKind='car'|'rocket'|'experience'|'education'|'projects';
