@@ -8,6 +8,8 @@ test('incoming stamp stays printed on the paper without a second positioning ani
   assert.ok(!source.includes('arrivalActive'));
   assert.ok(!source.includes('data-stamp-arrival'));
   assert.ok(!source.includes('drawStampArrival'));
+  const css=readFileSync(new URL('./PortfolioV2.module.css',import.meta.url),'utf8');
+  assert.ok(css.includes('.homeStamp{transition:none}'));
 });
 
 test('GPU rendering skips full-page fallback canvas clearing and caps desktop fill cost',()=>{
