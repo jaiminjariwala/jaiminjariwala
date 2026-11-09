@@ -70,7 +70,7 @@ test('new selections interrupt navigation instead of being silently ignored',()=
 test('mobile optimizations retain the same GPU renderer and touch gesture boundaries',()=>{
   const source=readFileSync(new URL('./PaperPeel.tsx',import.meta.url),'utf8');
   assert.ok(source.includes('sideAmp:mobileSheet?0:radius'));
-  assert.ok(source.includes('pixelRatio:Math.min(window.devicePixelRatio||1,window.innerWidth<=760?1.25:2)'));
+  assert.ok(source.includes('pixelRatio:Math.min(window.devicePixelRatio||1,window.innerWidth<=760?1.25:1.5)'));
   assert.ok(source.includes('const image=await stampImage(variant,stamp);'));
   assert.ok(source.includes('window.requestIdleCallback(prepare'));
   assert.ok(source.includes('if(!s.collectionBounds)'));
