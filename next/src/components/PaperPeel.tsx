@@ -43,12 +43,8 @@ import {
   paperDragUpperK,
 } from "./paperDragGeometry.ts";
 
-const PAPER_COLORS = {
-  standard: ["#ffffff", "#37af73", "#007dfe", "#c19f85", "#ffffff"],
-  gallery: ["#ffffff", "#ff1744", "#00c65b", "#064fff", "#ffffff"],
-};
-const colorsFor = (variant: PortfolioSection) =>
-  variant === "gallery" ? PAPER_COLORS.gallery : PAPER_COLORS.standard;
+// Every section uses the same stack, ordered from the backing to the front.
+const PAPER_COLORS = ["#ffffff", "#ff1744", "#00c65b", "#064fff", "#ffffff"];
 const stampLabels: Record<PortfolioSection, string> = {
   intro: "Open introduction",
   gallery: "Open travel",
@@ -517,9 +513,9 @@ export default function PaperPeel({
       variantRef.current === "gallery"
         ? [
             { color: "#ffffff", shift: -18 },
-            { color: "#e63a3b", shift: -13.5 },
-            { color: "#5ac561", shift: -9 },
-            { color: "#2050eb", shift: -4.5 },
+            { color: PAPER_COLORS[1], shift: -13.5 },
+            { color: PAPER_COLORS[2], shift: -9 },
+            { color: PAPER_COLORS[3], shift: -4.5 },
             { color: "#ffffff", shift: 0 },
           ]
         : [
@@ -614,14 +610,13 @@ export default function PaperPeel({
     let cancelled = false;
     // Exactly five sheets: front white, blue, green, red, and one white
     // backing tip. Mesh layers are stored from the backing to the front.
-    // Compile both palettes once. Changing pages must not destroy the GPU
+    // Compile one shared palette. Changing pages must not destroy the GPU
     // device, rebuild its pipelines, or fall back to canvas mid-unroll.
-    const colors = colorsFor(variantRef.current);
     engineReady.current = import("./reference-paper/pageEngine")
       .then(({ createPageEngine }) =>
         createPageEngine(gpuCanvas.current, {
-          colors,
-          palettes: Object.values(PAPER_COLORS),
+          colors: PAPER_COLORS,
+          palettes: [PAPER_COLORS],
           surfaceInk: true,
           staticPose: true,
           pixelRatio: Math.min(
@@ -643,7 +638,6 @@ export default function PaperPeel({
         }
         gpu.current = engine;
         rendererStatus.current = "gpu";
-        engine.setColors(colorsFor(variantRef.current));
         state.current.paintPending = false;
         if (state.current.ink) engine.updateUndersideInk(state.current.ink);
         gpuCanvas.current.dataset.renderer = "reference-webgpu";
@@ -669,7 +663,6 @@ export default function PaperPeel({
   }, [render]);
 
   useEffect(() => {
-    gpu.current?.setColors(colorsFor(variant));
     render();
   }, [variant, render]);
 

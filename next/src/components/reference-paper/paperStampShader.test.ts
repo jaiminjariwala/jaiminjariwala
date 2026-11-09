@@ -242,10 +242,9 @@ test("page changes reuse the GPU renderer instead of resetting the animation", (
   );
   assert.ok(includesSource(render, "variantRef.current"));
   assert.ok(includesSource(render, "}, []);"));
-  assert.ok(includesSource(source, "palettes:Object.values(PAPER_COLORS)"));
-  assert.ok(
-    includesSource(source, "gpu.current?.setColors(colorsFor(variant))"),
-  );
+  assert.ok(includesSource(source, "colors:PAPER_COLORS"));
+  assert.ok(includesSource(source, "palettes:[PAPER_COLORS]"));
+  assert.ok(!includesSource(source, "colorsFor(variant)"));
   assert.ok(includesSource(source, "const engine=await engineReady.current"));
   const upload = indexOfSource(
     source,
