@@ -1,0 +1,7 @@
+# Preserve the imported rendering bundles in their original form.
+next/src/components/reference-paper/gpuKernel.js
+next/src/components/reference-paper/pageEngine.js
+next/src/components/reference-paper/paperMath.js
+**/node_modules/
+**/.next/
+**/package-lock.json
