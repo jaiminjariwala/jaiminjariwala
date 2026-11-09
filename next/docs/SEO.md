@@ -4,6 +4,9 @@ Canonical public site: https://jaiminjariwala.netlify.app/
 
 ## Implemented
 
+- Home search title: `Jaimin Jariwala`. Preferred description: `Software Engineer, prev intern @amazon, cs @gw`. Google can select different snippets for individual queries.
+- The approved favicon is a plain white stamp with two scallops per edge. The head declares `/favicon.ico` (16, 32, 48, and 64 px) and `/favicon-192.png` (192 px square); `/apple-touch-icon.png` is 180 px square. The vector source lives in `src/app/icon.svg`.
+- Keep these icon URLs stable and crawlable. After publishing a branding change, use Search Console URL Inspection to request a home-page recrawl; search-result icons and snippets do not update immediately with a deployment.
 - Distinct server-rendered titles, descriptions, canonical URLs, and social metadata.
 - Factual Person, WebSite, and ProfilePage JSON-LD connecting Jaimin Jariwala, Jaimin Mukesh Jariwala, and the handle jaiminjariwala to the existing GitHub/LinkedIn profiles.
 - Crawlable section links with real Projects, Experience, Education, Travel, and city URLs. Ordinary clicks retain the paper animation; opening links in a new tab loads the corresponding section directly.
