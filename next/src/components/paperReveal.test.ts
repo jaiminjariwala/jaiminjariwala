@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 const source=readFileSync(new URL('./PaperPeel.tsx',import.meta.url),'utf8');
 
-test('incoming stamp stays printed on the paper without a second positioning animation',()=>{
-  assert.ok(source.includes('engine.updateUndersideInk(ink)'));
-  assert.ok(!source.includes('arrivalActive'));
+test('incoming stamp applies in one bounded curl without CSS tilt correction',()=>{
+  assert.ok(source.includes('engine.updateUndersideInk(state.current.arrivalActive?plain:ink)'));
+  assert.ok(source.includes('stampRegionExposed(s.stampSnapshot,polygon)'));
+  assert.ok(source.includes('data-stamp-placement'));
   assert.ok(!source.includes('data-stamp-arrival'));
   assert.ok(!source.includes('drawStampArrival'));
   const css=readFileSync(new URL('./PortfolioV2.module.css',import.meta.url),'utf8');

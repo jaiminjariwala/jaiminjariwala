@@ -11,6 +11,7 @@ import referenceMath from "./reference-paper/paperMath";
 import { isPaperSettled, stepPaperSpring, paperReleaseOpens } from "./paperMotion.ts";
 import {paperHintPose,paperHintPull,paperHintSeen,rememberPaperHint} from "./paperHint.ts";
 import {paperViewportWidth} from './paperLayout.ts';
+import {drawStampPlacement,stampRegionExposed} from './stampPlacement';
 import {preventPaperNativeTouch} from './paperTouch.ts';
 import {cachedStamp,paperRasterHeight,stampAtPoint,visibleStampBounds} from './paperMobile.ts';
 import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPaperAngle, paperRollGrabPolygon, paperOpenK, restingPaperK, paperDragUpperK } from "./paperDragGeometry.ts";
@@ -56,6 +57,12 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
   const fontCss=useRef<Promise<string>|null>(null);
   const hintGlove = useRef<HTMLDivElement>(null!);
   const hintSeen = useRef(false);
+  const placementCanvas=useRef<HTMLCanvasElement>(null!);
+  const placementRaf=useRef(0);
+  const placementTimer=useRef<ReturnType<typeof setTimeout>|undefined>(undefined);
+  const beginPlacement=useRef<(()=>void)|null>(null);
+  const finishPlacement=useRef<(()=>void)|null>(null);
+  const maybePlace=useRef<((polygon:readonly Point[])=>void)|null>(null);
   const settings = useRef({ ...referenceMath.GPU_PAPER_DEFAULTS });
   const state = useRef<PaperState>({ width: 0, height: 0, k: 0, target: 0, velocity: 0, angle: RESTING_PAPER_ANGLE, targetAngle: RESTING_PAPER_ANGLE, angularVelocity: 0, plush: 0, dt: 1/60, lastTime: 0, reducedMotion: false, dragging: false, raf: 0, moved: false,open:false,startX:0,startY:0,startK:0,startAngle:RESTING_PAPER_ANGLE,dragOptions:{} });
   const callbacks = useRef({ onOpenChange, onClipChange, onSettled, onContentReady });
@@ -63,7 +70,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
 
   const stampImage=useCallback((kind:PortfolioSection,stamp:HTMLElement)=>{
     const minute=kind==='intro'?Math.floor(Date.now()/60000):0;
-    const key=`${kind}:${window.innerWidth}:${minute}`;
+    const key=`${kind}:${window.innerWidth}:${stamp.offsetWidth}x${stamp.offsetHeight}:${stamp.className}:${minute}`;
     if(stampCache.current.size>10)stampCache.current.delete(stampCache.current.keys().next().value!);
     return cachedStamp(stampCache.current,key,async()=>{
       await document.fonts.ready;
@@ -74,6 +81,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       // Hidden collection stamps can be prepared offscreen without revealing
       // the collection or capturing its inherited visibility:hidden styles.
       const host=document.createElement('div'),source=stamp.cloneNode(true) as HTMLElement;
+      source.removeAttribute('data-paper-stamp');source.removeAttribute('aria-label');
       host.setAttribute('aria-hidden','true');host.inert=true;
       host.className=document.querySelector('[data-portfolio-paper]')!.closest(`.${styles.site}`)!.className;
       Object.assign(host.style,{position:'fixed',left:'-10000px',top:'0',width:`${stamp.offsetWidth}px`,height:`${stamp.offsetHeight}px`,padding:'0',minHeight:'0',visibility:'visible',pointerEvents:'none'});
@@ -135,7 +143,8 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       if(handle.current)handle.current.style.clipPath='polygon(0 0,0 0,0 0)';
       callbacks.current.onClipChange('none',0);
       const stamp=document.querySelector<HTMLElement>('[data-paper-stamp]');
-      if(stamp)stamp.style.opacity='';
+      if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
+      maybePlace.current?.([{x:0,y:0},{x:w,y:0},{x:w,y:s.height},{x:0,y:s.height}]);
       notifySettled();
       return;
     }
@@ -193,12 +202,13 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
         // over the already-flat DOM page.
         if(s.flatMobile){notifySettled();return;}
         callbacks.current.onClipChange(clip,progress);
+        maybePlace.current?.(remaining);
         if(gpuCanvas.current)gpuCanvas.current.style.opacity='1';
         if(s.k===k&&s.angle===angle)notifySettled();
         if(s.k!==k||s.angle!==angle)render();
       }).catch(()=>{s.paintPending=false;});
       const stamp=document.querySelector<HTMLElement>('[data-paper-stamp]');
-      if(stamp)stamp.style.opacity='';
+      if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
       return;
     }
     const dpr=Math.min(window.devicePixelRatio||1,mobileSheet?1.25:2);
@@ -211,8 +221,9 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     ctx.clearRect(0,0,w,s.renderHeight);
     canvas.current.style.visibility='visible';
     callbacks.current.onClipChange(clip,progress);
+    maybePlace.current?.(remaining);
     const stamp=document.querySelector<HTMLElement>('[data-paper-stamp]');
-    if(stamp)stamp.style.opacity='';
+    if(stamp)stamp.style.opacity=s.arrivalActive?'0':'';
     const period = PAGE_SCALLOP_PERIOD;
     const base = sheetOutline(w-horizontalInset*2,paperHeight-inset,period,!mobileSheet).map(p=>({x:p.x+horizontalInset,y:p.y+inset}));
     const trace = (points:readonly Point[]) => {
@@ -377,6 +388,11 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
           ctx.restore();
         }
         state.current.stampSnapshot={image,width,height,x:paperBounds.left+window.scrollX+stamp.offsetLeft,y:paperBounds.top+window.scrollY+stamp.offsetTop,rotation:Math.atan2(matrix.b,matrix.a)};
+        const plain=document.createElement('canvas');plain.width=ink.width;plain.height=ink.height;
+        const plainContext=plain.getContext('2d')!;plainContext.drawImage(ink,0,0);
+        const snapshot=state.current.stampSnapshot;
+        plainContext.clearRect(snapshot.x-24,snapshot.y-24,width+48,height+48);
+        state.current.inkWithoutStamp=plain;
         state.current.ink=ink;
         const engine=await engineReady.current;
         if(cancelled||current!==revision)return;
@@ -385,7 +401,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
           // then present one incoming-page frame before starting its unroll.
           await engine.whenIdle();
           if(cancelled||current!==revision)return;
-          engine.updateUndersideInk(ink);
+          engine.updateUndersideInk(state.current.arrivalActive?plain:ink);
           render();
           await engine.whenIdle();
           if(cancelled||current!==revision)return;
@@ -416,6 +432,43 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     update();
     return()=>{cancelled=true;refreshInk.current=null;stamp.style.opacity='';clearTimeout(refreshTimer);observer.disconnect();paper.removeEventListener('load',schedule,true);paper.removeEventListener('scroll',schedule,true);paper.removeEventListener('sticker-surface-change',schedule,true);window.removeEventListener('resize',schedule);};
   },[variant,render,stampImage]);
+
+  finishPlacement.current=()=>{
+    const s=state.current;
+    clearTimeout(placementTimer.current);cancelAnimationFrame(placementRaf.current);placementRaf.current=0;
+    s.arrivalActive=false;s.arrivalPending=false;
+    const stamp=document.querySelector<HTMLElement>('[data-paper-stamp]');if(stamp)stamp.style.opacity='';
+    if(placementCanvas.current)placementCanvas.current.style.visibility='hidden';
+    if(s.ink&&gpu.current&&!gpu.current.failed)gpu.current.updateUndersideInk(s.ink);
+  };
+  beginPlacement.current=()=>{
+    const s=state.current,snapshot=s.stampSnapshot,overlay=placementCanvas.current;
+    if(!s.arrivalActive||!snapshot||!overlay){finishPlacement.current?.();return;}
+    const {image,width,height,x,y,rotation}=snapshot,margin=width*.8+24;
+    const dpr=Math.min(window.devicePixelRatio||1,1.5);
+    overlay.width=Math.ceil((width+margin+32)*dpr);overlay.height=Math.ceil((height+64)*dpr);
+    Object.assign(overlay.style,{left:`${x-margin}px`,top:`${y-32}px`,width:`${width+margin+32}px`,height:`${height+64}px`,visibility:'visible'});
+    const silhouette=(color:string)=>{const c=document.createElement('canvas');c.width=image.width;c.height=image.height;const ctx=c.getContext('2d')!;ctx.drawImage(image,0,0);ctx.globalCompositeOperation='source-in';ctx.fillStyle=color;ctx.fillRect(0,0,c.width,c.height);return c;};
+    const white=silhouette('#fff'),shade=silhouette('#000'),ctx=overlay.getContext('2d')!;
+    const began=performance.now();
+    const tick=(now:number)=>{
+      ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,overlay.width/dpr,overlay.height/dpr);
+      ctx.save();ctx.translate(margin,32);
+      const pose=drawStampPlacement(ctx,image,white,shade,width,height,now-began,rotation);ctx.restore();
+      const lift=1-pose.progress;
+      overlay.style.filter=`drop-shadow(0 ${2*lift}px ${2*lift}px rgba(0,0,0,${.12*lift}))`;
+      if(pose.done){finishPlacement.current?.();render();return;}
+      placementRaf.current=requestAnimationFrame(tick);
+    };
+    placementRaf.current=requestAnimationFrame(tick);
+  };
+  maybePlace.current=polygon=>{
+    const s=state.current;
+    if(!s.arrivalPending||s.open||!s.stampSnapshot||!stampRegionExposed(s.stampSnapshot,polygon))return;
+    s.arrivalPending=false;
+    placementTimer.current=setTimeout(()=>beginPlacement.current?.(),60);
+  };
+  useEffect(()=>()=>{clearTimeout(placementTimer.current);cancelAnimationFrame(placementRaf.current);},[]);
 
   const animate = useCallback(() => {
     const s=state.current;
@@ -458,6 +511,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
       // iOS toolbar expansion changes height during ordinary scrolling.
       // Keep the existing drawing buffer and pose until the width changes.
       if(s.width===paperViewportWidth(window.innerWidth)&&s.height&&window.matchMedia('(pointer: coarse)').matches){render();return;}
+      if(s.arrivalActive)finishPlacement.current?.();
       s.width=paperViewportWidth(window.innerWidth);
       s.collectionBounds=null;
       s.height=window.matchMedia('(pointer: coarse)').matches?Math.max(window.innerHeight,window.screen.height):window.innerHeight;
@@ -477,8 +531,15 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
 
   useEffect(()=>{
     const s=state.current;
+    const wasOpen=s.open;
     s.open=open;
     s.collectionBounds=null;
+    if(open&&s.arrivalActive)finishPlacement.current?.();
+    if(wasOpen&&!open&&!s.reducedMotion&&s.stampSnapshot&&s.inkWithoutStamp){
+      s.arrivalActive=true;s.arrivalPending=true;
+      document.querySelector<HTMLElement>('[data-paper-stamp]')?.style.setProperty('opacity','0');
+      if(gpu.current&&!gpu.current.failed)gpu.current.updateUndersideInk(s.inkWithoutStamp);
+    }
     if(open&&inkDirty.current)refreshInk.current?.();
     if(!s.width)return;
     if(s.dragging)return;
@@ -588,6 +649,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     if(event.isPrimary===false||(event.pointerType==='mouse'&&event.button!==0))return;
     if(event.pointerType==='touch'&&event.cancelable)event.preventDefault();
     const s=state.current;
+    if(s.arrivalActive)finishPlacement.current?.();
     // A steered roll can leave its broad grab strip over an exposed stamp.
     // Route a genuine tap to that stamp instead of swallowing it as a drag.
     if(open&&event.currentTarget===handle.current){
@@ -696,6 +758,7 @@ export default function PaperPeel({ open, onOpenChange, onClipChange, onSettled,
     {!open&&['left','right','top','bottom'].map(edge=><div key={edge} data-paper-edge={edge} className={`${styles.paperEdge} ${styles[`paperEdge${edge}`]}`} aria-hidden="true" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag}/>)}
     <canvas ref={canvas} className={styles.peelCanvas} style={{visibility:'hidden'}} aria-hidden="true"/>
     <canvas ref={gpuCanvas} className={styles.peelCanvas} style={{visibility:'hidden',opacity:0,zIndex:7}} aria-hidden="true"/>
+    <canvas ref={placementCanvas} data-stamp-placement className={styles.stampPlacement} aria-hidden="true"/>
     <div ref={hintGlove} data-paper-roll-hint className={styles.rollHintGlove} aria-hidden="true"><img src="/cursors/glove-open.svg" alt="" draggable={false}/><img src="/cursors/glove-grip.svg" alt="" draggable={false}/></div>
     <button ref={handle} data-paper-roll-handle className={styles.peelHandle} style={{position:'absolute',inset:'0 auto auto 0',width:'100vw',height:'100vh',transform:'none',clipPath:'polygon(0 0,0 0,0 0)'}} aria-label={open?'Roll paper closed':'Open stamp collection'} title="Drag the roll in any direction" onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag} onKeyDown={event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();callbacks.current.onOpenChange(!open);}}} onClick={()=>{if(!state.current.moved)callbacks.current.onOpenChange(!open);}}/>
   </>;

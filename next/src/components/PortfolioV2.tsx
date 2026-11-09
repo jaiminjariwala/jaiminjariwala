@@ -183,7 +183,7 @@ export default function PortfolioV2({initialPage="intro",initialGallerySlug=null
     </section>
 
     <div className={styles.paperShadow}><div ref={paper} data-portfolio-paper className={styles.paper} style={{maskImage:paperMask}} inert={collection?true:undefined}>
-      <StickerButton data-paper-stamp className={`${styles.homeStamp} ${page==="intro"?styles.rocketStamp:page==="projects"?styles.projectsStamp:""}`} aria-label="Choose a stamp" onClick={revealCollection}><StampRim lobes={page==="intro"?6:8}/>{page==="intro"&&<span className={styles.stampTime}>{clock}<span>DC</span></span>}<StampArt kind={activeArt}/>{page==="intro"&&<span className={styles.signature}>Jaimin<span>:)</span></span>}</StickerButton>
+      <StickerButton key={`stamp-${page}`} data-paper-stamp className={`${styles.homeStamp} ${page==="intro"?styles.rocketStamp:page==="projects"?styles.projectsStamp:""}`} aria-label="Choose a stamp" onClick={revealCollection}><StampRim lobes={page==="intro"?6:8}/>{page==="intro"&&<span className={styles.stampTime}>{clock}<span>DC</span></span>}<StampArt kind={activeArt}/>{page==="intro"&&<span className={styles.signature}>Jaimin<span>:)</span></span>}</StickerButton>
       <article ref={heading} tabIndex={-1} className={`${styles.article} ${page==="intro"?styles.introPage:page==="experience"||page==="education"?styles.experiencePage:""}`} aria-label={page==="intro"?"Introduction":page==="gallery"?"Travel":page==="education"?"Education":page==="projects"?"Projects":"Experience"} key={page}>
         {page==="intro"&&<>
           <header><h1>Jaimin Mukesh Jariwala</h1></header>

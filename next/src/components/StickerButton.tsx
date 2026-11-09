@@ -1,6 +1,6 @@
 "use client";
 
-import {useEffect,useId,useRef} from 'react';
+import {useLayoutEffect,useId,useRef} from 'react';
 import type {ComponentPropsWithoutRef} from 'react';
 import {buckleMap,buckleAppearance,stepBuckle} from './stickerBuckle.ts';
 import styles from './PortfolioV2.module.css';
@@ -43,7 +43,8 @@ export default function StickerButton({children,style,...props}:ComponentPropsWi
     };
     s.raf=requestAnimationFrame(tick);
   };
-  useEffect(()=>{
+  useLayoutEffect(()=>{
+    motion.current.size=button.current.offsetWidth;paint(motion.current.position);
     const observer=new ResizeObserver(()=>{motion.current.size=button.current.offsetWidth;paint(motion.current.position);});
     observer.observe(button.current);
     return()=>{observer.disconnect();cancelAnimationFrame(motion.current.raf);};
