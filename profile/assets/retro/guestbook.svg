@@ -1,66 +1,56 @@
-<svg fill="none" viewBox="0 0 380 50" width="380" height="50" xmlns="http://www.w3.org/2000/svg">
-	<foreignObject width="100%" height="100%">
-		<div xmlns="http://www.w3.org/1999/xhtml">
-			<style>
-        .scale {
-          width: 800px;
-          height: 50px;
-          display: flex;
-          gap: 16px;
-          font-family: "Comic Sans", "Comic Sans MS", Chalkboard, ChalkboardSE-Regular, "Marker Felt", Purisa, "URW Chancery L", cursive, sans-serif !important;
-          font-size: 1.3em;
-          align-items: center;
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 380 50"
+  width="380"
+  height="50"
+  role="img"
+  aria-labelledby="title"
+>
+  <title id="title">Guestbook (Add a new entry)</title>
+  <style>
+    .pulse {
+      transform-origin: 190px 25px;
+      animation: pulse 3s linear infinite;
+    }
 
-        }
+    text {
+      font-family:
+        "Comic Sans MS", Chalkboard, "Marker Felt", cursive, sans-serif;
+      font-size: 20.8px;
+    }
 
-        .scale-items {
-          line-height: 50px;
-          transform: scale(0.6);
-          animation: scale 3s linear infinite;
-          left: 0;
-          top: 0;
-        }
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(0.6);
+      }
+      50% {
+        transform: scale(1);
+      }
+    }
 
-        .scale strong {
-          margin: 0;
-          line-height: 50px;
-        }
-
-        .link {
-          color: #539bf5;
-          text-decoration: underline;
-
-        }
-
-        @keyframes scale {
-          0%   { 
-            transform: scale(0.6); 		
-          }
-          50% { 
-            transform: scale(1); 
-          }
-          100% { 
-            transform: scale(0.6); 
-          }
-
-        }
-      </style>
-      <div class="scale">
-      <span class="scale-items">
-          <strong>
-            <span style="color: red">G</span>
-            <span style="color: orange">u</span>
-            <span style="color: yellow">e</span>
-            <span style="color: green">s</span>
-            <span style="color: blue">t</span>
-            <span style="color: violet">b</span>
-            <span style="color: purple">o</span>
-            <span style="color: pink">o</span>
-            <span style="color: red">k</span>
-          </strong>
-          <span class="link"> (Add a new entry) </span>
-        </span>
-      </div>
-		</div>
-	</foreignObject>
+    @media (prefers-reduced-motion: reduce) {
+      .pulse {
+        animation: none;
+      }
+    }
+  </style>
+  <g class="pulse">
+    <text x="190" y="32" text-anchor="middle">
+      <tspan font-weight="bold">
+        <tspan fill="red">G</tspan>
+        <tspan fill="orange">u</tspan>
+        <tspan fill="yellow">e</tspan>
+        <tspan fill="green">s</tspan>
+        <tspan fill="blue">t</tspan>
+        <tspan fill="violet">b</tspan>
+        <tspan fill="purple">o</tspan>
+        <tspan fill="pink">o</tspan>
+        <tspan fill="red">k</tspan>
+      </tspan>
+      <tspan fill="#539bf5" text-decoration="underline">
+        (Add a new entry)
+      </tspan>
+    </text>
+  </g>
 </svg>

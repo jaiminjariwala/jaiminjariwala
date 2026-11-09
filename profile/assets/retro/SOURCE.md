@@ -1,6 +1,10 @@
-These unchanged retro profile assets were fetched from
+These retro profile assets were originally fetched from
 https://github.com/BrunnerLivio/brunnerlivio/tree/master/images
 at the repository owner's request to match that profile.
+
+The guestbook label was adapted to native SVG text and a centered pulse to
+avoid Safari rendering artifacts from scaling embedded HTML. Its colors and
+the surrounding README link are preserved.
 
 The upstream repository does not expose a license through GitHub's license API.
 Attribution is not a substitute for permission; confirm reuse rights with the
