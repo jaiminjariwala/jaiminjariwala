@@ -18,7 +18,7 @@ import { RESTING_PAPER_ANGLE, paperDragPose, stationaryPaperPolygon, nearestPape
 
 const PAPER_COLORS={
   standard:['#ffffff','#37af73','#007dfe','#c19f85','#ffffff'],
-  gallery:['#ffffff','#e63a3b','#5ac561','#2050eb','#ffffff'],
+  gallery:['#ffffff','#ff1744','#00c65b','#064fff','#ffffff'],
 };
 const colorsFor=(variant:PortfolioSection)=>variant==='gallery'?PAPER_COLORS.gallery:PAPER_COLORS.standard;
 const stampLabels:Record<PortfolioSection,string>={intro:'Open introduction',gallery:'Open travel',experience:'Open experience',education:'Open education',projects:'Open projects'};

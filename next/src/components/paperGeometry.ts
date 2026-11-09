@@ -1,6 +1,6 @@
 // Continuous semicircular lobes. Both the DOM mask and the reflected canvas
 // fold use this outline, so the edges cannot disagree while dragging.
-export const PAGE_SCALLOP_PERIOD = 24;
+export const PAGE_SCALLOP_PERIOD = 20;
 export interface Point {x:number;y:number}
 export interface Bounds {left:number;right:number;top:number;bottom:number}
 
@@ -33,7 +33,7 @@ export function polygonPath(points:readonly Point[]) {
 }
 
 // Phone sheets have straight sides; the small stickers keep all four rims.
-export function sheetOutline(width:number,height:number,period=24,sideScallops=true){
+export function sheetOutline(width:number,height:number,period=PAGE_SCALLOP_PERIOD,sideScallops=true){
   if(sideScallops)return scallopedOutline(width,height,period);
   const count=Math.max(2,Math.round(width/period)),step=width/count,radius=step/2,points=[];
   for(let i=0;i<count;i++)for(let n=0;n<=12;n++){
