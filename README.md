@@ -12,7 +12,7 @@
         <strong>Visit my personal<br />website</strong>
       </a>
       <br /><br />
-      <img src="profile/assets/portrait-coastal.gif" width="120" alt="A smiling cartoon in a coastal blue and white striped shirt blinking on a transparent background" />
+      <img src="profile/assets/portrait-dark-shirt.png" width="120" alt="A smiling blond cartoon wearing a dark shirt" />
     </td>
     <td align="center" valign="top" width="190">
       <a href="https://component-library-six-eta.vercel.app">
