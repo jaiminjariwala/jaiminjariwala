@@ -25,6 +25,7 @@ test("the name variants are tied to one factual person and public profiles", () 
   assert.ok(person);
   assert.equal(person.name, "Jaimin Jariwala");
   assert.equal(person.givenName, "Jaimin");
+  assert.ok(person.alternateName.includes("Jaimin"));
   assert.ok(person.alternateName.includes("jaiminjariwala"));
   assert.ok(person.alternateName.includes("Jaimin Mukesh Jariwala"));
   assert.deepEqual(person.sameAs, [
@@ -32,6 +33,16 @@ test("the name variants are tied to one factual person and public profiles", () 
     "https://www.linkedin.com/in/jaiminjariwala/",
   ]);
   assert.equal(profilePageGraph.mainEntity["@id"], person["@id"]);
+  assert.equal(person.mainEntityOfPage["@id"], profilePageGraph["@id"]);
+
+  const website = identityGraph["@graph"].find(
+    (node) => node["@type"] === "WebSite",
+  );
+  assert.ok(website);
+  assert.ok(website.alternateName.includes("Jaimin"));
+  assert.equal(website.name, SITE_NAME);
+  assert.equal(website.about["@id"], person["@id"]);
+  assert.equal(website.publisher["@id"], person["@id"]);
 });
 
 test("each landing page has a distinct title, description, canonical, and share card", () => {
