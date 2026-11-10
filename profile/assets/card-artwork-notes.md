@@ -1,5 +1,16 @@
 # Profile card artwork
 
+## Transparent winter portrait
+
+The built-in imagegen tool isolated the owner's supplied winter character and
+removed the exterior white background, snowflakes, and floating snow circles.
+The final asset is `portrait-winter-transparent.png` and is used by the sole
+personal website card in the README.
+
+Final edit prompt:
+
+> Use case: background-extraction. Edit target: the supplied winter cartoon portrait. Create a clean cutout of only the existing character for the owner's GitHub README. Remove the entire white exterior background and remove every surrounding snowflake, snow symbol, floating snow circle, and dot. Use genuine transparent alpha, including all negative spaces around the character and hat pom-pom. Preserve the exact character, orange knit winter hat and pom-pom, blue collared coat, peach face, pink cheeks, black outlines, smile, small hair curl, illustration texture, proportions, and existing bust composition. Do not change the face or outfit. No added background, no scenery, no snow, no glow, no drop shadow, no text, and no black or white rectangle. Keep the complete hat and both ears visible and give the isolated bust a small amount of transparent breathing room. Return the saved local PNG path.
+
 ## Blue sweater portrait and Sharded Raft KV card
 
 The built-in imagegen tool edited the owner's supplied blue-sweater portrait.
