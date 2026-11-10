@@ -12,7 +12,7 @@
         <strong>Visit my personal<br />website</strong>
       </a>
       <br /><br />
-      <img src="profile/assets/portrait-transparent.gif" width="120" alt="A smiling blond cartoon wearing a dark shirt on a transparent background" />
+      <img src="profile/assets/portrait-blue-sweater.png" width="120" alt="Hand-drawn portrait with curly dark hair, round glasses, and a blue sweater against a softly blurred pale background" />
     </td>
     <td align="center" valign="top" width="190">
       <a href="https://component-library-six-eta.vercel.app">
@@ -27,6 +27,15 @@
       </a>
       <br /><br />
       <img src="profile/assets/codex-lite-slow.gif" width="120" alt="The slowly rotating Codex Lite beach-ball app icon" />
+    </td>
+    <td align="center" valign="top" width="190">
+      <a href="https://github.com/jaiminjariwala/go-backend-mastery/tree/main/17-sharded-raft-kv">
+        <strong>Explore my<br />Sharded Raft KV</strong>
+      </a>
+      <br /><br />
+      <a href="https://github.com/jaiminjariwala/go-backend-mastery/tree/main/17-sharded-raft-kv">
+        <img src="profile/assets/sharded-raft-kv-client.png" width="120" alt="Vintage computer used as the client in the Sharded Raft KV database project" />
+      </a>
     </td>
   </tr>
 </table>
