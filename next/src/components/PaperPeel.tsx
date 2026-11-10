@@ -893,12 +893,14 @@ export default function PaperPeel({
       margin = width * 0.8 + 24;
     const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
     overlay.width = Math.ceil((width + margin + 32) * dpr);
-    overlay.height = Math.ceil((height + 64) * dpr);
+    // Leave room below the resting stamp for its curved bottom-left entrance.
+    const canvasHeight = height + 64 + height * 0.65;
+    overlay.height = Math.ceil(canvasHeight * dpr);
     Object.assign(overlay.style, {
       left: `${x - margin}px`,
       top: `${y - 32}px`,
       width: `${width + margin + 32}px`,
-      height: `${height + 64}px`,
+      height: `${canvasHeight}px`,
       visibility: "visible",
     });
     const silhouette = (color: string) => {
