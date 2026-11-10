@@ -1,26 +1,24 @@
 import { NextResponse } from "next/server";
-import type {ContributionDay} from '@/types/api';
+import type { ContributionDay } from "@/types/api";
 
 const GITHUB_USERNAME = "jaiminjariwala";
 const GITHUB_CONTRIBUTIONS_URL = `https://github.com/users/${GITHUB_USERNAME}/contributions`;
 const CONTRIBUTION_START_DATE = "2024-10-01";
 const REVALIDATE_SECONDS = 60 * 60;
 const FETCH_TIMEOUT_MS = 10_000;
-const MIN_CALENDAR_DAYS = 365;
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const runtime = "nodejs";
 export const revalidate = 3600;
 
-function decodeHtmlEntities(value:string) {
+function decodeHtmlEntities(value: string) {
   return value
-    .replace(/&#x([0-9a-f]+);/gi, (entity:string, hexadecimal:string) => {
+    .replace(/&#x([0-9a-f]+);/gi, (entity: string, hexadecimal: string) => {
       const codePoint = Number.parseInt(hexadecimal, 16);
       return Number.isInteger(codePoint) && codePoint <= 0x10ffff
         ? String.fromCodePoint(codePoint)
         : entity;
     })
-    .replace(/&#(\d+);/g, (entity:string, decimal:string) => {
+    .replace(/&#(\d+);/g, (entity: string, decimal: string) => {
       const codePoint = Number.parseInt(decimal, 10);
       return Number.isInteger(codePoint) && codePoint <= 0x10ffff
         ? String.fromCodePoint(codePoint)
@@ -40,31 +38,31 @@ function cleanText(markup = "") {
     .trim();
 }
 
-function getAttribute(attributes:string, name:string) {
+function getAttribute(attributes: string, name: string) {
   const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const match = attributes.match(
-    new RegExp(`\\b${escapedName}=(?:"([^"]*)"|'([^']*)')`, "i")
+    new RegExp(`\\b${escapedName}=(?:"([^"]*)"|'([^']*)')`, "i"),
   );
 
   return match ? decodeHtmlEntities(match[1] ?? match[2] ?? "") : "";
 }
 
-function parseContributionCount(label:string) {
+function parseContributionCount(label: string) {
   if (/^no contributions?\b/i.test(label)) return 0;
 
   const match = label.match(/([\d,]+)\s+contributions?\b/i);
   return match ? Number.parseInt(match[1].replaceAll(",", ""), 10) : null;
 }
 
-function parseContributionHtml(html:string) {
+function parseContributionHtml(html: string) {
   const descriptionMarkup = html.match(
-    /<h2\b[^>]*\bid=(?:"js-contribution-activity-description"|'js-contribution-activity-description')[^>]*>([\s\S]*?)<\/h2>/i
+    /<h2\b[^>]*\bid=(?:"js-contribution-activity-description"|'js-contribution-activity-description')[^>]*>([\s\S]*?)<\/h2>/i,
   )?.[1];
   const totalMatch = cleanText(descriptionMarkup).match(
-    /([\d,]+)\s+contributions?\b/i
+    /([\d,]+)\s+contributions?\b/i,
   );
 
-  const contributionByDate = new Map<string,ContributionDay>();
+  const contributionByDate = new Map<string, ContributionDay>();
   const cellPattern = /<td\b([^>]*)><\/td>/gi;
   let cellMatch;
 
@@ -78,9 +76,12 @@ function parseContributionHtml(html:string) {
 
     const date = getAttribute(attributes, "data-date");
     const level = Number.parseInt(getAttribute(attributes, "data-level"), 10);
-    const adjacentMarkup = html.slice(cellPattern.lastIndex, cellPattern.lastIndex + 800);
+    const adjacentMarkup = html.slice(
+      cellPattern.lastIndex,
+      cellPattern.lastIndex + 800,
+    );
     const tooltipMarkup = adjacentMarkup.match(
-      /^\s*<tool-tip\b[^>]*>([\s\S]*?)<\/tool-tip>/i
+      /^\s*<tool-tip\b[^>]*>([\s\S]*?)<\/tool-tip>/i,
     )?.[1];
     const label = cleanText(tooltipMarkup);
     const count = parseContributionCount(label);
@@ -101,7 +102,7 @@ function parseContributionHtml(html:string) {
   }
 
   const contributions = Array.from(contributionByDate.values()).sort((a, b) =>
-    a.date.localeCompare(b.date)
+    a.date.localeCompare(b.date),
   );
   if (!contributions.length) {
     throw new Error("GitHub returned an incomplete contribution calendar.");
@@ -154,7 +155,7 @@ export async function GET() {
         return parseContributionHtml(await response.text()).contributions;
       }),
     );
-    const contributionByDate = new Map<string,ContributionDay>();
+    const contributionByDate = new Map<string, ContributionDay>();
 
     calendars.flat().forEach((day) => {
       if (day.date >= CONTRIBUTION_START_DATE && day.date <= today) {
@@ -183,7 +184,7 @@ export async function GET() {
           "Cache-Control":
             "public, s-maxage=3600, stale-while-revalidate=86400",
         },
-      }
+      },
     );
   } catch (error) {
     console.error("GitHub contribution fetch failed:", error);
@@ -193,7 +194,7 @@ export async function GET() {
       {
         status: 502,
         headers: { "Cache-Control": "no-store" },
-      }
+      },
     );
   }
 }
