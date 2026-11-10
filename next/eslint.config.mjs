@@ -13,7 +13,6 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     // Compiled third-party runtimes are preserved, not authored source.
-    "public/vendor/**",
     "src/components/reference-paper/gpuKernel.js",
     "src/components/reference-paper/pageEngine.js",
     "src/components/reference-paper/paperMath.js",

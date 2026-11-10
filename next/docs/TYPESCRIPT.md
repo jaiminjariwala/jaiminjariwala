@@ -1,6 +1,6 @@
 # TypeScript migration
 
-The portfolio's authored application code is TypeScript. Pages and React components use `.tsx`; API routes, content, geometry, animation helpers, SEO utilities, scripts, and tests use `.ts`.
+The personal website's authored application code is TypeScript. Pages and React components use `.tsx`; API routes, content, geometry, animation helpers, SEO utilities, scripts, and tests use `.ts`.
 
 ## Type checking
 
@@ -15,7 +15,7 @@ Shared types describe portfolio sections, projects and gallery data, API respons
 
 `src/components/reference-paper/pageEngine.js`, `paperMath.js`, and `gpuKernel.js` are compiled third-party runtime code. They remain JavaScript so the renderer's implementation and approved animation are preserved. Adjacent declaration files type the public interfaces consumed by the TypeScript app. Their provenance remains documented in that directory's README.
 
-`public/vendor/pdf.worker.min.mjs` is a generated third-party PDF worker. ESLint excludes these compiled vendor files, not first-party TypeScript. ESLint and PostCSS configuration files remain standard `.mjs` tooling configuration; `next.config.ts` is typed.
+ESLint excludes the compiled renderer files, not first-party TypeScript. ESLint and PostCSS configuration files remain standard `.mjs` tooling configuration; `next.config.ts` is typed.
 
 The dependency lockfile pins TypeScript 5.9 for this Next.js 16.1 app. This migration does not upgrade the framework or install an experimental compiler. Next.js strips TypeScript syntax and produces JavaScript for the browser; type checking does not add runtime response validation or automatically accelerate page animations.
 
