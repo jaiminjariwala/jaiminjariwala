@@ -5,10 +5,10 @@ import { existsSync, readFileSync } from "node:fs";
 import { portfolioProjects } from "./portfolioProjects.ts";
 import { projectFramePath, videoPosition, videoTime } from "./projectMedia.ts";
 
-test("all three projects use existing local media with real source links", () => {
+test("all projects use existing local media with real source links", () => {
   assert.deepEqual(
     portfolioProjects.map((p) => p.id),
-    ["codex-lite", "component-library", "url-shortener"],
+    ["sharded-raft-kv", "codex-lite", "component-library", "url-shortener"],
   );
   for (const project of portfolioProjects) {
     assert.ok(project.description.length > 50);
@@ -27,17 +27,25 @@ test("all three projects use existing local media with real source links", () =>
         );
     }
   }
+  const codexLite = portfolioProjects.find(
+    (project) => project.id === "codex-lite",
+  );
+  const urlShortener = portfolioProjects.find(
+    (project) => project.id === "url-shortener",
+  );
+  assert.ok(codexLite);
+  assert.ok(urlShortener);
   assert.equal(
-    portfolioProjects[0].media.filter((m) => m.type === "video").length,
+    codexLite.media.filter((media) => media.type === "video").length,
     2,
   );
   assert.equal(
-    portfolioProjects[2].links.length,
+    urlShortener.links.length,
     1,
     "local-only shortener must not advertise a deployed service",
   );
   assert.ok(
-    !portfolioProjects[2].description.includes(
+    !urlShortener.description.includes(
       "so I can understand what each request actually does",
     ),
   );
