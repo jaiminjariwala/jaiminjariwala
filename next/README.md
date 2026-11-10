@@ -1,6 +1,6 @@
-# Jaimin Jariwala's Portfolio
+# Jaimin Jariwala's personal website
 
-Personal portfolio built with Next.js, React, and TypeScript, with an interactive rolling-paper interface, travel photos, projects, work experience, and education.
+Personal website built with Next.js, React, and TypeScript, with an interactive rolling-paper interface, travel photos, projects, work experience, and education.
 
 [Visit the website](https://jaiminjariwala.netlify.app).
 
