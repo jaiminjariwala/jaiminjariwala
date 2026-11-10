@@ -2,14 +2,21 @@ import type { Point } from "./paperGeometry";
 import type { StampSnapshot } from "@/types/paper";
 
 export const STAMP_PLACEMENT_MS = 420;
-export function stampPlacementPose(elapsed: number, width: number) {
+export function stampPlacementPose(
+  elapsed: number,
+  width: number,
+  height = width,
+) {
   const progress = Math.max(0, Math.min(1, elapsed / STAMP_PLACEMENT_MS));
   const remaining = (1 - progress) ** 2;
   const flat = width * (1 - remaining);
   return {
     progress,
     flat,
-    offset: progress === 1 ? 0 : -width * 0.65 * remaining,
+    // Rise steeply from the bottom left, then bend into a gentler rightward
+    // approach. Both axes ease to zero before handing off to the real stamp.
+    offsetX: progress === 1 ? 0 : -width * 0.55 * remaining,
+    offsetY: height * 0.55 * remaining ** 2,
     radius: Math.min(width * 0.075, (width - flat) / Math.PI),
     done: progress === 1,
   };
@@ -61,9 +68,9 @@ export function drawStampPlacement(
   elapsed: number,
   rotation: number,
 ) {
-  const pose = stampPlacementPose(elapsed, width);
+  const pose = stampPlacementPose(elapsed, width, height);
   ctx.save();
-  ctx.translate(width / 2 + pose.offset, height / 2);
+  ctx.translate(width / 2 + pose.offsetX, height / 2 + pose.offsetY);
   ctx.rotate(rotation);
   ctx.translate(-width / 2, -height / 2);
   if (pose.flat > 0)
