@@ -16,7 +16,7 @@ export type StampKind =
   "car" | "rocket" | "experience" | "education" | "projects";
 export const sectionDescriptions = {
   projects:
-    "Software projects by Jaimin Jariwala: Codex Lite for macOS, an open-source component library, and a Go URL shortener with PostgreSQL and Redis.",
+    "Software projects by Jaimin Jariwala: Sharded Raft KV, Codex Lite for macOS, an open-source component library, and a Go URL shortener.",
   experience:
     "Explore Jaimin Jariwala’s software engineering and AI/ML experience at Amazon, Logicwind, and The George Washington University.",
   education:

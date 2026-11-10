@@ -164,9 +164,7 @@ export default function PortfolioV2Projects() {
       <header>
         <h1>Projects</h1>
       </header>
-      <p>
-        A few things I have built, from desktop tools to backend experiments.
-      </p>
+      <p>A few things I have built.</p>
       <div className={styles.projectList}>
         {portfolioProjects.map((project) => (
           <section
