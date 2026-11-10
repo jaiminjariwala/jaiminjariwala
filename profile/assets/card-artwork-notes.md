@@ -1,5 +1,20 @@
 # Profile card artwork
 
+## Blue sweater portrait and Sharded Raft KV card
+
+The built-in imagegen tool edited the owner's supplied blue-sweater portrait.
+The final asset is `portrait-blue-sweater.png`. The background intentionally
+remains pale and softly blurred, matching the request.
+
+Final edit prompt:
+
+> Use case: precise-object-edit. Edit target: the supplied portrait illustration. Asset: portrait for the owner's GitHub profile README. Remove only the two pink/red circular blush patches on the cheeks, including their small hatch marks, and restore the surrounding white face and any glasses outlines cleanly. Softly blur only the pale off-white paper background, keeping the portrait itself crisp. Preserve the exact character identity, curly dark hair, green and blue round glasses, blue eyes, small red nose, smile, cobalt blue textured sweater, hand-drawn pencil texture, line work, proportions, colors, and bust framing. Keep a plain softly blurred pale background, no added scenery, no black background, no extra text, no additional objects. The character should remain visually identical apart from the removed cheek circles. Save the edited project asset and return its local output path.
+
+`sharded-raft-kv-client.png` is an unchanged copy of
+`17-sharded-raft-kv/web/public/client-computer.png` from the owner's
+[`go-backend-mastery` repository](https://github.com/jaiminjariwala/go-backend-mastery/tree/main/17-sharded-raft-kv).
+It is the same client image used by the project's network and visual concept views.
+
 ## Coastal shirt revision
 
 Built-in image editing changed only the shirt to white and muted medium-dark denim blue horizontal stripes (target #38658A), preserving the character, 2 × 2 eye-state registration, and transparent canvas. Prompt: replace bright sky blue with deeper dusty coastal blue; keep white stripes, all facial details, black contours, scale and transparency unchanged. Saved source: `portrait-coastal-sheet.png`; assembled blinking output: `portrait-coastal.gif`.
