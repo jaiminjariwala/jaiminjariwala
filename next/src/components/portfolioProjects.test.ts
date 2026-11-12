@@ -162,7 +162,7 @@ test("project galleries preserve mobile framing and avoid automatic video playba
   assert.ok(includesSource(source, "aria-pressed={i===index}"));
   assert.ok(includesSource(source, "entry.borderBoxSize[0]"));
   assert.ok(
-    includesSource(css, ".projectMediaFrame{padding:20px;filter:none}"),
+    includesSource(css, ".projectMediaFrame{padding:1.25rem;filter:none}"),
   );
   assert.ok(includesSource(css, "overscroll-behavior-x:contain"));
 });
@@ -215,6 +215,6 @@ test("floating controls support playback, keyboard seek, fullscreen, and cleanup
   assert.ok(includesSource(source, "requestFullscreen()"));
   assert.ok(includesSource(source, "webkitEnterFullscreen()"));
   assert.ok(includesSource(source, "element.pause();"));
-  assert.ok(includesSource(css, "background:#fff;border-radius:999px"));
+  assert.ok(includesSource(css, "background:#fff;border-radius:62.4375rem"));
   assert.ok(includesSource(css, ".projectVideoPlayer:fullscreen"));
 });

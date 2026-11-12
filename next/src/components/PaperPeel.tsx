@@ -23,7 +23,7 @@ import {
   paperHintSeen,
   rememberPaperHint,
 } from "./paperHint.ts";
-import { paperViewportWidth } from "./paperLayout.ts";
+import { paperViewportWidth, paperScale, paperInset } from "./paperLayout.ts";
 import { drawStampPlacement, stampRegionExposed } from "./stampPlacement";
 import { preventPaperNativeTouch } from "./paperTouch.ts";
 import {
@@ -54,7 +54,7 @@ const stampLabels: Record<PortfolioSection, string> = {
 };
 
 function openPaperK(s: PaperState) {
-  const inset = s.width < 640 ? 12 : 16;
+  const inset = paperInset(window.innerWidth);
   if (!s.collectionBounds) {
     const stamps = Array.from(
       document.querySelectorAll(
@@ -297,7 +297,7 @@ export default function PaperPeel({
     const ctx = canvas.current?.getContext("2d");
     if (!ctx || !s.width) return;
     const { width: w, height: h, k } = s;
-    const inset = w < 640 ? 12 : 16;
+    const inset = paperInset(window.innerWidth);
     const mobileSheet = window.innerWidth <= 760,
       horizontalInset = mobileSheet ? 0 : inset;
     // Render in document space. Native scrolling now moves the paper, curl
@@ -384,17 +384,17 @@ export default function PaperPeel({
       // exposes a diagonal seam until the pointer stops and it catches up.
       if (s.paintPending) return;
       const engine = gpu.current;
-      const radius = PAGE_SCALLOP_PERIOD / 2;
+      const radius = (PAGE_SCALLOP_PERIOD * paperScale(window.innerWidth)) / 2;
       const frame = {
         docW: w,
         docH: paperHeight,
-        gu: 15.4,
+        gu: 15.4 * paperScale(window.innerWidth),
         left: mobileSheet ? 0 : inset + radius,
         right: mobileSheet ? w : w - inset - radius,
         top: inset + radius,
         amp: radius,
         sideAmp: mobileSheet ? 0 : radius,
-        period: PAGE_SCALLOP_PERIOD,
+        period: PAGE_SCALLOP_PERIOD * paperScale(window.innerWidth),
       };
       const materialSettings = settings.current;
       // A very small, speed-dependent compression makes the roll feel padded
@@ -493,7 +493,7 @@ export default function PaperPeel({
     maybePlace.current?.(remaining);
     const stamp = document.querySelector<HTMLElement>("[data-paper-stamp]");
     if (stamp) stamp.style.opacity = s.arrivalActive ? "0" : "";
-    const period = PAGE_SCALLOP_PERIOD;
+    const period = PAGE_SCALLOP_PERIOD * paperScale(window.innerWidth);
     const base = sheetOutline(
       w - horizontalInset * 2,
       paperHeight - inset,
@@ -691,7 +691,7 @@ export default function PaperPeel({
           paperRasterHeight(
             window.innerWidth,
             Math.max(window.innerHeight, paper.offsetHeight) +
-              (window.innerWidth <= 760 ? 12 : 16),
+              paperInset(window.innerWidth),
             state.current.height || window.innerHeight,
           ),
         );
@@ -1194,7 +1194,7 @@ export default function PaperPeel({
       s.hintActive = true;
       hintSeen.current = true;
       rememberPaperHint(storage);
-      const inset = s.width < 640 ? 12 : 16;
+      const inset = paperInset(window.innerWidth);
       const mobile = window.innerWidth <= 760;
       if (mobile) {
         // With no corner dog-ear, demonstrate the same partial tug from the
@@ -1327,7 +1327,7 @@ export default function PaperPeel({
     if (event.currentTarget.dataset.paperEdge) {
       const edge = event.currentTarget.dataset.paperEdge as
         "left" | "right" | "top" | "bottom";
-      const inset = s.width < 640 ? 12 : 16;
+      const inset = paperInset(window.innerWidth);
       const origins: Record<typeof edge, [number, number, number]> = {
         left: [inset, event.clientY + window.scrollY, Math.PI],
         right: [s.width - inset, event.clientY + window.scrollY, 0],
@@ -1378,7 +1378,7 @@ export default function PaperPeel({
     const dx = event.clientX - s.startX,
       dy = event.clientY - s.startY;
     s.moved ||= Math.hypot(dx, dy) > 5;
-    const inset = s.width < 640 ? 12 : 16;
+    const inset = paperInset(window.innerWidth);
     const pose = paperDragPose(
       (s.width - inset * 2 - s.startK) / Math.SQRT2,
       s.startAngle,
@@ -1416,7 +1416,7 @@ export default function PaperPeel({
       dy = event.clientY - s.startY;
     s.moved ||= Math.hypot(dx, dy) > 5;
     // The last pointerup can arrive beyond the last coalesced move event.
-    const inset = s.width < 640 ? 12 : 16;
+    const inset = paperInset(window.innerWidth);
     const pose = paperDragPose(
       (s.width - inset * 2 - s.startK) / Math.SQRT2,
       s.startAngle,

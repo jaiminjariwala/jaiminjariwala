@@ -23,7 +23,7 @@ const collection = source.slice(
 test("the mobile collection uses one centered column with larger, spaced stamps", () => {
   assert.match(
     compactWhitespace(css),
-    /@media\(max-width:760px\)\{\.stampGrid\{grid-template-columns:minmax\(0,1fr\);padding:028px;gap:44px;margin:90pxauto80px;?\}\.stampGrid\.stamp\{width:min\(62vw,260px\);height:min\(62vw,260px\);?\}/,
+    /@media\(max-width:760px\)\{\.stampGrid\{grid-template-columns:minmax\(0,1fr\);padding:01.75rem;gap:2.75rem;margin:5.625remauto5rem;?\}\.stampGrid\.stamp\{width:min\(62vw,16.25rem\);height:min\(62vw,16.25rem\);?\}/,
   );
   assert.ok(
     includesSource(css, "grid-template-columns:repeat(3,1fr)"),

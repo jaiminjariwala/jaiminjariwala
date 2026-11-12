@@ -77,9 +77,9 @@ a {
 .gallery-folder-visual {
   transform: scale(0.88);
   transform-origin: top center;
-  margin-left: -11px;
-  margin-right: -11px;
-  margin-bottom: -20px;
+  margin-left: -0.6875rem;
+  margin-right: -0.6875rem;
+  margin-bottom: -1.25rem;
 }
 
 @media (max-width: 767px) {
@@ -88,19 +88,19 @@ a {
     flex-direction: column;
     align-items: center;
     flex: 0 0 auto;
-    width: calc((100vw - 76px) / 2);
+    width: calc((100vw - 4.75rem) / 2);
   }
 
   .gallery-folder-visual {
     transform: scale(0.8);
     transform-origin: top center;
-    margin-bottom: -34px;
+    margin-bottom: -2.125rem;
     margin-left: 0;
     margin-right: 0;
   }
 
   .gallery-folder-title {
-    margin-top: 8px !important;
+    margin-top: 0.5rem !important;
   }
 }
 
@@ -120,37 +120,37 @@ a {
     top: 0;
     left: 0;
     z-index: 2147483647;
-    width: 34px;
-    height: 34px;
+    width: 2.125rem;
+    height: 2.125rem;
     pointer-events: none;
     background-repeat: no-repeat;
     background-position: center;
     background-size: contain;
-    transform: translate3d(-100px, -100px, 0);
+    transform: translate3d(-6.25rem, -6.25rem, 0);
     transform-origin: 0 0;
     will-change: transform;
   }
 
   .custom-cursor.select-black {
     background-image: url("/cursors/arrow-reference.svg");
-    width: 34px;
-    height: 34px;
-    margin-left: -5.4px;
-    margin-top: -1px;
+    width: 2.125rem;
+    height: 2.125rem;
+    margin-left: -0.3375rem;
+    margin-top: -0.0625rem;
   }
 
   .custom-cursor.hand {
-    width: 34px;
-    height: 34px;
+    width: 2.125rem;
+    height: 2.125rem;
     background-image: url("/cursors/glove-point.svg");
   }
   .custom-cursor.glove-open,
   .custom-cursor.glove-grip {
-    width: 34px;
-    height: 34px;
-    margin-left: -17px;
-    margin-top: -17px;
-    filter: drop-shadow(0 1px 1px #0003);
+    width: 2.125rem;
+    height: 2.125rem;
+    margin-left: -1.0625rem;
+    margin-top: -1.0625rem;
+    filter: drop-shadow(0 0.0625rem 0.0625rem #0003);
   }
   .custom-cursor.glove-open {
     background-image: url("/cursors/glove-open.svg");
@@ -161,9 +161,10 @@ a {
   .custom-cursor.hand,
   .custom-cursor.glove-open,
   .custom-cursor.glove-grip {
-    filter: drop-shadow(0.3px 0 0 #202020) drop-shadow(-0.3px 0 0 #202020)
-      drop-shadow(0 0.3px 0 #202020) drop-shadow(0 -0.3px 0 #202020)
-      drop-shadow(0 1px 1px #0003);
+    filter: drop-shadow(0.01875rem 0 0 #202020)
+      drop-shadow(-0.01875rem 0 0 #202020) drop-shadow(0 0.01875rem 0 #202020)
+      drop-shadow(0 -0.01875rem 0 #202020)
+      drop-shadow(0 0.0625rem 0.0625rem #0003);
   }
 }
 
@@ -176,15 +177,15 @@ a {
 .gallery-folder-title,
 .gallery-folder-count {
   font-weight: 500;
-  -webkit-text-stroke: 0.2px currentColor;
+  -webkit-text-stroke: 0.0125rem currentColor;
 }
 
 .gallery-folder-title {
-  margin-bottom: 2px !important;
+  margin-bottom: 0.125rem !important;
 }
 
 .gallery-folder-count {
-  margin-top: -4px !important;
+  margin-top: -0.25rem !important;
 }
 @media (max-width: 767px) {
   html,
@@ -209,12 +210,24 @@ html[data-theme="dark"] .custom-cursor {
 html[data-theme="dark"] .custom-cursor.hand,
 html[data-theme="dark"] .custom-cursor.glove-open,
 html[data-theme="dark"] .custom-cursor.glove-grip {
-  filter: drop-shadow(0.3px 0 0 #202020) drop-shadow(-0.3px 0 0 #202020)
-    drop-shadow(0 0.3px 0 #202020) drop-shadow(0 -0.3px 0 #202020)
-    drop-shadow(0 1px 1px #0003);
+  filter: drop-shadow(0.01875rem 0 0 #202020)
+    drop-shadow(-0.01875rem 0 0 #202020) drop-shadow(0 0.01875rem 0 #202020)
+    drop-shadow(0 -0.01875rem 0 #202020)
+    drop-shadow(0 0.0625rem 0.0625rem #0003);
 }
 html[data-theme="dark"]
   .custom-cursor:not(.hand):not(.glove-open):not(.glove-grip) {
-  filter: invert(1) drop-shadow(0.65px 0 0 #000) drop-shadow(-0.65px 0 0 #000)
-    drop-shadow(0 0.65px 0 #000) drop-shadow(0 -0.65px 0 #000);
+  filter: invert(1) drop-shadow(0.040625rem 0 0 #000)
+    drop-shadow(-0.040625rem 0 0 #000) drop-shadow(0 0.040625rem 0 #000)
+    drop-shadow(0 -0.040625rem 0 #000);
+}
+
+/* Desktop dimensions match the former 80% browser view. Mobile retains its original sizing. */
+html {
+  font-size: 16px;
+}
+@media (min-width: 761px) {
+  html {
+    font-size: 12.8px;
+  }
 }

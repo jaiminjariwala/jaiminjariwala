@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { projectFramePath } from "./projectMedia.ts";
+import { paperScale } from "./paperLayout";
 import ProjectVideoPlayer from "./ProjectVideoPlayer";
 import { portfolioProjects } from "./portfolioProjects.ts";
 import type { PortfolioProject } from "./portfolioProjects";
@@ -37,7 +38,15 @@ function ProjectGallery({ project }: { project: PortfolioProject }) {
     const observer = new ResizeObserver(([entry]) => {
       const { inlineSize: width, blockSize: height } = entry.borderBoxSize[0];
       if (width > 0 && height > 0)
-        setOutline({ width, height, path: projectFramePath(width, height) });
+        setOutline({
+          width,
+          height,
+          path: projectFramePath(
+            width,
+            height,
+            24 * paperScale(window.innerWidth),
+          ),
+        });
     });
     observer.observe(frame.current);
     return () => observer.disconnect();

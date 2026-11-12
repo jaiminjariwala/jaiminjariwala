@@ -193,16 +193,16 @@ test("photo sizing reserves the full scalloped frame on mobile", () => {
   assert.ok(
     includesSource(
       css,
-      ".photoPrint img{position:absolute;left:22px;top:22px;",
+      ".photoPrint img{position:absolute;left:1.375rem;top:1.375rem;",
     ),
   );
   assert.ok(
     includesSource(
       css,
-      ".photoPrint{flex-basis:180px;width:180px;padding:19px 19px 24px}",
+      ".photoPrint{flex-basis:11.25rem;width:11.25rem;padding:1.1875rem 1.1875rem 1.5rem}",
     ),
   );
-  assert.ok(includesSource(css, "height:calc(100% - 43px)"));
+  assert.ok(includesSource(css, "height:calc(100% - 2.6875rem)"));
 });
 
 test("photo scallops keep a stamp-like thin outline on desktop and mobile", () => {

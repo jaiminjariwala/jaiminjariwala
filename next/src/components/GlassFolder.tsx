@@ -90,7 +90,7 @@ export function GlassFolder({
             }
           : undefined
       }
-      className="gallery-folder-card block w-[162px] shrink-0 cursor-pointer"
+      className="gallery-folder-card block w-[10.125rem] shrink-0 cursor-pointer"
     >
       <div
         className="gallery-folder-visual"
@@ -117,8 +117,8 @@ export function GlassFolder({
               ? `url(${folderImages[0]})`
               : styles.emptyPaperBackground,
             transform: isHovered
-              ? "translate(-50%, -62px) translateX(-20px) rotateZ(-40deg)"
-              : "translate(-50%, 16px) translateX(-18px) rotateZ(-8deg)",
+              ? "translate(-50%, -3.875rem) translateX(-1.25rem) rotateZ(-40deg)"
+              : "translate(-50%, 1rem) translateX(-1.125rem) rotateZ(-8deg)",
           }}
         />
 
@@ -130,8 +130,8 @@ export function GlassFolder({
               ? `url(${folderImages[1]})`
               : styles.emptyPaperBackground,
             transform: isHovered
-              ? "translate(-50%, -72px) translateX(-2px) rotateZ(-22deg)"
-              : "translate(-50%, 10px) translateX(-6px) rotateZ(-2deg)",
+              ? "translate(-50%, -4.5rem) translateX(-0.125rem) rotateZ(-22deg)"
+              : "translate(-50%, 0.625rem) translateX(-0.375rem) rotateZ(-2deg)",
           }}
         />
 
@@ -143,8 +143,8 @@ export function GlassFolder({
               ? `url(${folderImages[2]})`
               : styles.emptyPaperBackground,
             transform: isHovered
-              ? "translate(-50%, -72px) translateX(2px) rotateZ(22deg)"
-              : "translate(-50%, 10px) translateX(6px) rotateZ(2deg)",
+              ? "translate(-50%, -4.5rem) translateX(0.125rem) rotateZ(22deg)"
+              : "translate(-50%, 0.625rem) translateX(0.375rem) rotateZ(2deg)",
           }}
         />
 
@@ -156,8 +156,8 @@ export function GlassFolder({
               ? `url(${folderImages[3]})`
               : styles.emptyPaperBackground,
             transform: isHovered
-              ? "translate(-50%, -62px) translateX(20px) rotateZ(40deg)"
-              : "translate(-50%, 16px) translateX(18px) rotateZ(8deg)",
+              ? "translate(-50%, -3.875rem) translateX(1.25rem) rotateZ(40deg)"
+              : "translate(-50%, 1rem) translateX(1.125rem) rotateZ(8deg)",
           }}
         />
 
@@ -179,13 +179,13 @@ export function GlassFolder({
                   width: "84%",
                   textAlign: "center",
                   fontWeight: 400,
-                  fontSize: "21px",
+                  fontSize: "1.3125rem",
                   lineHeight: 1.05,
                   letterSpacing: "-0.01em",
                   // Deeper saturated blue matching the printed logo in the
                   // reference folder image.
                   color: "#2183c8",
-                  WebkitTextStroke: "0.5px #2183c8",
+                  WebkitTextStroke: "0.03125rem #2183c8",
                   pointerEvents: "none",
                   userSelect: "none",
                 }}
@@ -194,7 +194,7 @@ export function GlassFolder({
                 <span
                   style={{
                     fontFamily: "var(--font-short-stack), cursive",
-                    WebkitTextStroke: "2px #2183c8",
+                    WebkitTextStroke: "0.125rem #2183c8",
                   }}
                 >
                   Amazon
@@ -214,12 +214,15 @@ export function GlassFolder({
       </div>
 
       <p
-        className="gallery-folder-meta gallery-folder-title mt-[14px] text-center leading-[1.35] tracking-[-0.01em] text-[#2b2f35]"
-        style={{ fontSize: "clamp(18px, 3vw, 20px)", marginBottom: 5 }}
+        className="gallery-folder-meta gallery-folder-title mt-[0.875rem] text-center leading-[1.35] tracking-[-0.01em] text-[#2b2f35]"
+        style={{
+          fontSize: "clamp(1.125rem, 3vw, 1.25rem)",
+          marginBottom: ".3125rem",
+        }}
       >
         {title}
       </p>
-      <p className="gallery-folder-meta gallery-folder-count mt-[-2px] mb-0 text-center text-[16px] leading-none tracking-[-0.02em] text-[#0b65d8]">
+      <p className="gallery-folder-meta gallery-folder-count mt-[-0.125rem] mb-0 text-center text-[1rem] leading-none tracking-[-0.02em] text-[#0b65d8]">
         {count}
       </p>
     </Link>
@@ -229,9 +232,9 @@ export function GlassFolder({
 const styles = {
   folderAnchor: {
     position: "relative",
-    width: "185px",
-    height: "159px",
-    perspective: "550px",
+    width: "11.5625rem",
+    height: "9.9375rem",
+    perspective: "34.375rem",
     cursor: "pointer",
   },
   backPlate: {
@@ -246,21 +249,21 @@ const styles = {
     clipPath:
       'path("M 0 31 C 0 23 5 16 13 16 L 52 16 C 57 16 62 18 66 21 L 73 27 C 76 30 80 31 86 31 L 177 31 C 182 31 185 35 185 39 L 185 130 C 185 137 180 142 173 142 L 12 142 C 5 142 0 137 0 130 Z")',
     boxShadow:
-      "inset 0 1px 0 rgba(255,255,255,0.56), 0 7px 14px rgba(12, 40, 63, 0.24)",
+      "inset 0 0.0625rem 0 rgba(255,255,255,0.56), 0 0.4375rem 0.875rem rgba(12, 40, 63, 0.24)",
     zIndex: 1,
   },
   paper: {
     position: "absolute",
     left: "50%",
-    top: "29px",
-    borderRadius: "3px",
+    top: "1.8125rem",
+    borderRadius: "0.1875rem",
     backgroundColor: "#f7f5ea",
     borderStyle: "solid",
-    borderWidth: "6px 6px 20px 6px",
+    borderWidth: "0.375rem 0.375rem 1.25rem 0.375rem",
     borderColor: "#ffffff",
     backgroundOrigin: "content-box",
     backgroundClip: "content-box",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.16)",
+    boxShadow: "0 0.25rem 0.75rem rgba(0,0,0,0.16)",
     transition: "all 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
     transformOrigin: "bottom center",
     transformStyle: "preserve-3d",
@@ -272,39 +275,39 @@ const styles = {
   },
   emptyPaperBackground:
     "linear-gradient(135deg, #f8fbff 0%, #edf4fb 48%, #dfeaf4 100%)",
-  paperFarLeft: { width: "82px", height: "96px", zIndex: 3 },
-  paperInnerLeft: { width: "86px", height: "102px", zIndex: 4 },
-  paperInnerRight: { width: "86px", height: "102px", zIndex: 5 },
-  paperFarRight: { width: "82px", height: "96px", zIndex: 6 },
+  paperFarLeft: { width: "5.125rem", height: "6rem", zIndex: 3 },
+  paperInnerLeft: { width: "5.375rem", height: "6.375rem", zIndex: 4 },
+  paperInnerRight: { width: "5.375rem", height: "6.375rem", zIndex: 5 },
+  paperFarRight: { width: "5.125rem", height: "6rem", zIndex: 6 },
   backPlateInnerShadow: {
     position: "absolute",
-    top: "41px",
-    left: "0px",
-    right: "0px",
-    height: "56px",
-    borderRadius: "10px 10px 0 0",
+    top: "2.5625rem",
+    left: "0rem",
+    right: "0rem",
+    height: "3.5rem",
+    borderRadius: "0.625rem 0.625rem 0 0",
     background:
       "linear-gradient(to bottom, rgba(20,90,140,0.38) 0%, rgba(20,90,140,0.12) 55%, transparent 100%)",
-    filter: "blur(5px)",
+    filter: "blur(0.3125rem)",
     zIndex: 2,
     pointerEvents: "none",
   },
   paperStackShadow: {
     position: "absolute",
-    top: "38px",
-    left: "15px",
-    right: "15px",
-    height: "24px",
-    borderRadius: "10px",
+    top: "2.375rem",
+    left: "0.9375rem",
+    right: "0.9375rem",
+    height: "1.5rem",
+    borderRadius: "0.625rem",
     background:
       "linear-gradient(to top, rgba(13, 43, 67, 0.32) 0%, rgba(13, 43, 67, 0.15) 45%, rgba(13, 43, 67, 0) 100%)",
-    filter: "blur(1.8px)",
+    filter: "blur(0.1125rem)",
     zIndex: 2,
     pointerEvents: "none",
   },
   glassPerspectiveWrapper: {
     position: "absolute",
-    bottom: "0px",
+    bottom: "0rem",
     width: "100%",
     height: "69%",
     zIndex: 10,
@@ -318,24 +321,24 @@ const styles = {
     background:
       "linear-gradient(180deg, #76c8ef 0%, #6cc3ec 56%, #62bce6 100%)",
     border: "none",
-    borderRadius: "12px",
+    borderRadius: "0.75rem",
     overflow: "hidden",
     transformOrigin: "bottom center",
     transformStyle: "preserve-3d",
     backfaceVisibility: "hidden",
     transition: "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
     boxShadow:
-      "inset 0 1px 0 rgba(255,255,255,0.42), 0 3px 8px rgba(12, 40, 63, 0.1)",
+      "inset 0 0.0625rem 0 rgba(255,255,255,0.42), 0 0.1875rem 0.5rem rgba(12, 40, 63, 0.1)",
   },
   groundShadow: {
     position: "absolute",
-    bottom: "-26px",
+    bottom: "-1.625rem",
     left: "50%",
     width: "74%",
-    height: "16px",
+    height: "1rem",
     background:
       "radial-gradient(ellipse at center, rgba(0,0,0,0.42) 0%, transparent 70%)",
-    filter: "blur(8px)",
+    filter: "blur(0.5rem)",
     transition: "all 0.6s ease",
     zIndex: 0,
   },
