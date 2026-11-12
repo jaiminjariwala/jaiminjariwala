@@ -1,5 +1,18 @@
-// Match the desktop sheet's right gutter in PortfolioV2.module.css.
-// Keep document coordinates shared by the DOM, ink texture and roll renderer.
-export function paperViewportWidth(viewportWidth:number) {
-  return viewportWidth > 760 ? viewportWidth * .93 + 16 : viewportWidth;
+/** Keep the renderer in the same physical coordinates as the responsive CSS. */
+export function paperScale(viewportWidth: number) {
+  return viewportWidth > 760 ? 0.8 : 1;
+}
+
+export function paperInset(viewportWidth: number) {
+  return viewportWidth <= 760
+    ? viewportWidth < 640
+      ? 12
+      : 16
+    : 16 * paperScale(viewportWidth);
+}
+
+export function paperViewportWidth(viewportWidth: number) {
+  return viewportWidth > 760
+    ? viewportWidth * 0.93 + paperInset(viewportWidth)
+    : viewportWidth;
 }

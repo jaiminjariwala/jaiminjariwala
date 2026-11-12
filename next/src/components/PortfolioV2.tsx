@@ -9,7 +9,7 @@ import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from "./StickerButton";
 import GitHubHoverCard from "./GitHubHoverCard";
-import { paperViewportWidth } from "./paperLayout.ts";
+import { paperViewportWidth, paperScale, paperInset } from "./paperLayout.ts";
 import { sectionPaths } from "@/lib/siteSeo.ts";
 import {
   outlineMask,
@@ -312,16 +312,16 @@ export default function PortfolioV2({
         outlineMask(
           box.inlineSize,
           box.blockSize,
-          PAGE_SCALLOP_PERIOD,
+          PAGE_SCALLOP_PERIOD * paperScale(window.innerWidth),
           !mobile,
         ),
       );
-      const inset = mobile ? 12 : 16;
+      const inset = paperInset(window.innerWidth);
       setCollectionMask(
         outlineMask(
           paperViewportWidth(window.innerWidth) - (mobile ? 0 : inset * 2),
           window.innerHeight - inset * 2,
-          PAGE_SCALLOP_PERIOD,
+          PAGE_SCALLOP_PERIOD * paperScale(window.innerWidth),
           !mobile,
         ),
       );

@@ -3,7 +3,7 @@
   --muted: #858582;
   position: relative;
   min-height: 100svh;
-  padding: 16px;
+  padding: 1rem;
   background: #f8f8f7;
   color: var(--ink);
   font-family: var(--font-inter), Arial, sans-serif;
@@ -25,20 +25,20 @@
 }
 .site a:hover {
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 0.25rem;
 }
 .site button:focus-visible,
 .site a:focus-visible {
-  outline: 2px solid #2c65d0;
-  outline-offset: 6px;
+  outline: 0.125rem solid #2c65d0;
+  outline-offset: 0.375rem;
 }
 .paper {
   position: relative;
   background: white;
-  min-height: calc(100svh - 32px);
-  padding: 110px 0 70px;
+  min-height: calc(100svh - 2rem);
+  padding: 6.875rem 0 4.375rem;
   z-index: 2;
-  filter: drop-shadow(0 0 8px #00000003);
+  filter: drop-shadow(0 0 0.5rem #00000003);
   transition: clip-path 0.45s ease;
 }
 .paper:before {
@@ -47,29 +47,29 @@
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 0 0/15px 15px
-      repeat-x,
-    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 0 100%/15px
-      15px repeat-x,
-    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 0 0/15px 15px
-      repeat-y,
-    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 100% 0/15px
-      15px repeat-y;
-  inset: -7px;
+    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 0 0/0.9375rem
+      0.9375rem repeat-x,
+    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 0
+      100%/0.9375rem 0.9375rem repeat-x,
+    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 0 0/0.9375rem
+      0.9375rem repeat-y,
+    radial-gradient(circle at 50% 50%, white 70%, transparent 72%) 100%
+      0/0.9375rem 0.9375rem repeat-y;
+  inset: -0.4375rem;
 }
 .article {
   width: 48.15%;
-  max-width: 720px;
+  max-width: 45rem;
   margin-left: 32%;
-  font-size: clamp(18px, 1.70443vw, 26px);
+  font-size: clamp(1.125rem, 1.70443vw, 1.625rem);
   line-height: 1.4118;
 }
 .article header {
-  margin-bottom: 54px;
+  margin-bottom: 3.375rem;
 }
 .article h1 {
   font-family: "James Hand Natural", var(--font-short-stack), cursive;
-  font-size: clamp(24px, 2.5638vw, 38px);
+  font-size: clamp(1.5rem, 2.5638vw, 2.375rem);
   line-height: 0.94;
   letter-spacing: -0.055em;
   font-weight: 400;
@@ -78,28 +78,28 @@
 }
 .article p {
   font: inherit;
-  margin: 0 0 28px;
+  margin: 0 0 1.75rem;
 }
 .article h2 {
   font: inherit;
   letter-spacing: -0.01em;
-  margin: 0 0 24px;
+  margin: 0 0 1.5rem;
 }
 .article h3 {
   font: inherit;
-  margin: 34px 0 12px;
+  margin: 2.125rem 0 0.75rem;
 }
 .article section {
-  margin-top: 65px;
+  margin-top: 4.0625rem;
 }
 .article footer {
-  border-top: 1px solid #eee;
-  margin-top: 70px;
-  padding-top: 25px;
+  border-top: 0.0625rem solid #eee;
+  margin-top: 4.375rem;
+  padding-top: 1.5625rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
-  font-size: 15px;
+  gap: 1.25rem;
+  font-size: 0.9375rem;
   color: #777;
 }
 .article footer button {
@@ -112,19 +112,23 @@
   position: relative;
   border: 0;
   background: #fff;
-  filter: drop-shadow(0 1px 2px #0003);
-  border-radius: 12px;
+  filter: drop-shadow(0 0.0625rem 0.125rem #0003);
+  border-radius: 0.75rem;
 }
 .stamp:before,
 .homeStamp:before {
   content: "";
   position: absolute;
-  inset: -8px;
+  inset: -0.5rem;
   background:
-    radial-gradient(circle, #fff 69%, transparent 72%) 0 0/30px 30px repeat-x,
-    radial-gradient(circle, #fff 69%, transparent 72%) 0 100%/30px 30px repeat-x,
-    radial-gradient(circle, #fff 69%, transparent 72%) 0 0/30px 30px repeat-y,
-    radial-gradient(circle, #fff 69%, transparent 72%) 100% 0/30px 30px repeat-y;
+    radial-gradient(circle, #fff 69%, transparent 72%) 0 0/1.875rem 1.875rem
+      repeat-x,
+    radial-gradient(circle, #fff 69%, transparent 72%) 0 100%/1.875rem 1.875rem
+      repeat-x,
+    radial-gradient(circle, #fff 69%, transparent 72%) 0 0/1.875rem 1.875rem
+      repeat-y,
+    radial-gradient(circle, #fff 69%, transparent 72%) 100% 0/1.875rem 1.875rem
+      repeat-y;
   z-index: -1;
 }
 .stamp svg,
@@ -135,28 +139,28 @@
 }
 .homeStamp {
   position: absolute;
-  top: 75px;
+  top: 4.6875rem;
   left: 7%;
-  width: 115px;
-  height: 115px;
-  padding: 6px;
+  width: 7.1875rem;
+  height: 7.1875rem;
+  padding: 0.375rem;
   transform: rotate(-5deg);
 }
 .homeStamp:before {
-  background-size: 17px 17px;
+  background-size: 1.0625rem 1.0625rem;
 }
 .stampTime,
 .signature {
   position: absolute;
   z-index: 1;
   font-family: "James Hand Natural", var(--font-short-stack), cursive;
-  font-size: 15px;
-  letter-spacing: -1px;
-  left: 8px;
-  top: 1px;
+  font-size: 0.9375rem;
+  letter-spacing: -0.0625rem;
+  left: 0.5rem;
+  top: 0.0625rem;
 }
 .stampTime {
-  right: 8px;
+  right: 0.5rem;
   display: flex;
   justify-content: space-between;
 }
@@ -167,17 +171,17 @@
 .corner {
   position: fixed;
   z-index: 5;
-  right: 19px;
-  top: 18px;
-  width: 112px;
-  height: 112px;
+  right: 1.1875rem;
+  top: 1.125rem;
+  width: 7rem;
+  height: 7rem;
   touch-action: none;
   border: 0;
   background: none;
-  filter: drop-shadow(-6px 7px 8px #0002);
+  filter: drop-shadow(-0.375rem 0.4375rem 0.5rem #0002);
   transform: translate(
-    calc(var(--drag, 0) * -180px),
-    calc(var(--drag, 0) * 180px)
+    calc(var(--drag, 0) * -11.25rem),
+    calc(var(--drag, 0) * 11.25rem)
   );
   cursor: grab !important;
 }
@@ -187,25 +191,25 @@
   inset: 0;
   background: #0456ff;
   clip-path: polygon(0 0, 100% 100%, 0 84%);
-  border-radius: 0 0 15px 15px;
+  border-radius: 0 0 0.9375rem 0.9375rem;
 }
 .corner span:nth-child(2) {
-  inset: 0 3px 5px 5px;
+  inset: 0 0.1875rem 0.3125rem 0.3125rem;
   background: #05b466;
 }
 .corner span:nth-child(3) {
-  inset: 0 8px 10px 10px;
+  inset: 0 0.5rem 0.625rem 0.625rem;
   background: #f1273e;
 }
 .corner i {
-  inset: 0 0 14px 14px;
+  inset: 0 0 0.875rem 0.875rem;
   background: linear-gradient(135deg, #fff 30%, #f5f5f5 70%, #ddd);
   clip-path: polygon(0 0, 100% 100%, 0 100%);
   transform: rotate(180deg);
 }
 .collection {
   position: fixed;
-  inset: 16px;
+  inset: 1rem;
   background: #fff;
   z-index: 0;
   visibility: hidden;
@@ -216,53 +220,53 @@
 }
 .back {
   position: absolute;
-  top: 18px;
-  left: 25px;
+  top: 1.125rem;
+  left: 1.5625rem;
   background: none;
   border: 0;
   color: #888 !important;
-  font-size: 14px !important;
-  padding: 10px;
+  font-size: 0.875rem !important;
+  padding: 0.625rem;
 }
 .stampGrid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 100px 12%;
+  gap: 6.25rem 12%;
   align-items: center;
   justify-items: center;
-  max-width: 1100px;
-  margin: 90px auto 80px;
-  padding: 10px 50px;
+  max-width: 68.75rem;
+  margin: 5.625rem auto 5rem;
+  padding: 0.625rem 3.125rem;
 }
 .stamp {
-  width: 185px;
-  height: 185px;
-  padding: 10px;
+  width: 11.5625rem;
+  height: 11.5625rem;
+  padding: 0.625rem;
   transition: transform 0.25s;
 }
 .stamp .stampTime,
 .stamp .signature {
-  font-size: 20px;
-  left: 12px;
-  right: 12px;
+  font-size: 1.25rem;
+  left: 0.75rem;
+  right: 0.75rem;
 }
 .carStamp {
   transform: rotate(-3deg);
 }
 .question {
   font-family: Georgia, serif;
-  font-size: 45px;
+  font-size: 2.8125rem;
   color: #aaa;
 }
 .experience {
-  margin-bottom: 30px;
+  margin-bottom: 1.875rem;
 }
 .experience > div {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
-  padding: 19px 0;
-  border-bottom: 1px solid #e8e8e8;
+  gap: 1.25rem;
+  padding: 1.1875rem 0;
+  border-bottom: 0.0625rem solid #e8e8e8;
 }
 .experience > div:last-child {
   border-bottom: 0;
@@ -283,77 +287,77 @@
 .article .experience {
   font-size: 0.85em;
 }
-@media (min-width: 1700px) {
+@media (min-width: 1360px) {
   .article {
-    margin-left: calc(50% - 260px);
+    margin-left: calc(50% - 16.25rem);
   }
 }
 @media (max-width: 760px) {
   .site {
-    padding: 12px;
+    padding: 0.75rem;
   }
   .paper {
-    padding: 190px 25px 50px;
+    padding: 11.875rem 1.5625rem 3.125rem;
   }
   .article {
     width: 100%;
-    max-width: 600px;
+    max-width: 37.5rem;
     margin: 0 auto;
-    font-size: 19px;
+    font-size: 1.1875rem;
     line-height: 1.5;
   }
   .article header {
-    margin-bottom: 36px;
+    margin-bottom: 2.25rem;
   }
   .article h1 {
-    font-size: 25px;
+    font-size: 1.5625rem;
     line-height: 1.2;
   }
   .homeStamp {
-    top: 38px;
-    left: 32px;
-    width: 100px;
-    height: 100px;
+    top: 2.375rem;
+    left: 2rem;
+    width: 6.25rem;
+    height: 6.25rem;
   }
   .corner {
-    width: 85px;
-    height: 85px;
-    top: 14px;
-    right: 14px;
+    width: 5.3125rem;
+    height: 5.3125rem;
+    top: 0.875rem;
+    right: 0.875rem;
   }
   .article section {
-    margin-top: 45px;
+    margin-top: 2.8125rem;
   }
   .stampGrid {
     grid-template-columns: repeat(2, 1fr);
-    padding: 30px 16px;
-    gap: 75px 25px;
-    margin-top: 65px;
+    padding: 1.875rem 1rem;
+    gap: 4.6875rem 1.5625rem;
+    margin-top: 4.0625rem;
   }
   .stamp {
-    width: 130px;
-    height: 130px;
+    width: 8.125rem;
+    height: 8.125rem;
   }
   .stamp .stampTime,
   .stamp .signature {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
   .stamp:before {
-    background-size: 23px 23px;
+    background-size: 1.4375rem 1.4375rem;
   }
   .collection {
-    inset: 12px;
+    inset: 0.75rem;
   }
   .experience > div {
-    gap: 10px;
+    gap: 0.625rem;
     flex-wrap: wrap;
   }
   .experience time {
-    font-size: 15px;
+    font-size: 0.9375rem;
   }
 }
 .corner i {
-  inset: 1px 2px 10px 7px;
+  inset: 0.0625rem 0.125rem 0.625rem 0.4375rem;
   clip-path: polygon(0 0, 100% 100%, 0 84%);
   transform: none;
   background: linear-gradient(135deg, #fff 20%, #fff 55%, #e5e5e5 95%);
@@ -381,20 +385,20 @@
   transition: none;
   filter: none;
   min-height: 110svh;
-  padding-top: 126px;
-  padding-bottom: 80px;
+  padding-top: 7.875rem;
+  padding-bottom: 5rem;
 }
 .paper:before {
   display: none;
 }
 .article {
   font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 21.8167px;
-  line-height: 30.8px;
+  font-size: 1.3635438rem;
+  line-height: 1.925rem;
   max-width: none;
   width: calc(5 * var(--col-width) + 4 * var(--gu));
   margin-left: calc(2 * var(--gu) + 3 * (var(--col-width) + var(--gu)));
-  --gu: 15.4px;
+  --gu: 0.9625rem;
   --col-width: calc(
     round(down, ((100vw - 4 * var(--gu) - 9 * var(--gu)) / 10) / var(--gu), 1) *
       var(--gu)
@@ -404,14 +408,14 @@
   font-family: inherit;
 }
 .article header {
-  margin-bottom: 54px;
+  margin-bottom: 3.375rem;
 }
 .article h1 {
   font-family: "V2 James Hand", cursive;
-  font-size: 32.8167px;
-  line-height: 30.8px;
+  font-size: 2.0510437rem;
+  line-height: 1.925rem;
   letter-spacing: -0.055em;
-  -webkit-text-stroke: 0.4px currentColor;
+  -webkit-text-stroke: 0.025rem currentColor;
 }
 .article h1 {
   font-feature-settings:
@@ -425,7 +429,7 @@
   background: transparent;
   border-radius: 0;
   filter: none;
-  perspective: 420px;
+  perspective: 26.25rem;
   transform: rotate(-4deg);
   transition: transform 0.25s;
 }
@@ -439,7 +443,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  filter: drop-shadow(1px 1px 1.1px #0004);
+  filter: drop-shadow(0.0625rem 0.0625rem 0.06875rem #0004);
   z-index: -1;
   overflow: visible;
 }
@@ -455,23 +459,23 @@
   mix-blend-mode: multiply;
 }
 .homeStamp {
-  width: 140px;
-  height: 140px;
+  width: 8.75rem;
+  height: 8.75rem;
   left: 7%;
-  top: 72px;
+  top: 4.5rem;
 }
 .stampTime,
 .signature,
 .stamp .stampTime,
 .stamp .signature {
   font-family: "V2 James Hand", cursive;
-  font-size: 22px;
+  font-size: 1.375rem;
   line-height: 1;
   letter-spacing: -0.035em;
   left: 12%;
   right: 12%;
   top: 10%;
-  -webkit-text-stroke: 0.3px currentColor;
+  -webkit-text-stroke: 0.01875rem currentColor;
   display: flex;
   justify-content: space-between;
 }
@@ -479,17 +483,17 @@
 .stamp .signature {
   top: auto;
   bottom: 10%;
-  font-size: 24px;
+  font-size: 1.5rem;
 }
 .stamp {
-  width: 208px;
-  height: 208px;
+  width: 13rem;
+  height: 13rem;
 }
 .stamp .stampTime {
-  font-size: 31px;
+  font-size: 1.9375rem;
 }
 .stamp .signature {
-  font-size: 33px;
+  font-size: 2.0625rem;
 }
 .stamp > svg:not(.stampRim) {
   position: absolute;
@@ -501,13 +505,13 @@
   max-width: none;
   grid-template-columns: repeat(3, 1fr);
   padding: 0 6%;
-  margin-top: 95px;
-  row-gap: 100px;
+  margin-top: 5.9375rem;
+  row-gap: 6.25rem;
 }
 .question {
   font-family: "V2 James Hand", cursive;
   color: #aaa;
-  font-size: 50px;
+  font-size: 3.125rem;
   position: relative;
 }
 .collection {
@@ -524,10 +528,10 @@
 }
 .peelHandle {
   position: fixed;
-  right: 16px;
-  top: 16px;
-  width: 165px;
-  height: 165px;
+  right: 1rem;
+  top: 1rem;
+  width: 10.3125rem;
+  height: 10.3125rem;
   z-index: 7;
   touch-action: none;
   background: none;
@@ -537,91 +541,91 @@
 .peelHandle:active {
   cursor: grabbing !important;
 }
-@media (min-width: 1500px) {
+@media (min-width: 1200px) {
   .article {
-    font-size: 21.8167px;
-    line-height: 30.8px;
+    font-size: 1.3635438rem;
+    line-height: 1.925rem;
   }
 }
-@media (min-width: 1920px) {
+@media (min-width: 1536px) {
   .article {
     width: calc(4 * var(--col-width) + 3 * var(--gu));
     --col-width: calc(
-      round(down, ((1920px - 13 * var(--gu)) / 10) / var(--gu), 1) * var(--gu)
+      round(down, ((120rem - 13 * var(--gu)) / 10) / var(--gu), 1) * var(--gu)
     );
     margin-left: calc(
-      (100vw - 1920px) / 2 + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu))
+      (100vw - 120rem) / 2 + 2 * var(--gu) + 3 * (var(--col-width) + var(--gu))
     );
   }
 }
 @media (max-width: 760px) {
   .paper {
-    padding: 190px 25px 50px;
+    padding: 11.875rem 1.5625rem 3.125rem;
   }
   .article {
     width: 100%;
     margin-left: 0;
-    font-size: 19px;
+    font-size: 1.1875rem;
     line-height: 1.5;
   }
   .article h1 {
-    font-size: 28px;
-    line-height: 30px;
+    font-size: 1.75rem;
+    line-height: 1.875rem;
   }
   .homeStamp {
-    width: 115px;
-    height: 115px;
-    left: 28px;
-    top: 34px;
+    width: 7.1875rem;
+    height: 7.1875rem;
+    left: 1.75rem;
+    top: 2.125rem;
   }
   .homeStamp .stampTime {
-    font-size: 19px;
+    font-size: 1.1875rem;
   }
   .homeStamp .signature {
-    font-size: 21px;
+    font-size: 1.3125rem;
   }
   .stampGrid {
     grid-template-columns: repeat(2, 1fr);
-    padding: 0 15px;
-    margin-top: 90px;
-    gap: 65px 20px;
+    padding: 0 0.9375rem;
+    margin-top: 5.625rem;
+    gap: 4.0625rem 1.25rem;
   }
   .stamp {
-    width: min(34vw, 180px);
-    height: min(34vw, 180px);
+    width: min(34vw, 11.25rem);
+    height: min(34vw, 11.25rem);
   }
   .stamp .stampTime {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
   .stamp .signature {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
   .peelHandle {
-    width: 110px;
-    height: 110px;
-    right: 12px;
-    top: 12px;
+    width: 6.875rem;
+    height: 6.875rem;
+    right: 0.75rem;
+    top: 0.75rem;
   }
   .article header {
-    margin-bottom: 36px;
+    margin-bottom: 2.25rem;
   }
 }
 .homeStamp {
-  width: 160px;
-  height: 160px;
+  width: 10rem;
+  height: 10rem;
 }
 .stamp {
-  width: 228px;
-  height: 228px;
+  width: 14.25rem;
+  height: 14.25rem;
 }
 @media (max-width: 760px) {
   .homeStamp {
-    width: 130px;
-    height: 130px;
+    width: 8.125rem;
+    height: 8.125rem;
   }
   .stamp {
-    width: min(37vw, 195px);
-    height: min(37vw, 195px);
+    width: min(37vw, 12.1875rem);
+    height: min(37vw, 12.1875rem);
   }
 }
 .peelHandle {
@@ -629,8 +633,8 @@
 }
 .stamp .stampRim,
 .homeStamp .stampRim {
-  filter: drop-shadow(0 0.6px 0.8px #00000015)
-    drop-shadow(0 1.8px 2.2px #00000010);
+  filter: drop-shadow(0 0.0375rem 0.05rem #00000015)
+    drop-shadow(0 0.1125rem 0.1375rem #00000010);
 }
 .stamp[data-sticker-buckle] .stampRim,
 .homeStamp[data-sticker-buckle] .stampRim {
@@ -697,7 +701,7 @@
   left: 13%;
   right: 13%;
   font-size: 17cqw;
-  -webkit-text-stroke: 1px currentColor;
+  -webkit-text-stroke: 0.0625rem currentColor;
 }
 .stamp.rocketStamp .signature,
 .homeStamp.rocketStamp .signature {
@@ -705,13 +709,13 @@
   left: 13%;
   right: 13%;
   font-size: 18cqw;
-  -webkit-text-stroke: 0.8px currentColor;
+  -webkit-text-stroke: 0.05rem currentColor;
 }
 .stamp.rocketStamp .signature > span,
 .homeStamp.rocketStamp .signature > span {
   font-size: 20cqw;
   transform: translateY(-4cqw);
-  -webkit-text-stroke: 1px currentColor;
+  -webkit-text-stroke: 0.0625rem currentColor;
 }
 .stamp,
 .homeStamp {
@@ -720,7 +724,7 @@
 .stamp .stampTime,
 .homeStamp .stampTime {
   font-size: 19.3cqw;
-  -webkit-text-stroke: 1.2px currentColor;
+  -webkit-text-stroke: 0.075rem currentColor;
   letter-spacing: -0.045em;
   top: 10%;
   left: 12%;
@@ -730,7 +734,7 @@
 .stamp .signature,
 .homeStamp .signature {
   font-size: 21cqw;
-  -webkit-text-stroke: 1.2px currentColor;
+  -webkit-text-stroke: 0.075rem currentColor;
   letter-spacing: -0.045em;
   bottom: 5%;
   left: 12%;
@@ -743,10 +747,11 @@
 }
 .backingShadow {
   position: absolute;
-  inset: 16px;
+  inset: 1rem;
   z-index: 0;
   pointer-events: none;
-  filter: drop-shadow(0 2px 2px #00000012) drop-shadow(0 7px 12px #00000010);
+  filter: drop-shadow(0 0.125rem 0.125rem #00000012)
+    drop-shadow(0 0.4375rem 0.75rem #00000010);
 }
 .backingPaper {
   width: 100%;
@@ -761,7 +766,7 @@
 }
 @media (max-width: 760px) {
   .backingShadow {
-    inset: 12px;
+    inset: 0.75rem;
   }
 }
 .paperShadow > .paper {
@@ -774,39 +779,39 @@
   cursor: grab;
 }
 .paperEdgeleft {
-  left: 10px;
-  top: 30px;
-  bottom: 30px;
-  width: 22px;
+  left: 0.625rem;
+  top: 1.875rem;
+  bottom: 1.875rem;
+  width: 1.375rem;
 }
 .paperEdgeright {
-  right: 10px;
-  top: 30px;
-  bottom: 30px;
-  width: 22px;
+  right: 0.625rem;
+  top: 1.875rem;
+  bottom: 1.875rem;
+  width: 1.375rem;
 }
 .paperEdgetop {
-  top: 10px;
-  left: 32px;
-  right: 32px;
-  height: 22px;
+  top: 0.625rem;
+  left: 2rem;
+  right: 2rem;
+  height: 1.375rem;
 }
 .paperEdgebottom {
-  bottom: 10px;
-  left: 32px;
-  right: 32px;
-  height: 22px;
+  bottom: 0.625rem;
+  left: 2rem;
+  right: 2rem;
+  height: 1.375rem;
 }
 @media (max-width: 760px) {
   .site {
-    padding: 12px 0;
+    padding: 0.75rem 0;
     background-image: none;
   }
   .collection {
-    inset: 12px 0;
+    inset: 0.75rem 0;
   }
   .backingShadow {
-    inset: 12px 0;
+    inset: 0.75rem 0;
     filter: none;
   }
   .paperEdgeleft,
@@ -816,17 +821,17 @@
   .paperEdgetop {
     left: 0;
     right: 0;
-    height: 30px;
+    height: 1.875rem;
   }
   .paperEdgetop:after {
     content: "";
     position: absolute;
-    top: 15px;
-    left: calc(50% - 18px);
-    width: 36px;
-    height: 3px;
+    top: 0.9375rem;
+    left: calc(50% - 1.125rem);
+    width: 2.25rem;
+    height: 0.1875rem;
     background: #dededb;
-    border-radius: 4px;
+    border-radius: 0.25rem;
     pointer-events: none;
   }
   .paperEdgebottom {
@@ -842,8 +847,8 @@
   position: fixed;
   left: 0;
   top: 0;
-  width: 34px;
-  height: 34px;
+  width: 2.125rem;
+  height: 2.125rem;
   z-index: 10;
   pointer-events: none;
   opacity: 0;
@@ -879,13 +884,13 @@
 @media (max-width: 760px) {
   .stampGrid {
     grid-template-columns: minmax(0, 1fr);
-    padding: 0 28px;
-    gap: 44px;
-    margin: 90px auto 80px;
+    padding: 0 1.75rem;
+    gap: 2.75rem;
+    margin: 5.625rem auto 5rem;
   }
   .stampGrid .stamp {
-    width: min(62vw, 260px);
-    height: min(62vw, 260px);
+    width: min(62vw, 16.25rem);
+    height: min(62vw, 16.25rem);
   }
 }
 .inlineLink {
@@ -895,45 +900,45 @@
 .exploreLabel,
 .pageNavigation a[aria-current="page"] {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23c7c7c3' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-size: 100% 6px;
+  background-size: 100% 0.375rem;
   background-repeat: no-repeat;
   background-position: left bottom;
-  padding-bottom: 4px;
+  padding-bottom: 0.25rem;
   text-decoration: none !important;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 .article .introExplore {
-  margin-top: 68px;
+  margin-top: 4.25rem;
 }
 .article .introExplore h2 {
   font-family: "V2 James Hand", cursive;
-  font-size: 30px;
+  font-size: 1.875rem;
   line-height: 1.2;
   color: #888;
-  margin: 0 0 30px;
-  -webkit-text-stroke: 0.35px currentColor;
+  margin: 0 0 1.875rem;
+  -webkit-text-stroke: 0.021875rem currentColor;
   text-transform: uppercase;
 }
 .introExplore a {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 20px;
+  gap: 1.25rem;
   width: 100%;
   border: 0;
   background: none;
-  padding: 12px 0;
+  padding: 0.75rem 0;
   text-align: left;
   font-family: "V2 James Hand", cursive !important;
-  font-size: 29px !important;
+  font-size: 1.8125rem !important;
   line-height: 1.3;
   text-transform: uppercase;
-  -webkit-text-stroke: 0.35px currentColor;
+  -webkit-text-stroke: 0.021875rem currentColor;
 }
 .introExplore a span {
   font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 14px;
+  font-size: 0.875rem;
   text-transform: none;
   color: #92928e;
   -webkit-text-stroke: 0;
@@ -942,15 +947,15 @@
 .pageNavigation {
   display: flex;
   flex-wrap: wrap;
-  gap: 24px;
-  margin-top: 40px;
-  font-size: 16px;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  font-size: 1rem;
   color: #858582;
 }
 .pageNavigation {
-  margin-top: 55px;
-  padding-top: 24px;
-  border-top: 1px solid #eee;
+  margin-top: 3.4375rem;
+  padding-top: 1.5rem;
+  border-top: 0.0625rem solid #eee;
 }
 .pageNavigation a {
   padding: 0;
@@ -978,17 +983,17 @@
     right: 7vw;
   }
   .paperEdgeright {
-    right: calc(7vw - 6px);
+    right: calc(7vw - 0.375rem);
   }
   .paperEdgetop,
   .paperEdgebottom {
-    right: calc(7vw + 16px);
+    right: calc(7vw + 1rem);
   }
   .article {
     --col-width: calc(
       round(
           down,
-          ((min(1920px, 93vw + 16px) - 13 * var(--gu)) / 10) / var(--gu),
+          ((min(120rem, 93vw + 1rem) - 13 * var(--gu)) / 10) / var(--gu),
           1
         ) *
         var(--gu)
@@ -999,14 +1004,14 @@
   color: var(--ink);
 }
 .experiencePage .experience {
-  font-size: 20px;
+  font-size: 1.25rem;
   line-height: 1.4118;
 }
 .experiencePage .experience strong {
   color: var(--ink);
 }
 .experiencePage .experience > div {
-  padding: 24px 0;
+  padding: 1.5rem 0;
 }
 .experiencePage .experience > div:first-child {
   padding-top: 0;
@@ -1017,8 +1022,8 @@
 .folderGrid {
   display: flex;
   flex-wrap: nowrap;
-  gap: 28px;
-  padding: 100px 12px 25px;
+  gap: 1.75rem;
+  padding: 6.25rem 0.75rem 1.5625rem;
   overflow-x: auto;
   align-items: flex-start;
   min-width: 0;
@@ -1039,12 +1044,12 @@
   cursor: grabbing;
 }
 .folderGrid:focus-visible {
-  outline: 2px solid #2c65d0;
-  outline-offset: -3px;
+  outline: 0.125rem solid #2c65d0;
+  outline-offset: -0.1875rem;
 }
 .folderGrid :global(.gallery-folder-card) {
-  width: 130px !important;
-  flex: 0 0 130px;
+  width: 8.125rem !important;
+  flex: 0 0 8.125rem;
   margin: 0 !important;
   text-decoration: none !important;
 }
@@ -1073,49 +1078,49 @@
   margin-right: 0;
 }
 .folderGrid :global(.gallery-folder-title) {
-  font-size: 18px !important;
+  font-size: 1.125rem !important;
   position: relative;
-  top: 8px;
+  top: 0.5rem;
   white-space: nowrap;
 }
 .folderGrid :global(.gallery-folder-count) {
-  font-size: 15px !important;
+  font-size: 0.9375rem !important;
 }
 .galleryBack {
   padding: 0;
   background: none;
   border: 0;
-  font-size: 15px !important;
+  font-size: 0.9375rem !important;
   color: #858582 !important;
-  margin: 0 0 14px;
+  margin: 0 0 0.875rem;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
   line-height: 1.3;
 }
 .galleryBack svg {
-  width: 18px;
-  height: 18px;
+  width: 1.125rem;
+  height: 1.125rem;
   flex: none;
 }
 .galleryDate {
-  font-size: 15px;
+  font-size: 0.9375rem;
   color: #858582;
-  margin-top: 6px;
+  margin-top: 0.375rem;
 }
 .photoGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  gap: 1.5rem;
 }
 .photoGrid {
   display: flex;
   flex-wrap: nowrap;
-  gap: 28px;
+  gap: 1.75rem;
   overflow-x: auto;
-  padding: 25px 32px 35px;
+  padding: 1.5625rem 2rem 2.1875rem;
   align-items: flex-start;
-  width: calc(93vw - 16px);
+  width: calc(93vw - 1rem);
   margin-left: calc(-1 * (2 * var(--gu) + 3 * (var(--col-width) + var(--gu))));
   overscroll-behavior-x: contain;
   scrollbar-width: none;
@@ -1134,13 +1139,13 @@
   cursor: grabbing;
 }
 .photoGrid:focus-visible {
-  outline: 2px solid #2c65d0;
-  outline-offset: -4px;
+  outline: 0.125rem solid #2c65d0;
+  outline-offset: -0.25rem;
 }
-@media (min-width: 1920px) {
+@media (min-width: 1536px) {
   .article {
     margin-left: calc(
-      max(0px, (93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 *
+      max(0rem, (93vw + 1rem - 120rem) / 2) + 2 * var(--gu) + 3 *
         (var(--col-width) + var(--gu))
     );
   }
@@ -1148,7 +1153,7 @@
     margin-left: calc(
       -1 *
         (
-          max(0px, (93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 *
+          max(0rem, (93vw + 1rem - 120rem) / 2) + 2 * var(--gu) + 3 *
             (var(--col-width) + var(--gu))
         )
     );
@@ -1156,23 +1161,24 @@
 }
 @media (max-width: 760px) {
   .photoGrid {
-    width: calc(100vw - 24px);
-    margin-left: -25px;
-    padding-left: 25px;
-    padding-right: 25px;
+    width: calc(100vw - 1.5rem);
+    margin-left: -1.5625rem;
+    padding-left: 1.5625rem;
+    padding-right: 1.5625rem;
   }
 }
 .photoPrint {
   position: relative;
   display: block;
-  flex: 0 0 220px;
-  width: 220px;
+  flex: 0 0 13.75rem;
+  width: 13.75rem;
   aspect-ratio: 4/5;
-  padding: 22px 22px 27px;
+  padding: 1.375rem 1.375rem 1.6875rem;
   background: none;
   transform: rotate(-2deg);
   transition: transform 0.2s;
-  filter: drop-shadow(0 1px 1px #00000018) drop-shadow(0 3px 5px #0000000d);
+  filter: drop-shadow(0 0.0625rem 0.0625rem #00000018)
+    drop-shadow(0 0.1875rem 0.3125rem #0000000d);
 }
 .photoRim {
   position: absolute;
@@ -1192,62 +1198,62 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .photoPrint:hover {
-    transform: rotate(0) translateY(-3px);
+    transform: rotate(0) translateY(-0.1875rem);
   }
 }
 .photoPrint img {
   position: absolute;
-  left: 22px;
-  top: 22px;
+  left: 1.375rem;
+  top: 1.375rem;
   display: block;
-  width: calc(100% - 44px);
-  height: calc(100% - 49px);
+  width: calc(100% - 2.75rem);
+  height: calc(100% - 3.0625rem);
   object-fit: cover;
 }
 @media (max-width: 760px) {
   .photoPrint {
-    flex-basis: 180px;
-    width: 180px;
-    padding: 19px 19px 24px;
+    flex-basis: 11.25rem;
+    width: 11.25rem;
+    padding: 1.1875rem 1.1875rem 1.5rem;
   }
   .photoPrint img {
-    left: 19px;
-    top: 19px;
-    width: calc(100% - 38px);
-    height: calc(100% - 43px);
+    left: 1.1875rem;
+    top: 1.1875rem;
+    width: calc(100% - 2.375rem);
+    height: calc(100% - 2.6875rem);
   }
 }
 @media (max-width: 760px) {
   .folderGrid {
-    gap: 80px 25px;
-    padding-top: 85px;
+    gap: 5rem 1.5625rem;
+    padding-top: 5.3125rem;
   }
   .folderGrid :global(.gallery-folder-card) {
-    width: 150px !important;
+    width: 9.375rem !important;
   }
   .folderGrid :global(.gallery-folder-visual) {
     zoom: 0.8;
   }
   .folderGrid :global(.gallery-folder-title) {
-    font-size: 16px !important;
+    font-size: 1rem !important;
   }
   .folderGrid :global(.gallery-folder-count) {
-    font-size: 14px !important;
+    font-size: 0.875rem !important;
   }
   .introExplore a span {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
   .experiencePage .experience > div {
     flex-wrap: wrap;
-    gap: 7px;
+    gap: 0.4375rem;
   }
   .photoGrid {
-    gap: 18px;
+    gap: 1.125rem;
   }
   .introSocials,
   .pageNavigation {
-    font-size: 15px;
-    gap: 19px;
+    font-size: 0.9375rem;
+    gap: 1.1875rem;
   }
 }
 @media (max-width: 390px) {
@@ -1256,12 +1262,12 @@
   }
 }
 .folderGrid :global(.gallery-folder-card) {
-  width: 130px !important;
+  width: 8.125rem !important;
 }
 @media (max-width: 760px) {
   .folderGrid {
-    gap: 24px;
-    padding-top: 80px;
+    gap: 1.5rem;
+    padding-top: 5rem;
   }
   .folderGrid :global(.gallery-folder-visual) {
     zoom: 0.7;
@@ -1271,30 +1277,30 @@
   .folderGrid :global(.gallery-folder-title) {
     position: static;
     top: auto;
-    margin: 14px 0 0 !important;
+    margin: 0.875rem 0 0 !important;
     line-height: 1.35;
   }
   .folderGrid :global(.gallery-folder-count) {
-    margin: 6px 0 0 !important;
+    margin: 0.375rem 0 0 !important;
     line-height: 1.3;
   }
 }
 .introPage h1 {
-  font-size: 38px;
+  font-size: 2.375rem;
   line-height: 1.08;
   letter-spacing: -0.045em;
-  -webkit-text-stroke: 0.9px currentColor;
+  -webkit-text-stroke: 0.05625rem currentColor;
 }
 .introPage .introExplore h2 {
-  font-size: 34px;
-  -webkit-text-stroke: 0.65px currentColor;
+  font-size: 2.125rem;
+  -webkit-text-stroke: 0.040625rem currentColor;
 }
 .introPage .introExplore a {
-  font-size: 33px !important;
-  -webkit-text-stroke: 0.65px currentColor;
+  font-size: 2.0625rem !important;
+  -webkit-text-stroke: 0.040625rem currentColor;
 }
 .introPage .introExplore a span {
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 500;
   color: #777773;
   -webkit-text-stroke: 0;
@@ -1307,10 +1313,10 @@
   color: inherit;
   -webkit-text-stroke: inherit;
   padding-bottom: 0;
-  background-position: left calc(100% - 5px);
+  background-position: left calc(100% - 0.3125rem);
 }
 .introPage .introSocials {
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: 400;
   color: #777773;
 }
@@ -1318,7 +1324,7 @@
   border: 0;
   background: none;
   padding: 0;
-  min-width: 92px;
+  min-width: 5.75rem;
   text-align: left;
   font: inherit;
   font-weight: 400;
@@ -1331,17 +1337,17 @@
 .introSocials a {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
 }
 .introSocials a:hover {
   text-decoration: none;
 }
 .introSocials .inlineLink {
-  background-size: 0 6px;
+  background-size: 0 0.375rem;
   padding-bottom: 0;
 }
 .introSocials a:hover .inlineLink {
-  background-size: 100% 6px;
+  background-size: 100% 0.375rem;
 }
 .externalArrow {
   width: 0.85em;
@@ -1360,9 +1366,9 @@
   color: #fff;
 }
 .introPage .copyError {
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #777;
-  margin-top: 12px;
+  margin-top: 0.75rem;
 }
 .experience .experienceTeam {
   display: block;
@@ -1389,7 +1395,7 @@
 }
 @media (max-width: 760px) {
   .experiencePage .experience {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
 }
 .inlineLink,
@@ -1404,8 +1410,9 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23777777' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 .photoPrint {
-  filter: blur(var(--entrance-blur, 0px)) drop-shadow(0 1px 1px #00000018)
-    drop-shadow(0 3px 5px #0000000d);
+  filter: blur(var(--entrance-blur, 0rem))
+    drop-shadow(0 0.0625rem 0.0625rem #00000018)
+    drop-shadow(0 0.1875rem 0.3125rem #0000000d);
 }
 .photoPrint {
   isolation: isolate;
@@ -1422,36 +1429,36 @@
 }
 @media (max-width: 760px) {
   .introPage h1 {
-    font-size: 32px;
+    font-size: 2rem;
   }
   .introPage .introExplore h2 {
-    font-size: 31px;
+    font-size: 1.9375rem;
   }
   .introPage .introExplore a {
-    font-size: 30px !important;
+    font-size: 1.875rem !important;
   }
   .introPage .introExplore a span {
-    font-size: 14px;
+    font-size: 0.875rem;
   }
   .introPage .introSocials {
-    font-size: 17px;
+    font-size: 1.0625rem;
   }
 }
 @media (min-width: 761px) {
   .article {
     --article-left: calc(2 * var(--gu) + 3 * (var(--col-width) + var(--gu)));
-    --article-width: calc(5 * var(--col-width) + 4 * var(--gu) + 96px);
+    --article-width: calc(5 * var(--col-width) + 4 * var(--gu) + 6rem);
     margin-left: var(--article-left);
-    width: min(var(--article-width), calc(93vw - 48px - var(--article-left)));
+    width: min(var(--article-width), calc(93vw - 3rem - var(--article-left)));
   }
 }
-@media (min-width: 1920px) {
+@media (min-width: 1536px) {
   .article {
     --article-left: calc(
-      max(0px, (93vw + 16px - 1920px) / 2) + 2 * var(--gu) + 3 *
+      max(0rem, (93vw + 1rem - 120rem) / 2) + 2 * var(--gu) + 3 *
         (var(--col-width) + var(--gu))
     );
-    --article-width: calc(4 * var(--col-width) + 3 * var(--gu) + 96px);
+    --article-width: calc(4 * var(--col-width) + 3 * var(--gu) + 6rem);
   }
 }
 .stamp.projectsStamp,
@@ -1470,7 +1477,7 @@
   z-index: 8;
   pointer-events: none;
   visibility: hidden;
-  filter: drop-shadow(0 2px 2px #00000020);
+  filter: drop-shadow(0 0.125rem 0.125rem #00000020);
 }
 .stamp .projectsArtwork,
 .homeStamp .projectsArtwork {
@@ -1481,33 +1488,33 @@
   pointer-events: none;
 }
 .article .projectEntry {
-  margin-top: 68px;
+  margin-top: 4.25rem;
 }
 .article .projectEntry + .projectEntry {
-  border-top: 1px solid #eee;
-  padding-top: 56px;
-  margin-top: 66px;
+  border-top: 0.0625rem solid #eee;
+  padding-top: 3.5rem;
+  margin-top: 4.125rem;
 }
 .article .projectEntry h2 {
   font-family: "V2 James Hand", cursive;
-  font-size: 32px;
+  font-size: 2rem;
   line-height: 1.2;
   letter-spacing: -0.035em;
-  -webkit-text-stroke: 0.35px currentColor;
-  margin: 0 0 26px;
+  -webkit-text-stroke: 0.021875rem currentColor;
+  margin: 0 0 1.625rem;
 }
 .projectLinks {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 24px;
-  font-size: 16px;
+  gap: 0.75rem 1.5rem;
+  font-size: 1rem;
   color: #777773;
-  margin-top: 24px;
+  margin-top: 1.5rem;
 }
 .projectLinks a {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 0.375rem;
 }
 .projectLinks a:hover {
   text-decoration: none;
@@ -1517,14 +1524,14 @@
   height: 0.9em;
 }
 .projectGallery {
-  margin: 34px 0 0;
+  margin: 2.125rem 0 0;
   min-width: 0;
 }
 .projectMediaFrame {
   position: relative;
   isolation: isolate;
-  padding: 32px;
-  filter: drop-shadow(0 1px 1px #0000000a);
+  padding: 2rem;
+  filter: drop-shadow(0 0.0625rem 0.0625rem #0000000a);
 }
 .projectMediaRim {
   position: absolute;
@@ -1533,16 +1540,16 @@
   height: 100%;
   z-index: -1;
   overflow: visible;
-  filter: drop-shadow(0 1px 1px #00000014);
+  filter: drop-shadow(0 0.0625rem 0.0625rem #00000014);
 }
 .projectMediaStage {
   width: 100%;
   background: #fff;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 1.125rem;
   box-shadow:
-    0 1px 2px #0000001a,
-    0 3px 7px #0000000a;
+    0 0.0625rem 0.125rem #0000001a,
+    0 0.1875rem 0.4375rem #0000000a;
 }
 .projectMediaStage > a {
   display: block;
@@ -1569,26 +1576,26 @@
 }
 .projectVideoControls {
   position: absolute;
-  bottom: 10px;
-  left: 16px;
-  right: 16px;
+  bottom: 0.625rem;
+  left: 1rem;
+  right: 1rem;
   display: flex;
   align-items: center;
-  gap: 14px;
-  height: 48px;
-  padding: 2px 15px;
+  gap: 0.875rem;
+  height: 3rem;
+  padding: 0.125rem 0.9375rem;
   background: #fff;
-  border-radius: 999px;
+  border-radius: 62.4375rem;
   color: #80807e;
-  box-shadow: 0 1px 12px #00000003;
+  box-shadow: 0 0.0625rem 0.75rem #00000003;
 }
 .projectVideoControls button {
   display: grid;
   place-items: center;
   flex: none;
-  width: 32px;
-  height: 44px;
-  padding: 7px;
+  width: 2rem;
+  height: 2.75rem;
+  padding: 0.4375rem;
   border: 0;
   background: none;
   color: inherit;
@@ -1597,51 +1604,51 @@
   color: #333;
 }
 .projectVideoControls svg {
-  width: 22px;
-  height: 22px;
+  width: 1.375rem;
+  height: 1.375rem;
 }
 .projectVideoControls input {
   appearance: none;
   -webkit-appearance: none;
   min-width: 0;
   width: 100%;
-  height: 28px;
+  height: 1.75rem;
   margin: 0;
   cursor: pointer;
   background: transparent;
   color: inherit;
 }
 .projectVideoControls input::-webkit-slider-runnable-track {
-  height: 2px;
+  height: 0.125rem;
   background: #e5e5e5;
-  border-radius: 2px;
+  border-radius: 0.125rem;
 }
 .projectVideoControls input::-moz-range-track {
-  height: 2px;
+  height: 0.125rem;
   background: #e5e5e5;
-  border-radius: 2px;
+  border-radius: 0.125rem;
 }
 .projectVideoControls input::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  margin-top: -5px;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: -0.3125rem;
   background: #80807e;
   border: 0;
   border-radius: 50%;
 }
 .projectVideoControls input::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+  width: 0.75rem;
+  height: 0.75rem;
   background: #80807e;
   border: 0;
   border-radius: 50%;
 }
 .projectVideoControls input:focus-visible {
-  outline: 2px solid #2c65d0;
-  outline-offset: 4px;
-  border-radius: 4px;
+  outline: 0.125rem solid #2c65d0;
+  outline-offset: 0.25rem;
+  border-radius: 0.25rem;
 }
 .projectVideoControls input:disabled {
   cursor: default;
@@ -1649,16 +1656,16 @@
 }
 .article p.projectVideoError {
   position: absolute;
-  top: 12px;
-  left: 16px;
-  right: 16px;
+  top: 0.75rem;
+  left: 1rem;
+  right: 1rem;
   margin: 0;
-  padding: 10px 14px;
+  padding: 0.625rem 0.875rem;
   background: #fff;
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: 0.625rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
-  box-shadow: 0 1px 8px #00000012;
+  box-shadow: 0 0.0625rem 0.5rem #00000012;
 }
 .projectVideoPlayer:fullscreen {
   background: #111;
@@ -1667,20 +1674,20 @@
   object-fit: contain;
 }
 .projectVideoPlayer:fullscreen .projectVideoControls {
-  max-width: 900px;
+  max-width: 56.25rem;
   left: 50%;
   right: auto;
-  width: calc(100% - 48px);
+  width: calc(100% - 3rem);
   transform: translateX(-50%);
-  bottom: 24px;
+  bottom: 1.5rem;
 }
 .projectMediaCaption {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  margin: 18px 0 0;
-  font-size: 14px;
+  gap: 0.75rem;
+  margin: 1.125rem 0 0;
+  font-size: 0.875rem;
   line-height: 1.4;
   color: #858582;
 }
@@ -1690,9 +1697,9 @@
 .projectMediaControls {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.625rem;
   flex: none;
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
 }
 .projectMediaControls button {
@@ -1700,7 +1707,7 @@
   place-items: center;
   border: 0;
   background: none;
-  padding: 5px;
+  padding: 0.3125rem;
   color: #777773;
 }
 .projectMediaControls button:disabled {
@@ -1708,31 +1715,31 @@
   cursor: default;
 }
 .projectMediaControls svg {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 .projectThumbnails {
   position: relative;
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   overflow-x: auto;
   overscroll-behavior-x: contain;
-  padding: 18px 3px 12px;
+  padding: 1.125rem 0.1875rem 0.75rem;
   scrollbar-width: thin;
   scrollbar-color: #dededb transparent;
 }
 .projectThumbnails button {
   display: flex;
-  flex: 0 0 100px;
+  flex: 0 0 6.25rem;
   flex-direction: column;
-  gap: 8px;
+  gap: 0.5rem;
   min-width: 0;
-  padding: 0 0 4px;
+  padding: 0 0 0.25rem;
   border: 0;
-  border-bottom: 2px solid transparent;
+  border-bottom: 0.125rem solid transparent;
   background: none;
   text-align: left;
-  font-size: 11px;
+  font-size: 0.6875rem;
   line-height: 1.35;
   color: #858582;
 }
@@ -1745,7 +1752,7 @@
   display: block;
   width: 100%;
   aspect-ratio: 16/10;
-  border: 1px solid #eee;
+  border: 0.0625rem solid #eee;
   overflow: hidden;
   background: #fafaf9;
 }
@@ -1757,79 +1764,79 @@
 }
 .projectThumbnailImage svg {
   position: absolute;
-  left: calc(50% - 12px);
-  top: calc(50% - 12px);
-  width: 24px;
-  height: 24px;
+  left: calc(50% - 0.75rem);
+  top: calc(50% - 0.75rem);
+  width: 1.5rem;
+  height: 1.5rem;
   color: #555;
-  filter: drop-shadow(0 0 3px white);
+  filter: drop-shadow(0 0 0.1875rem white);
 }
 .article p.projectNote {
-  margin: 20px 0 0;
-  font-size: 14px;
+  margin: 1.25rem 0 0;
+  font-size: 0.875rem;
   line-height: 1.5;
   color: #858582;
 }
 @media (max-width: 760px) {
   .article .projectEntry {
-    margin-top: 48px;
+    margin-top: 3rem;
   }
   .article .projectEntry + .projectEntry {
-    margin-top: 46px;
-    padding-top: 38px;
+    margin-top: 2.875rem;
+    padding-top: 2.375rem;
   }
   .article .projectEntry h2 {
-    font-size: 28px;
-    margin-bottom: 22px;
+    font-size: 1.75rem;
+    margin-bottom: 1.375rem;
   }
   .projectLinks {
-    font-size: 14px;
-    gap: 12px 20px;
-    margin-top: 20px;
+    font-size: 0.875rem;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.25rem;
   }
   .projectGallery {
-    margin-top: 28px;
+    margin-top: 1.75rem;
   }
   .projectMediaFrame {
-    padding: 20px;
+    padding: 1.25rem;
     filter: none;
   }
   .projectMediaStage {
-    border-radius: 12px;
+    border-radius: 0.75rem;
   }
   .projectVideoControls {
-    left: 7px;
-    right: 7px;
-    bottom: 7px;
-    height: 44px;
-    padding: 0 7px;
-    gap: 5px;
+    left: 0.4375rem;
+    right: 0.4375rem;
+    bottom: 0.4375rem;
+    height: 2.75rem;
+    padding: 0 0.4375rem;
+    gap: 0.3125rem;
   }
   .projectVideoControls button {
-    width: 32px;
-    padding: 8px;
+    width: 2rem;
+    padding: 0.5rem;
   }
   .projectVideoControls svg {
-    width: 19px;
-    height: 19px;
+    width: 1.1875rem;
+    height: 1.1875rem;
   }
   .projectMediaCaption {
-    font-size: 12px;
-    margin-top: 14px;
+    font-size: 0.75rem;
+    margin-top: 0.875rem;
     align-items: flex-start;
   }
   .projectMediaControls {
-    gap: 5px;
-    font-size: 11px;
+    gap: 0.3125rem;
+    font-size: 0.6875rem;
   }
   .projectThumbnails {
-    gap: 10px;
-    padding-top: 14px;
+    gap: 0.625rem;
+    padding-top: 0.875rem;
   }
   .projectThumbnails button {
-    flex-basis: 84px;
+    flex-basis: 5.25rem;
   }
   .article p.projectNote {
-    font-size: 12px;
+    font-size: 0.75rem;
   }
 }
