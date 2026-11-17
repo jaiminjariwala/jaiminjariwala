@@ -9,6 +9,7 @@ import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from "./StickerButton";
 import GitHubHoverCard from "./GitHubHoverCard";
+import ResumeDialog from "./ResumeDialog";
 import { paperViewportWidth, paperScale, paperInset } from "./paperLayout.ts";
 import { sectionPaths } from "@/lib/siteSeo.ts";
 import {
@@ -324,6 +325,7 @@ function PhonePortfolio({
   initialGallerySlug: string | null;
 }) {
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
 
   useEffect(() => {
     const update = () => setShowBackToTop(window.scrollY > 400);
@@ -378,7 +380,17 @@ function PhonePortfolio({
                   <div className={styles.phoneSocials}>
                     <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
                     <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
-                    <a href="/JAIMIN_RESUME.pdf" target="_blank" rel="noopener noreferrer">Resume <ExternalArrow /></a>
+                    <a
+                      href="/JAIMIN_RESUME.pdf"
+                      aria-haspopup="dialog"
+                      onClick={(event) => {
+                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                        event.preventDefault();
+                        setResumeOpen(true);
+                      }}
+                    >
+                      Resume
+                    </a>
                   </div>
                   <div className={styles.phoneEmail}>
                     <a href="tel:+12023917502">+1 (202) 391-7502</a>
@@ -392,6 +404,7 @@ function PhonePortfolio({
           </section>
         ))}
       </main>
+      <ResumeDialog open={resumeOpen} onClose={() => setResumeOpen(false)} />
       {showBackToTop && (
         <button
           type="button"

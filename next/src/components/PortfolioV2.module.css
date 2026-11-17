@@ -2042,3 +2042,35 @@
   outline: 2px solid #2c65d0;
   outline-offset: 4px;
 }
+.resumeDialog {
+  width: calc(100% - 2rem);
+  max-width: 42rem;
+  height: fit-content;
+  max-height: calc(100dvh - 4rem);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid #e8e8e8;
+  border-radius: 1rem;
+  background: #fff;
+  color: #282826;
+  box-shadow: 0 8px 40px #0000001f;
+}
+.resumeDialog::backdrop {
+  background: #ffffff40;
+  backdrop-filter: blur(8px);
+}
+.resumeDocument {
+  display: block;
+  width: 100%;
+  max-height: calc(100dvh - 4rem);
+  border: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: white;
+}
+.resumeDocument img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
