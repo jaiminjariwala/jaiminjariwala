@@ -1018,6 +1018,7 @@ export default function PaperPeel({
       }
       if (
         isPaperSettled(s.k, s.velocity, s.target, {
+          rolledLanding: s.open && !s.dragging,
           flatLanding:
             window.innerWidth <= 760 &&
             !s.open &&

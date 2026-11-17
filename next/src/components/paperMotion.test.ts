@@ -55,6 +55,27 @@ test('a long frame stays finite and does not jump to the destination', () => {
   assert.ok(result.position > 0);
 });
 
+test('a parked roll skips the motionless tail while visible travel keeps animating', () => {
+  for (const fps of [30, 60, 120]) {
+    let position = 1150, velocity = 0;
+    let parkedAt = 0, preciseAt = 0;
+    for (let frame = 1; frame <= fps * 2; frame++) {
+      ({ position, velocity } = stepPaperSpring(position, velocity, -450, 1 / fps));
+      if (!parkedAt && isPaperSettled(position, velocity, -450, { rolledLanding: true })) {
+        assert.ok(Math.abs(position + 450) <= 2);
+        parkedAt = frame / fps;
+      }
+      if (isPaperSettled(position, velocity, -450)) {
+        preciseAt = frame / fps;
+        break;
+      }
+    }
+    assert.ok(parkedAt > .5, 'retain the visible roll animation');
+    assert.ok(preciseAt - parkedAt > .25, 'skip at least 250ms of settling');
+  }
+  assert.equal(isPaperSettled(-447, -30, -450, { rolledLanding: true }), false);
+});
+
 test('a flat phone landing ends below a pixel instead of waiting through a visible tail',()=>{
   assert.equal(isPaperSettled(365.4,6,366),false,'desktop keeps its original precise settle');
   assert.equal(isPaperSettled(365.4,6,366,{flatLanding:true}),true);
