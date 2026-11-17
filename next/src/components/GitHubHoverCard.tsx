@@ -70,7 +70,10 @@ export default function GitHubHoverCard({children}:{children:ReactElement<{'aria
         animate={{opacity:1,y:0,scale:1,filter:'blur(0px)'}}
         exit={{opacity:0,y:4,scale:.98,filter:reduced?'none':'blur(6px)'}}
         transition={{duration:reduced?0:.18,ease:[.22,1,.36,1]}}>
-        <motion.span className={styles.calendarReveal} initial={{height:0}} animate={{height:150}}
+        <motion.span
+          className={styles.calendarReveal}
+          initial={{ height: 0 }}
+          animate={{ height: 'auto' }}
           transition={{duration:reduced?0:.34,delay:reduced?0:.07,ease:[.22,1,.36,1]}}>
           {failed&&!data?<span className={styles.unavailable}>GitHub activity is temporarily unavailable.</span>:<span ref={calendarScroll} className={styles.calendarScroll} tabIndex={0} role="region" aria-label="GitHub contribution history. Scroll horizontally or drag to explore."
             onKeyDown={event=>{
@@ -87,7 +90,14 @@ export default function GitHubHoverCard({children}:{children:ReactElement<{'aria
             onPointerUp={event=>{drag.current=null;if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);}}
             onPointerCancel={()=>{drag.current=null;}} onLostPointerCapture={()=>{drag.current=null;}}
             onWheel={event=>{if(event.shiftKey&&event.deltaX===0){event.currentTarget.scrollLeft+=event.deltaY;event.preventDefault();}}}>
-          <svg className={styles.calendar} width={calendarWidth} viewBox={`0 0 ${calendarWidth} 135`} role="img" aria-label={data?'GitHub contributions':'Loading GitHub contributions'}>
+          {/* Match the rem-based height so the scroll range ends at the last week. */}
+          <svg
+            className={styles.calendar}
+            width={`${calendarWidth / 16}rem`}
+            viewBox={`0 0 ${calendarWidth} 135`}
+            role="img"
+            aria-label={data ? 'GitHub contributions' : 'Loading GitHub contributions'}
+          >
             {weeks.map((week,column)=>{
               const first=week.find(day=>day!==null);
               const previous=weeks[column-1]?.find(day=>day!==null);
