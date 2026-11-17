@@ -83,7 +83,9 @@ export default function PortfolioV2Gallery({
   const section = getSectionBySlug(slug);
   const openFolder = (value: string | null) => {
     setSlug(value);
-    window.scrollTo({ top: 0, behavior: "instant" });
+    document
+      .querySelector<HTMLElement>("[data-portfolio-scroll]")
+      ?.scrollTo({ top: 0, behavior: "instant" });
   };
   if (section)
     return (

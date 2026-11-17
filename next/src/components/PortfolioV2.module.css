@@ -1471,6 +1471,45 @@
     );
   }
 }
+/* Keep the scalloped sheet stationary; only its inset content can scroll. */
+.site {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.paperShadow {
+  height: 100%;
+}
+.paper {
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.contentViewport {
+  position: absolute;
+  inset: 1.5rem 0;
+  height: calc(100% - 3rem);
+  /* The starting gap scrolls away; the paper keeps equal insets at both ends. */
+  padding: 6.375rem 0 3.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+.contentViewport::-webkit-scrollbar {
+  display: none;
+}
+.homeStamp {
+  z-index: 1;
+}
+@media (max-width: 760px) {
+  .contentViewport {
+    padding: 10.375rem 1.5625rem 1.625rem;
+  }
+}
 .stamp.projectsStamp,
 .homeStamp.projectsStamp {
   transform: rotate(4deg);
