@@ -497,61 +497,6 @@ export default function PortfolioV2({
                       lifecycle.
                     </span>
                   </p>
-                  <nav
-                    className={styles.introExplore}
-                    aria-label="Explore portfolio"
-                  >
-                    <h2>Explore</h2>
-                    <a
-                      href={sectionPaths.gallery}
-                      onClick={(event) => followSectionLink(event, "gallery")}
-                    >
-                      <span className={styles.exploreLabel}>Travel</span>
-                    </a>
-                    <a
-                      href={sectionPaths.experience}
-                      onClick={(event) => followSectionLink(event, "experience")}
-                    >
-                      <span className={styles.exploreLabel}>Experience</span>
-                    </a>
-                    <a
-                      href={sectionPaths.education}
-                      onClick={(event) => followSectionLink(event, "education")}
-                    >
-                      <span className={styles.exploreLabel}>Education</span>
-                    </a>
-                    <a
-                      href={sectionPaths.projects}
-                      onClick={(event) => followSectionLink(event, "projects")}
-                    >
-                      <span className={styles.exploreLabel}>Projects</span>
-                    </a>
-                  </nav>
-                  <div className={styles.introSocials}>
-                    <GitHubHoverCard>
-                      <a href="https://github.com/jaiminjariwala">
-                        <span className={styles.inlineLink}>GitHub</span>
-                        <ExternalArrow />
-                      </a>
-                    </GitHubHoverCard>
-                    <a href="https://www.linkedin.com/in/jaiminjariwala/">
-                      <span className={styles.inlineLink}>LinkedIn</span>
-                      <ExternalArrow />
-                    </a>
-                    <button
-                      type="button"
-                      className={styles.copyEmail}
-                      onClick={copyEmail}
-                      aria-live="polite"
-                    >
-                      {emailCopied ? "Copied!" : "Copy email"}
-                    </button>
-                  </div>
-                  {emailCopyError && (
-                    <p className={styles.copyError} role="status">
-                      {emailCopyError}
-                    </p>
-                  )}
                 </>
               )}
               {page === "gallery" && (
@@ -609,7 +554,8 @@ export default function PortfolioV2({
                   </div>
                 </>
               )}
-              {page !== "intro" && (
+              <footer className={styles.portfolioFooter}>
+                <h2 className={styles.footerHeading}>Explore</h2>
                 <nav
                   className={styles.pageNavigation}
                   aria-label="Portfolio pages"
@@ -617,6 +563,7 @@ export default function PortfolioV2({
                   <a
                     href={sectionPaths.intro}
                     onClick={(event) => followSectionLink(event, "intro")}
+                    aria-current={page === "intro" ? "page" : undefined}
                   >
                     Introduction
                   </a>
@@ -649,7 +596,32 @@ export default function PortfolioV2({
                     Projects
                   </a>
                 </nav>
-              )}
+                <div className={styles.footerSocials}>
+                  <GitHubHoverCard>
+                    <a href="https://github.com/jaiminjariwala">
+                      <span className={styles.inlineLink}>GitHub</span>
+                      <ExternalArrow />
+                    </a>
+                  </GitHubHoverCard>
+                  <a href="https://www.linkedin.com/in/jaiminjariwala/">
+                    <span className={styles.inlineLink}>LinkedIn</span>
+                    <ExternalArrow />
+                  </a>
+                  <button
+                    type="button"
+                    className={styles.copyEmail}
+                    onClick={copyEmail}
+                    aria-live="polite"
+                  >
+                    {emailCopied ? "Copied!" : "Copy email"}
+                  </button>
+                </div>
+                {emailCopyError && (
+                  <p className={styles.copyError} role="status">
+                    {emailCopyError}
+                  </p>
+                )}
+              </footer>
             </article>
           </div>
         </div>
