@@ -1998,6 +1998,16 @@
   padding: 1.25rem 0.75rem 1.5rem;
   overflow-x: auto;
 }
+.phoneSite .folderGrid :global(.gallery-folder-title) {
+  font-size: 0.9375rem !important;
+  position: static;
+  margin: 0.5rem 0 0 !important;
+  line-height: 1.25;
+}
+.phoneSite .folderGrid :global(.gallery-folder-count) {
+  margin: 0.125rem 0 0 !important;
+  line-height: 1.25;
+}
 .phoneSite .photoGrid {
   display: flex;
   flex-wrap: nowrap;
