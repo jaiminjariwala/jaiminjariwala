@@ -92,21 +92,6 @@
 .article section {
   margin-top: 4.0625rem;
 }
-.article footer {
-  border-top: 0.0625rem solid #eee;
-  margin-top: 4.375rem;
-  padding-top: 1.5625rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  font-size: 0.9375rem;
-  color: #777;
-}
-.article footer button {
-  background: none;
-  border: 0;
-  padding: 0;
-}
 .stamp,
 .homeStamp {
   position: relative;
@@ -943,7 +928,7 @@
   color: #92928e;
   -webkit-text-stroke: 0;
 }
-.introSocials,
+.footerSocials,
 .pageNavigation {
   display: flex;
   flex-wrap: wrap;
@@ -952,18 +937,38 @@
   font-size: 1rem;
   color: #858582;
 }
-.pageNavigation {
-  margin-top: 3.4375rem;
+.portfolioFooter {
+  margin-top: 3rem;
+}
+.article .footerHeading {
+  margin: 0 0 1.5rem;
   padding-top: 1.5rem;
   border-top: 0.0625rem solid #eee;
+  font-family: "V2 James Hand", cursive;
+  font-size: 1.875rem;
+  line-height: 1.2;
+  color: #888;
+  text-transform: uppercase;
+  -webkit-text-stroke: 0.021875rem currentColor;
+}
+.portfolioFooter .pageNavigation {
+  margin-top: 0;
+}
+.portfolioFooter .footerSocials {
+  margin-top: 1.125rem;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #777773;
 }
 .pageNavigation a {
   padding: 0;
+  line-height: 1.4;
   background: none;
   border: 0;
   color: inherit;
 }
 .pageNavigation a[aria-current="page"] {
+  padding-bottom: 0.125rem;
   color: #282826;
 }
 .introExplore a,
@@ -1250,7 +1255,7 @@
   .photoGrid {
     gap: 1.125rem;
   }
-  .introSocials,
+  .footerSocials,
   .pageNavigation {
     font-size: 0.9375rem;
     gap: 1.1875rem;
@@ -1315,12 +1320,7 @@
   padding-bottom: 0;
   background-position: left calc(100% - 0.3125rem);
 }
-.introPage .introSocials {
-  font-size: 1.125rem;
-  font-weight: 400;
-  color: #777773;
-}
-.introSocials .copyEmail {
+.footerSocials .copyEmail {
   border: 0;
   background: none;
   padding: 0;
@@ -1331,22 +1331,22 @@
   color: #555;
   transition: color 0.15s;
 }
-.introSocials .copyEmail:hover {
+.footerSocials .copyEmail:hover {
   color: #aaa;
 }
-.introSocials a {
+.footerSocials a {
   display: inline-flex;
   align-items: center;
   gap: 0.375rem;
 }
-.introSocials a:hover {
+.footerSocials a:hover {
   text-decoration: none;
 }
-.introSocials .inlineLink {
+.footerSocials .inlineLink {
   background-size: 0 0.375rem;
   padding-bottom: 0;
 }
-.introSocials a:hover .inlineLink {
+.footerSocials a:hover .inlineLink {
   background-size: 100% 0.375rem;
 }
 .externalArrow {
@@ -1365,7 +1365,7 @@
   background: rgb(34, 84, 245);
   color: #fff;
 }
-.introPage .copyError {
+.article .copyError {
   font-size: 0.875rem;
   color: #777;
   margin-top: 0.75rem;
@@ -1401,7 +1401,7 @@
 .inlineLink,
 .exploreLabel,
 .pageNavigation a[aria-current="page"],
-.introSocials a:hover .inlineLink {
+.footerSocials a:hover .inlineLink {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 7' preserveAspectRatio='none'%3E%3Cpath d='M2 4 Q20 2.5 40 3.3 T80 3 Q110 4.7 140 3.6 T200 3.8 Q230 2.6 255 3.8 T300 3.3 Q330 4.7 360 3.4 T398 3.8' fill='none' stroke='%23e5e5e5' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 .inlineLink:hover,
@@ -1440,9 +1440,6 @@
   .introPage .introExplore a span {
     font-size: 0.875rem;
   }
-  .introPage .introSocials {
-    font-size: 1.0625rem;
-  }
 }
 @media (min-width: 761px) {
   .article {
@@ -1459,6 +1456,55 @@
         (var(--col-width) + var(--gu))
     );
     --article-width: calc(4 * var(--col-width) + 3 * var(--gu) + 6rem);
+  }
+}
+@media (min-width: 761px) {
+  /* Shorten reading lines while preserving the shared left alignment. */
+  .introPage,
+  .experiencePage[aria-label="Experience"] {
+    width: min(
+      calc(var(--article-width) * 0.9),
+      calc(93vw - 3rem - var(--article-left))
+    );
+  }
+}
+/* Keep the scalloped sheet stationary; only its inset content can scroll. */
+.site {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.paperShadow {
+  height: 100%;
+}
+.paper {
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+.contentViewport {
+  position: absolute;
+  inset: 1.5rem 0;
+  height: calc(100% - 3rem);
+  /* The starting gap scrolls away; the paper keeps equal insets at both ends. */
+  padding: 6.375rem 0 3.5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+.contentViewport::-webkit-scrollbar {
+  display: none;
+}
+.homeStamp {
+  z-index: 1;
+}
+@media (max-width: 760px) {
+  .contentViewport {
+    padding: 10.375rem 1.5625rem 1.625rem;
   }
 }
 .stamp.projectsStamp,

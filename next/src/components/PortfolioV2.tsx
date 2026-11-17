@@ -209,6 +209,7 @@ export default function PortfolioV2({
   const [emailCopyError, setEmailCopyError] = useState("");
   const copyReset = useRef<ReturnType<typeof setTimeout>>(undefined);
   const paper = useRef<HTMLDivElement>(null);
+  const contentViewport = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLElement>(null);
   const navigation = useRef<{
     destination: PortfolioSection;
@@ -244,7 +245,7 @@ export default function PortfolioV2({
   const navigate = (next: PortfolioSection) => {
     // The latest selection wins, including taps while a previous unroll is
     // finishing. Never silently discard a real stamp/navigation activation.
-    window.scrollTo({ top: 0, behavior: "instant" });
+    contentViewport.current?.scrollTo({ top: 0, behavior: "instant" });
     if (next === page) {
       navigation.current = null;
       setCollection(false);
@@ -300,7 +301,6 @@ export default function PortfolioV2({
   };
   const revealCollection = () => {
     navigation.current = null;
-    window.scrollTo({ top: 0, behavior: "instant" });
     setCollection(true);
   };
 
@@ -461,68 +461,142 @@ export default function PortfolioV2({
               </span>
             )}
           </StickerButton>
-          <article
-            ref={heading}
-            tabIndex={-1}
-            className={`${styles.article} ${page === "intro" ? styles.introPage : page === "experience" || page === "education" ? styles.experiencePage : ""}`}
-            aria-label={
-              page === "intro"
-                ? "Introduction"
-                : page === "gallery"
-                  ? "Travel"
-                  : page === "education"
-                    ? "Education"
-                    : page === "projects"
-                      ? "Projects"
-                      : "Experience"
-            }
-            key={page}
+          <div
+            ref={contentViewport}
+            data-portfolio-scroll
+            className={styles.contentViewport}
           >
-            {page === "intro" && (
-              <>
-                <header>
-                  <h1>Jaimin Mukesh Jariwala</h1>
-                </header>
-                <p className={styles.introText}>
-                  <span>
-                    I&apos;m Jaimin Jariwala, a software engineer who loves
-                    building cool products that people love using and systems
-                    that don&apos;t break under heavy traffic. I like building
-                    the infrastructure and owning the entire product development
-                    lifecycle.
-                  </span>
-                </p>
+            <article
+              ref={heading}
+              tabIndex={-1}
+              className={`${styles.article} ${page === "intro" ? styles.introPage : page === "experience" || page === "education" ? styles.experiencePage : ""}`}
+              aria-label={
+                page === "intro"
+                  ? "Introduction"
+                  : page === "gallery"
+                    ? "Travel"
+                    : page === "education"
+                      ? "Education"
+                      : page === "projects"
+                        ? "Projects"
+                        : "Experience"
+              }
+              key={page}
+            >
+              {page === "intro" && (
+                <>
+                  <header>
+                    <h1>Jaimin Mukesh Jariwala</h1>
+                  </header>
+                  <p className={styles.introText}>
+                    <span>
+                      I&apos;m Jaimin Jariwala, a software engineer who loves
+                      building cool products that people love using and systems
+                      that don&apos;t break under heavy traffic. I like building
+                      the infrastructure and owning the entire product development
+                      lifecycle.
+                    </span>
+                  </p>
+                </>
+              )}
+              {page === "gallery" && (
+                <PortfolioV2Gallery initialSlug={initialGallerySlug} />
+              )}
+              {page === "projects" && <PortfolioV2Projects />}
+              {page === "experience" && (
+                <>
+                  <header>
+                    <h1>Experience</h1>
+                  </header>
+                  <div className={styles.experience}>
+                    {experience.map(([company, role, date, subjects, team]) => (
+                      <div key={company}>
+                        <div>
+                          <strong>{company}</strong>
+                          <span>{role}</span>
+                          {team && (
+                            <span className={styles.experienceTeam}>
+                              · {team}
+                            </span>
+                          )}
+                          {subjects?.map((subject) => (
+                            <span key={subject}>· {subject}</span>
+                          ))}
+                        </div>
+                        <time>{date}</time>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+              {page === "education" && (
+                <>
+                  <header>
+                    <h1>Education</h1>
+                  </header>
+                  <div className={styles.experience}>
+                    {education.map(
+                      ([university, degree, date, grade, award, location]) => (
+                        <div key={university}>
+                          <div>
+                            <strong>{university}</strong>
+                            <EducationDegree degree={degree} />
+                            <span>{grade}</span>
+                            {award && <span>{award}</span>}
+                          </div>
+                          <div className={styles.educationMeta}>
+                            <span>{location}</span>
+                            <time>{date}</time>
+                          </div>
+                        </div>
+                      ),
+                    )}
+                  </div>
+                </>
+              )}
+              <footer className={styles.portfolioFooter}>
+                <h2 className={styles.footerHeading}>Explore</h2>
                 <nav
-                  className={styles.introExplore}
-                  aria-label="Explore portfolio"
+                  className={styles.pageNavigation}
+                  aria-label="Portfolio pages"
                 >
-                  <h2>Explore</h2>
+                  <a
+                    href={sectionPaths.intro}
+                    onClick={(event) => followSectionLink(event, "intro")}
+                    aria-current={page === "intro" ? "page" : undefined}
+                  >
+                    Introduction
+                  </a>
                   <a
                     href={sectionPaths.gallery}
                     onClick={(event) => followSectionLink(event, "gallery")}
+                    aria-current={page === "gallery" ? "page" : undefined}
                   >
-                    <span className={styles.exploreLabel}>Travel</span>
+                    Travel
                   </a>
                   <a
                     href={sectionPaths.experience}
                     onClick={(event) => followSectionLink(event, "experience")}
+                    aria-current={page === "experience" ? "page" : undefined}
                   >
-                    <span className={styles.exploreLabel}>Experience</span>
+                    Experience
                   </a>
                   <a
                     href={sectionPaths.education}
                     onClick={(event) => followSectionLink(event, "education")}
+                    aria-current={page === "education" ? "page" : undefined}
                   >
-                    <span className={styles.exploreLabel}>Education</span>
+                    Education
                   </a>
                   <a
                     href={sectionPaths.projects}
                     onClick={(event) => followSectionLink(event, "projects")}
+                    aria-current={page === "projects" ? "page" : undefined}
                   >
-                    <span className={styles.exploreLabel}>Projects</span>
+                    Projects
                   </a>
                 </nav>
-                <div className={styles.introSocials}>
+                <div className={styles.footerSocials}>
                   <GitHubHoverCard>
                     <a href="https://github.com/jaiminjariwala">
                       <span className={styles.inlineLink}>GitHub</span>
@@ -547,105 +621,9 @@ export default function PortfolioV2({
                     {emailCopyError}
                   </p>
                 )}
-              </>
-            )}
-            {page === "gallery" && (
-              <PortfolioV2Gallery initialSlug={initialGallerySlug} />
-            )}
-            {page === "projects" && <PortfolioV2Projects />}
-            {page === "experience" && (
-              <>
-                <header>
-                  <h1>Experience</h1>
-                </header>
-                <div className={styles.experience}>
-                  {experience.map(([company, role, date, subjects, team]) => (
-                    <div key={company}>
-                      <div>
-                        <strong>{company}</strong>
-                        <span>{role}</span>
-                        {team && (
-                          <span className={styles.experienceTeam}>
-                            · {team}
-                          </span>
-                        )}
-                        {subjects?.map((subject) => (
-                          <span key={subject}>· {subject}</span>
-                        ))}
-                      </div>
-                      <time>{date}</time>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-            {page === "education" && (
-              <>
-                <header>
-                  <h1>Education</h1>
-                </header>
-                <div className={styles.experience}>
-                  {education.map(
-                    ([university, degree, date, grade, award, location]) => (
-                      <div key={university}>
-                        <div>
-                          <strong>{university}</strong>
-                          <EducationDegree degree={degree} />
-                          <span>{grade}</span>
-                          {award && <span>{award}</span>}
-                        </div>
-                        <div className={styles.educationMeta}>
-                          <span>{location}</span>
-                          <time>{date}</time>
-                        </div>
-                      </div>
-                    ),
-                  )}
-                </div>
-              </>
-            )}
-            {page !== "intro" && (
-              <nav
-                className={styles.pageNavigation}
-                aria-label="Portfolio pages"
-              >
-                <a
-                  href={sectionPaths.intro}
-                  onClick={(event) => followSectionLink(event, "intro")}
-                >
-                  Introduction
-                </a>
-                <a
-                  href={sectionPaths.gallery}
-                  onClick={(event) => followSectionLink(event, "gallery")}
-                  aria-current={page === "gallery" ? "page" : undefined}
-                >
-                  Travel
-                </a>
-                <a
-                  href={sectionPaths.experience}
-                  onClick={(event) => followSectionLink(event, "experience")}
-                  aria-current={page === "experience" ? "page" : undefined}
-                >
-                  Experience
-                </a>
-                <a
-                  href={sectionPaths.education}
-                  onClick={(event) => followSectionLink(event, "education")}
-                  aria-current={page === "education" ? "page" : undefined}
-                >
-                  Education
-                </a>
-                <a
-                  href={sectionPaths.projects}
-                  onClick={(event) => followSectionLink(event, "projects")}
-                  aria-current={page === "projects" ? "page" : undefined}
-                >
-                  Projects
-                </a>
-              </nav>
-            )}
-          </article>
+              </footer>
+            </article>
+          </div>
         </div>
       </div>
       <PaperPeel

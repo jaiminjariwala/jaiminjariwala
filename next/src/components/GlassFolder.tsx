@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { animate } from "framer-motion";
 import type { AnimationPlaybackControls } from "framer-motion";
 import type { GalleryFolder } from "./galleryData";
@@ -13,6 +13,7 @@ export function GlassFolder({
   slug,
   onOpen,
 }: GalleryFolder & { onOpen?: (slug: string) => void }) {
+  const gradientId = useId();
   const entranceRef = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
     const card = entranceRef.current;
@@ -105,7 +106,25 @@ export function GlassFolder({
         }}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div style={styles.backPlate} />
+        {/* Scale the outline with the panel so smaller folders retain their corners. */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 185 142"
+          preserveAspectRatio="none"
+          style={styles.backPlate}
+        >
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#78cff7" />
+              <stop offset="58%" stopColor="#60c0ec" />
+              <stop offset="100%" stopColor="#49afdf" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M 0 31 C 0 23 5 16 13 16 L 52 16 C 57 16 62 18 66 21 L 73 27 C 76 30 80 31 86 31 L 177 31 C 182 31 185 35 185 39 L 185 130 C 185 137 180 142 173 142 L 12 142 C 5 142 0 137 0 130 Z"
+            fill={`url(#${gradientId})`}
+          />
+        </svg>
         <div style={styles.backPlateInnerShadow} />
         <div style={styles.paperStackShadow} />
 
@@ -243,13 +262,8 @@ const styles = {
     width: "100%",
     height: "95%",
     border: "none",
-    background:
-      "linear-gradient(180deg, #78cff7 0%, #60c0ec 58%, #49afdf 100%)",
-    overflow: "hidden",
-    clipPath:
-      'path("M 0 31 C 0 23 5 16 13 16 L 52 16 C 57 16 62 18 66 21 L 73 27 C 76 30 80 31 86 31 L 177 31 C 182 31 185 35 185 39 L 185 130 C 185 137 180 142 173 142 L 12 142 C 5 142 0 137 0 130 Z")',
-    boxShadow:
-      "inset 0 0.0625rem 0 rgba(255,255,255,0.56), 0 0.4375rem 0.875rem rgba(12, 40, 63, 0.24)",
+    overflow: "visible",
+    filter: "drop-shadow(0 0.4375rem 0.875rem rgba(12, 40, 63, 0.24))",
     zIndex: 1,
   },
   paper: {
