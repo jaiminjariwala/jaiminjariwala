@@ -1950,9 +1950,7 @@
   scroll-margin-top: 1.5rem;
 }
 .phoneSite .phoneSection + .phoneSection {
-  margin-top: 3.5rem;
-  padding-top: 3.5rem;
-  border-top: 1px solid #ededeb;
+  margin-top: 3rem;
 }
 .phoneSite .phoneStamp {
   position: relative;
