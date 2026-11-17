@@ -1381,15 +1381,18 @@
     display: block;
   }
 }
-.educationMeta {
+.educationMeta,
+.experienceMeta {
   text-align: right;
   flex-shrink: 0;
 }
-.educationMeta > span {
+.educationMeta > span,
+.experienceMeta > span {
   font-size: 0.94em;
 }
 @media (max-width: 760px) {
-  .educationMeta {
+  .educationMeta,
+.experienceMeta {
     text-align: left;
   }
 }

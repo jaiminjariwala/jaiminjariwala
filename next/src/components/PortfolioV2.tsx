@@ -51,28 +51,43 @@ function StampRim({ lobes = 6 }: { lobes?: number }) {
   );
 }
 
-const experience: [string, string, string, (string[] | null)?, string?][] = [
-  [
-    "The George Washington University",
-    "Graduate Teaching Assistant II",
-    "Present",
-    ["Cloud Computing", "Database Management Systems 2"],
-  ],
-  [
-    "Amazon",
-    "Design Technologist I Intern (L4)",
-    "June–Aug 2026",
-    null,
-    "Alexa Smart Home Team",
-  ],
-  ["Logicwind", "AI/ML Intern", "May–Dec 2024"],
+interface ExperienceEntry {
+  company: string;
+  role: string;
+  date: string;
+  location: string;
+  subjects?: string[];
+  team?: string;
+}
+
+const experience: ExperienceEntry[] = [
+  {
+    company: "The George Washington University",
+    role: "Graduate Teaching Assistant II",
+    date: "Aug 2026 – Present",
+    location: "Washington D.C.",
+    subjects: ["Cloud Computing Class", "Database Management Systems 2 Class"],
+  },
+  {
+    company: "Amazon",
+    role: "Design Technologist I Intern (L4)",
+    date: "June – Aug 2026",
+    location: "Seattle, Washington",
+    team: "Alexa Smart Home Team",
+  },
+  {
+    company: "Logicwind",
+    role: "AI/ML Intern",
+    date: "May – Dec 2024",
+    location: "Surat, Gujarat, India",
+  },
 ];
 
 const education: [string, string, string, string, string | null, string][] = [
   [
     "The George Washington University",
     "Master's in Computer Science",
-    "Aug 2025–May 2027",
+    "Aug 2025 – May 2027",
     "GPA: 3.83 / 4.00",
     "35% tuition scholarship",
     "Washington D.C.",
@@ -80,7 +95,7 @@ const education: [string, string, string, string, string | null, string][] = [
   [
     "Parul University",
     "Bachelor of Technology in Computer Science and Engineering",
-    "Sep 2020–May 2024",
+    "Sep 2020 – May 2024",
     "CGPA: 8.57 / 10",
     null,
     "Gujarat, India",
@@ -509,23 +524,28 @@ export default function PortfolioV2({
                     <h1>Experience</h1>
                   </header>
                   <div className={styles.experience}>
-                    {experience.map(([company, role, date, subjects, team]) => (
-                      <div key={company}>
-                        <div>
-                          <strong>{company}</strong>
-                          <span>{role}</span>
-                          {team && (
-                            <span className={styles.experienceTeam}>
-                              · {team}
-                            </span>
-                          )}
-                          {subjects?.map((subject) => (
-                            <span key={subject}>· {subject}</span>
-                          ))}
+                    {experience.map(
+                      ({ company, role, date, location, subjects, team }) => (
+                        <div key={company}>
+                          <div>
+                            <strong>{company}</strong>
+                            <span>{role}</span>
+                            {team && (
+                              <span className={styles.experienceTeam}>
+                                · {team}
+                              </span>
+                            )}
+                            {subjects?.map((subject) => (
+                              <span key={subject}>· {subject}</span>
+                            ))}
+                          </div>
+                          <div className={styles.experienceMeta}>
+                            <span>{location}</span>
+                            <time>{date}</time>
+                          </div>
                         </div>
-                        <time>{date}</time>
-                      </div>
-                    ))}
+                      ),
+                    )}
                   </div>
                 </>
               )}
