@@ -1461,6 +1461,16 @@
     --article-width: calc(4 * var(--col-width) + 3 * var(--gu) + 6rem);
   }
 }
+@media (min-width: 761px) {
+  /* Shorten reading lines while preserving the shared left alignment. */
+  .introPage,
+  .experiencePage[aria-label="Experience"] {
+    width: min(
+      calc(var(--article-width) * 0.9),
+      calc(93vw - 3rem - var(--article-left))
+    );
+  }
+}
 .stamp.projectsStamp,
 .homeStamp.projectsStamp {
   transform: rotate(4deg);
