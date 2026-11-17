@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import type { PortfolioSection, StampKind } from "@/lib/siteSeo";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
 import PortfolioV2Projects from "./PortfolioV2Projects";
@@ -9,6 +9,7 @@ import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from "./StickerButton";
 import GitHubHoverCard from "./GitHubHoverCard";
+import ResumeDialog from "./ResumeDialog";
 import { paperViewportWidth, paperScale, paperInset } from "./paperLayout.ts";
 import { sectionPaths } from "@/lib/siteSeo.ts";
 import {
@@ -211,10 +212,12 @@ function PortfolioContent({
   page,
   initialGallerySlug,
   scrollTargetId,
+  introLinks,
 }: {
   page: PortfolioSection;
   initialGallerySlug?: string | null;
   scrollTargetId?: string;
+  introLinks?: ReactNode;
 }) {
   return (
     <>
@@ -222,6 +225,7 @@ function PortfolioContent({
         <>
           <header>
             <h1>Jaimin Mukesh Jariwala</h1>
+            {introLinks}
           </header>
           <p className={styles.introText}>
             <span>
@@ -309,21 +313,27 @@ const phoneSections: { page: PortfolioSection; label: string; art: StampKind }[]
   { page: "gallery", label: "Travel", art: "car" },
 ];
 
+const phoneEmail = "jaiminjariwala5@icloud.com";
+
 function PhonePortfolio({
   clock,
   initialPage,
   initialGallerySlug,
-  copyEmail,
-  emailCopied,
-  emailCopyError,
 }: {
   clock: string;
   initialPage: PortfolioSection;
   initialGallerySlug: string | null;
-  copyEmail: () => Promise<void>;
-  emailCopied: boolean;
-  emailCopyError: string;
 }) {
+  const [showBackToTop, setShowBackToTop] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
+
+  useEffect(() => {
+    const update = () => setShowBackToTop(window.scrollY > 400);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
   useEffect(() => {
     // Direct links still land at the requested section of the phone document.
     const target = window.location.hash.slice(1) || `phone-${initialPage}`;
@@ -336,23 +346,6 @@ function PhonePortfolio({
 
   return (
     <div className={styles.phoneSite}>
-      <header className={styles.phoneNavigation}>
-        <nav aria-label="Portfolio sections">
-          {phoneSections.map(({ page, label }) => (
-            <a key={page} href={`#phone-${page}`}>
-              {label}
-            </a>
-          ))}
-        </nav>
-        <div className={styles.phoneSocials}>
-          <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
-          <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
-          <button type="button" onClick={copyEmail} aria-live="polite">
-            {emailCopied ? "Copied!" : "Copy email"}
-          </button>
-        </div>
-        {emailCopyError && <p role="status">{emailCopyError}</p>}
-      </header>
       <main className={styles.phoneContent}>
         {phoneSections.map(({ page, label, art }) => (
           <section
@@ -382,10 +375,53 @@ function PhonePortfolio({
               page={page}
               initialGallerySlug={initialGallerySlug}
               scrollTargetId={`phone-${page}`}
+              introLinks={page === "intro" ? (
+                <>
+                  <div className={styles.phoneSocials}>
+                    <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
+                    <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
+                    <a
+                      href="/JAIMIN_RESUME.pdf"
+                      aria-haspopup="dialog"
+                      onClick={(event) => {
+                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                        event.preventDefault();
+                        setResumeOpen(true);
+                      }}
+                    >
+                      Resume
+                    </a>
+                  </div>
+                  <div className={styles.phoneEmail}>
+                    <a href="tel:+12023917502">+1 (202) 391-7502</a>
+                    <a href={`mailto:${phoneEmail}`} className={styles.inlineLink}>
+                      {phoneEmail}
+                    </a>
+                  </div>
+                </>
+              ) : undefined}
             />
           </section>
         ))}
       </main>
+      <ResumeDialog open={resumeOpen} onClose={() => setResumeOpen(false)} />
+      {showBackToTop && (
+        <button
+          type="button"
+          className={styles.phoneBackToTop}
+          aria-label="Back to top"
+          onClick={() => window.scrollTo({
+            top: 0,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "instant"
+              : "smooth",
+          })}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m6 11 6-6 6 6M12 5v14" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }
@@ -577,9 +613,6 @@ export default function PortfolioV2({
         clock={clock}
         initialPage={initialPage}
         initialGallerySlug={initialGallerySlug}
-        copyEmail={copyEmail}
-        emailCopied={emailCopied}
-        emailCopyError={emailCopyError}
       />
     );
   }
