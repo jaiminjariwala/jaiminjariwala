@@ -1898,46 +1898,45 @@
   color: #282826;
   font-family: var(--font-inter), Arial, sans-serif;
 }
-.phoneNavigation {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid #ededeb;
-}
-.phoneNavigation nav,
-.phoneSocials {
+.phoneSocials,
+.phoneEmail {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.25rem 1rem;
   font-size: 0.875rem;
   line-height: 1.5;
+  color: #777773;
+  margin-top: 0;
 }
-.phoneNavigation nav {
-  font-size: 0.8125rem;
-  column-gap: 0.625rem;
-}
-.phoneNavigation a,
-.phoneSocials button {
+.phoneSocials a {
   display: inline-flex;
   align-items: center;
   gap: 0.25rem;
-  min-height: 2.5rem;
+  min-height: 1.5rem;
 }
-.phoneNavigation a:focus-visible,
-.phoneSocials button:focus-visible {
+.phoneSocials a:focus-visible,
+.phoneEmail a:focus-visible {
   outline: 2px solid #2c65d0;
   outline-offset: 2px;
 }
-.phoneSocials {
-  color: #777773;
-  margin-top: 0.25rem;
+.phoneEmail {
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  width: calc(100% + 1.25rem);
+  margin-right: -1.25rem;
+  font-size: 0.875rem;
+  overflow-x: auto;
+  scrollbar-width: none;
 }
-.phoneSocials button {
-  padding: 0;
-  background: none;
-  border: 0;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
+.phoneEmail > a:first-child {
+  margin-right: 0.5rem;
+}
+.phoneEmail::-webkit-scrollbar {
+  display: none;
+}
+.phoneEmail a {
+  white-space: nowrap;
 }
 .phoneContent {
   padding: 2.5rem 1.5rem 4rem;

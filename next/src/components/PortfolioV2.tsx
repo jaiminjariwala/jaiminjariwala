@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import type { PortfolioSection, StampKind } from "@/lib/siteSeo";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
 import PortfolioV2Projects from "./PortfolioV2Projects";
@@ -211,10 +211,12 @@ function PortfolioContent({
   page,
   initialGallerySlug,
   scrollTargetId,
+  introLinks,
 }: {
   page: PortfolioSection;
   initialGallerySlug?: string | null;
   scrollTargetId?: string;
+  introLinks?: ReactNode;
 }) {
   return (
     <>
@@ -222,6 +224,7 @@ function PortfolioContent({
         <>
           <header>
             <h1>Jaimin Mukesh Jariwala</h1>
+            {introLinks}
           </header>
           <p className={styles.introText}>
             <span>
@@ -309,20 +312,16 @@ const phoneSections: { page: PortfolioSection; label: string; art: StampKind }[]
   { page: "gallery", label: "Travel", art: "car" },
 ];
 
+const phoneEmail = "jaiminjariwala5@icloud.com";
+
 function PhonePortfolio({
   clock,
   initialPage,
   initialGallerySlug,
-  copyEmail,
-  emailCopied,
-  emailCopyError,
 }: {
   clock: string;
   initialPage: PortfolioSection;
   initialGallerySlug: string | null;
-  copyEmail: () => Promise<void>;
-  emailCopied: boolean;
-  emailCopyError: string;
 }) {
   useEffect(() => {
     // Direct links still land at the requested section of the phone document.
@@ -336,23 +335,6 @@ function PhonePortfolio({
 
   return (
     <div className={styles.phoneSite}>
-      <header className={styles.phoneNavigation}>
-        <nav aria-label="Portfolio sections">
-          {phoneSections.map(({ page, label }) => (
-            <a key={page} href={`#phone-${page}`}>
-              {label}
-            </a>
-          ))}
-        </nav>
-        <div className={styles.phoneSocials}>
-          <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
-          <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
-          <button type="button" onClick={copyEmail} aria-live="polite">
-            {emailCopied ? "Copied!" : "Copy email"}
-          </button>
-        </div>
-        {emailCopyError && <p role="status">{emailCopyError}</p>}
-      </header>
       <main className={styles.phoneContent}>
         {phoneSections.map(({ page, label, art }) => (
           <section
@@ -382,10 +364,26 @@ function PhonePortfolio({
               page={page}
               initialGallerySlug={initialGallerySlug}
               scrollTargetId={`phone-${page}`}
+              introLinks={page === "intro" ? (
+                <>
+                  <div className={styles.phoneSocials}>
+                    <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
+                    <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
+                    <a href="/JAIMIN_RESUME.pdf" target="_blank" rel="noopener noreferrer">Resume <ExternalArrow /></a>
+                  </div>
+                  <div className={styles.phoneEmail}>
+                    <a href="tel:+12023917502">+1 (202) 391-7502</a>
+                    <a href={`mailto:${phoneEmail}`} className={styles.inlineLink}>
+                      {phoneEmail}
+                    </a>
+                  </div>
+                </>
+              ) : undefined}
             />
           </section>
         ))}
       </main>
+
     </div>
   );
 }
@@ -577,9 +575,6 @@ export default function PortfolioV2({
         clock={clock}
         initialPage={initialPage}
         initialGallerySlug={initialGallerySlug}
-        copyEmail={copyEmail}
-        emailCopied={emailCopied}
-        emailCopyError={emailCopyError}
       />
     );
   }
