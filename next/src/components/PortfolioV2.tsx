@@ -207,6 +207,100 @@ function StampArt({ kind }: { kind: StampKind }) {
   return <span className={styles.question}>?</span>;
 }
 
+function PortfolioContent({
+  page,
+  initialGallerySlug,
+  scrollTargetId,
+}: {
+  page: PortfolioSection;
+  initialGallerySlug?: string | null;
+  scrollTargetId?: string;
+}) {
+  return (
+    <>
+      {page === "intro" && (
+        <>
+          <header>
+            <h1>Jaimin Mukesh Jariwala</h1>
+          </header>
+          <p className={styles.introText}>
+            <span>
+              Hello, I am a software engineer who enjoys
+              building cool products that people love using and systems
+              that don&apos;t break under heavy traffic. I like building
+              the infrastructure and owning the entire product development
+              lifecycle.
+            </span>
+          </p>
+        </>
+      )}
+      {page === "gallery" && (
+        <PortfolioV2Gallery
+          initialSlug={initialGallerySlug}
+          scrollTargetId={scrollTargetId}
+        />
+      )}
+      {page === "projects" && <PortfolioV2Projects />}
+      {page === "experience" && (
+        <>
+          <header>
+            <h1>Experience</h1>
+          </header>
+          <div className={styles.experience}>
+            {experience.map(
+              ({ company, role, date, location, subjects, team }) => (
+                <div key={company}>
+                  <div>
+                    <strong>{company}</strong>
+                    <span>{role}</span>
+                    {team && (
+                      <span className={styles.experienceTeam}>
+                        · {team}
+                      </span>
+                    )}
+                    {subjects?.map((subject) => (
+                      <span key={subject}>· {subject}</span>
+                    ))}
+                  </div>
+                  <div className={styles.experienceMeta}>
+                    <span>{location}</span>
+                    <time>{date}</time>
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+        </>
+      )}
+      {page === "education" && (
+        <>
+          <header>
+            <h1>Education</h1>
+          </header>
+          <div className={styles.experience}>
+            {education.map(
+              ([university, degree, date, grade, award, location]) => (
+                <div key={university}>
+                  <div>
+                    <strong>{university}</strong>
+                    <EducationDegree degree={degree} />
+                    <span>{grade}</span>
+                    {award && <span>{award}</span>}
+                  </div>
+                  <div className={styles.educationMeta}>
+                    <span>{location}</span>
+                    <time>{date}</time>
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
 export default function PortfolioV2({
   initialPage = "intro",
   initialGallerySlug = null,
@@ -498,82 +592,7 @@ export default function PortfolioV2({
               }
               key={page}
             >
-              {page === "intro" && (
-                <>
-                  <header>
-                    <h1>Jaimin Mukesh Jariwala</h1>
-                  </header>
-                  <p className={styles.introText}>
-                    <span>
-                      Hello, I am a software engineer who enjoys
-                      building cool products that people love using and systems
-                      that don&apos;t break under heavy traffic. I like building
-                      the infrastructure and owning the entire product development
-                      lifecycle.
-                    </span>
-                  </p>
-                </>
-              )}
-              {page === "gallery" && (
-                <PortfolioV2Gallery initialSlug={initialGallerySlug} />
-              )}
-              {page === "projects" && <PortfolioV2Projects />}
-              {page === "experience" && (
-                <>
-                  <header>
-                    <h1>Experience</h1>
-                  </header>
-                  <div className={styles.experience}>
-                    {experience.map(
-                      ({ company, role, date, location, subjects, team }) => (
-                        <div key={company}>
-                          <div>
-                            <strong>{company}</strong>
-                            <span>{role}</span>
-                            {team && (
-                              <span className={styles.experienceTeam}>
-                                · {team}
-                              </span>
-                            )}
-                            {subjects?.map((subject) => (
-                              <span key={subject}>· {subject}</span>
-                            ))}
-                          </div>
-                          <div className={styles.experienceMeta}>
-                            <span>{location}</span>
-                            <time>{date}</time>
-                          </div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </>
-              )}
-              {page === "education" && (
-                <>
-                  <header>
-                    <h1>Education</h1>
-                  </header>
-                  <div className={styles.experience}>
-                    {education.map(
-                      ([university, degree, date, grade, award, location]) => (
-                        <div key={university}>
-                          <div>
-                            <strong>{university}</strong>
-                            <EducationDegree degree={degree} />
-                            <span>{grade}</span>
-                            {award && <span>{award}</span>}
-                          </div>
-                          <div className={styles.educationMeta}>
-                            <span>{location}</span>
-                            <time>{date}</time>
-                          </div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </>
-              )}
+              <PortfolioContent page={page} initialGallerySlug={initialGallerySlug} />
               <footer className={styles.portfolioFooter}>
                 <h2 className={styles.footerHeading}>Explore</h2>
                 <nav
