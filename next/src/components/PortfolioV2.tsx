@@ -323,6 +323,15 @@ function PhonePortfolio({
   initialPage: PortfolioSection;
   initialGallerySlug: string | null;
 }) {
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const update = () => setShowBackToTop(window.scrollY > 400);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
   useEffect(() => {
     // Direct links still land at the requested section of the phone document.
     const target = window.location.hash.slice(1) || `phone-${initialPage}`;
@@ -383,7 +392,23 @@ function PhonePortfolio({
           </section>
         ))}
       </main>
-
+      {showBackToTop && (
+        <button
+          type="button"
+          className={styles.phoneBackToTop}
+          aria-label="Back to top"
+          onClick={() => window.scrollTo({
+            top: 0,
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+              ? "instant"
+              : "smooth",
+          })}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m6 11 6-6 6 6M12 5v14" />
+          </svg>
+        </button>
+      )}
     </div>
   );
 }
