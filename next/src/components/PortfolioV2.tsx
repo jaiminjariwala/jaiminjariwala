@@ -301,6 +301,95 @@ function PortfolioContent({
   );
 }
 
+const phoneSections: { page: PortfolioSection; label: string; art: StampKind }[] = [
+  { page: "intro", label: "Introduction", art: "rocket" },
+  { page: "experience", label: "Experience", art: "experience" },
+  { page: "education", label: "Education", art: "education" },
+  { page: "projects", label: "Projects", art: "projects" },
+  { page: "gallery", label: "Travel", art: "car" },
+];
+
+function PhonePortfolio({
+  clock,
+  initialPage,
+  initialGallerySlug,
+  copyEmail,
+  emailCopied,
+  emailCopyError,
+}: {
+  clock: string;
+  initialPage: PortfolioSection;
+  initialGallerySlug: string | null;
+  copyEmail: () => Promise<void>;
+  emailCopied: boolean;
+  emailCopyError: string;
+}) {
+  useEffect(() => {
+    // Direct links still land at the requested section of the phone document.
+    const target = window.location.hash.slice(1) || `phone-${initialPage}`;
+    if (target === "phone-intro" && !window.location.hash) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    } else {
+      document.getElementById(target)?.scrollIntoView({ behavior: "instant" });
+    }
+  }, [initialPage]);
+
+  return (
+    <div className={styles.phoneSite}>
+      <header className={styles.phoneNavigation}>
+        <nav aria-label="Portfolio sections">
+          {phoneSections.map(({ page, label }) => (
+            <a key={page} href={`#phone-${page}`}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <div className={styles.phoneSocials}>
+          <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
+          <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
+          <button type="button" onClick={copyEmail} aria-live="polite">
+            {emailCopied ? "Copied!" : "Copy email"}
+          </button>
+        </div>
+        {emailCopyError && <p role="status">{emailCopyError}</p>}
+      </header>
+      <main className={styles.phoneContent}>
+        {phoneSections.map(({ page, label, art }) => (
+          <section
+            key={page}
+            id={`phone-${page}`}
+            aria-label={label}
+            className={`${styles.article} ${styles.phoneSection} ${page === "intro" ? styles.introPage : page === "experience" || page === "education" ? styles.experiencePage : ""}`}
+          >
+            <div
+              className={`${styles.homeStamp} ${styles.phoneStamp} ${page === "intro" ? styles.rocketStamp : page === "projects" ? styles.projectsStamp : ""}`}
+              aria-hidden="true"
+            >
+              <StampRim />
+              {page === "intro" && (
+                <span className={styles.stampTime}>
+                  {clock}<span>DC</span>
+                </span>
+              )}
+              <StampArt kind={art} />
+              {page === "intro" && (
+                <span className={styles.signature}>
+                  Jaimin<span>:)</span>
+                </span>
+              )}
+            </div>
+            <PortfolioContent
+              page={page}
+              initialGallerySlug={initialGallerySlug}
+              scrollTargetId={`phone-${page}`}
+            />
+          </section>
+        ))}
+      </main>
+    </div>
+  );
+}
+
 export default function PortfolioV2({
   initialPage = "intro",
   initialGallerySlug = null,
@@ -308,7 +397,24 @@ export default function PortfolioV2({
   initialPage?: PortfolioSection;
   initialGallerySlug?: string | null;
 }) {
+  const [phone, setPhone] = useState(false);
   const [collection, setCollection] = useState(false);
+  useEffect(() => {
+    // iPad mini can be narrower than this breakpoint. iPadOS also identifies
+    // itself as a Mac in desktop mode, so preserve its paper layout explicitly.
+    const isIPad = /iPad/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const media = window.matchMedia(
+      "(max-width: 760px), (pointer: coarse) and (max-height: 500px)",
+    );
+    const update = () => {
+      setPhone(media.matches && !isIPad);
+      setCollection(false);
+    };
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   const [peel, setPeel] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [paperMask, setPaperMask] = useState<string>();
@@ -452,18 +558,31 @@ export default function PortfolioV2({
       observer.disconnect();
       clearInterval(timer);
     };
-  }, []);
+  }, [phone]);
   useEffect(() => {
-    if (!collection) return;
+    if (!collection || phone) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
-  }, [collection]);
+  }, [collection, phone]);
   useEffect(() => {
     if (!collection) heading.current?.focus({ preventScroll: true });
   }, [page, collection]);
+
+  if (phone) {
+    return (
+      <PhonePortfolio
+        clock={clock}
+        initialPage={initialPage}
+        initialGallerySlug={initialGallerySlug}
+        copyEmail={copyEmail}
+        emailCopied={emailCopied}
+        emailCopyError={emailCopyError}
+      />
+    );
+  }
 
   return (
     <div className={styles.site}>
