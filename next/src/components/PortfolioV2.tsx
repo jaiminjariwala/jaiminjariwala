@@ -490,7 +490,7 @@ export default function PortfolioV2({
                   </header>
                   <p className={styles.introText}>
                     <span>
-                      I&apos;m Jaimin Jariwala, a software engineer who loves
+                      Hello, I am a software engineer who enjoys
                       building cool products that people love using and systems
                       that don&apos;t break under heavy traffic. I like building
                       the infrastructure and owning the entire product development
