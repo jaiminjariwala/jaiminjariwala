@@ -934,11 +934,11 @@
   flex-wrap: wrap;
   gap: 1.5rem;
   margin-top: 2.5rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
   color: #858582;
 }
 .portfolioFooter {
-  margin-top: 3rem;
+  margin-top: 2.25rem;
 }
 .article .footerHeading {
   margin: 0 0 1.5rem;
@@ -956,7 +956,6 @@
 }
 .portfolioFooter .footerSocials {
   margin-top: 1.125rem;
-  font-size: 1rem;
   font-weight: 400;
   color: #777773;
 }
@@ -1028,7 +1027,7 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 1.75rem;
-  padding: 6.25rem 0.75rem 1.5625rem;
+  padding: 5rem 0.75rem 1.5625rem;
   overflow-x: auto;
   align-items: flex-start;
   min-width: 0;
@@ -1257,7 +1256,7 @@
   }
   .footerSocials,
   .pageNavigation {
-    font-size: 0.9375rem;
+    font-size: 1rem;
     gap: 1.1875rem;
   }
 }
@@ -1272,7 +1271,7 @@
 @media (max-width: 760px) {
   .folderGrid {
     gap: 1.5rem;
-    padding-top: 5rem;
+    padding-top: 4.25rem;
   }
   .folderGrid :global(.gallery-folder-visual) {
     zoom: 0.7;
@@ -1381,15 +1380,18 @@
     display: block;
   }
 }
-.educationMeta {
+.educationMeta,
+.experienceMeta {
   text-align: right;
   flex-shrink: 0;
 }
-.educationMeta > span {
+.educationMeta > span,
+.experienceMeta > span {
   font-size: 0.94em;
 }
 @media (max-width: 760px) {
-  .educationMeta {
+  .educationMeta,
+  .experienceMeta {
     text-align: left;
   }
 }
@@ -1885,4 +1887,133 @@
   .article p.projectNote {
     font-size: 0.75rem;
   }
+}
+
+/* Phones use a separate document flow; the paper layout below stays intact. */
+.phoneSite {
+  --ink: #282826;
+  --muted: #858582;
+  min-height: 100svh;
+  background: #fff;
+  color: #282826;
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+.phoneNavigation {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #ededeb;
+}
+.phoneNavigation nav,
+.phoneSocials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.phoneNavigation nav {
+  font-size: 0.8125rem;
+  column-gap: 0.625rem;
+}
+.phoneNavigation a,
+.phoneSocials button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  min-height: 2.5rem;
+}
+.phoneNavigation a:focus-visible,
+.phoneSocials button:focus-visible {
+  outline: 2px solid #2c65d0;
+  outline-offset: 2px;
+}
+.phoneSocials {
+  color: #777773;
+  margin-top: 0.25rem;
+}
+.phoneSocials button {
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.phoneContent {
+  padding: 2.5rem 1.5rem 4rem;
+}
+.phoneSite .phoneSection {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.65;
+  scroll-margin-top: 1.5rem;
+}
+.phoneSite .phoneSection + .phoneSection {
+  margin-top: 3.5rem;
+  padding-top: 3.5rem;
+  border-top: 1px solid #ededeb;
+}
+.phoneSite .phoneStamp {
+  position: relative;
+  inset: auto;
+  width: 8rem;
+  height: 8rem;
+  margin: 0 0 2rem;
+  pointer-events: none;
+}
+.phoneSite .phoneSection header {
+  margin: 0 0 1.5rem;
+}
+.phoneSite .phoneSection h1 {
+  font-size: 1.875rem;
+  line-height: 1.2;
+}
+.phoneSite .phoneSection p {
+  line-height: 1.65;
+}
+.phoneSite .experience {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.phoneSite .experience > div {
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem 0;
+}
+.phoneSite .experience > div:first-child {
+  padding-top: 0;
+}
+.phoneSite .experienceMeta,
+.phoneSite .educationMeta {
+  margin-top: 0.5rem;
+  text-align: left;
+  font-size: 0.875rem;
+}
+.phoneSite .folderGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.75rem;
+  padding: 1.25rem 0.75rem 1.5rem;
+  overflow-x: auto;
+}
+.phoneSite .folderGrid :global(.gallery-folder-title) {
+  font-size: 0.9375rem !important;
+  position: static;
+  margin: 0.5rem 0 0 !important;
+  line-height: 1.25;
+}
+.phoneSite .folderGrid :global(.gallery-folder-count) {
+  margin: 0.125rem 0 0 !important;
+  line-height: 1.25;
+}
+.phoneSite .photoGrid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 1.125rem;
+  width: 100%;
+  margin: 0;
+  padding: 1rem 0.75rem 1.5rem;
+  overflow-x: auto;
 }

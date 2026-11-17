@@ -19,7 +19,10 @@ export function stepPaperSpring(position:number, velocity:number, target:number,
   };
 }
 
-export function isPaperSettled(position:number, velocity:number, target:number, {flatLanding=false}={}) {
+export function isPaperSettled(position:number, velocity:number, target:number, {flatLanding=false, rolledLanding=false}={}) {
+  // The parked roll can finish within two pixels instead of waiting through
+  // the spring's nearly motionless tail before revealing the next page.
+  if(rolledLanding&&Math.abs(position-target)<=2)return true;
   // The final fraction of a CSS pixel has no visible roll material left.
   // End a flat mobile landing here instead of waiting through the spring's
   // asymptotic tail and keeping a tiny shaded strip parked at the top.

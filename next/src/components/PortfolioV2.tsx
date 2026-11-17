@@ -51,28 +51,43 @@ function StampRim({ lobes = 6 }: { lobes?: number }) {
   );
 }
 
-const experience: [string, string, string, (string[] | null)?, string?][] = [
-  [
-    "The George Washington University",
-    "Graduate Teaching Assistant II",
-    "Present",
-    ["Cloud Computing", "Database Management Systems 2"],
-  ],
-  [
-    "Amazon",
-    "Design Technologist I Intern (L4)",
-    "June–Aug 2026",
-    null,
-    "Alexa Smart Home Team",
-  ],
-  ["Logicwind", "AI/ML Intern", "May–Dec 2024"],
+interface ExperienceEntry {
+  company: string;
+  role: string;
+  date: string;
+  location: string;
+  subjects?: string[];
+  team?: string;
+}
+
+const experience: ExperienceEntry[] = [
+  {
+    company: "The George Washington University",
+    role: "Graduate Teaching Assistant II",
+    date: "Aug 2026 – Present",
+    location: "Washington D.C.",
+    subjects: ["Cloud Computing Class", "Database Management Systems 2 Class"],
+  },
+  {
+    company: "Amazon",
+    role: "Design Technologist I Intern (L4)",
+    date: "June – Aug 2026",
+    location: "Seattle, Washington",
+    team: "Alexa Smart Home Team",
+  },
+  {
+    company: "Logicwind",
+    role: "AI/ML Intern",
+    date: "May – Dec 2024",
+    location: "Surat, Gujarat, India",
+  },
 ];
 
 const education: [string, string, string, string, string | null, string][] = [
   [
     "The George Washington University",
     "Master's in Computer Science",
-    "Aug 2025–May 2027",
+    "Aug 2025 – May 2027",
     "GPA: 3.83 / 4.00",
     "35% tuition scholarship",
     "Washington D.C.",
@@ -80,7 +95,7 @@ const education: [string, string, string, string, string | null, string][] = [
   [
     "Parul University",
     "Bachelor of Technology in Computer Science and Engineering",
-    "Sep 2020–May 2024",
+    "Sep 2020 – May 2024",
     "CGPA: 8.57 / 10",
     null,
     "Gujarat, India",
@@ -192,6 +207,189 @@ function StampArt({ kind }: { kind: StampKind }) {
   return <span className={styles.question}>?</span>;
 }
 
+function PortfolioContent({
+  page,
+  initialGallerySlug,
+  scrollTargetId,
+}: {
+  page: PortfolioSection;
+  initialGallerySlug?: string | null;
+  scrollTargetId?: string;
+}) {
+  return (
+    <>
+      {page === "intro" && (
+        <>
+          <header>
+            <h1>Jaimin Mukesh Jariwala</h1>
+          </header>
+          <p className={styles.introText}>
+            <span>
+              Hello, I am a software engineer who enjoys
+              building cool products that people love using and systems
+              that don&apos;t break under heavy traffic. I like building
+              the infrastructure and owning the entire product development
+              lifecycle.
+            </span>
+          </p>
+        </>
+      )}
+      {page === "gallery" && (
+        <PortfolioV2Gallery
+          initialSlug={initialGallerySlug}
+          scrollTargetId={scrollTargetId}
+        />
+      )}
+      {page === "projects" && <PortfolioV2Projects />}
+      {page === "experience" && (
+        <>
+          <header>
+            <h1>Experience</h1>
+          </header>
+          <div className={styles.experience}>
+            {experience.map(
+              ({ company, role, date, location, subjects, team }) => (
+                <div key={company}>
+                  <div>
+                    <strong>{company}</strong>
+                    <span>{role}</span>
+                    {team && (
+                      <span className={styles.experienceTeam}>
+                        · {team}
+                      </span>
+                    )}
+                    {subjects?.map((subject) => (
+                      <span key={subject}>· {subject}</span>
+                    ))}
+                  </div>
+                  <div className={styles.experienceMeta}>
+                    <span>{location}</span>
+                    <time>{date}</time>
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+        </>
+      )}
+      {page === "education" && (
+        <>
+          <header>
+            <h1>Education</h1>
+          </header>
+          <div className={styles.experience}>
+            {education.map(
+              ([university, degree, date, grade, award, location]) => (
+                <div key={university}>
+                  <div>
+                    <strong>{university}</strong>
+                    <EducationDegree degree={degree} />
+                    <span>{grade}</span>
+                    {award && <span>{award}</span>}
+                  </div>
+                  <div className={styles.educationMeta}>
+                    <span>{location}</span>
+                    <time>{date}</time>
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+const phoneSections: { page: PortfolioSection; label: string; art: StampKind }[] = [
+  { page: "intro", label: "Introduction", art: "rocket" },
+  { page: "experience", label: "Experience", art: "experience" },
+  { page: "education", label: "Education", art: "education" },
+  { page: "projects", label: "Projects", art: "projects" },
+  { page: "gallery", label: "Travel", art: "car" },
+];
+
+function PhonePortfolio({
+  clock,
+  initialPage,
+  initialGallerySlug,
+  copyEmail,
+  emailCopied,
+  emailCopyError,
+}: {
+  clock: string;
+  initialPage: PortfolioSection;
+  initialGallerySlug: string | null;
+  copyEmail: () => Promise<void>;
+  emailCopied: boolean;
+  emailCopyError: string;
+}) {
+  useEffect(() => {
+    // Direct links still land at the requested section of the phone document.
+    const target = window.location.hash.slice(1) || `phone-${initialPage}`;
+    if (target === "phone-intro" && !window.location.hash) {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    } else {
+      document.getElementById(target)?.scrollIntoView({ behavior: "instant" });
+    }
+  }, [initialPage]);
+
+  return (
+    <div className={styles.phoneSite}>
+      <header className={styles.phoneNavigation}>
+        <nav aria-label="Portfolio sections">
+          {phoneSections.map(({ page, label }) => (
+            <a key={page} href={`#phone-${page}`}>
+              {label}
+            </a>
+          ))}
+        </nav>
+        <div className={styles.phoneSocials}>
+          <a href="https://github.com/jaiminjariwala">GitHub <ExternalArrow /></a>
+          <a href="https://www.linkedin.com/in/jaiminjariwala/">LinkedIn <ExternalArrow /></a>
+          <button type="button" onClick={copyEmail} aria-live="polite">
+            {emailCopied ? "Copied!" : "Copy email"}
+          </button>
+        </div>
+        {emailCopyError && <p role="status">{emailCopyError}</p>}
+      </header>
+      <main className={styles.phoneContent}>
+        {phoneSections.map(({ page, label, art }) => (
+          <section
+            key={page}
+            id={`phone-${page}`}
+            aria-label={label}
+            className={`${styles.article} ${styles.phoneSection} ${page === "intro" ? styles.introPage : page === "experience" || page === "education" ? styles.experiencePage : ""}`}
+          >
+            <div
+              className={`${styles.homeStamp} ${styles.phoneStamp} ${page === "intro" ? styles.rocketStamp : page === "projects" ? styles.projectsStamp : ""}`}
+              aria-hidden="true"
+            >
+              <StampRim />
+              {page === "intro" && (
+                <span className={styles.stampTime}>
+                  {clock}<span>DC</span>
+                </span>
+              )}
+              <StampArt kind={art} />
+              {page === "intro" && (
+                <span className={styles.signature}>
+                  Jaimin<span>:)</span>
+                </span>
+              )}
+            </div>
+            <PortfolioContent
+              page={page}
+              initialGallerySlug={initialGallerySlug}
+              scrollTargetId={`phone-${page}`}
+            />
+          </section>
+        ))}
+      </main>
+    </div>
+  );
+}
+
 export default function PortfolioV2({
   initialPage = "intro",
   initialGallerySlug = null,
@@ -199,7 +397,24 @@ export default function PortfolioV2({
   initialPage?: PortfolioSection;
   initialGallerySlug?: string | null;
 }) {
+  const [phone, setPhone] = useState(false);
   const [collection, setCollection] = useState(false);
+  useEffect(() => {
+    // iPad mini can be narrower than this breakpoint. iPadOS also identifies
+    // itself as a Mac in desktop mode, so preserve its paper layout explicitly.
+    const isIPad = /iPad/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    const media = window.matchMedia(
+      "(max-width: 760px), (pointer: coarse) and (max-height: 500px)",
+    );
+    const update = () => {
+      setPhone(media.matches && !isIPad);
+      setCollection(false);
+    };
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   const [peel, setPeel] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [paperMask, setPaperMask] = useState<string>();
@@ -343,18 +558,31 @@ export default function PortfolioV2({
       observer.disconnect();
       clearInterval(timer);
     };
-  }, []);
+  }, [phone]);
   useEffect(() => {
-    if (!collection) return;
+    if (!collection || phone) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
-  }, [collection]);
+  }, [collection, phone]);
   useEffect(() => {
     if (!collection) heading.current?.focus({ preventScroll: true });
   }, [page, collection]);
+
+  if (phone) {
+    return (
+      <PhonePortfolio
+        clock={clock}
+        initialPage={initialPage}
+        initialGallerySlug={initialGallerySlug}
+        copyEmail={copyEmail}
+        emailCopied={emailCopied}
+        emailCopyError={emailCopyError}
+      />
+    );
+  }
 
   return (
     <div className={styles.site}>
@@ -483,77 +711,7 @@ export default function PortfolioV2({
               }
               key={page}
             >
-              {page === "intro" && (
-                <>
-                  <header>
-                    <h1>Jaimin Mukesh Jariwala</h1>
-                  </header>
-                  <p className={styles.introText}>
-                    <span>
-                      I&apos;m Jaimin Jariwala, a software engineer who loves
-                      building cool products that people love using and systems
-                      that don&apos;t break under heavy traffic. I like building
-                      the infrastructure and owning the entire product development
-                      lifecycle.
-                    </span>
-                  </p>
-                </>
-              )}
-              {page === "gallery" && (
-                <PortfolioV2Gallery initialSlug={initialGallerySlug} />
-              )}
-              {page === "projects" && <PortfolioV2Projects />}
-              {page === "experience" && (
-                <>
-                  <header>
-                    <h1>Experience</h1>
-                  </header>
-                  <div className={styles.experience}>
-                    {experience.map(([company, role, date, subjects, team]) => (
-                      <div key={company}>
-                        <div>
-                          <strong>{company}</strong>
-                          <span>{role}</span>
-                          {team && (
-                            <span className={styles.experienceTeam}>
-                              · {team}
-                            </span>
-                          )}
-                          {subjects?.map((subject) => (
-                            <span key={subject}>· {subject}</span>
-                          ))}
-                        </div>
-                        <time>{date}</time>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-              {page === "education" && (
-                <>
-                  <header>
-                    <h1>Education</h1>
-                  </header>
-                  <div className={styles.experience}>
-                    {education.map(
-                      ([university, degree, date, grade, award, location]) => (
-                        <div key={university}>
-                          <div>
-                            <strong>{university}</strong>
-                            <EducationDegree degree={degree} />
-                            <span>{grade}</span>
-                            {award && <span>{award}</span>}
-                          </div>
-                          <div className={styles.educationMeta}>
-                            <span>{location}</span>
-                            <time>{date}</time>
-                          </div>
-                        </div>
-                      ),
-                    )}
-                  </div>
-                </>
-              )}
+              <PortfolioContent page={page} initialGallerySlug={initialGallerySlug} />
               <footer className={styles.portfolioFooter}>
                 <h2 className={styles.footerHeading}>Explore</h2>
                 <nav

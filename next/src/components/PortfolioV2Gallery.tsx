@@ -75,14 +75,20 @@ function PhotoStrip({ section }: { section: PhotoSection }) {
 
 export default function PortfolioV2Gallery({
   initialSlug = null,
+  scrollTargetId,
 }: {
   initialSlug?: string | null;
+  scrollTargetId?: string;
 }) {
   const [slug, setSlug] = useState(initialSlug);
   const drag = useHorizontalDrag();
   const section = getSectionBySlug(slug);
   const openFolder = (value: string | null) => {
     setSlug(value);
+    if (scrollTargetId) {
+      document.getElementById(scrollTargetId)?.scrollIntoView({ behavior: "instant" });
+      return;
+    }
     document
       .querySelector<HTMLElement>("[data-portfolio-scroll]")
       ?.scrollTo({ top: 0, behavior: "instant" });
@@ -134,7 +140,7 @@ export default function PortfolioV2Gallery({
       <header>
         <h1>Travel</h1>
       </header>
-      <p>A few places, moments, and photographs along the way.</p>
+      <p>Photos from places I&apos;ve visited.</p>
       <div
         className={styles.folderGrid}
         role="region"
