@@ -934,11 +934,11 @@
   flex-wrap: wrap;
   gap: 1.5rem;
   margin-top: 2.5rem;
-  font-size: 1rem;
+  font-size: 1.125rem;
   color: #858582;
 }
 .portfolioFooter {
-  margin-top: 3rem;
+  margin-top: 2.25rem;
 }
 .article .footerHeading {
   margin: 0 0 1.5rem;
@@ -956,7 +956,6 @@
 }
 .portfolioFooter .footerSocials {
   margin-top: 1.125rem;
-  font-size: 1rem;
   font-weight: 400;
   color: #777773;
 }
@@ -1028,7 +1027,7 @@
   display: flex;
   flex-wrap: nowrap;
   gap: 1.75rem;
-  padding: 6.25rem 0.75rem 1.5625rem;
+  padding: 5rem 0.75rem 1.5625rem;
   overflow-x: auto;
   align-items: flex-start;
   min-width: 0;
@@ -1257,7 +1256,7 @@
   }
   .footerSocials,
   .pageNavigation {
-    font-size: 0.9375rem;
+    font-size: 1rem;
     gap: 1.1875rem;
   }
 }
@@ -1272,7 +1271,7 @@
 @media (max-width: 760px) {
   .folderGrid {
     gap: 1.5rem;
-    padding-top: 5rem;
+    padding-top: 4.25rem;
   }
   .folderGrid :global(.gallery-folder-visual) {
     zoom: 0.7;
@@ -1392,7 +1391,7 @@
 }
 @media (max-width: 760px) {
   .educationMeta,
-.experienceMeta {
+  .experienceMeta {
     text-align: left;
   }
 }
