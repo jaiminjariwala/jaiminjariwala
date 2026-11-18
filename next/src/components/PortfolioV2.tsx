@@ -229,11 +229,15 @@ function PortfolioContent({
           </header>
           <p className={styles.introText}>
             <span>
-              Hello, I am a software engineer who enjoys
-              building cool products that people love using and systems
-              that don&apos;t break under heavy traffic. I like building
-              the infrastructure and owning the entire product development
-              lifecycle.
+              Hello, I am a frontend software engineer. I like building
+              interfaces that people enjoy using. I’m also interested in AR/VR
+              development.
+            </span>
+          </p>
+          <p className={styles.introText}>
+            <span>
+              I also write Go and like learning how systems work behind the
+              interface. Lately, I’ve been learning Swift to build for Vision Pro.
             </span>
           </p>
         </>
