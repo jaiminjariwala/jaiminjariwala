@@ -27,9 +27,9 @@ export function GlassFolder({
     const render = (value: number) => {
       progress = Math.max(0, Math.min(1, value));
       const remaining = 1 - progress;
-      card.style.opacity = String(progress);
-      card.style.transform = `scale(${1 - remaining * 0.25})`;
-      card.style.filter = `blur(${remaining ** 3 * 60}px)`;
+      card.style.opacity = String(0.4 + progress * 0.6);
+      card.style.transform = `scale(${1 - remaining * 0.04})`;
+      card.style.filter = `blur(${remaining ** 3 * 4}px)`;
     };
     render(0);
     const observer = new IntersectionObserver(
@@ -38,13 +38,9 @@ export function GlassFolder({
           if (!entry.isIntersecting) return;
           observer.unobserve(card);
           animation?.stop();
-          const siblings = Array.from(card.parentElement!.children);
           animation = animate(progress, 1, {
-            type: "spring",
-            stiffness: 85,
-            damping: 18,
-            mass: 1,
-            delay: entry.isIntersecting ? siblings.indexOf(card) * 0.12 : 0,
+            duration: 0.2,
+            ease: [0.16, 1, 0.3, 1],
             onUpdate: render,
             onComplete: () => {
               card.style.removeProperty("opacity");
@@ -54,7 +50,7 @@ export function GlassFolder({
           });
         });
       },
-      { threshold: 0.15, rootMargin: "0px 0px -8% 0px" },
+      { threshold: 0.01, rootMargin: "0px" },
     );
     observer.observe(card);
     return () => {

@@ -4,8 +4,7 @@ import {useEffect,useRef} from "react";
 import {animate} from "framer-motion";
 import type {AnimationPlaybackControls} from 'framer-motion';
 
-// Match the folders' soft scale-and-blur spring without replacing the
-// photograph's resting rotation or its paper-frame shadow.
+// Reveal prints promptly while preserving their resting rotation and shadow.
 export default function usePhotoEntrance(){
   const ref=useRef<HTMLAnchorElement>(null);
   useEffect(()=>{
@@ -16,9 +15,9 @@ export default function usePhotoEntrance(){
     const render=(value:number)=>{
       progress=Math.max(0,Math.min(1,value));
       const remaining=1-progress;
-      card.style.opacity=String(progress);
-      card.style.scale=String(1-remaining*.25);
-      if(!touch)card.style.setProperty('--entrance-blur',`${remaining**3*60}px`);
+      card.style.opacity=String(.4+progress*.6);
+      card.style.scale=String(1-remaining*.06);
+      if(!touch)card.style.setProperty('--entrance-blur',`${remaining**3*8}px`);
     };
     render(0);
     const observer=new IntersectionObserver(entries=>{
@@ -28,18 +27,14 @@ export default function usePhotoEntrance(){
         // blur/scale compositing every time it crosses the scrollport edge.
         observer.unobserve(card);
         animation?.stop();
-        const visibleSiblings=Array.from(card.parentElement!.children).filter(el=>{
-          const box=el.getBoundingClientRect();
-          return box.right>0&&box.left<window.innerWidth;
-        });
         animation=animate(progress,1,{
-          type:'spring',stiffness:85,damping:18,mass:1,
-          delay:entry.isIntersecting?Math.max(0,visibleSiblings.indexOf(card))*.12:0,
+          duration:.2,
+          ease:[.16,1,.3,1],
           onUpdate:render,
           onComplete:()=>{card.style.removeProperty('opacity');card.style.removeProperty('scale');card.style.removeProperty('--entrance-blur');},
         });
       }
-    },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+    },{threshold:.01,rootMargin:'0px'});
     observer.observe(card);
     return()=>{observer.disconnect();animation?.stop();card.style.removeProperty('opacity');card.style.removeProperty('scale');card.style.removeProperty('--entrance-blur');};
   },[]);
