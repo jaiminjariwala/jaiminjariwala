@@ -2009,9 +2009,16 @@
 .phoneSite .folderGrid {
   display: flex;
   flex-wrap: nowrap;
-  gap: 1.75rem;
-  padding: 1.25rem 0.75rem 1.5rem;
+  gap: 1.5rem;
+  padding: 3.75rem 0.75rem 1.5rem;
   overflow-x: auto;
+}
+.phoneSite .folderGrid :global(.gallery-folder-card) {
+  width: 7rem !important;
+  flex-basis: 7rem;
+}
+.phoneSite .folderGrid :global(.gallery-folder-visual) {
+  zoom: 0.6;
 }
 .phoneSite .folderGrid :global(.gallery-folder-title) {
   font-size: 0.9375rem !important;
