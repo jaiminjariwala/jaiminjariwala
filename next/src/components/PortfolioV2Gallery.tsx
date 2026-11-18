@@ -140,7 +140,10 @@ export default function PortfolioV2Gallery({
       <header>
         <h1>Travel</h1>
       </header>
-      <p>Photos from places I&apos;ve visited.</p>
+      <p>
+        Photos from places I&apos;ve visited. I just love traveling{" "}
+        <span className={styles.travelCompass}>🧭</span>
+      </p>
       <div
         className={styles.folderGrid}
         role="region"

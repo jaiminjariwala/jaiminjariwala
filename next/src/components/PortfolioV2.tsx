@@ -313,7 +313,7 @@ const phoneSections: { page: PortfolioSection; label: string; art: StampKind }[]
   { page: "gallery", label: "Travel", art: "car" },
 ];
 
-const phoneEmail = "jaiminjariwala5@icloud.com";
+const contactEmail = "jaiminjariwala5@icloud.com";
 
 function PhonePortfolio({
   clock,
@@ -394,8 +394,8 @@ function PhonePortfolio({
                   </div>
                   <div className={styles.phoneEmail}>
                     <a href="tel:+12023917502">+1 (202) 391-7502</a>
-                    <a href={`mailto:${phoneEmail}`} className={styles.inlineLink}>
-                      {phoneEmail}
+                    <a href={`mailto:${contactEmail}`} className={styles.inlineLink}>
+                      {contactEmail}
                     </a>
                   </div>
                 </>
@@ -456,9 +456,7 @@ export default function PortfolioV2({
   const [paperMask, setPaperMask] = useState<string>();
   const [collectionMask, setCollectionMask] = useState<string>();
   const [clock, setClock] = useState("");
-  const [emailCopied, setEmailCopied] = useState(false);
-  const [emailCopyError, setEmailCopyError] = useState("");
-  const copyReset = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const [resumeOpen, setResumeOpen] = useState(false);
   const paper = useRef<HTMLDivElement>(null);
   const contentViewport = useRef<HTMLDivElement>(null);
   const heading = useRef<HTMLElement>(null);
@@ -477,21 +475,6 @@ export default function PortfolioV2({
           : page === "projects"
             ? "projects"
             : "rocket";
-
-  const copyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText("jaiminjariwala5@gmail.com");
-      setEmailCopied(true);
-      setEmailCopyError("");
-      clearTimeout(copyReset.current);
-      copyReset.current = setTimeout(() => setEmailCopied(false), 2200);
-    } catch {
-      setEmailCopyError(
-        "Couldn't copy. Email me at jaiminjariwala5@gmail.com.",
-      );
-    }
-  };
-  useEffect(() => () => clearTimeout(copyReset.current), []);
 
   const navigate = (next: PortfolioSection) => {
     // The latest selection wins, including taps while a previous unroll is
@@ -798,20 +781,24 @@ export default function PortfolioV2({
                     <span className={styles.inlineLink}>LinkedIn</span>
                     <ExternalArrow />
                   </a>
-                  <button
-                    type="button"
-                    className={styles.copyEmail}
-                    onClick={copyEmail}
-                    aria-live="polite"
+                  <a
+                    href="/JAIMIN_RESUME.pdf"
+                    aria-haspopup="dialog"
+                    onClick={(event) => {
+                      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                      event.preventDefault();
+                      setResumeOpen(true);
+                    }}
                   >
-                    {emailCopied ? "Copied!" : "Copy email"}
-                  </button>
+                    <span className={styles.inlineLink}>Resume</span>
+                  </a>
                 </div>
-                {emailCopyError && (
-                  <p className={styles.copyError} role="status">
-                    {emailCopyError}
-                  </p>
-                )}
+                <div className={styles.footerContact}>
+                  <a href="tel:+12023917502">+1 (202) 391-7502</a>
+                  <a href={`mailto:${contactEmail}`} className={styles.inlineLink}>
+                    {contactEmail}
+                  </a>
+                </div>
               </footer>
             </article>
           </div>
@@ -837,6 +824,7 @@ export default function PortfolioV2({
           setPeel(progress > 0 ? 1 : 0);
         }}
       />
+      <ResumeDialog open={resumeOpen} onClose={() => setResumeOpen(false)} />
     </div>
   );
 }

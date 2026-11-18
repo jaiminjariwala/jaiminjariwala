@@ -1112,6 +1112,12 @@
   color: #858582;
   margin-top: 0.375rem;
 }
+.travelCompass {
+  display: inline-block;
+  font-size: 1.35em;
+  line-height: 1;
+  vertical-align: -0.08em;
+}
 .photoGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1319,19 +1325,21 @@
   padding-bottom: 0;
   background-position: left calc(100% - 0.3125rem);
 }
-.footerSocials .copyEmail {
-  border: 0;
-  background: none;
-  padding: 0;
-  min-width: 5.75rem;
-  text-align: left;
-  font: inherit;
-  font-weight: 400;
-  color: #555;
-  transition: color 0.15s;
+.footerContact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  margin-top: 0;
+  font-size: 1.125rem;
+  line-height: 1.5;
+  color: #777773;
 }
-.footerSocials .copyEmail:hover {
-  color: #aaa;
+.footerContact a {
+  white-space: nowrap;
+}
+.footerContact a[href^="tel:"]:hover {
+  text-decoration: none;
 }
 .footerSocials a {
   display: inline-flex;
@@ -1363,11 +1371,6 @@
 .introText span::selection {
   background: rgb(34, 84, 245);
   color: #fff;
-}
-.article .copyError {
-  font-size: 0.875rem;
-  color: #777;
-  margin-top: 0.75rem;
 }
 .experience .experienceTeam {
   display: block;
@@ -2003,9 +2006,26 @@
 .phoneSite .folderGrid {
   display: flex;
   flex-wrap: nowrap;
-  gap: 1.75rem;
-  padding: 1.25rem 0.75rem 1.5rem;
+  gap: 1.5rem;
+  padding: 3.75rem 0.75rem 1.5rem;
   overflow-x: auto;
+}
+.phoneSite .folderGrid,
+.phoneSite .photoGrid,
+.phoneSite .projectThumbnails {
+  scrollbar-width: none;
+}
+.phoneSite .folderGrid::-webkit-scrollbar,
+.phoneSite .photoGrid::-webkit-scrollbar,
+.phoneSite .projectThumbnails::-webkit-scrollbar {
+  display: none;
+}
+.phoneSite .folderGrid :global(.gallery-folder-card) {
+  width: 7rem !important;
+  flex-basis: 7rem;
+}
+.phoneSite .folderGrid :global(.gallery-folder-visual) {
+  zoom: 0.6;
 }
 .phoneSite .folderGrid :global(.gallery-folder-title) {
   font-size: 0.9375rem !important;
