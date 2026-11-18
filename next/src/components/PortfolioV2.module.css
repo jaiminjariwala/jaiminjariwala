@@ -2013,6 +2013,16 @@
   padding: 3.75rem 0.75rem 1.5rem;
   overflow-x: auto;
 }
+.phoneSite .folderGrid,
+.phoneSite .photoGrid,
+.phoneSite .projectThumbnails {
+  scrollbar-width: none;
+}
+.phoneSite .folderGrid::-webkit-scrollbar,
+.phoneSite .photoGrid::-webkit-scrollbar,
+.phoneSite .projectThumbnails::-webkit-scrollbar {
+  display: none;
+}
 .phoneSite .folderGrid :global(.gallery-folder-card) {
   width: 7rem !important;
   flex-basis: 7rem;
