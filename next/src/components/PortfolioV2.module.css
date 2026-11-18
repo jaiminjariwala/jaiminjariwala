@@ -1972,7 +1972,7 @@
 }
 .phoneSite .experience {
   font-size: 1rem;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 .phoneSite .experience > div {
   flex-direction: column;
@@ -1987,6 +1987,18 @@
   margin-top: 0.5rem;
   text-align: left;
   font-size: 0.875rem;
+}
+.phoneSite .experienceMeta,
+.phoneSite .educationMeta {
+  margin-top: 0;
+}
+.phoneSite .experienceMeta,
+.phoneSite .experienceMeta > span,
+.phoneSite .experienceMeta > time,
+.phoneSite .educationMeta,
+.phoneSite .educationMeta > span,
+.phoneSite .educationMeta > time {
+  font-size: inherit;
 }
 .phoneSite .folderGrid {
   display: flex;
