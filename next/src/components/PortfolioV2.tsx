@@ -231,13 +231,16 @@ function PortfolioContent({
             <span>
               Hello, I am a frontend software engineer. I like building
               interfaces that people enjoy using. I’m also interested in AR/VR
-              development.
+              development. At present, I’m building a Mac app in Swift that
+              lets designers and developers preview interactive prototypes on
+              a 3D model of Apple’s HomeView. Xcode doesn’t offer a dedicated
+              HomeView simulator.
             </span>
           </p>
           <p className={styles.introText}>
             <span>
-              I also write Go and like learning how systems work behind the
-              interface. Lately, I’ve been learning Swift to build for Vision Pro.
+              I also like learning how systems work behind the interface. I
+              study system design and use Go to build backend projects.
             </span>
           </p>
         </>
