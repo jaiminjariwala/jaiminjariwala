@@ -32,7 +32,7 @@ async function main(){
  const height=groups.length*rowHeight;
  for(const theme of ['light','dark']){
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width+2}" height="${height+2}" viewBox="-1 -1 ${width+2} ${height+2}" role="img" aria-label="Technology stack">${style(theme)}${allTiles.join('')}</svg>`;
-  await fs.writeFile(path.join(out,theme==='dark'?'joined-grid-dark.svg':'joined-grid.svg'),svg);
+  await fs.writeFile(path.join(out,theme==='dark'?'skills-grid-dark.svg':'skills-grid.svg'),svg);
  }
 }
 module.exports={style};
