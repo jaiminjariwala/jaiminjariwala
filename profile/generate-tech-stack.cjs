@@ -2,14 +2,14 @@ const fs=require('node:fs/promises');
 const path=require('node:path');
 const revision='7330accdbc47e2dc0c19789a48533c4a3c50fe58';
 const groups=[
- ['languages','Languages',[['TypeScript','typescript/typescript-original'],['Python','python/python-original'],['Go','go/go-original'],['JavaScript','javascript/javascript-original']]],
- ['frontend','Frontend',[['React.js','react/react-original'],['Next.js','nextjs/nextjs-original'],['Redux','redux/redux-original'],['React Native','react/react-original'],['Electron','electron/electron-original']]],
+ ['languages','Languages',[['TypeScript','typescript/typescript-original'],['Python','python/python-original'],['Go','go/go-original'],['Swift','swift/swift-original'],['JavaScript','javascript/javascript-original']]],
+ ['frontend','Frontend',[['React.js','react/react-original'],['Next.js','nextjs/nextjs-original'],['React Native','react/react-original']]],
  ['styling-build','Styling & Build',[['HTML5','html5/html5-original'],['CSS3','css3/css3-original'],['Tailwind CSS','tailwindcss/tailwindcss-original']]],
  ['backend','Backend',[['Node.js','nodejs/nodejs-original'],['Express','express/express-original'],['REST APIs','@api'],['GraphQL','graphql/graphql-plain'],['Kafka','apachekafka/apachekafka-original']]],
  ['databases','Databases',[['MongoDB','mongodb/mongodb-original'],['Redis','redis/redis-original'],['Supabase','supabase/supabase-original'],['PostgreSQL','postgresql/postgresql-original']]],
- ['cloud-devops','Cloud & DevOps',[['AWS','amazonwebservices/amazonwebservices-original-wordmark'],['Docker','docker/docker-original'],['Kubernetes','kubernetes/kubernetes-plain'],['CI/CD','@cycle'],['Linux','linux/linux-original'],['Git','git/git-original'],['Vercel','vercel/vercel-original'],['Netlify','netlify/netlify-original'],['Render','@cloud']]],
+ ['cloud-devops','Cloud & DevOps',[['AWS','amazonwebservices/amazonwebservices-original-wordmark'],['Docker','docker/docker-original'],['Kubernetes','kubernetes/kubernetes-plain'],['CI/CD','@cycle'],['Linux','linux/linux-original']]],
 ];
-const paths={database:'M4 6c0-5 16-5 16 0s-16 5-16 0v12c0 5 16 5 16 0V6M4 12c0 5 16 5 16 0',api:'m8 6-6 6 6 6m8-12 6 6-6 6m-3-14-2 16',webhook:'M7 7a4 4 0 1 1 7 2l-3 6m4 4a4 4 0 1 0 2-7H9M5 14a4 4 0 1 0 5 6L6 9',key:'M10 14a6 6 0 1 1 4-4l-9 9H2v-3l8-8',cycle:'M20 8a9 9 0 0 0-16-2L2 9m0-6v6h6m-4 7a9 9 0 0 0 16 2l2-3m0 6v-6h-6',cloud:'M7 19h12a4 4 0 0 0 0-8 7 7 0 0 0-13-2 5 5 0 0 0 1 10Z',brain:'M12 3v18M12 5C3-2 0 10 6 11c-8 5 0 14 6 7m0-13c9-7 12 5 6 6 8 5 0 14-6 7M6 7l6 3 6-3M6 16l6-3 6 3',audio:'M3 10v4m4-8v12m5-16v20m5-16v12m4-8v4',tree:'M12 3v9M4 21v-9h16v9M9 3h6v5H9ZM1 17h6v5H1Zm8 0h6v5H9Zm8 0h6v5h-6Z',boxes:'M2 3h8v8H2Zm12 0h8v8h-8ZM2 15h8v8H2Zm12 0h8v8h-8Z',system:'M8 2h8v6H8ZM2 16h8v6H2Zm12 0h8v6h-8ZM12 8v4H6v4m6-4h6v4'};
+const paths={database:'M4 6c0-5 16-5 16 0s-16 5-16 0v12c0 5 16 5 16 0V6M4 12c0 5 16 5 16 0',api:'m8 6-6 6 6 6m8-12 6 6-6 6m-3-14-2 16',webhook:'M7 7a4 4 0 1 1 7 2l-3 6m4 4a4 4 0 1 0 2-7H9M5 14a4 4 0 1 0 5 6L6 9',key:'M10 14a6 6 0 1 1 4-4l-9 9H2v-3l8-8',cycle:'M20 8a9 9 0 0 0-16-2L2 9m0-6v6h6m-4 7a9 9 0 0 0 16 2l2-3m0 6v-6h-6',brain:'M12 3v18M12 5C3-2 0 10 6 11c-8 5 0 14 6 7m0-13c9-7 12 5 6 6 8 5 0 14-6 7M6 7l6 3 6-3M6 16l6-3 6 3',audio:'M3 10v4m4-8v12m5-16v20m5-16v12m4-8v4',tree:'M12 3v9M4 21v-9h16v9M9 3h6v5H9ZM1 17h6v5H1Zm8 0h6v5H9Zm8 0h6v5h-6Z',boxes:'M2 3h8v8H2Zm12 0h8v8h-8ZM2 15h8v8H2Zm12 0h8v8h-8Z',system:'M8 2h8v6H8ZM2 16h8v6H2Zm12 0h8v6h-8ZM12 8v4H6v4m6-4h6v4'};
 const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const style=(theme='light')=>`<style>text{font-family:Arial,sans-serif;fill:${theme==='dark'?'#e6edf3':'#24292f'}}.tile{fill:none;stroke:${theme==='dark'?'#30363d':'#d0d7de'}}${theme==='dark'?'.mono{filter:invert(1)}':''}</style>`;
 async function icon(id){
@@ -24,7 +24,7 @@ async function main(){
   const tiles=await Promise.all(items.map(async([name,id],i)=>{
    const x=(width-items.length*cell)/2+i*cell,y=row*rowHeight;
    const data=Buffer.from(await icon(id)).toString('base64');
-   const darkStyle=['Next.js','Express','Kafka','Vercel'].includes(name) ? ' class="mono"' : '';
+   const darkStyle=['Next.js','Express','Kafka'].includes(name) ? ' class="mono"' : '';
    return `<g><rect class="tile" x="${x}" y="${y}" width="${cell}" height="${rowHeight}"/><image${darkStyle} href="data:image/svg+xml;base64,${data}" x="${x+cell/2-24}" y="${y+12}" width="48" height="48"/><text x="${x+cell/2}" y="${y+87}" text-anchor="middle" font-size="14">${esc(name)}</text></g>`;
   }));
   allTiles.push(...tiles); console.log(slug,items.length);

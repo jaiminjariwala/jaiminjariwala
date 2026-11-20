@@ -38,8 +38,8 @@
 <br />
 
 <div align="center">
-  <a href="profile/assets/tech-stack/joined-grid.svg?v=23381ff69d98#gh-light-mode-only"><img src="profile/assets/tech-stack/joined-grid.svg?v=23381ff69d98#gh-light-mode-only" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" /></a>
-  <a href="profile/assets/tech-stack/joined-grid-dark.svg?v=8985c9bcb689#gh-dark-mode-only"><img src="profile/assets/tech-stack/joined-grid-dark.svg?v=8985c9bcb689#gh-dark-mode-only" width="100%" alt="TypeScript, Python, Go, JavaScript; React.js, Next.js, Redux, React Native, Electron; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux, Git, Vercel, Netlify, Render" /></a>
+  <a href="profile/assets/tech-stack/joined-grid.svg?v=c5b67fe4416e#gh-light-mode-only"><img src="profile/assets/tech-stack/joined-grid.svg?v=c5b67fe4416e#gh-light-mode-only" width="100%" alt="TypeScript, Python, Go, Swift, JavaScript; React.js, Next.js, React Native; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux" /></a>
+  <a href="profile/assets/tech-stack/joined-grid-dark.svg?v=f5221dd1c5d0#gh-dark-mode-only"><img src="profile/assets/tech-stack/joined-grid-dark.svg?v=f5221dd1c5d0#gh-dark-mode-only" width="100%" alt="TypeScript, Python, Go, Swift, JavaScript; React.js, Next.js, React Native; HTML5, CSS3, Tailwind CSS; Node.js, Express, REST APIs, GraphQL, Kafka; MongoDB, Redis, Supabase, PostgreSQL; AWS, Docker, Kubernetes, CI/CD, Linux" /></a>
 </div>
 
 <!-- commit-activity:start -->
