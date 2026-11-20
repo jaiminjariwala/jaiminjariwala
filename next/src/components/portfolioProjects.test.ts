@@ -8,7 +8,13 @@ import { projectFramePath, videoPosition, videoTime } from "./projectMedia.ts";
 test("all projects use existing local media with real source links", () => {
   assert.deepEqual(
     portfolioProjects.map((p) => p.id),
-    ["sharded-raft-kv", "codex-lite", "component-library", "url-shortener"],
+    [
+      "apple-homeview-simulator",
+      "sharded-raft-kv",
+      "codex-lite",
+      "component-library",
+      "url-shortener",
+    ],
   );
   for (const project of portfolioProjects) {
     assert.ok(project.description.length > 50);
