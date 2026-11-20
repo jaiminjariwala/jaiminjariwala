@@ -233,8 +233,16 @@ function PortfolioContent({
               interfaces that people enjoy using. I’m also interested in AR/VR
               development. At present, I’m building a Mac app in Swift that
               lets designers and developers preview interactive prototypes on
-              a 3D model of Apple’s HomeView. Xcode doesn’t offer a dedicated
-              HomeView simulator.
+              a 3D model of{" "}
+              <a
+                className={styles.inlineLink}
+                href="https://github.com/jaiminjariwala/apple-homeview-simulator"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Apple’s HomeView
+              </a>
+              . Xcode doesn’t offer a dedicated HomeView simulator.
             </span>
           </p>
           <p className={styles.introText}>

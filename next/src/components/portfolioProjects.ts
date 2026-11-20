@@ -22,10 +22,30 @@ const codexImage = (file: string, label: string): ProjectMedia => ({
 
 export const portfolioProjects: PortfolioProject[] = [
   {
+    id: "apple-homeview-simulator",
+    title: "Apple HomeView Simulator",
+    description:
+      "Xcode has no dedicated HomeView simulator. This independent SwiftUI app gives developers and designers a way to prototype for the display. Finding the right light in a smart-home dashboard can mean remembering which button controls which fixture. In the bedroom demo, tap the ceiling light or desk lamp directly in the room photo and see the lighting change.",
+    links: [
+      {
+        label: "GitHub",
+        href: "https://github.com/jaiminjariwala/apple-homeview-simulator",
+      },
+    ],
+    media: [
+      {
+        type: "image",
+        src: "/media/apple-homeview-simulator/homeview-demo.webp",
+        label: "Simulator dashboard and bedroom light controls",
+        aspect: "1560 / 1720",
+      },
+    ],
+  },
+  {
     id: "sharded-raft-kv",
     title: "Sharded Raft KV",
     description:
-      "I built a sharded key-value database with Go, Raft, and gRPC. Each shard keeps three replicas, with committed writes, verified reads, and recovery through write-ahead logs and snapshots. A Next.js console makes replication, sharding, request routing, and server failures visible.",
+      "A distributed key-value database written in Go. Each shard uses Raft to replicate data across three servers, with committed writes, verified reads, and recovery through write-ahead logs and snapshots. The Next.js console shows how gRPC requests are routed and what happens when a server fails.",
     links: [
       {
         label: "GitHub",
@@ -63,7 +83,7 @@ export const portfolioProjects: PortfolioProject[] = [
     id: "codex-lite",
     title: "Codex Lite",
     description:
-      "I built a macOS app that brings AI chat, code, and a browser into one workspace. Capture a region of your screen and attach it above the message field, work alongside a tabbed editor and terminal, or dictate with local Whisper. Text and screenshot models run locally through Ollama, with Google and GitHub sign-in backed by Go and PostgreSQL.",
+      "AI chat, a code editor, and a browser share one macOS workspace. Capture a region of your screen and attach it above the message field, work alongside a tabbed editor and terminal, or dictate with local Whisper. Text and screenshot models run locally through Ollama, with Google and GitHub sign-in backed by Go and PostgreSQL.",
     note: "An independent project, not an OpenAI product.",
     links: [
       { label: "GitHub", href: "https://github.com/jaiminjariwala/codex-lite" },
@@ -103,7 +123,7 @@ export const portfolioProjects: PortfolioProject[] = [
     id: "component-library",
     title: "Open Source Component Library",
     description:
-      "A home for reusable UI components and the code behind them. Browse live previews, edit code in the browser, and take the assets with you. Signed-in users can publish to the community gallery, fork components, and revisit earlier versions. Built with Next.js and TypeScript.",
+      "Browse reusable UI components, try their live previews, and edit the source in your browser. Signed-in users can publish to the community gallery, fork components, and revisit earlier versions. Built with Next.js and TypeScript.",
     links: [
       {
         label: "GitHub",
@@ -126,7 +146,7 @@ export const portfolioProjects: PortfolioProject[] = [
     id: "url-shortener",
     title: "URL Shortener",
     description:
-      "A Go backend project that makes the request path visible. PostgreSQL stores each short link, Redis caches repeat lookups, and a shared rate limiter controls requests. The dashboard traces real cache hits, misses, and database reads.",
+      "Follow a short-link request from the dashboard to Redis or PostgreSQL. The Go backend stores links in PostgreSQL, caches repeat lookups in Redis, and applies a shared rate limit. The dashboard shows actual cache hits, misses, and database reads.",
     note: "A local backend lab. Screenshot timings are individual observations, not a performance benchmark.",
     links: [
       {
