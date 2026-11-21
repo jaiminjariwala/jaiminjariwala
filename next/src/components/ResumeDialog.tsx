@@ -24,7 +24,7 @@ export default function ResumeDialog({
     let gestureStartZoom = 1;
 
     const zoomAt = (next: number, clientX: number, clientY: number) => {
-      const scale = Math.min(3, Math.max(1, next));
+      const scale = Math.min(3, Math.max(0.6, next));
       if (scale === zoom) return;
       const before = viewport.getBoundingClientRect();
       const anchorX = Number.isFinite(clientX) ? clientX : before.left + before.width / 2;

@@ -2076,7 +2076,11 @@
 }
 .resumeDialog {
   --resume-zoom: 1;
-  --resume-width: calc(min(42rem, 100dvw - 2rem) * var(--resume-zoom));
+  --resume-fit-width: min(
+    100dvw - 2rem,
+    calc((100dvh - 66px) * 17 / 22 + 2px)
+  );
+  --resume-width: calc(var(--resume-fit-width) * var(--resume-zoom));
   --resume-gutter: clamp(0.5rem, 2rem - (var(--resume-zoom) - 1) * 4rem, 2rem);
   --resume-max-height: calc(100dvh - 2 * var(--resume-gutter));
   width: min(var(--resume-width), 100dvw - var(--resume-gutter));
@@ -2096,7 +2100,7 @@
   outline: none;
 }
 .resumeDialog::backdrop {
-  background: linear-gradient(135deg, #ffffff3d, #e7eff52e);
+  background: linear-gradient(135deg, #d5dfeb99, #b9c8db85);
 }
 .resumeDocument {
   display: block;
