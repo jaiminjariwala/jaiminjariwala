@@ -2078,7 +2078,7 @@
   --resume-zoom: 1;
   --resume-fit-width: min(
     100dvw - 2rem,
-    calc((100dvh - 66px) * 17 / 22 + 2px)
+    calc((100dvh - 64px) * 17 / 22)
   );
   --resume-width: calc(var(--resume-fit-width) * var(--resume-zoom));
   --resume-gutter: clamp(0.5rem, 2rem - (var(--resume-zoom) - 1) * 4rem, 2rem);
@@ -2090,24 +2090,24 @@
   margin: auto;
   padding: 0;
   overflow: hidden;
-  border: 1px solid #e8e8e8;
+  border: 0;
   border-radius: 1rem;
   background: #fff;
   color: #282826;
-  box-shadow: 0 8px 40px #0000001f;
 }
 .resumeDialog:focus {
   outline: none;
 }
 .resumeDialog::backdrop {
-  background: linear-gradient(135deg, #d5dfeb99, #b9c8db85);
+  background: #a9a49b55;
+  backdrop-filter: blur(2px) saturate(1.16);
 }
 .resumeDocument {
   display: block;
   width: 100%;
   height: min(
-    calc((var(--resume-width) - 2px) * 22 / 17),
-    calc(var(--resume-max-height) - 2px)
+    calc(var(--resume-width) * 22 / 17),
+    var(--resume-max-height)
   );
   border: 0;
   overflow: auto;
@@ -2116,7 +2116,7 @@
 }
 .resumeDocument img {
   display: block;
-  width: max(100%, var(--resume-width) - 2px);
+  width: max(100%, var(--resume-width));
   max-width: none;
   height: auto;
 }
