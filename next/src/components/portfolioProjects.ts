@@ -25,7 +25,7 @@ export const portfolioProjects: PortfolioProject[] = [
     id: "apple-homeview-simulator",
     title: "Apple HomeView Simulator",
     description:
-      "Xcode has no dedicated HomeView simulator. This independent SwiftUI app gives developers and designers a way to prototype for the display. Finding the right light in a smart-home dashboard can mean remembering which button controls which fixture. In the bedroom demo, tap the ceiling light or desk lamp directly in the room photo and see the lighting change.",
+      "Xcode has no dedicated HomeView simulator. This independent SwiftUI app gives developers and designers a way to prototype for the display. Finding the right light in a smart-home dashboard can mean remembering which button controls which fixture. In the demo, tap fixtures in two bedrooms and a bathroom to see individual or grouped lighting changes.",
     links: [
       {
         label: "GitHub",
@@ -34,10 +34,11 @@ export const portfolioProjects: PortfolioProject[] = [
     ],
     media: [
       {
-        type: "image",
-        src: "/media/apple-homeview-simulator/homeview-demo.webp",
-        label: "Simulator dashboard and bedroom light controls",
-        aspect: "1560 / 1720",
+        type: "video",
+        src: "/media/apple-homeview-simulator/homeview-demo.mp4",
+        poster: "/media/apple-homeview-simulator/homeview-poster.webp",
+        label: "Bedroom 1, Bedroom 2, and Bathroom 1 lighting demo",
+        aspect: "1344 / 1552",
       },
     ],
   },
