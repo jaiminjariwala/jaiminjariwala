@@ -19,20 +19,26 @@ export default function ResumeDialog({
     if (!open) return;
     const modal = dialog.current!;
     const viewport = documentView.current!;
+    const image = viewport.querySelector("img")!;
     let zoom = 1;
     let gestureStartZoom = 1;
 
     const zoomAt = (next: number, clientX: number, clientY: number) => {
       const scale = Math.min(3, Math.max(1, next));
       if (scale === zoom) return;
-      const bounds = viewport.getBoundingClientRect();
-      const x = Number.isFinite(clientX) ? clientX - bounds.left : bounds.width / 2;
-      const y = Number.isFinite(clientY) ? clientY - bounds.top : bounds.height / 2;
-      const left = (viewport.scrollLeft + x) * scale / zoom - x;
-      const top = (viewport.scrollTop + y) * scale / zoom - y;
+      const before = viewport.getBoundingClientRect();
+      const anchorX = Number.isFinite(clientX) ? clientX : before.left + before.width / 2;
+      const anchorY = Number.isFinite(clientY) ? clientY : before.top + before.height / 2;
+      const x = viewport.scrollLeft + anchorX - before.left;
+      const y = viewport.scrollTop + anchorY - before.top;
+      const imageWidth = image.getBoundingClientRect().width;
+
       zoom = scale;
-      viewport.style.setProperty("--resume-zoom", String(zoom));
-      viewport.scrollTo(left, top);
+      modal.style.setProperty("--resume-zoom", String(zoom));
+
+      const after = viewport.getBoundingClientRect();
+      const ratio = image.getBoundingClientRect().width / imageWidth;
+      viewport.scrollTo(x * ratio - (anchorX - after.left), y * ratio - (anchorY - after.top));
     };
 
     const wheel = (event: WheelEvent) => {
@@ -64,6 +70,7 @@ export default function ResumeDialog({
       viewport.removeEventListener("gesturestart", gestureStart);
       viewport.removeEventListener("gesturechange", gestureChange);
       viewport.removeEventListener("gestureend", gestureEnd);
+      modal.style.removeProperty("--resume-zoom");
       modal.close();
       document.body.style.overflow = previousOverflow;
     };
@@ -73,6 +80,7 @@ export default function ResumeDialog({
     <dialog
       ref={dialog}
       className={styles.resumeDialog}
+      data-resume-dialog
       aria-label="Resume"
       onClose={onClose}
       onClick={(event) => {

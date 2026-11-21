@@ -105,14 +105,20 @@ a {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  html[data-custom-cursor-active],
-  html[data-custom-cursor-active] body,
-  html[data-custom-cursor-active] body *,
-  html[data-custom-cursor-active] body *:hover,
-  html[data-custom-cursor-active] body *:active,
-  html[data-custom-cursor-active] body *::before,
-  html[data-custom-cursor-active] body *::after {
-    cursor: none !important;
+  html[data-custom-cursor-active]:not(:has(dialog[data-resume-dialog][open])) {
+    &,
+    & body,
+    & body *,
+    & body *:hover,
+    & body *:active,
+    & body *::before,
+    & body *::after {
+      cursor: none !important;
+    }
+  }
+
+  html:has(dialog[data-resume-dialog][open]) .custom-cursor {
+    visibility: hidden;
   }
 
   .custom-cursor {
