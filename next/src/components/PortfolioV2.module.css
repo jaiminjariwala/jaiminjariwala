@@ -2088,6 +2088,9 @@
   color: #282826;
   box-shadow: 0 8px 40px #0000001f;
 }
+.resumeDialog:focus {
+  outline: none;
+}
 .resumeDialog::backdrop {
   background: #ffffff40;
   backdrop-filter: blur(8px);
@@ -2095,6 +2098,7 @@
 .resumeDocument {
   display: block;
   width: 100%;
+  aspect-ratio: 17 / 22;
   max-height: calc(100dvh - 4rem);
   border: 0;
   overflow: auto;
@@ -2103,6 +2107,7 @@
 }
 .resumeDocument img {
   display: block;
-  width: 100%;
+  width: calc(100% * var(--resume-zoom, 1));
+  max-width: none;
   height: auto;
 }

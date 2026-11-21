@@ -3,6 +3,8 @@
 import { useEffect, useRef } from "react";
 import styles from "./PortfolioV2.module.css";
 
+type ResumeGesture = Event & { scale: number; clientX: number; clientY: number };
+
 export default function ResumeDialog({
   open,
   onClose,
@@ -11,14 +13,57 @@ export default function ResumeDialog({
   onClose: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const documentView = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
     const modal = dialog.current!;
+    const viewport = documentView.current!;
+    let zoom = 1;
+    let gestureStartZoom = 1;
+
+    const zoomAt = (next: number, clientX: number, clientY: number) => {
+      const scale = Math.min(3, Math.max(1, next));
+      if (scale === zoom) return;
+      const bounds = viewport.getBoundingClientRect();
+      const x = Number.isFinite(clientX) ? clientX - bounds.left : bounds.width / 2;
+      const y = Number.isFinite(clientY) ? clientY - bounds.top : bounds.height / 2;
+      const left = (viewport.scrollLeft + x) * scale / zoom - x;
+      const top = (viewport.scrollTop + y) * scale / zoom - y;
+      zoom = scale;
+      viewport.style.setProperty("--resume-zoom", String(zoom));
+      viewport.scrollTo(left, top);
+    };
+
+    const wheel = (event: WheelEvent) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? viewport.clientHeight : 1;
+      zoomAt(zoom * Math.exp(-event.deltaY * unit / 250), event.clientX, event.clientY);
+    };
+    const gestureStart = (event: Event) => {
+      event.preventDefault();
+      gestureStartZoom = zoom;
+    };
+    const gestureChange = (event: Event) => {
+      event.preventDefault();
+      const { scale, clientX, clientY } = event as ResumeGesture;
+      if (Number.isFinite(scale)) zoomAt(gestureStartZoom * scale, clientX, clientY);
+    };
+    const gestureEnd = (event: Event) => event.preventDefault();
+
+    viewport.addEventListener("wheel", wheel, { passive: false });
+    viewport.addEventListener("gesturestart", gestureStart, { passive: false });
+    viewport.addEventListener("gesturechange", gestureChange, { passive: false });
+    viewport.addEventListener("gestureend", gestureEnd, { passive: false });
     const previousOverflow = document.body.style.overflow;
     modal.showModal();
     document.body.style.overflow = "hidden";
     return () => {
+      viewport.removeEventListener("wheel", wheel);
+      viewport.removeEventListener("gesturestart", gestureStart);
+      viewport.removeEventListener("gesturechange", gestureChange);
+      viewport.removeEventListener("gestureend", gestureEnd);
       modal.close();
       document.body.style.overflow = previousOverflow;
     };
@@ -39,7 +84,7 @@ export default function ResumeDialog({
       }}
     >
       {open && (
-        <div className={styles.resumeDocument}>
+        <div ref={documentView} className={styles.resumeDocument}>
           <img
             src="/JAIMIN_RESUME.png"
             alt="Jaimin Jariwala's resume"
