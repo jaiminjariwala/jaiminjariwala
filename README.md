@@ -45,8 +45,8 @@
 <!-- commit-activity:start -->
 <br />
 <div align="center">
-  <a href="profile/assets/most-used-languages.svg?v=f49eea0d71dd#gh-light-mode-only"><img src="profile/assets/most-used-languages.svg?v=f49eea0d71dd#gh-light-mode-only" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" /></a>
-  <a href="profile/assets/most-used-languages-dark.svg?v=a93ff10803c9#gh-dark-mode-only"><img src="profile/assets/most-used-languages-dark.svg?v=a93ff10803c9#gh-dark-mode-only" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" /></a>
+  <a href="profile/assets/most-used-languages.svg?v=59ad24efeb3f#gh-light-mode-only"><img src="profile/assets/most-used-languages.svg?v=59ad24efeb3f#gh-light-mode-only" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" /></a>
+  <a href="profile/assets/most-used-languages-dark.svg?v=58a634156770#gh-dark-mode-only"><img src="profile/assets/most-used-languages-dark.svg?v=58a634156770#gh-dark-mode-only" width="560" alt="Languages by lines of code in owned public repositories, excluding dependencies and generated files" /></a>
 </div>
 <!-- commit-activity:end -->
 
