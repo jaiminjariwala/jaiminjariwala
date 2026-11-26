@@ -159,6 +159,10 @@ a {
     filter: drop-shadow(0 0.0625rem 0.0625rem #0003);
   }
   .custom-cursor.glove-open {
+    width: 2.1875rem;
+    height: 2.1875rem;
+    margin-left: -1.09375rem;
+    margin-top: -1.09375rem;
     background-image: url("/cursors/glove-open.svg");
   }
   .custom-cursor.glove-grip {
