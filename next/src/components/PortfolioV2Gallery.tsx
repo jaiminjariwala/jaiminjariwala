@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { Photo, PhotoSection } from "./galleryData";
 import { GlassFolder } from "./GlassFolder";
@@ -13,6 +13,7 @@ import {
 } from "./galleryData";
 import { polygonPath, scallopedOutline } from "./paperGeometry";
 import styles from "./PortfolioV2.module.css";
+import PortfolioBackLink from "./PortfolioBackLink";
 import usePhotoEntrance from "./usePhotoEntrance";
 import useHorizontalDrag from "./useHorizontalDrag";
 
@@ -83,6 +84,26 @@ export default function PortfolioV2Gallery({
   const [slug, setSlug] = useState(initialSlug);
   const drag = useHorizontalDrag();
   const section = getSectionBySlug(slug);
+  const introduction = useRef<HTMLParagraphElement>(null);
+  const folderRow = useRef<HTMLDivElement>(null);
+  useLayoutEffect(() => {
+    const paragraph = introduction.current;
+    const row = folderRow.current;
+    if (!paragraph || !row) return;
+    let disposed = false;
+    const align = () => {
+      if (disposed) return;
+      const text = document.createRange();
+      text.selectNodeContents(paragraph);
+      const offset = (text.getBoundingClientRect().width - row.getBoundingClientRect().width) / 2;
+      row.style.setProperty("--travel-folders-offset", `${offset}px`);
+    };
+    const observer = new ResizeObserver(align);
+    observer.observe(paragraph);
+    align();
+    void document.fonts.ready.then(align);
+    return () => { disposed = true; observer.disconnect(); };
+  }, [slug]);
   const openFolder = (value: string | null) => {
     setSlug(value);
     if (scrollTargetId) {
@@ -97,10 +118,9 @@ export default function PortfolioV2Gallery({
     return (
       <>
         <header>
-          <Link
+          <PortfolioBackLink
             href="/gallery"
-            prefetch={false}
-            className={styles.galleryBack}
+            label="Back to Travel"
             onClick={(event) => {
               if (
                 event.button !== 0 ||
@@ -113,20 +133,7 @@ export default function PortfolioV2Gallery({
               event.preventDefault();
               openFolder(null);
             }}
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="m11 5-7 7 7 7M4 12h16" />
-            </svg>
-            Back
-          </Link>
+          />
           <h1>{section.title}</h1>
           <div className={styles.galleryDate}>
             {section.dateRange} · {section.photos.length} photos
@@ -138,13 +145,14 @@ export default function PortfolioV2Gallery({
   return (
     <>
       <header>
-        <h1>Travel</h1>
+        <h1 className={styles.sectionHeading}>Travel</h1>
       </header>
-      <p>
+      <p ref={introduction}>
         Photos from places I&apos;ve visited. I just love traveling{" "}
         <span className={styles.travelCompass}>🧭</span>
       </p>
       <div
+        ref={folderRow}
         className={styles.folderGrid}
         role="region"
         aria-label="Travel folders, swipe or drag horizontally"
