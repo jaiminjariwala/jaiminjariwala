@@ -13,7 +13,6 @@ test("all projects use existing local media with real source links", () => {
       "sharded-raft-kv",
       "codex-lite",
       "component-library",
-      "url-shortener",
     ],
   );
   for (const project of portfolioProjects) {
@@ -36,25 +35,12 @@ test("all projects use existing local media with real source links", () => {
   const codexLite = portfolioProjects.find(
     (project) => project.id === "codex-lite",
   );
-  const urlShortener = portfolioProjects.find(
-    (project) => project.id === "url-shortener",
-  );
   assert.ok(codexLite);
-  assert.ok(urlShortener);
   assert.equal(
     codexLite.media.filter((media) => media.type === "video").length,
     2,
   );
-  assert.equal(
-    urlShortener.links.length,
-    1,
-    "local-only shortener must not advertise a deployed service",
-  );
-  assert.ok(
-    !urlShortener.description.includes(
-      "so I can understand what each request actually does",
-    ),
-  );
+
 });
 
 test("Projects uses the existing roll navigation", () => {
@@ -166,9 +152,9 @@ test("project galleries preserve mobile framing and avoid automatic video playba
   assert.ok(!includesSource(player, " controls playsInline"));
   assert.ok(includesSource(source, "key={item.src}"));
   assert.ok(includesSource(source, "aria-pressed={i===index}"));
-  assert.ok(includesSource(source, "entry.borderBoxSize[0]"));
+  assert.ok(!includesSource(source, "projectMediaRim"));
   assert.ok(
-    includesSource(css, ".projectMediaFrame{padding:1.25rem;filter:none}"),
+    includesSource(css, ".projectMediaFrame{padding:0;filter:none}"),
   );
   assert.ok(includesSource(css, "overscroll-behavior-x:contain"));
 });

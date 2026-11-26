@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { projectFramePath } from "./projectMedia.ts";
-import { paperScale } from "./paperLayout";
+import { useRef, useState } from "react";
 import ProjectVideoPlayer from "./ProjectVideoPlayer";
 import { portfolioProjects } from "./portfolioProjects.ts";
 import type { PortfolioProject } from "./portfolioProjects";
@@ -26,31 +24,8 @@ function Arrow({ back = false }) {
 
 function ProjectGallery({ project }: { project: PortfolioProject }) {
   const [index, setIndex] = useState(0);
-  const [outline, setOutline] = useState({
-    width: 720,
-    height: 480,
-    path: projectFramePath(720, 480),
-  });
-  const frame = useRef<HTMLDivElement>(null!),
-    rail = useRef<HTMLDivElement>(null!);
+  const rail = useRef<HTMLDivElement>(null!);
   const item = project.media[index];
-  useEffect(() => {
-    const observer = new ResizeObserver(([entry]) => {
-      const { inlineSize: width, blockSize: height } = entry.borderBoxSize[0];
-      if (width > 0 && height > 0)
-        setOutline({
-          width,
-          height,
-          path: projectFramePath(
-            width,
-            height,
-            24 * paperScale(window.innerWidth),
-          ),
-        });
-    });
-    observer.observe(frame.current);
-    return () => observer.disconnect();
-  }, []);
   const select = (next: number) => {
     setIndex(next);
     const thumb = rail.current?.children[next] as HTMLElement | undefined;
@@ -66,18 +41,10 @@ function ProjectGallery({ project }: { project: PortfolioProject }) {
   };
   return (
     <figure
-      className={styles.projectGallery}
+      className={`${styles.projectGallery} ${project.id === "apple-homeview-simulator" ? styles.homeviewGallery : project.id === "sharded-raft-kv" ? styles.raftGallery : ""}`}
       aria-label={`${project.title} screenshots and videos`}
     >
-      <div ref={frame} className={styles.projectMediaFrame}>
-        <svg
-          className={styles.projectMediaRim}
-          viewBox={`0 0 ${outline.width} ${outline.height}`}
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path d={outline.path} fill="#f8f8f7" />
-        </svg>
+      <div className={styles.projectMediaFrame}>
         <div
           className={styles.projectMediaStage}
           style={{ aspectRatio: item.aspect || project.aspect || "16 / 10" }}
@@ -105,9 +72,9 @@ function ProjectGallery({ project }: { project: PortfolioProject }) {
           )}
         </div>
       </div>
-      <figcaption className={styles.projectMediaCaption}>
-        <span aria-live="polite">{item.label}</span>
-        {project.media.length > 1 ? (
+      {project.media.length > 1 && <figcaption className={styles.projectMediaCaption}>
+        {project.id !== "apple-homeview-simulator" && <span aria-live="polite">{item.label}</span>}
+        {project.media.length > 1 && (
           <span className={styles.projectMediaControls}>
             <button
               type="button"
@@ -129,12 +96,8 @@ function ProjectGallery({ project }: { project: PortfolioProject }) {
               <Arrow />
             </button>
           </span>
-        ) : (
-          <a href={item.src} target="_blank" rel="noreferrer">
-            View full size
-          </a>
         )}
-      </figcaption>
+      </figcaption>}
       {project.media.length > 1 && (
         <div
           ref={rail}
@@ -171,7 +134,7 @@ export default function PortfolioV2Projects() {
   return (
     <>
       <header>
-        <h1>Projects</h1>
+        <h1 className={styles.sectionHeading}>Projects</h1>
       </header>
       <p>A few things I have built.</p>
       <div className={styles.projectList}>
@@ -181,7 +144,10 @@ export default function PortfolioV2Projects() {
             className={styles.projectEntry}
             aria-labelledby={`project-${project.id}`}
           >
-            <h2 id={`project-${project.id}`}>{project.title}</h2>
+            <div className={styles.projectHeadingRow}>
+              <h2 id={`project-${project.id}`}>{project.title}</h2>
+              {project.date && <time className={styles.projectDate}>{project.date}</time>}
+            </div>
             <p>{project.description}</p>
             <div className={styles.projectLinks}>
               {project.links.map((link) => (

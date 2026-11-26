@@ -1542,12 +1542,34 @@
   margin-top: 4.125rem;
 }
 .article .projectEntry h2 {
-  font-family: "V2 James Hand", cursive;
-  font-size: 2rem;
+  font-family: "James Hand Aligned", cursive;
   line-height: 1.2;
   letter-spacing: -0.035em;
   -webkit-text-stroke: 0.021875rem currentColor;
-  margin: 0 0 1.625rem;
+  margin: 0;
+}
+.projectHeadingRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.35rem 1rem;
+  margin-bottom: 1.625rem;
+}
+.projectDate {
+  /* Optically center Inter against the handwritten title's letter bodies. */
+  transform: translateY(-0.18em);
+  color: #858585;
+  font-size: 1.175rem;
+  white-space: nowrap;
+}
+@media (max-width: 760px) {
+  .projectHeadingRow {
+    margin-bottom: 1.375rem;
+  }
+  .projectDate {
+    font-size: 0.875rem;
+  }
 }
 .projectLinks {
   display: flex;
@@ -1576,26 +1598,15 @@
 .projectMediaFrame {
   position: relative;
   isolation: isolate;
-  padding: 2rem;
-  filter: drop-shadow(0 0.0625rem 0.0625rem #0000000a);
-}
-.projectMediaRim {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  overflow: visible;
-  filter: drop-shadow(0 0.0625rem 0.0625rem #00000014);
+  padding: 0;
+  filter: none;
 }
 .projectMediaStage {
   width: 100%;
   background: #fff;
   overflow: hidden;
-  border-radius: 1.125rem;
-  box-shadow:
-    0 0.0625rem 0.125rem #0000001a,
-    0 0.1875rem 0.4375rem #0000000a;
+  border-radius: 0;
+  box-shadow: none;
 }
 .projectMediaStage > a {
   display: block;
@@ -1854,11 +1865,11 @@
     margin-top: 1.75rem;
   }
   .projectMediaFrame {
-    padding: 1.25rem;
+    padding: 0;
     filter: none;
   }
   .projectMediaStage {
-    border-radius: 0.75rem;
+    border-radius: 0;
   }
   .projectVideoControls {
     left: 0.4375rem;
@@ -2193,6 +2204,16 @@
 .projectVideoControls:has(:focus-visible) {
   opacity: 1;
   pointer-events: auto;
+}
+
+@font-face {
+  font-family: "James Hand Aligned";
+  src: url("/v2-reference/james-hand-aligned.ttf") format("truetype");
+  font-display: swap;
+  font-weight: 400;
+}
+.raftGallery .projectMediaStage img {
+  object-fit: cover;
 }
 
 @media (min-width: 761px) {
