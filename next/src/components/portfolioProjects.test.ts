@@ -221,6 +221,6 @@ test("floating controls support playback, keyboard seek, fullscreen, and cleanup
   assert.ok(includesSource(source, "requestFullscreen()"));
   assert.ok(includesSource(source, "webkitEnterFullscreen()"));
   assert.ok(includesSource(source, "element.pause();"));
-  assert.ok(includesSource(css, "background:#fff;border-radius:62.4375rem"));
+  assert.ok(includesSource(css, "border-radius:62.4375rem"));
   assert.ok(includesSource(css, ".projectVideoPlayer:fullscreen"));
 });

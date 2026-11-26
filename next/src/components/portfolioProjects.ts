@@ -3,6 +3,7 @@ export interface ProjectMedia {
   src: string;
   label: string;
   poster?: string;
+  fallbackSrc?: string;
   aspect?: string;
 }
 export interface PortfolioProject {
@@ -35,10 +36,10 @@ export const portfolioProjects: PortfolioProject[] = [
     media: [
       {
         type: "video",
-        src: "/media/apple-homeview-simulator/homeview-demo.mp4",
-        poster: "/media/apple-homeview-simulator/homeview-poster.webp",
+        src: "/media/apple-homeview-simulator/homeview-demo-rgb-lossless.webm?v=srgb-match",
+        fallbackSrc: "/media/apple-homeview-simulator/homeview-demo-srgb-fallback.mp4?v=srgb-match",
         label: "Bedroom 1, Bedroom 2, and Bathroom 1 lighting demo",
-        aspect: "1344 / 1552",
+        aspect: "1240 / 1636",
       },
     ],
   },
