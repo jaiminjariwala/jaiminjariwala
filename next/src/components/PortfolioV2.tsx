@@ -1,17 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { MouseEvent, ReactNode } from "react";
+import type { ReactNode } from "react";
 import type { PortfolioSection, StampKind } from "@/lib/siteSeo";
 import PortfolioV2Gallery from "./PortfolioV2Gallery";
 import PortfolioV2Projects from "./PortfolioV2Projects";
+import PortfolioV2Experience from "./PortfolioV2Experience";
+import { experiencePath, experienceRoles } from "./portfolioExperience";
 import styles from "./PortfolioV2.module.css";
 import PaperPeel from "./PaperPeel";
 import StickerButton from "./StickerButton";
 import GitHubHoverCard from "./GitHubHoverCard";
 import ResumeDialog from "./ResumeDialog";
 import { paperViewportWidth, paperScale, paperInset } from "./paperLayout.ts";
-import { sectionPaths } from "@/lib/siteSeo.ts";
 import {
   outlineMask,
   polygonPath,
@@ -52,38 +53,6 @@ function StampRim({ lobes = 6 }: { lobes?: number }) {
   );
 }
 
-interface ExperienceEntry {
-  company: string;
-  role: string;
-  date: string;
-  location: string;
-  subjects?: string[];
-  team?: string;
-}
-
-const experience: ExperienceEntry[] = [
-  {
-    company: "The George Washington University",
-    role: "Graduate Teaching Assistant II",
-    date: "Aug 2026 – Present",
-    location: "Washington D.C.",
-    subjects: ["Cloud Computing Class", "Database Management Systems 2 Class"],
-  },
-  {
-    company: "Amazon",
-    role: "Design Technologist I Intern (L4)",
-    date: "June – Aug 2026",
-    location: "Seattle, Washington",
-    team: "Alexa Smart Home Team",
-  },
-  {
-    company: "Logicwind",
-    role: "AI/ML Intern",
-    date: "May – Dec 2024",
-    location: "Surat, Gujarat, India",
-  },
-];
-
 const education: [string, string, string, string, string | null, string][] = [
   [
     "The George Washington University",
@@ -102,17 +71,6 @@ const education: [string, string, string, string, string | null, string][] = [
     "Gujarat, India",
   ],
 ];
-
-function EducationDegree({ degree }: { degree: string }) {
-  const continuation = " and Engineering";
-  if (!degree.endsWith(continuation)) return <span>{degree}</span>;
-  return (
-    <span>
-      {degree.slice(0, -continuation.length)}
-      <span className={styles.degreeContinuation}>{continuation}</span>
-    </span>
-  );
-}
 
 function StampArt({ kind }: { kind: StampKind }) {
   if (kind === "car")
@@ -211,13 +169,17 @@ function StampArt({ kind }: { kind: StampKind }) {
 function PortfolioContent({
   page,
   initialGallerySlug,
+  experienceSlug,
   scrollTargetId,
   introLinks,
+  onOpenExperience,
 }: {
   page: PortfolioSection;
   initialGallerySlug?: string | null;
+  experienceSlug?: string;
   scrollTargetId?: string;
   introLinks?: ReactNode;
+  onOpenExperience?: (slug: string) => void;
 }) {
   return (
     <>
@@ -261,40 +223,12 @@ function PortfolioContent({
       )}
       {page === "projects" && <PortfolioV2Projects />}
       {page === "experience" && (
-        <>
-          <header>
-            <h1>Experience</h1>
-          </header>
-          <div className={styles.experience}>
-            {experience.map(
-              ({ company, role, date, location, subjects, team }) => (
-                <div key={company}>
-                  <div>
-                    <strong>{company}</strong>
-                    <span>{role}</span>
-                    {team && (
-                      <span className={styles.experienceTeam}>
-                        · {team}
-                      </span>
-                    )}
-                    {subjects?.map((subject) => (
-                      <span key={subject}>· {subject}</span>
-                    ))}
-                  </div>
-                  <div className={styles.experienceMeta}>
-                    <span>{location}</span>
-                    <time>{date}</time>
-                  </div>
-                </div>
-              ),
-            )}
-          </div>
-        </>
+        <PortfolioV2Experience slug={experienceSlug} onOpen={onOpenExperience} />
       )}
       {page === "education" && (
         <>
           <header>
-            <h1>Education</h1>
+            <h1 className={styles.sectionHeading}>Education</h1>
           </header>
           <div className={styles.experience}>
             {education.map(
@@ -302,7 +236,7 @@ function PortfolioContent({
                 <div key={university}>
                   <div>
                     <strong>{university}</strong>
-                    <EducationDegree degree={degree} />
+                    <span>{degree}</span>
                     <span>{grade}</span>
                     {award && <span>{award}</span>}
                   </div>
@@ -334,34 +268,80 @@ function PhonePortfolio({
   clock,
   initialPage,
   initialGallerySlug,
+  experienceSlug,
 }: {
   clock: string;
   initialPage: PortfolioSection;
   initialGallerySlug: string | null;
+  experienceSlug?: string;
 }) {
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
+  const [roleSlug, setRoleSlug] = useState(experienceSlug);
+  const [isRoleDetail, setIsRoleDetail] = useState(Boolean(experienceSlug));
+  const detail = useRef<HTMLElement>(null);
+  const openedFromList = useRef(false);
+
+  function openRole(slug: string) {
+    window.history.pushState({ portfolioRole: true }, "", experiencePath(slug));
+    openedFromList.current = true;
+    setRoleSlug(slug);
+    setIsRoleDetail(true);
+  }
+
+  function closeRole() {
+    if (openedFromList.current && window.history.state?.portfolioRole) {
+      window.history.back();
+      return;
+    }
+    window.history.replaceState(null, "", `/experience#role-${roleSlug}`);
+    setIsRoleDetail(false);
+  }
 
   useEffect(() => {
+    function syncRole() {
+      const role = experienceRoles.find(({ slug }) => experiencePath(slug) === window.location.pathname);
+      if (role) setRoleSlug(role.slug);
+      setIsRoleDetail(Boolean(role));
+    }
+    window.addEventListener("popstate", syncRole);
+    return () => window.removeEventListener("popstate", syncRole);
+  }, []);
+
+  useEffect(() => {
+    if (isRoleDetail) {
+      const previousOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      detail.current?.scrollTo({ top: 0, behavior: "instant" });
+      detail.current?.focus({ preventScroll: true });
+      return () => { document.body.style.overflow = previousOverflow; };
+    }
+    if (roleSlug) document.getElementById(`role-${roleSlug}`)?.focus({ preventScroll: true });
+  }, [isRoleDetail, roleSlug]);
+
+  useEffect(() => {
+    if (isRoleDetail) return;
     const update = () => setShowBackToTop(window.scrollY > 400);
     update();
     window.addEventListener("scroll", update, { passive: true });
     return () => window.removeEventListener("scroll", update);
-  }, []);
+  }, [isRoleDetail]);
 
   useEffect(() => {
-    // Direct links still land at the requested section of the phone document.
-    const target = window.location.hash.slice(1) || `phone-${initialPage}`;
+    // Prepare the main page at the appropriate position for direct links.
+    const target = experienceSlug
+      ? `role-${experienceSlug}`
+      : window.location.hash.slice(1) || `phone-${initialPage}`;
     if (target === "phone-intro" && !window.location.hash) {
       window.scrollTo({ top: 0, behavior: "instant" });
     } else {
       document.getElementById(target)?.scrollIntoView({ behavior: "instant" });
     }
-  }, [initialPage]);
+  }, [initialPage, experienceSlug]);
 
   return (
     <div className={styles.phoneSite}>
-      <main className={styles.phoneContent}>
+      <main className={styles.phoneContent} inert={isRoleDetail} aria-hidden={isRoleDetail || undefined}>
         {phoneSections.map(({ page, label, art }) => (
           <section
             key={page}
@@ -389,6 +369,7 @@ function PhonePortfolio({
             <PortfolioContent
               page={page}
               initialGallerySlug={initialGallerySlug}
+              onOpenExperience={openRole}
               scrollTargetId={`phone-${page}`}
               introLinks={page === "intro" ? (
                 <>
@@ -419,8 +400,25 @@ function PhonePortfolio({
           </section>
         ))}
       </main>
-      <ResumeDialog open={resumeOpen} onClose={() => setResumeOpen(false)} />
-      {showBackToTop && (
+      <section
+          ref={detail}
+          className={styles.phoneRoleDetail}
+          data-open={isRoleDetail}
+          inert={!isRoleDetail}
+          aria-hidden={!isRoleDetail}
+          aria-label="Experience details"
+          tabIndex={-1}
+        >
+          <div className={`${styles.phoneContent} ${styles.article} ${styles.phoneSection} ${styles.experiencePage}`}>
+            <div className={`${styles.homeStamp} ${styles.phoneStamp}`} aria-hidden="true">
+              <StampRim />
+              <StampArt kind="experience" />
+            </div>
+            {roleSlug && <PortfolioV2Experience slug={roleSlug} onBack={closeRole} />}
+          </div>
+      </section>
+      {!isRoleDetail && <ResumeDialog open={resumeOpen} onClose={() => setResumeOpen(false)} />}
+      {!isRoleDetail && showBackToTop && (
         <button
           type="button"
           className={styles.phoneBackToTop}
@@ -444,9 +442,11 @@ function PhonePortfolio({
 export default function PortfolioV2({
   initialPage = "intro",
   initialGallerySlug = null,
+  experienceSlug,
 }: {
   initialPage?: PortfolioSection;
   initialGallerySlug?: string | null;
+  experienceSlug?: string;
 }) {
   const [phone, setPhone] = useState(false);
   const [collection, setCollection] = useState(false);
@@ -507,24 +507,6 @@ export default function PortfolioV2({
     } else {
       setCollection(true);
     }
-  };
-  const followSectionLink = (
-    event: MouseEvent<HTMLAnchorElement>,
-    next: PortfolioSection,
-  ) => {
-    // Keep browser-native new-tab gestures. Ordinary activations retain the
-    // paper transition; every href is also a real server-rendered page.
-    if (
-      event.defaultPrevented ||
-      event.button !== 0 ||
-      event.metaKey ||
-      event.ctrlKey ||
-      event.shiftKey ||
-      event.altKey
-    )
-      return;
-    event.preventDefault();
-    navigate(next);
   };
   const paperSettled = (isOpen: boolean) => {
     rolledOpen.current = isOpen;
@@ -611,6 +593,7 @@ export default function PortfolioV2({
         clock={clock}
         initialPage={initialPage}
         initialGallerySlug={initialGallerySlug}
+        experienceSlug={experienceSlug}
       />
     );
   }
@@ -742,49 +725,8 @@ export default function PortfolioV2({
               }
               key={page}
             >
-              <PortfolioContent page={page} initialGallerySlug={initialGallerySlug} />
+              <PortfolioContent page={page} initialGallerySlug={initialGallerySlug} experienceSlug={experienceSlug} />
               <footer className={styles.portfolioFooter}>
-                <h2 className={styles.footerHeading}>Explore</h2>
-                <nav
-                  className={styles.pageNavigation}
-                  aria-label="Portfolio pages"
-                >
-                  <a
-                    href={sectionPaths.intro}
-                    onClick={(event) => followSectionLink(event, "intro")}
-                    aria-current={page === "intro" ? "page" : undefined}
-                  >
-                    Introduction
-                  </a>
-                  <a
-                    href={sectionPaths.gallery}
-                    onClick={(event) => followSectionLink(event, "gallery")}
-                    aria-current={page === "gallery" ? "page" : undefined}
-                  >
-                    Travel
-                  </a>
-                  <a
-                    href={sectionPaths.experience}
-                    onClick={(event) => followSectionLink(event, "experience")}
-                    aria-current={page === "experience" ? "page" : undefined}
-                  >
-                    Experience
-                  </a>
-                  <a
-                    href={sectionPaths.education}
-                    onClick={(event) => followSectionLink(event, "education")}
-                    aria-current={page === "education" ? "page" : undefined}
-                  >
-                    Education
-                  </a>
-                  <a
-                    href={sectionPaths.projects}
-                    onClick={(event) => followSectionLink(event, "projects")}
-                    aria-current={page === "projects" ? "page" : undefined}
-                  >
-                    Projects
-                  </a>
-                </nav>
                 <div className={styles.footerSocials}>
                   <GitHubHoverCard>
                     <a href="https://github.com/jaiminjariwala">

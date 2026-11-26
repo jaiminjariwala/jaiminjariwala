@@ -263,6 +263,9 @@
 .experience span,
 .experience time {
   display: block;
+}
+.experience span,
+.experience time {
   color: #858585;
 }
 .experience time {
@@ -939,23 +942,11 @@
 }
 .portfolioFooter {
   margin-top: 2.25rem;
-}
-.article .footerHeading {
-  margin: 0 0 1.5rem;
   padding-top: 1.5rem;
   border-top: 0.0625rem solid #eee;
-  font-family: "V2 James Hand", cursive;
-  font-size: 1.875rem;
-  line-height: 1.2;
-  color: #888;
-  text-transform: uppercase;
-  -webkit-text-stroke: 0.021875rem currentColor;
-}
-.portfolioFooter .pageNavigation {
-  margin-top: 0;
 }
 .portfolioFooter .footerSocials {
-  margin-top: 1.125rem;
+  margin-top: 0;
   font-weight: 400;
   color: #777773;
 }
@@ -1296,10 +1287,13 @@
   }
 }
 .introPage h1 {
-  font-size: 2.375rem;
+  font-size: 2.5rem;
   line-height: 1.08;
-  letter-spacing: -0.045em;
   -webkit-text-stroke: 0.05625rem currentColor;
+}
+.introPage h1,
+.article h1.sectionHeading {
+  letter-spacing: 0.008em;
 }
 .introPage .introExplore h2 {
   font-size: 2.125rem;
@@ -1375,14 +1369,6 @@
 .experience .experienceTeam {
   display: block;
 }
-.experience .degreeContinuation {
-  display: inline;
-}
-@media (min-width: 761px) {
-  .experience .degreeContinuation {
-    display: block;
-  }
-}
 .educationMeta,
 .experienceMeta {
   text-align: right;
@@ -1434,7 +1420,7 @@
 }
 @media (max-width: 760px) {
   .introPage h1 {
-    font-size: 2rem;
+    font-size: 2.125rem;
   }
   .introPage .introExplore h2 {
     font-size: 1.9375rem;
@@ -1466,7 +1452,8 @@
 @media (min-width: 761px) {
   /* Shorten reading lines while preserving the shared left alignment. */
   .introPage,
-  .experiencePage[aria-label="Experience"] {
+  .experiencePage[aria-label="Experience"],
+  .experiencePage[aria-label="Education"] {
     width: min(
       calc(var(--article-width) * 0.9),
       calc(93vw - 3rem - var(--article-left))
@@ -1537,6 +1524,13 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+.article h1.sectionHeading,
+.article .projectEntry h2 {
+  font-size: 2.4375rem;
+}
+.article h1.sectionHeading {
+  line-height: 1.12;
 }
 .article .projectEntry {
   margin-top: 4.25rem;
@@ -1836,9 +1830,9 @@
     margin-top: 2.875rem;
     padding-top: 2.375rem;
   }
+  .article h1.sectionHeading,
   .article .projectEntry h2 {
-    font-size: 1.75rem;
-    margin-bottom: 1.375rem;
+    font-size: 1.9375rem;
   }
   .projectLinks {
     font-size: 0.875rem;
@@ -1969,6 +1963,12 @@
 .phoneSite .phoneSection h1 {
   font-size: 1.875rem;
   line-height: 1.2;
+}
+.phoneSite .introPage h1 {
+  font-size: 2rem;
+}
+.phoneSite .phoneSection h1.sectionHeading {
+  font-size: 1.9375rem;
 }
 .phoneSite .phoneSection p {
   line-height: 1.5;
@@ -2119,4 +2119,36 @@
   width: max(100%, var(--resume-width));
   max-width: none;
   height: auto;
+}
+
+.article .roleList h1.experienceDetailName {
+  font: inherit;
+  text-transform: none;
+  font-feature-settings: normal;
+  letter-spacing: inherit;
+  -webkit-text-stroke: 0;
+}
+.phoneRoleDetail {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  overflow: auto;
+  overscroll-behavior: contain;
+  visibility: hidden;
+  transform: translateX(100%);
+  background: var(--paper, #fff);
+  transition: transform 280ms cubic-bezier(0.22, 0.61, 0.36, 1), visibility 0s 280ms;
+}
+.phoneRoleDetail[data-open="true"] {
+  visibility: visible;
+  transform: translateX(0);
+  transition-delay: 0s;
+}
+.phoneRoleDetail:focus {
+  outline: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .phoneRoleDetail {
+    transition: none;
+  }
 }

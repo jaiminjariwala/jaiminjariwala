@@ -12,38 +12,18 @@ const css = readFileSync(
   "utf8",
 );
 
-test("the Engineering continuation starts a new desktop line without forcing a mobile break", () => {
-  assert.ok(
-    includesSource(
-      source,
-      '"Bachelor of Technology in Computer Science and Engineering"',
-    ),
-  );
-  assert.ok(includesSource(source, 'const continuation=" and Engineering"'));
-  assert.ok(includesSource(source, "degree.slice(0,-continuation.length)"));
-  assert.ok(
-    includesSource(
-      source,
-      "<span className={styles.degreeContinuation}>{continuation}</span>",
-    ),
-  );
-  assert.ok(includesSource(source, "<EducationDegree degree={degree}/>"));
-  assert.ok(
-    includesSource(css, ".experience .degreeContinuation{display:inline}"),
-  );
-  assert.ok(
-    includesSource(
-      css,
-      "@media(min-width:761px){.experience .degreeContinuation{display:block}}",
-    ),
-  );
+test("the degree wraps naturally without a forced Engineering continuation", () => {
+  assert.ok(includesSource(source, '"Bachelor of Technology in Computer Science and Engineering"'));
+  assert.ok(includesSource(source, "<span>{degree}</span>"));
+  assert.ok(!includesSource(source, "degreeContinuation"));
+  assert.ok(!includesSource(css, "degreeContinuation"));
 });
 
 test("the Alexa team is a separate bulleted line after the role", () => {
   assert.ok(
     includesSource(
-      source,
-      "<span>{role}</span>{team&&<span className={styles.experienceTeam}>· {team}</span>}",
+      readFileSync(new URL("./PortfolioV2Experience.tsx", import.meta.url), "utf8"),
+      "<span>{entry.role}</span>{entry.team&&<span className={styles.experienceTeam}>· {entry.team}</span>}",
     ),
   );
   assert.ok(includesSource(css, ".experience .experienceTeam{display:block}"));

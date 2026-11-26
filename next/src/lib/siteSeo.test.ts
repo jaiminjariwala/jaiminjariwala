@@ -104,14 +104,14 @@ test("production can be crawled and Netlify preview builds are not indexed", () 
   }
 });
 
-test("links and server entry points expose every animated portfolio section", () => {
+test("stamp navigation and server entry points expose every animated portfolio section", () => {
   const portfolio = readFileSync(
     new URL("../components/PortfolioV2.tsx", import.meta.url),
     "utf8",
   );
   assert.ok(includesSource(portfolio, "useState(initialPage)"));
   for (const section of ["gallery", "projects", "experience", "education"]) {
-    assert.ok(includesSource(portfolio, `href={sectionPaths.${section}}`));
+    assert.ok(includesSource(portfolio, `onClick={()=>navigate("${section}")}`));
     const route = readFileSync(
       new URL(`../app/${section}/page.tsx`, import.meta.url),
       "utf8",
